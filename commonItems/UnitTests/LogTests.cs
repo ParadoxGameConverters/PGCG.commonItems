@@ -9,46 +9,65 @@ using System.IO;
 
 namespace commonItems.UnitTests
 {
-    public class MyTestClass
-    {
-        private class LogClass
-        {
-            private readonly TextWriter outputWriter;
-            private readonly int number;
-            public LogClass(TextWriter outputWriter, int number)
-            {
-                this.outputWriter = outputWriter;
-                this.number = number;
-            }
-
-            public void PrintValue()
-            {
-                Log.WriteLine(LogLevel.Warning, "Number: " + number);
-            }
-        }
-        
-
-        [Fact]
-        public void MyTest()
-        {
-            const int NumberToPrint = 5;
-            var content = new StringBuilder();
-            var writer = new StringWriter(content);
-            var sut = new LogClass(writer, NumberToPrint);
-
-            sut.PrintValue();
-
-            var actualOutput = content.ToString();
-            Assert.Equal("Number: 5\r\n", actualOutput);
-        }
-    }
+    [CollectionDefinition(nameof(LogTests), DisableParallelization = true)]
     public class LogTests
     {
         [Fact]
         public void ErrorMessagesLogged()
         {
-            Log.WriteLine(LogLevel.Error, "Error mesage");
-            //Assert.Equal("   [ERROR] Error message\n", log.str());
+            var output = new StringWriter();
+            Console.SetOut(output);
+            Log.WriteLine(LogLevel.Error, "Error message");
+            Assert.Equal("    [ERROR] Error message", output.ToString().TrimEnd());
+        }
+
+        [Fact]
+        public void WarningMessagesLogged()
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+            Log.WriteLine(LogLevel.Warning, "Warning message");
+            Assert.Equal("  [WARNING] Warning message", output.ToString().TrimEnd());
+        }
+
+        [Fact]
+        public void InfoMessagesLogged()
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+            Log.WriteLine(LogLevel.Info, "Info message");
+            Assert.Equal("     [INFO] Info message", output.ToString().TrimEnd());
+        }
+
+        [Fact]
+        public void DebugMessagesLogged()
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+            Log.WriteLine(LogLevel.Debug, "Debug message");
+            Assert.Equal("    [DEBUG]         Debug message", output.ToString().TrimEnd());
+        }
+
+        [Fact]
+        public void ProgressMessagesLogged()
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+            Log.WriteLine(LogLevel.Progress, "Progress message");
+            Assert.Equal(" [PROGRESS] Progress message", output.ToString().TrimEnd());
+        }
+
+
+        [Fact]
+        public void MyTest()
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            int number = 5;
+            Log.WriteLine(LogLevel.Warning, "Number: " + 5);
+            
+            Assert.Equal("  [WARNING] Number: 5", output.ToString().TrimEnd());
         }
     }
 }

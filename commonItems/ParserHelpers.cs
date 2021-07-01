@@ -13,7 +13,7 @@ namespace commonItems
             {
                 next = Parser.GetNextLexeme(sr);
             }
-            if (next == "rgb" || next == "hsv") // Needed for ignoring color. Example: "color = rgb { 2 4 8 }"
+            if (next is "rgb" or "hsv") // Needed for ignoring color. Example: "color = rgb { 2 4 8 }"
             {
                 if ((char)sr.Peek() == '{')
                 {
@@ -34,16 +34,19 @@ namespace commonItems
                         return;
                     }
                     var token = Parser.GetNextLexeme(sr);
-                    if (token == "{")
+                    switch (token)
                     {
-                        ++braceDepth;
-                    }
-                    else if (token == "}")
-                    {
-                        --braceDepth;
-                        if (braceDepth == 0)
+                        case "{":
+                            ++braceDepth;
+                            break;
+                        case "}":
                         {
-                            return;
+                            --braceDepth;
+                            if (braceDepth == 0)
+                            {
+                                return;
+                            }
+                            break;
                         }
                     }
                 }

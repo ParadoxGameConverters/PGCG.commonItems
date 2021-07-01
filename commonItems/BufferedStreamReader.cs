@@ -14,19 +14,19 @@ public static class ExtensionMethods
     public static int GetPosition(this StreamReader streamReader)
     {
         // Based on code shared on www.daniweb.com by user mfm24(Matt).
-        int charpos = (int)streamReader.GetType().InvokeMember(
+        var charPos = (int)streamReader.GetType().InvokeMember(
             "charPos",
             invokeAttr: BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField,
             null,
             streamReader,
             null);
-        int charlen = (int)streamReader.GetType().InvokeMember(
+        var charLen = (int)streamReader.GetType().InvokeMember(
             "charLen",
             invokeAttr: BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.GetField,
             null,
             streamReader,
             null);
-        return (int)streamReader.BaseStream.Position - charlen + charpos;
+        return (int)streamReader.BaseStream.Position - charLen + charPos;
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace commonItems
 {
@@ -15,8 +16,13 @@ namespace commonItems
     
     public class Log
     {
-        static bool logFileCreated = false;
-        public static void WriteLine(LogLevel level, string message) {
+        private static bool logFileCreated = false;
+        public static void WriteLine(LogLevel level, string message)
+        {
+            StringBuilder logLine = new();
+            logLine.Append(logLevelStrings[level]);
+            logLine.Append(message);
+            Console.WriteLine(logLine);
 
             if (!logFileCreated)
             {
@@ -26,9 +32,8 @@ namespace commonItems
 
             using StreamWriter logFile = File.AppendText("log.txt");
             logFile.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            logFile.Write(logLevelStrings[level]);
-            logFile.Write(message);
-            logFile.Write("\n");
+            logFile.Write(logLine);
+            logFile.Write(Environment.NewLine);
         }
         
         public static Dictionary<LogLevel, string> logLevelStrings = new(){
