@@ -1,9 +1,7 @@
 using System.IO;
-using commonItems;
-using ImperatorToCK3;
 using Xunit;
 
-namespace ImperatorToCK3.UnitTests
+namespace commonItems.UnitTests
 {
     public class ParserTests
     {
