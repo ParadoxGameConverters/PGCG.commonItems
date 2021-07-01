@@ -221,7 +221,7 @@ namespace commonItems
                     }
                     else
                     {
-                        ExtensionMethods.SetPosition(stream, -1);
+                        stream.SetPosition(-1);
                     }
                     break;
                 }
@@ -233,7 +233,7 @@ namespace commonItems
                     }
                     else
                     {
-                        ExtensionMethods.SetPosition(stream, -1);
+                        stream.SetPosition(-1);
                     }
                     break;
                 }
@@ -245,7 +245,7 @@ namespace commonItems
                     }
                     else
                     {
-                        ExtensionMethods.SetPosition(stream, -1);
+                        stream.SetPosition(-1);
                     }
                     break;
                 }
