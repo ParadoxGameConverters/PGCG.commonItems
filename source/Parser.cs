@@ -9,23 +9,25 @@ namespace commonItems
     public delegate void Del(StreamReader sr, string keyword);
     public delegate void SimpleDel(StreamReader sr);
 
-    abstract class AbstractDelegate
+    internal abstract class AbstractDelegate
     {
         public abstract void Execute(StreamReader sr, string token);
     }
-    class TwoArgDelegate : AbstractDelegate
+
+    internal class TwoArgDelegate : AbstractDelegate
     {
-        readonly Del del;
-        public TwoArgDelegate(Del del_) { del = del_; }
+        private readonly Del del;
+        public TwoArgDelegate(Del del) { this.del = del; }
         public override void Execute(StreamReader sr, string token)
         {
             del(sr, token);
         }
     }
-    class OneArgDelegate : AbstractDelegate
+
+    internal class OneArgDelegate : AbstractDelegate
     {
-        readonly SimpleDel del;
-        public OneArgDelegate(SimpleDel del_) { del = del_; }
+        private readonly SimpleDel del;
+        public OneArgDelegate(SimpleDel del) { this.del = del; }
         public override void Execute(StreamReader sr, string token)
         {
             del(sr);
@@ -42,17 +44,17 @@ namespace commonItems
         }
         private class RegisteredKeyword : RegisteredKeywordOrRegex
         {
-            readonly string keyword;
-            public RegisteredKeyword(string keyword_)
+            private readonly string keyword;
+            public RegisteredKeyword(string keyword)
             {
-                keyword = keyword_;
+                this.keyword = keyword;
             }
             public override bool Match(string token) { return keyword == token; }
         }
         private class RegisteredRegex : RegisteredKeywordOrRegex
         {
-            readonly Regex regex;
-            public RegisteredRegex(string regex_) { regex = new Regex(regex_); }
+            private readonly Regex regex;
+            public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
             public override bool Match(string token)
             {
                 var match = regex.Match(token);
@@ -114,7 +116,7 @@ namespace commonItems
             registeredDict.Clear();
         }
 
-        bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, StreamReader stream)
+        private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, StreamReader stream)
         {
             foreach (var (regex, fun) in registeredDict)
             {
@@ -386,6 +388,6 @@ namespace commonItems
             ParseStream(file);
         }
 
-        readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredDict = new();
+        private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredDict = new();
     }
 }
