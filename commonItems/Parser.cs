@@ -4,66 +4,53 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace commonItems
-{
-    public delegate void Del(StreamReader sr, string keyword);
-    public delegate void SimpleDel(StreamReader sr);
+namespace commonItems {
+    public delegate void Del(BufferedReader sr, string keyword);
+    public delegate void SimpleDel(BufferedReader sr);
 
-    internal abstract class AbstractDelegate
-    {
-        public abstract void Execute(StreamReader sr, string token);
+    internal abstract class AbstractDelegate {
+        public abstract void Execute(BufferedReader sr, string token);
     }
 
-    internal class TwoArgDelegate : AbstractDelegate
-    {
+    internal class TwoArgDelegate : AbstractDelegate {
         private readonly Del del;
         public TwoArgDelegate(Del del) { this.del = del; }
-        public override void Execute(StreamReader sr, string token)
-        {
+        public override void Execute(BufferedReader sr, string token) {
             del(sr, token);
         }
     }
 
-    internal class OneArgDelegate : AbstractDelegate
-    {
+    internal class OneArgDelegate : AbstractDelegate {
         private readonly SimpleDel del;
         public OneArgDelegate(SimpleDel del) { this.del = del; }
-        public override void Execute(StreamReader sr, string token)
-        {
+        public override void Execute(BufferedReader sr, string token) {
             del(sr);
         }
     }
 
 
 
-    public class Parser
-    {
-        private abstract class RegisteredKeywordOrRegex
-        {
+    public class Parser {
+        private abstract class RegisteredKeywordOrRegex {
             public abstract bool Match(string token);
         }
-        private class RegisteredKeyword : RegisteredKeywordOrRegex
-        {
+        private class RegisteredKeyword : RegisteredKeywordOrRegex {
             private readonly string keyword;
-            public RegisteredKeyword(string keyword)
-            {
+            public RegisteredKeyword(string keyword) {
                 this.keyword = keyword;
             }
             public override bool Match(string token) { return keyword == token; }
         }
-        private class RegisteredRegex : RegisteredKeywordOrRegex
-        {
+        private class RegisteredRegex : RegisteredKeywordOrRegex {
             private readonly Regex regex;
             public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
-            public override bool Match(string token)
-            {
+            public override bool Match(string token) {
                 var match = regex.Match(token);
                 return match.Success && match.Length == token.Length;
             }
         }
 
-        public static Stream GenerateStreamFromString(string s)
-        {
+        public static Stream GenerateStreamFromString(string s) {
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream);
             writer.Write(s);
@@ -71,67 +58,51 @@ namespace commonItems
             stream.Position = 0;
             return stream;
         }
-        public static string RemQuotes(string str)
-        {
+        public static string RemQuotes(string str) {
             var length = str.Length;
-            if (length < 2)
-            {
+            if (length < 2) {
                 return str;
             }
-            if (!str.StartsWith('"') || !str.EndsWith('"'))
-            {
+            if (!str.StartsWith('"') || !str.EndsWith('"')) {
                 return str;
             }
             return str.Substring(1, length - 2);
         }
-        public static void AbsorbBOM(StreamReader stream)
-        {
+        public static void AbsorbBOM(BufferedReader stream) {
             var firstChar = stream.Peek();
-            if (firstChar == '\xEF')
-            {
+            if (firstChar == '\xEF') {
                 stream.Read(new char[3]); // skip 3 bytes
             }
         }
 
 
-        public void RegisterKeyword(string keyword, Del del)
-        {
+        public void RegisterKeyword(string keyword, Del del) {
             registeredDict.Add(new RegisteredKeyword(keyword), new TwoArgDelegate(del));
         }
-        public void RegisterKeyword(string keyword, SimpleDel del)
-        {
+        public void RegisterKeyword(string keyword, SimpleDel del) {
             registeredDict.Add(new RegisteredKeyword(keyword), new OneArgDelegate(del));
         }
-        public void RegisterRegex(string keyword, Del del)
-        {
+        public void RegisterRegex(string keyword, Del del) {
             registeredDict.Add(new RegisteredRegex(keyword), new TwoArgDelegate(del));
         }
-        public void RegisterRegex(string keyword, SimpleDel del)
-        {
+        public void RegisterRegex(string keyword, SimpleDel del) {
             registeredDict.Add(new RegisteredRegex(keyword), new OneArgDelegate(del));
         }
 
-        public void ClearRegisteredDict()
-        {
+        public void ClearRegisteredDict() {
             registeredDict.Clear();
         }
 
-        private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, StreamReader stream)
-        {
-            foreach (var (regex, fun) in registeredDict)
-            {
-                if (regex.Match(token))
-                {
+        private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader stream) {
+            foreach (var (regex, fun) in registeredDict) {
+                if (regex.Match(token)) {
                     fun.Execute(stream, token);
                     return true;
                 }
             }
-            if (isTokenQuoted)
-            {
-                foreach (var (regex, fun) in registeredDict)
-                {
-                    if (regex.Match(strippedToken))
-                    {
+            if (isTokenQuoted) {
+                foreach (var (regex, fun) in registeredDict) {
+                    if (regex.Match(strippedToken)) {
                         fun.Execute(stream, token);
                         return true;
                     }
@@ -140,117 +111,77 @@ namespace commonItems
             return false;
         }
 
-        public static string GetNextLexeme(StreamReader stream)
-        {
+        public static string GetNextLexeme(BufferedReader stream) {
             var sb = new StringBuilder();
 
             var inQuotes = false;
             var inLiteralQuote = false;
             var previousCharacter = '\0';
 
-            while (true)
-            {
+            while (true) {
 
-                if (stream.EndOfStream)
-                {
+                if (stream.EndOfStream) {
                     break;
                 }
 
                 var inputChar = (char)stream.Read();
 
-                if (!inQuotes && inputChar == '#')
-                {
+                if (!inQuotes && inputChar == '#') {
                     stream.ReadLine();
-                    if (sb.Length != 0)
-                    {
+                    if (sb.Length != 0) {
                         break;
                     }
-                }
-                else if (inputChar == '\n')
-                {
-                    if (!inQuotes)
-                    {
-                        if (sb.Length != 0)
-                        {
+                } else if (inputChar == '\n') {
+                    if (!inQuotes) {
+                        if (sb.Length != 0) {
                             break;
                         }
-                    }
-                    else // fix Paradox' mistake and don't break proper names in half
-                    {
+                    } else // fix Paradox' mistake and don't break proper names in half
+                      {
                         sb.Append(' ');
                     }
-                }
-                else if (inputChar == '\"' && !inQuotes && sb.Length == 0)
-                {
+                } else if (inputChar == '\"' && !inQuotes && sb.Length == 0) {
                     inQuotes = true;
                     sb.Append(inputChar);
-                }
-                else if (inputChar == '\"' && !inQuotes && sb.Length == 1 && sb.ToString().Last() == 'R')
-                {
+                } else if (inputChar == '\"' && !inQuotes && sb.Length == 1 && sb.ToString().Last() == 'R') {
                     inLiteralQuote = true;
                     --sb.Length;
                     sb.Append(inputChar);
-                }
-                else if (inputChar == '(' && inLiteralQuote && sb.Length == 1)
-                {
+                } else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
                     continue;
-                }
-                else if (inputChar == '\"' && inLiteralQuote && previousCharacter == ')')
-                {
+                } else if (inputChar == '\"' && inLiteralQuote && previousCharacter == ')') {
                     --sb.Length;
                     sb.Append(inputChar);
                     break;
-                }
-                else if (inputChar == '\"' && inQuotes && previousCharacter != '\\')
-                {
+                } else if (inputChar == '\"' && inQuotes && previousCharacter != '\\') {
                     sb.Append(inputChar);
                     break;
-                }
-                else if (!inQuotes && !inLiteralQuote && char.IsWhiteSpace(inputChar))
-                {
-                    if (sb.Length != 0)
-                    {
+                } else if (!inQuotes && !inLiteralQuote && char.IsWhiteSpace(inputChar)) {
+                    if (sb.Length != 0) {
                         break;
                     }
-                }
-                else if (!inQuotes && !inLiteralQuote && inputChar == '{')
-                {
-                    if (sb.Length == 0)
-                    {
+                } else if (!inQuotes && !inLiteralQuote && inputChar == '{') {
+                    if (sb.Length == 0) {
                         sb.Append(inputChar);
-                    }
-                    else
-                    {
-                        stream.SetPosition(-1);
+                    } else {
+                        stream.PushBack('{');
                     }
                     break;
-                }
-                else if (!inQuotes && !inLiteralQuote && inputChar == '}')
-                {
-                    if (sb.Length == 0)
-                    {
+                } else if (!inQuotes && !inLiteralQuote && inputChar == '}') {
+                    if (sb.Length == 0) {
                         sb.Append(inputChar);
-                    }
-                    else
-                    {
-                        stream.SetPosition(-1);
+                    } else {
+                        stream.PushBack('}');
                     }
                     break;
-                }
-                else if (!inQuotes && !inLiteralQuote && inputChar == '=')
-                {
-                    if (sb.Length == 0)
-                    {
+                } else if (!inQuotes && !inLiteralQuote && inputChar == '=') {
+                    if (sb.Length == 0) {
                         sb.Append(inputChar);
-                    }
-                    else
-                    {
-                        stream.SetPosition(-1);
+                    } else {
+                        stream.PushBack('=');
                     }
                     break;
-                }
-                else
-                {
+                } else {
                     sb.Append(inputChar);
                 }
 
@@ -259,14 +190,11 @@ namespace commonItems
             return sb.ToString();
         }
 
-        public static string? GetNextTokenWithoutMatching(StreamReader sr)
-        {
+        public static string? GetNextTokenWithoutMatching(BufferedReader sr) {
             string? toReturn = null;
             var gotToken = false;
-            while (!gotToken)
-            {
-                if (sr.EndOfStream)
-                {
+            while (!gotToken) {
+                if (sr.EndOfStream) {
                     return null;
                 }
                 toReturn = GetNextLexeme(sr);
@@ -276,15 +204,12 @@ namespace commonItems
             return toReturn;
         }
 
-        public string? GetNextToken(StreamReader stream)
-        {
+        public string? GetNextToken(BufferedReader stream) {
             var sb = new StringBuilder();
 
             var gotToken = false;
-            while (!gotToken)
-            {
-                if (stream.EndOfStream)
-                {
+            while (!gotToken) {
+                if (stream.EndOfStream) {
                     return null;
                 }
 
@@ -296,95 +221,72 @@ namespace commonItems
 
                 var matched = TryToMatch(sb.ToString(), strippedToken, isTokenQuoted, stream);
 
-                if (!matched)
-                {
+                if (!matched) {
                     gotToken = true;
                 }
             }
             return sb.Length == 0 ? null : sb.ToString();
         }
 
-        public void ParseStream(StreamReader stream)
-        {
+        public void ParseStream(BufferedReader stream) {
             var braceDepth = 0;
             var value = false; // tracker to indicate whether we reached the value part of key=value pair
             var tokensSoFar = new StringBuilder();
 
-            while (true)
-            {
-                string? token = GetNextToken(stream);
-                if (token != null)
-                {
+            while (true) {
+                var token = GetNextToken(stream);
+                if (token != null) {
                     tokensSoFar.Append(token);
-                    if (token == "=")
-                    {
-                        if (!value)
-                        {
+                    if (token == "=") {
+                        if (!value) {
                             value = true; // swapping to value part.
                             continue;
-                        }
-                        else // leaving else to be noticeable.
-                        {
+                        } else { // leaving else to be noticeable.
                             // value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
                             // manually fast-forward to brace-lvl 0 and die.
-                            while (braceDepth != 0)
-                            {
+                            while (braceDepth != 0) {
                                 var inputChar = (char)stream.Read();
-                                switch (inputChar)
-                                {
+                                switch (inputChar) {
                                     case '{':
                                         ++braceDepth;
                                         break;
                                     case '}':
                                         --braceDepth;
                                         break;
-                                    default:
-                                    {
-                                        if (!char.IsWhiteSpace(inputChar))
-                                        {
-                                            tokensSoFar.Append(inputChar);
-                                        }
+                                    default: {
+                                            if (!char.IsWhiteSpace(inputChar)) {
+                                                tokensSoFar.Append(inputChar);
+                                            }
 
-                                        break;
-                                    }
+                                            break;
+                                        }
                                 }
                             }
                             Log.WriteLine(LogLevel.Warning, "Broken token syntax at " + tokensSoFar.ToString());
                             return;
                         }
-                    }
-                    else if (token == "{")
-                    {
+                    } else if (token == "{") {
                         ++braceDepth;
-                    }
-                    else if (token == "}")
-                    {
+                    } else if (token == "}") {
                         --braceDepth;
-                        if (braceDepth == 0)
-                        {
+                        if (braceDepth == 0) {
                             break;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         Log.WriteLine(LogLevel.Warning, "Unknown token while parsing stream: " + token);
                     }
-                }
-                else
-                {
+                } else {
                     break;
                 }
             }
         }
 
-        public void ParseFile(string filename)
-        {
-            if (!File.Exists(filename))
-            {
+        public void ParseFile(string filename) {
+            if (!File.Exists(filename)) {
                 Log.WriteLine(LogLevel.Error, "Could not open " + filename + " for parsing");
                 return;
             }
-            var file = File.OpenText(filename);
+            var file = (BufferedReader)File.OpenText(filename);
             AbsorbBOM(file);
             ParseStream(file);
         }

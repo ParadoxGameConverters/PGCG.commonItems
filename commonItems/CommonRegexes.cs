@@ -1,7 +1,5 @@
-﻿namespace commonItems
-{
-    public class CommonRegexes
-    {
+﻿namespace commonItems {
+    public static class CommonRegexes {
         // catchall:
         //		We grab everything that's NOT =, { or }, OR we grab everything within quotes, except newlines, which we already drop
         //		in the parser.

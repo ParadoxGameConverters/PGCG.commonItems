@@ -7,15 +7,12 @@ using Xunit;
 using Xunit.Abstractions;
 using System.IO;
 
-namespace commonItems.UnitTests
-{
+namespace commonItems.UnitTests {
     [Collection("Sequential")]
     [CollectionDefinition("Sequential", DisableParallelization = true)]
-    public class LogTests
-    {
+    public class LogTests {
         [Fact]
-        public void ErrorMessagesLogged()
-        {
+        public void ErrorMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
             Log.WriteLine(LogLevel.Error, "Error message");
@@ -23,8 +20,7 @@ namespace commonItems.UnitTests
         }
 
         [Fact]
-        public void WarningMessagesLogged()
-        {
+        public void WarningMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
             Log.WriteLine(LogLevel.Warning, "Warning message");
@@ -32,8 +28,7 @@ namespace commonItems.UnitTests
         }
 
         [Fact]
-        public void InfoMessagesLogged()
-        {
+        public void InfoMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
             Log.WriteLine(LogLevel.Info, "Info message");
@@ -41,8 +36,7 @@ namespace commonItems.UnitTests
         }
 
         [Fact]
-        public void DebugMessagesLogged()
-        {
+        public void DebugMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
             Log.WriteLine(LogLevel.Debug, "Debug message");
@@ -50,8 +44,7 @@ namespace commonItems.UnitTests
         }
 
         [Fact]
-        public void ProgressMessagesLogged()
-        {
+        public void ProgressMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
             Log.WriteLine(LogLevel.Progress, "Progress message");

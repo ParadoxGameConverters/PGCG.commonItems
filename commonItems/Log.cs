@@ -3,29 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace commonItems
-{
-    public enum LogLevel
-    {
+namespace commonItems {
+    public enum LogLevel {
         Error,
         Warning,
         Info,
         Debug,
         Progress
     }
-    
-    public class Log
-    {
+
+    public static class Log {
         private static bool logFileCreated = false;
-        public static void WriteLine(LogLevel level, string message)
-        {
+        public static void WriteLine(LogLevel level, string message) {
             StringBuilder logLine = new();
             logLine.Append(logLevelStrings[level]);
             logLine.Append(message);
             Console.WriteLine(logLine);
 
-            if (!logFileCreated)
-            {
+            if (!logFileCreated) {
                 System.IO.File.WriteAllText("log.txt", string.Empty);
                 logFileCreated = true;
             }
@@ -35,8 +30,8 @@ namespace commonItems
             logFile.Write(logLine);
             logFile.Write(Environment.NewLine);
         }
-        
-        public static Dictionary<LogLevel, string> logLevelStrings = new(){
+
+        public static Dictionary<LogLevel, string> logLevelStrings = new() {
             { LogLevel.Error, "    [ERROR] " },
             { LogLevel.Warning, "  [WARNING] " },
             { LogLevel.Info, "     [INFO] " },

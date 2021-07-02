@@ -2,88 +2,67 @@
 using System.Numerics;
 using System.Collections.Generic;
 
-namespace commonItems
-{
-    public static class ParserHelpers
-    {
-        public static void IgnoreItem(StreamReader sr)
-        {
+namespace commonItems {
+    public static class ParserHelpers {
+        public static void IgnoreItem(BufferedReader sr) {
             var next = Parser.GetNextLexeme(sr);
-            if (next == "=")
-            {
+            if (next == "=") {
                 next = Parser.GetNextLexeme(sr);
             }
             if (next is "rgb" or "hsv") // Needed for ignoring color. Example: "color = rgb { 2 4 8 }"
             {
-                if ((char)sr.Peek() == '{')
-                {
+                if ((char)sr.Peek() == '{') {
                     next = Parser.GetNextLexeme(sr);
-                }
-                else // don't go further in cases like "type = rgb"
-                {
+                } else // don't go further in cases like "type = rgb"
+                  {
                     return;
                 }
             }
-            if (next == "{")
-            {
+            if (next == "{") {
                 var braceDepth = 1;
-                while (true)
-                {
-                    if (sr.EndOfStream)
-                    {
+                while (true) {
+                    if (sr.EndOfStream) {
                         return;
                     }
                     var token = Parser.GetNextLexeme(sr);
-                    switch (token)
-                    {
+                    switch (token) {
                         case "{":
                             ++braceDepth;
                             break;
-                        case "}":
-                        {
-                            --braceDepth;
-                            if (braceDepth == 0)
-                            {
-                                return;
+                        case "}": {
+                                --braceDepth;
+                                if (braceDepth == 0) {
+                                    return;
+                                }
+                                break;
                             }
-                            break;
-                        }
                     }
                 }
             }
         }
 
-        public static void IgnoreAndLogItem(StreamReader sr, string keyword)
-        {
+        public static void IgnoreAndLogItem(BufferedReader sr, string keyword) {
             IgnoreItem(sr);
             Log.WriteLine(LogLevel.Debug, "Ignoring keyword: " + keyword);
         }
     }
-    public class SingleString : Parser
-    {
-        public SingleString(StreamReader sr)
-        {
+    public class SingleString : Parser {
+        public SingleString(BufferedReader sr) {
             GetNextTokenWithoutMatching(sr); // remove equals
             var token = GetNextTokenWithoutMatching(sr);
-            if (token == null)
-            {
+            if (token == null) {
                 Log.WriteLine(LogLevel.Error, "SingleString: next token not found!"); ;
-            }
-            else
-            {
+            } else {
                 String = RemQuotes(token);
             }
         }
         public string String { get; } = "";
     }
 
-    public class SingleInt
-    {
-        public SingleInt(StreamReader sr)
-        {
+    public class SingleInt {
+        public SingleInt(BufferedReader sr) {
             var intString = Parser.RemQuotes(new SingleString(sr).String);
-            if (!int.TryParse(intString, out int theInt))
-            {
+            if (!int.TryParse(intString, out int theInt)) {
                 Log.WriteLine(LogLevel.Warning, "Could not convert string " + intString + " to int!");
                 return;
             }
@@ -92,13 +71,10 @@ namespace commonItems
         public int Int { get; }
     }
 
-    public class SingleDouble
-    {
-        public SingleDouble(StreamReader sr)
-        {
+    public class SingleDouble {
+        public SingleDouble(BufferedReader sr) {
             var doubleString = Parser.RemQuotes(new SingleString(sr).String);
-            if (!double.TryParse(doubleString, out double theDouble))
-            {
+            if (!double.TryParse(doubleString, out double theDouble)) {
                 Log.WriteLine(LogLevel.Warning, "Could not convert string " + doubleString + " to double!");
                 return;
             }
@@ -107,17 +83,13 @@ namespace commonItems
         public double Double { get; }
     }
 
-    public class StringList : Parser
-    {
-        public StringList(StreamReader sr)
-        {
-            RegisterKeyword(@"""""", (StreamReader sr) => {});
-            RegisterRegex(CommonRegexes.StringRegex, (StreamReader sr, string theString) =>
-            {
+    public class StringList : Parser {
+        public StringList(BufferedReader sr) {
+            RegisterKeyword(@"""""", (BufferedReader sr) => { });
+            RegisterRegex(CommonRegexes.StringRegex, (BufferedReader sr, string theString) => {
                 Strings.Add(theString);
             });
-            RegisterRegex(CommonRegexes.QuotedString, (StreamReader sr, string theString) =>
-            {
+            RegisterRegex(CommonRegexes.QuotedString, (BufferedReader sr, string theString) => {
                 Strings.Add(RemQuotes(theString));
             });
             ParseStream(sr);
@@ -125,16 +97,12 @@ namespace commonItems
         public List<string> Strings { get; } = new List<string>();
     }
 
-    public class IntList : Parser
-    {
-        public IntList(StreamReader sr)
-        {
-            RegisterRegex(CommonRegexes.Integer, (StreamReader sr, string intString) =>
-            {
+    public class IntList : Parser {
+        public IntList(BufferedReader sr) {
+            RegisterRegex(CommonRegexes.Integer, (BufferedReader sr, string intString) => {
                 Ints.Add(int.Parse(intString));
             });
-            RegisterRegex(CommonRegexes.QuotedInteger, (StreamReader sr, string intString) =>
-            {
+            RegisterRegex(CommonRegexes.QuotedInteger, (BufferedReader sr, string intString) => {
                 intString = intString[1..^1];
                 Ints.Add(int.Parse(intString));
             });
@@ -143,16 +111,12 @@ namespace commonItems
         public List<int> Ints { get; } = new List<int>();
     }
 
-    public class DoubleList : Parser
-    {
-        public DoubleList(StreamReader sr)
-        {
-            RegisterRegex(CommonRegexes.Float, (StreamReader sr, string floatString) =>
-            {
+    public class DoubleList : Parser {
+        public DoubleList(BufferedReader sr) {
+            RegisterRegex(CommonRegexes.Float, (BufferedReader sr, string floatString) => {
                 Doubles.Add(double.Parse(floatString));
             });
-            RegisterRegex(CommonRegexes.QuotedFloat, (StreamReader sr, string floatString) =>
-            {
+            RegisterRegex(CommonRegexes.QuotedFloat, (BufferedReader sr, string floatString) => {
                 floatString = floatString[1..^1];
                 Doubles.Add(double.Parse(floatString));
             });

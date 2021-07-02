@@ -1,219 +1,192 @@
+using System;
 using System.IO;
+using System.Linq;
 using Xunit;
 
-namespace commonItems.UnitTests
-{
-    public class ParserTests
-    {
+namespace commonItems.UnitTests {
+    [Collection("Sequential")]
+    [CollectionDefinition("Sequential", DisableParallelization = true)]
+    public class ParserTests {
         [Fact]
-        public void AbsorbBOMAbsorbsBOM()
-        {
+        public void AbsorbBOMAbsorbsBOM() {
             Stream input = Parser.GenerateStreamFromString("\xEF\xBB\xBFMore text");
-            var stream = new StreamReader(input);
+            var stream = new BufferedReader(input);
             Parser.AbsorbBOM(stream);
             Assert.Equal("More text", stream.ReadToEnd());
         }
 
         [Fact]
-        public void AbsorbBOMDoesNotAbsorbNonBOM()
-        {
+        public void AbsorbBOMDoesNotAbsorbNonBOM() {
             Stream input = Parser.GenerateStreamFromString("More text");
-            var stream = new StreamReader(input);
+            var stream = new BufferedReader(input);
             Parser.AbsorbBOM(stream);
             Assert.Equal("More text", stream.ReadToEnd());
         }
 
-        private class Test : Parser
-        {
+        private class Test : Parser {
             public string key;
             public string value;
-            public Test(StreamReader streamReader)
-            {
-                RegisterKeyword("key", (StreamReader sr, string k) =>
-                {
+            public Test(BufferedReader BufferedReader) {
+                RegisterKeyword("key", (BufferedReader sr, string k) => {
                     key = k;
                     value = new SingleString(sr).String;
                 });
-                ParseStream(streamReader);
+                ParseStream(BufferedReader);
             }
         };
 
         [Fact]
-        public void KeywordsAreMatched()
-        {
+        public void KeywordsAreMatched() {
             Stream input = Parser.GenerateStreamFromString("key = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test(BufferedReader);
             Assert.Equal("key", test.key);
             Assert.Equal("value", test.value);
         }
 
         [Fact]
-        public void QuotedKeywordsAreMatched()
-        {
+        public void QuotedKeywordsAreMatched() {
             Stream input = Parser.GenerateStreamFromString("\"key\" = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test(BufferedReader);
             Assert.Equal("\"key\"", test.key);
             Assert.Equal("value", test.value);
         }
 
-        private class Test2 : Parser
-        {
+        private class Test2 : Parser {
             public string key;
             public string value;
-            public Test2(StreamReader streamReader)
-            {
-                RegisterKeyword("\"key\"", (StreamReader sr, string k) =>
-                {
+            public Test2(BufferedReader BufferedReader) {
+                RegisterKeyword("\"key\"", (BufferedReader sr, string k) => {
                     key = k;
                     value = new SingleString(sr).String;
                 });
-                ParseStream(streamReader);
+                ParseStream(BufferedReader);
             }
         };
 
         [Fact]
-        public void QuotedKeywordsAreQuotedlyMatched()
-        {
+        public void QuotedKeywordsAreQuotedlyMatched() {
             Stream input = Parser.GenerateStreamFromString("\"key\" = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test2(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test2(BufferedReader);
             Assert.Equal("\"key\"", test.key);
             Assert.Equal("value", test.value);
         }
 
         [Fact]
-        public void QuotedValuesAreParsed()
-        {
+        public void QuotedValuesAreParsed() {
             Stream input = Parser.GenerateStreamFromString(@"key = ""value quote""");
-            var streamReader = new StreamReader(input);
-            var test = new Test(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test(BufferedReader);
             Assert.Equal("key", test.key);
             Assert.Equal("value quote", test.value);
         }
 
         [Fact]
-        public void QuotedValuesWithEscapedQuotesAreParsed()
-        {
+        public void QuotedValuesWithEscapedQuotesAreParsed() {
             Stream input = Parser.GenerateStreamFromString(@"key = ""value \""quote\"" string""");
-            var streamReader = new StreamReader(input);
-            var test = new Test(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test(BufferedReader);
             Assert.Equal("key", test.key);
             Assert.Equal(@"value \""quote\"" string", test.value);
         }
 
         [Fact]
-        public void StringLiteralsAreParsed()
-        {
+        public void StringLiteralsAreParsed() {
             Stream input = Parser.GenerateStreamFromString(@"key = R""(value ""quote"" string)""");
-            var streamReader = new StreamReader(input);
-            var test = new Test(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test(BufferedReader);
             Assert.Equal("key", test.key);
             Assert.Equal(@"value ""quote"" string", test.value);
         }
 
         [Fact]
-        public void WrongKeywordsAreIgnored()
-        {
+        public void WrongKeywordsAreIgnored() {
             Stream input = Parser.GenerateStreamFromString(@"wrongkey = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test(BufferedReader);
             Assert.True(string.IsNullOrEmpty(test.key));
             Assert.True(string.IsNullOrEmpty(test.value));
         }
 
-        private class Test3 : Parser
-        {
+        private class Test3 : Parser {
             public string key;
             public string value;
-            public Test3(StreamReader streamReader)
-            {
-                RegisterRegex("[key]+", (StreamReader sr, string k) =>
-                {
+            public Test3(BufferedReader BufferedReader) {
+                RegisterRegex("[key]+", (BufferedReader sr, string k) => {
                     key = k;
                     value = new SingleString(sr).String;
                 });
-                ParseStream(streamReader);
+                ParseStream(BufferedReader);
             }
         };
 
         [Fact]
-        public void QuotedRegexesAreMatched()
-        {
+        public void QuotedRegexesAreMatched() {
             Stream input = Parser.GenerateStreamFromString("\"key\" = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test3(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test3(BufferedReader);
             Assert.Equal("\"key\"", test.key);
             Assert.Equal("value", test.value);
         }
 
-        private class Test4 : Parser
-        {
+        private class Test4 : Parser {
             public string key;
             public string value;
-            public Test4(StreamReader streamReader)
-            {
-                RegisterRegex("[k\"ey]+", (StreamReader sr, string k) =>
-                {
+            public Test4(BufferedReader BufferedReader) {
+                RegisterRegex("[k\"ey]+", (BufferedReader sr, string k) => {
                     key = k;
                     value = new SingleString(sr).String;
                 });
-                ParseStream(streamReader);
+                ParseStream(BufferedReader);
             }
         };
 
         [Fact]
-        public void QuotedRegexesAreQuotedlyMatched()
-        {
+        public void QuotedRegexesAreQuotedlyMatched() {
             Stream input = Parser.GenerateStreamFromString("\"key\" = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test4(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test4(BufferedReader);
             Assert.Equal("\"key\"", test.key);
             Assert.Equal("value", test.value);
         }
 
-        private class Test5 : Parser
-        {
+        private class Test5 : Parser {
             public string key;
             public string value;
-            public Test5(StreamReader streamReader)
-            {
-                RegisterRegex(CommonRegexes.Catchall, (StreamReader sr, string k) =>
-                {
+            public Test5(BufferedReader BufferedReader) {
+                RegisterRegex(CommonRegexes.Catchall, (BufferedReader sr, string k) => {
                     key = k;
                     value = new SingleString(sr).String;
                 });
-                ParseStream(streamReader);
+                ParseStream(BufferedReader);
             }
         };
 
         [Fact]
-        public void CatchAllCatchesQuotedKeys()
-        {
+        public void CatchAllCatchesQuotedKeys() {
             Stream input = Parser.GenerateStreamFromString("\"key\" = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test5(streamReader);
+            var BufferedReader = new BufferedReader(input);
+            var test = new Test5(BufferedReader);
             Assert.Equal("\"key\"", test.key);
             Assert.Equal("value", test.value);
         }
 
         [Fact]
-        public void CatchAllCatchesQuotedKeysWithWhitespaceInside()
-        {
+        public void CatchAllCatchesQuotedKeysWithWhitespaceInside() {
             Stream input = Parser.GenerateStreamFromString("\"this\tis a\nkey\n\" = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test5(streamReader);
+            var bufferedReader = new BufferedReader(input);
+            var test = new Test5(bufferedReader);
             Assert.Equal("\"this\tis a key \"", test.key);
             Assert.Equal("value", test.value);
         }
 
         [Fact]
-        public void CatchAllCatchesQuotedKeysWithFigurativeCrapInside()
-        {
+        public void CatchAllCatchesQuotedKeysWithFigurativeCrapInside() {
             Stream input = Parser.GenerateStreamFromString("\"this = is a silly { key\t} \" = value");
-            var streamReader = new StreamReader(input);
-            var test = new Test5(streamReader);
+            var bufferedReader = new BufferedReader(input);
+            var test = new Test5(bufferedReader);
             Assert.Equal("\"this = is a silly { key\t} \"", test.key);
             Assert.Equal("value", test.value);
         }
