@@ -31,7 +31,7 @@ namespace commonItems {
             logFile.Write(Environment.NewLine);
         }
 
-        public static Dictionary<LogLevel, string> logLevelStrings = new() {
+        private static readonly Dictionary<LogLevel, string> logLevelStrings = new() {
             { LogLevel.Error, "    [ERROR] " },
             { LogLevel.Warning, "  [WARNING] " },
             { LogLevel.Info, "     [INFO] " },

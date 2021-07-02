@@ -1,9 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace commonItems {
     public class BufferedReader : StreamReader {
+        // http://web.archive.org/web/20210702221522/https://stackoverflow.com/questions/7049401/c-sharp-roll-back-streamreader-1-character/7050430#7050430
         public BufferedReader(Stream stream) : base(stream) { }
+
+        public BufferedReader(string input) : base(new MemoryStream(Encoding.UTF8.GetBytes(input))) {}
 
         private int lastChar = -1;
         public override int Read() {

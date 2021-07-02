@@ -39,7 +39,7 @@ namespace commonItems.UnitTests {
         }
 
 
-        internal class Test1 : Parser {
+        private class Test1 : Parser {
             public string? value1;
             public string? value2;
             public string? value3;
@@ -61,8 +61,7 @@ namespace commonItems.UnitTests {
             var output = new StringWriter();
             Console.SetOut(output);
             
-            Stream stream = Parser.GenerateStreamFromString("key1=val1 key2=val2 key3=mess");
-            var input = new BufferedReader(stream);
+            var input = new BufferedReader("key1=val1 key2=val2 key3=mess");
             var test = new Test1(input);
             Assert.Equal("val1", test.value1);
             Assert.Equal("val2", test.value2);
