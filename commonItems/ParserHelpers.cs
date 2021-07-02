@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Numerics;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace commonItems {
     public static class ParserHelpers {
@@ -67,7 +68,7 @@ namespace commonItems {
             }
             Int = theInt;
         }
-        public int? Int { get; }
+        public int Int { get; }
     }
 
     public class SingleDouble {
@@ -113,11 +114,11 @@ namespace commonItems {
     public class DoubleList : Parser {
         public DoubleList(BufferedReader sr) {
             RegisterRegex(CommonRegexes.Float, (sr, floatString) => {
-                Doubles.Add(double.Parse(floatString));
+                Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
             });
             RegisterRegex(CommonRegexes.QuotedFloat, (sr, floatString) => {
-                floatString = floatString[1..^1];
-                Doubles.Add(double.Parse(floatString));
+                floatString = floatString[1..^1]; // remove quotes
+                Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
             });
             ParseStream(sr);
         }
