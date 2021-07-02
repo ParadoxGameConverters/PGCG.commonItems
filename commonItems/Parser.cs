@@ -73,7 +73,7 @@ namespace commonItems
         }
         public static string RemQuotes(string str)
         {
-            int length = str.Length;
+            var length = str.Length;
             if (length < 2)
             {
                 return str;
@@ -146,7 +146,7 @@ namespace commonItems
 
             var inQuotes = false;
             var inLiteralQuote = false;
-            char previousCharacter = '\0';
+            var previousCharacter = '\0';
 
             while (true)
             {
@@ -156,7 +156,7 @@ namespace commonItems
                     break;
                 }
 
-                char inputChar = (char)stream.Read();
+                var inputChar = (char)stream.Read();
 
                 if (!inQuotes && inputChar == '#')
                 {
@@ -262,7 +262,7 @@ namespace commonItems
         public static string? GetNextTokenWithoutMatching(StreamReader sr)
         {
             string? toReturn = null;
-            bool gotToken = false;
+            var gotToken = false;
             while (!gotToken)
             {
                 if (sr.EndOfStream)
@@ -301,11 +301,7 @@ namespace commonItems
                     gotToken = true;
                 }
             }
-            if (sb.Length != 0)
-            {
-                return sb.ToString();
-            }
-            return null;
+            return sb.Length == 0 ? null : sb.ToString();
         }
 
         public void ParseStream(StreamReader stream)
@@ -331,21 +327,26 @@ namespace commonItems
                         {
                             // value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
                             // manually fast-forward to brace-lvl 0 and die.
-                            char inputChar;
                             while (braceDepth != 0)
                             {
-                                inputChar = (char)stream.Read();
-                                if (inputChar == '{')
+                                var inputChar = (char)stream.Read();
+                                switch (inputChar)
                                 {
-                                    ++braceDepth;
-                                }
-                                else if (inputChar == '}')
-                                {
-                                    --braceDepth;
-                                }
-                                else if (!char.IsWhiteSpace(inputChar))
-                                {
-                                    tokensSoFar.Append(inputChar);
+                                    case '{':
+                                        ++braceDepth;
+                                        break;
+                                    case '}':
+                                        --braceDepth;
+                                        break;
+                                    default:
+                                    {
+                                        if (!char.IsWhiteSpace(inputChar))
+                                        {
+                                            tokensSoFar.Append(inputChar);
+                                        }
+
+                                        break;
+                                    }
                                 }
                             }
                             Log.WriteLine(LogLevel.Warning, "Broken token syntax at " + tokensSoFar.ToString());
@@ -383,7 +384,7 @@ namespace commonItems
                 Log.WriteLine(LogLevel.Error, "Could not open " + filename + " for parsing");
                 return;
             }
-            var file = new StreamReader(File.OpenText(filename).BaseStream);
+            var file = File.OpenText(filename);
             AbsorbBOM(file);
             ParseStream(file);
         }
