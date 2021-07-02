@@ -9,7 +9,8 @@ using System.IO;
 
 namespace commonItems.UnitTests
 {
-    [CollectionDefinition(nameof(LogTests), DisableParallelization = true)]
+    [Collection("Sequential")]
+    [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class LogTests
     {
         [Fact]
@@ -55,19 +56,6 @@ namespace commonItems.UnitTests
             Console.SetOut(output);
             Log.WriteLine(LogLevel.Progress, "Progress message");
             Assert.Equal(" [PROGRESS] Progress message", output.ToString().TrimEnd());
-        }
-
-
-        [Fact]
-        public void MyTest()
-        {
-            var output = new StringWriter();
-            Console.SetOut(output);
-
-            int number = 5;
-            Log.WriteLine(LogLevel.Warning, "Number: " + 5);
-            
-            Assert.Equal("  [WARNING] Number: 5", output.ToString().TrimEnd());
         }
     }
 }
