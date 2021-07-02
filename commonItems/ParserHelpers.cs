@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace commonItems
 {
-    public class ParserHelpers
+    public static class ParserHelpers
     {
         public static void IgnoreItem(StreamReader sr)
         {
@@ -55,8 +55,8 @@ namespace commonItems
 
         public static void IgnoreAndLogItem(StreamReader sr, string keyword)
         {
-            Log.WriteLine(LogLevel.Debug, "Ignoring keyword: " + keyword);
             IgnoreItem(sr);
+            Log.WriteLine(LogLevel.Debug, "Ignoring keyword: " + keyword);
         }
     }
     public class SingleString : Parser
