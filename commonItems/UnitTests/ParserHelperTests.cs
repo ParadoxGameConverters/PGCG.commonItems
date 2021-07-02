@@ -8,32 +8,28 @@ namespace commonItems.UnitTests {
     public class ParserHelperTests {
         [Fact]
         public void IgnoreItemIgnoresSimpleText() {
-            Stream stream = Parser.GenerateStreamFromString("ignore_me More text");
-            var input = new BufferedReader(stream);
+            var input = new BufferedReader("ignore_me More text");
             ParserHelpers.IgnoreItem(input);
             Assert.Equal("More text", input.ReadToEnd());
         }
 
         [Fact]
         public void IgnoreItemIgnoresAssignedText() {
-            Stream stream = Parser.GenerateStreamFromString("= ignore_me More text");
-            var input = new BufferedReader(stream);
+            var input = new BufferedReader("= ignore_me More text");
             ParserHelpers.IgnoreItem(input);
             Assert.Equal("More text", input.ReadToEnd());
         }
 
         [Fact]
         public void IgnoreItemIgnoresBracedItem() {
-            Stream stream = Parser.GenerateStreamFromString("= { { ignore_me } } More text");
-            var input = new BufferedReader(stream);
+            var input = new BufferedReader("= { { ignore_me } } More text");
             ParserHelpers.IgnoreItem(input);
             Assert.Equal(" More text", input.ReadToEnd());
         }
 
         [Fact]
         public void IgnoreItemIgnoresAssignedBracedItem() {
-            Stream stream = Parser.GenerateStreamFromString("= { { ignore_me } } More text");
-            var input = new BufferedReader(stream);
+            var input = new BufferedReader("= { { ignore_me } } More text");
             ParserHelpers.IgnoreItem(input);
             Assert.Equal(" More text", input.ReadToEnd());
         }
@@ -43,7 +39,7 @@ namespace commonItems.UnitTests {
             public string? value1;
             public string? value2;
             public string? value3;
-            public Test1(BufferedReader BufferedReader) {
+            public Test1(BufferedReader bufferedReader) {
                 RegisterKeyword("key1", sr => {
                     value1 = new SingleString(sr).String;
                 });
@@ -51,7 +47,7 @@ namespace commonItems.UnitTests {
                     value2 = new SingleString(sr).String;
                 });
                 RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
-                ParseStream(BufferedReader);
+                ParseStream(bufferedReader);
             }
         }
 

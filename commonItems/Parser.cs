@@ -49,16 +49,8 @@ namespace commonItems {
                 return match.Success && match.Length == token.Length;
             }
         }
-
-        public static Stream GenerateStreamFromString(string s) {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(s);
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
-        }
-        public static string RemQuotes(string str) {
+        
+        public static string? RemQuotes(string? str) {
             var length = str.Length;
             if (length < 2) {
                 return str;

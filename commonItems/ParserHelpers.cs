@@ -56,7 +56,7 @@ namespace commonItems {
                 String = RemQuotes(token);
             }
         }
-        public string String { get; } = "";
+        public string? String { get; } = "";
     }
 
     public class SingleInt {
@@ -94,7 +94,7 @@ namespace commonItems {
             });
             ParseStream(sr);
         }
-        public List<string> Strings { get; } = new List<string>();
+        public List<string?> Strings { get; } = new List<string?>();
     }
 
     public class IntList : Parser {
