@@ -13,8 +13,7 @@ namespace commonItems {
             {
                 if ((char)sr.Peek() == '{') {
                     next = Parser.GetNextLexeme(sr);
-                } else // don't go further in cases like "type = rgb"
-                  {
+                } else { // don't go further in cases like "type = rgb"
                     return;
                 }
             }
@@ -68,7 +67,7 @@ namespace commonItems {
             }
             Int = theInt;
         }
-        public int Int { get; }
+        public int? Int { get; }
     }
 
     public class SingleDouble {
@@ -80,48 +79,48 @@ namespace commonItems {
             }
             Double = theDouble;
         }
-        public double Double { get; }
+        public double? Double { get; }
     }
 
     public class StringList : Parser {
         public StringList(BufferedReader sr) {
             RegisterKeyword(@"""""", (BufferedReader sr) => { });
-            RegisterRegex(CommonRegexes.StringRegex, (BufferedReader sr, string theString) => {
+            RegisterRegex(CommonRegexes.StringRegex, (sr, theString) => {
                 Strings.Add(theString);
             });
-            RegisterRegex(CommonRegexes.QuotedString, (BufferedReader sr, string theString) => {
+            RegisterRegex(CommonRegexes.QuotedString, (sr, theString) => {
                 Strings.Add(RemQuotes(theString));
             });
             ParseStream(sr);
         }
-        public List<string?> Strings { get; } = new List<string?>();
+        public List<string?> Strings { get; } = new();
     }
 
     public class IntList : Parser {
         public IntList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Integer, (BufferedReader sr, string intString) => {
+            RegisterRegex(CommonRegexes.Integer, (sr, intString) => {
                 Ints.Add(int.Parse(intString));
             });
-            RegisterRegex(CommonRegexes.QuotedInteger, (BufferedReader sr, string intString) => {
+            RegisterRegex(CommonRegexes.QuotedInteger, (sr, intString) => {
                 intString = intString[1..^1];
                 Ints.Add(int.Parse(intString));
             });
             ParseStream(sr);
         }
-        public List<int> Ints { get; } = new List<int>();
+        public List<int> Ints { get; } = new();
     }
 
     public class DoubleList : Parser {
         public DoubleList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Float, (BufferedReader sr, string floatString) => {
+            RegisterRegex(CommonRegexes.Float, (sr, floatString) => {
                 Doubles.Add(double.Parse(floatString));
             });
-            RegisterRegex(CommonRegexes.QuotedFloat, (BufferedReader sr, string floatString) => {
+            RegisterRegex(CommonRegexes.QuotedFloat, (sr, floatString) => {
                 floatString = floatString[1..^1];
                 Doubles.Add(double.Parse(floatString));
             });
             ParseStream(sr);
         }
-        public List<double> Doubles { get; } = new List<double>();
+        public List<double> Doubles { get; } = new();
     }
 }
