@@ -21,14 +21,16 @@ namespace commonItems {
             Console.WriteLine(logLine);
 
             if (!logFileCreated) {
-                System.IO.File.WriteAllText("log.txt", string.Empty);
+                File.WriteAllText("log.txt", string.Empty);
                 logFileCreated = true;
             }
 
-            using StreamWriter logFile = File.AppendText("log.txt");
-            logFile.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            logFile.Write(logLine);
-            logFile.Write(Environment.NewLine);
+            using (StreamWriter logFile = File.AppendText("log.txt"))
+            {
+                logFile.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                logFile.Write(logLine);
+                logFile.Write(Environment.NewLine);
+            }
         }
 
         private static readonly Dictionary<LogLevel, string> logLevelStrings = new() {
