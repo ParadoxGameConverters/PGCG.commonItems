@@ -181,5 +181,47 @@ namespace commonItems.UnitTests {
             var theDoubles = new DoubleList(input);
             Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, theDoubles.Doubles);
         }
+
+        [Fact]
+        public void SingleDoubleGetsDoubleAfterEquals()
+        {
+            var input = new BufferedReader(" = 1.25");
+            var theDouble = new SingleDouble(input);
+            Assert.Equal(1.25, theDouble.Double);
+        }
+
+        [Fact]
+        public void SingleDoubleGetsQuotedDoubleAfterEquals() {
+            var input = new BufferedReader(" = \"1.25\"");
+            var theDouble = new SingleDouble(input);
+            Assert.Equal(1.25, theDouble.Double);
+        }
+
+        [Fact]
+        public void SingleDoubleLogsNotMatchingInput() {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var input = new BufferedReader("= \"345.345 foo\"");
+            var theDouble = new SingleDouble(input);
+            Assert.Equal("  [WARNING] Could not convert string 345.345 foo to double!", output.ToString().TrimEnd());
+            Assert.Equal(0, theDouble.Double);
+        }
+
+        [Fact]
+        public void StringListDefaultsToEmpty()
+        {
+            var input = new BufferedReader(string.Empty);
+            var theStrings = new StringList(input);
+            Assert.Empty(theStrings.Strings);
+        }
+
+        [Fact]
+        public void StringListAddsStrings()
+        {
+            var input = new BufferedReader("foo bar baz");
+            var theStrings = new StringList(input);
+            Assert.Equal(new List<string>{"foo","bar","baz"},theStrings.Strings);
+        }
     }
 }

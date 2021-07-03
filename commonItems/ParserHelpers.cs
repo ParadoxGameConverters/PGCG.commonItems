@@ -74,27 +74,27 @@ namespace commonItems {
     public class SingleDouble {
         public SingleDouble(BufferedReader sr) {
             var doubleString = Parser.RemQuotes(new SingleString(sr).String);
-            if (!double.TryParse(doubleString, out double theDouble)) {
+            if (!double.TryParse(doubleString, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
                 Log.WriteLine(LogLevel.Warning, "Could not convert string " + doubleString + " to double!");
                 return;
             }
             Double = theDouble;
         }
-        public double? Double { get; }
+        public double Double { get; }
     }
 
     public class StringList : Parser {
         public StringList(BufferedReader sr) {
-            RegisterKeyword(@"""""", (BufferedReader sr) => { });
+            RegisterKeyword(@"""""", sr => { });
             RegisterRegex(CommonRegexes.StringRegex, (sr, theString) => {
                 Strings.Add(theString);
             });
             RegisterRegex(CommonRegexes.QuotedString, (sr, theString) => {
-                Strings.Add(RemQuotes(theString));
+                Strings.Add(RemQuotes(theString) ?? string.Empty);
             });
             ParseStream(sr);
         }
-        public List<string?> Strings { get; } = new();
+        public List<string> Strings { get; } = new();
     }
 
     public class IntList : Parser {
@@ -103,7 +103,7 @@ namespace commonItems {
                 Ints.Add(int.Parse(intString));
             });
             RegisterRegex(CommonRegexes.QuotedInteger, (sr, intString) => {
-                intString = intString[1..^1];
+                intString = intString[1..^1]; // remove quotes
                 Ints.Add(int.Parse(intString));
             });
             ParseStream(sr);

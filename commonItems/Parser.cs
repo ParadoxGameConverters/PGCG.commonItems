@@ -50,7 +50,7 @@ namespace commonItems {
             }
         }
         
-        public static string? RemQuotes(string? str) {
+        public static string RemQuotes(string str) {
             var length = str.Length;
             if (length < 2) {
                 return str;
