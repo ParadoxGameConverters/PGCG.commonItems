@@ -15,9 +15,8 @@ namespace commonItems.UnitTests {
         public void BufferedReaderReadsCorrectly() {
             var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
             var reader = new BufferedReader(stream);
-            var chars = new char[2];
-            reader.Read(chars);
-            Assert.Equal("12", new string(chars));
+            var read = reader.Read(2);
+            Assert.Equal("12", read);
             Assert.Equal("345", reader.ReadToEnd());
         }
         [Fact]
@@ -25,8 +24,8 @@ namespace commonItems.UnitTests {
         {
             var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
             var reader = new BufferedReader(stream);
-            var chars = new char[2];
-            reader.Read(chars); // in stream: 345
+            reader.Read(); // in stream: 2345
+            reader.Read(); // in stream: 345
             reader.PushBack('2'); // in stream: 2345
             Assert.Equal("2345", reader.ReadToEnd());
         }
@@ -34,9 +33,8 @@ namespace commonItems.UnitTests {
         public void BufferedReaderThrowsExceptionOnPushBackOfMultipleCharsInARow() {
             var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
             var reader = new BufferedReader(stream);
-            var chars = new char[2];
-            reader.Read(chars); // in stream: 345
-            reader.PushBack('2');
+            reader.Read(2); // in stream: 345
+            reader.PushBack('2'); // in stream: 2345
             Assert.Throws<InvalidOperationException>(()=>reader.PushBack('1'));
         }
     }

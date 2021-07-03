@@ -60,10 +60,10 @@ namespace commonItems {
             }
             return str.Substring(1, length - 2);
         }
-        public static void AbsorbBOM(BufferedReader stream) {
-            var firstChar = stream.Peek();
+        public static void AbsorbBOM(BufferedReader reader) {
+            var firstChar = reader.Peek();
             if (firstChar == '\xEF') {
-                stream.Read(new char[3]); // skip 3 bytes
+                reader.Skip(3); // skip 3 bytes
             }
         }
 
@@ -85,17 +85,17 @@ namespace commonItems {
             registeredDict.Clear();
         }
 
-        private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader stream) {
+        private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
             foreach (var (regex, fun) in registeredDict) {
                 if (regex.Match(token)) {
-                    fun.Execute(stream, token);
+                    fun.Execute(reader, token);
                     return true;
                 }
             }
             if (isTokenQuoted) {
                 foreach (var (regex, fun) in registeredDict) {
                     if (regex.Match(strippedToken)) {
-                        fun.Execute(stream, token);
+                        fun.Execute(reader, token);
                         return true;
                     }
                 }
@@ -103,7 +103,7 @@ namespace commonItems {
             return false;
         }
 
-        public static string GetNextLexeme(BufferedReader stream) {
+        public static string GetNextLexeme(BufferedReader reader) {
             var sb = new StringBuilder();
 
             var inQuotes = false;
@@ -112,14 +112,14 @@ namespace commonItems {
 
             while (true) {
 
-                if (stream.EndOfStream) {
+                if (reader.EndOfStream) {
                     break;
                 }
 
-                var inputChar = (char)stream.Read();
+                var inputChar = (char)reader.Read();
 
                 if (!inQuotes && inputChar == '#') {
-                    stream.ReadLine();
+                    reader.ReadLine();
                     if (sb.Length != 0) {
                         break;
                     }
@@ -128,8 +128,7 @@ namespace commonItems {
                         if (sb.Length != 0) {
                             break;
                         }
-                    } else // fix Paradox' mistake and don't break proper names in half
-                      {
+                    } else { // fix Paradox' mistake and don't break proper names in half
                         sb.Append(' ');
                     }
                 } else if (inputChar == '\"' && !inQuotes && sb.Length == 0) {
@@ -156,21 +155,21 @@ namespace commonItems {
                     if (sb.Length == 0) {
                         sb.Append(inputChar);
                     } else {
-                        stream.PushBack('{');
+                        reader.PushBack('{');
                     }
                     break;
                 } else if (!inQuotes && !inLiteralQuote && inputChar == '}') {
                     if (sb.Length == 0) {
                         sb.Append(inputChar);
                     } else {
-                        stream.PushBack('}');
+                        reader.PushBack('}');
                     }
                     break;
                 } else if (!inQuotes && !inLiteralQuote && inputChar == '=') {
                     if (sb.Length == 0) {
                         sb.Append(inputChar);
                     } else {
-                        stream.PushBack('=');
+                        reader.PushBack('=');
                     }
                     break;
                 } else {
@@ -182,36 +181,36 @@ namespace commonItems {
             return sb.ToString();
         }
 
-        public static string? GetNextTokenWithoutMatching(BufferedReader sr) {
+        public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
             string? toReturn = null;
             var gotToken = false;
             while (!gotToken) {
-                if (sr.EndOfStream) {
+                if (reader.EndOfStream) {
                     return null;
                 }
-                toReturn = GetNextLexeme(sr);
+                toReturn = GetNextLexeme(reader);
                 gotToken = true;
             }
 
             return toReturn;
         }
 
-        public string? GetNextToken(BufferedReader stream) {
+        public string? GetNextToken(BufferedReader reader) {
             var sb = new StringBuilder();
 
             var gotToken = false;
             while (!gotToken) {
-                if (stream.EndOfStream) {
+                if (reader.EndOfStream) {
                     return null;
                 }
 
                 sb.Length = 0;
-                sb.Append(GetNextLexeme(stream));
+                sb.Append(GetNextLexeme(reader));
 
                 var strippedToken = RemQuotes(sb.ToString());
                 var isTokenQuoted = (strippedToken.Length < sb.ToString().Length);
 
-                var matched = TryToMatch(sb.ToString(), strippedToken, isTokenQuoted, stream);
+                var matched = TryToMatch(sb.ToString(), strippedToken, isTokenQuoted, reader);
 
                 if (!matched) {
                     gotToken = true;
@@ -220,13 +219,13 @@ namespace commonItems {
             return sb.Length == 0 ? null : sb.ToString();
         }
 
-        public void ParseStream(BufferedReader stream) {
+        public void ParseStream(BufferedReader reader) {
             var braceDepth = 0;
             var value = false; // tracker to indicate whether we reached the value part of key=value pair
             var tokensSoFar = new StringBuilder();
 
             while (true) {
-                var token = GetNextToken(stream);
+                var token = GetNextToken(reader);
                 if (token != null) {
                     tokensSoFar.Append(token);
                     if (token == "=") {
@@ -237,7 +236,7 @@ namespace commonItems {
                             // value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
                             // manually fast-forward to brace-lvl 0 and die.
                             while (braceDepth != 0) {
-                                var inputChar = (char)stream.Read();
+                                var inputChar = (char)reader.Read();
                                 switch (inputChar) {
                                     case '{':
                                         ++braceDepth;
@@ -278,7 +277,7 @@ namespace commonItems {
                 Log.WriteLine(LogLevel.Error, "Could not open " + filename + " for parsing");
                 return;
             }
-            var file = (BufferedReader)File.OpenText(filename);
+            var file = new BufferedReader(File.OpenText(filename));
             AbsorbBOM(file);
             ParseStream(file);
         }
