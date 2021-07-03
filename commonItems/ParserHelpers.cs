@@ -85,7 +85,7 @@ namespace commonItems {
 
     public class StringList : Parser {
         public StringList(BufferedReader sr) {
-            RegisterKeyword(@"""""", sr => { });
+            RegisterKeyword("\"\"", sr => { });
             RegisterRegex(CommonRegexes.StringRegex, (sr, theString) => {
                 Strings.Add(theString);
             });

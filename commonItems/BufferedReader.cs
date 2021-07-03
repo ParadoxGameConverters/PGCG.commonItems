@@ -22,6 +22,11 @@ namespace commonItems {
             return ch;
         }
 
+        public override string ReadToEnd()
+        {
+            return Convert.ToChar(Read()) + base.ReadToEnd();
+        }
+
         public void PushBack(char ch)  // char, don't allow Pushback(-1)
         {
             if (lastChar >= 0)
