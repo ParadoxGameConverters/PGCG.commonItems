@@ -56,7 +56,7 @@ namespace commonItems {
                 String = RemQuotes(token);
             }
         }
-        public string? String { get; } = "";
+        public string String { get; } = "";
     }
 
     public class SingleInt {

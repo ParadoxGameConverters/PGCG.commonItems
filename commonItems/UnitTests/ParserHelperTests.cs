@@ -223,5 +223,121 @@ namespace commonItems.UnitTests {
             var theStrings = new StringList(input);
             Assert.Equal(new List<string>{"foo","bar","baz"},theStrings.Strings);
         }
+
+        [Fact]
+        public void StringListAddsQuotedStrings() {
+            var input = new BufferedReader("\"foo\" \"bar\" \"baz\"");
+            var theStrings = new StringList(input);
+            Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
+        }
+
+        [Fact]
+        public void StringListAddsStringsFromBracedBlock() {
+            var input = new BufferedReader(" = { foo bar baz } qux");
+            var theStrings = new StringList(input);
+            Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
+        }
+
+        [Fact]
+        public void SingleStringGetsStringAfterEquals() {
+            var input = new BufferedReader(" = foo");
+            var theString = new SingleString(input);
+            Assert.Equal("foo", theString.String);
+        }
+
+        [Fact]
+        public void SingleStringGetsQuotedStringAfterEquals() {
+            var input = new BufferedReader(" = \"foo\"");
+            var theString = new SingleString(input);
+            Assert.Equal("foo", theString.String);
+        }
+
+        private class TestClass : Parser
+        {
+            public TestClass(BufferedReader reader)
+            {
+                RegisterKeyword("test", reader =>
+                {
+                    var testStr = new SingleString(reader);
+                    test = testStr.String.Equals("yes");
+                });
+                ParseStream(reader);
+            }
+            public bool test = false;
+        }
+
+        private class WrapperClass : Parser
+        {
+            public WrapperClass(BufferedReader reader)
+            {
+                RegisterRegex("[a-z]", (reader, theKey) =>
+                {
+                    var newTest = new TestClass(reader);
+                    theMap[theKey] = newTest.test;
+                });
+                ParseStream(reader);
+            }
+            public readonly Dictionary<string, bool> theMap = new();
+        }
+
+        [Fact]
+        public void ParseStreamSkipsMissingKeyInBraces()
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var reader = new BufferedReader(@"a = { test = yes }\n
+                b = { = yes }\n
+                c = { test = yes }");
+            var wrapper = new WrapperClass(reader);
+            Assert.True(wrapper.theMap["a"]);
+            Assert.False(wrapper.theMap["b"]);
+            Assert.True(wrapper.theMap["c"]);
+        }
+
+        [Fact]
+        public void IgnoreItemIgnoresSimpleColorWithColorSpace()
+        {
+            var reader1 = new BufferedReader("rgb {6 7 15} More text");
+            var reader2 = new BufferedReader("hsv {0.1 1.0 0.6} More text");
+            ParserHelpers.IgnoreItem(reader1);
+            ParserHelpers.IgnoreItem(reader2);
+
+            Assert.Equal(" More text", reader1.ReadToEnd());
+            Assert.Equal(" More text", reader2.ReadToEnd());
+        }
+
+        [Fact]
+        public void IgnoreItemIgnoresAssignedColorWithColorSpace() {
+            var reader1 = new BufferedReader("= rgb {6 7 15} More text");
+            var reader2 = new BufferedReader("= hsv {0.1 1.0 0.6} More text");
+            ParserHelpers.IgnoreItem(reader1);
+            ParserHelpers.IgnoreItem(reader2);
+
+            Assert.Equal(" More text", reader1.ReadToEnd());
+            Assert.Equal(" More text", reader2.ReadToEnd());
+        }
+
+        [Fact]
+        public void IgnoreItemIgnoresRgbAndHsvStringsWithoutBreakingParsing() {
+            var reader1 = new BufferedReader("= rgb next_parameter = 69 More text");
+            var reader2 = new BufferedReader("= hsv next_parameter = 420 More text");
+            ParserHelpers.IgnoreItem(reader1);
+            ParserHelpers.IgnoreItem(reader2);
+
+            Assert.Equal("next_parameter = 69 More text", reader1.ReadToEnd());
+            Assert.Equal("next_parameter = 420 More text", reader2.ReadToEnd());
+        }
+
+        [Fact]
+        public void IgnoreItemIgnoresQuotedRgbAndHsvStringsWithoutBreakingParsing() {
+            var reader1 = new BufferedReader("= \"rgb\" next_parameter = 69 More text");
+            var reader2 = new BufferedReader("= \"hsv\" next_parameter = 420 More text");
+            ParserHelpers.IgnoreItem(reader1);
+            ParserHelpers.IgnoreItem(reader2);
+
+            Assert.Equal(" next_parameter = 69 More text", reader1.ReadToEnd());
+            Assert.Equal(" next_parameter = 420 More text", reader2.ReadToEnd());
+        }
     }
 }
