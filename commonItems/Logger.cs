@@ -12,9 +12,9 @@ namespace commonItems {
         Progress
     }
 
-    public static class Log {
+    public static class Logger {
         private static bool logFileCreated = false;
-        public static void WriteLine(LogLevel level, string message) {
+        public static void Log(LogLevel level, string message) {
             StringBuilder logLine = new();
             logLine.Append(logLevelStrings[level]);
             logLine.Append(message);

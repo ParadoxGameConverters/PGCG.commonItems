@@ -15,7 +15,7 @@ namespace commonItems.UnitTests {
         public void ErrorMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Log.WriteLine(LogLevel.Error, "Error message");
+            Logger.Log(LogLevel.Error, "Error message");
             Assert.Equal("    [ERROR] Error message", output.ToString().TrimEnd());
         }
 
@@ -23,7 +23,7 @@ namespace commonItems.UnitTests {
         public void WarningMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Log.WriteLine(LogLevel.Warning, "Warning message");
+            Logger.Log(LogLevel.Warning, "Warning message");
             Assert.Equal("  [WARNING] Warning message", output.ToString().TrimEnd());
         }
 
@@ -31,7 +31,7 @@ namespace commonItems.UnitTests {
         public void InfoMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Log.WriteLine(LogLevel.Info, "Info message");
+            Logger.Log(LogLevel.Info, "Info message");
             Assert.Equal("     [INFO] Info message", output.ToString().TrimEnd());
         }
 
@@ -39,7 +39,7 @@ namespace commonItems.UnitTests {
         public void DebugMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Log.WriteLine(LogLevel.Debug, "Debug message");
+            Logger.Log(LogLevel.Debug, "Debug message");
             Assert.Equal("    [DEBUG]         Debug message", output.ToString().TrimEnd());
         }
 
@@ -47,7 +47,7 @@ namespace commonItems.UnitTests {
         public void ProgressMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Log.WriteLine(LogLevel.Progress, "Progress message");
+            Logger.Log(LogLevel.Progress, "Progress message");
             Assert.Equal(" [PROGRESS] Progress message", output.ToString().TrimEnd());
         }
     }

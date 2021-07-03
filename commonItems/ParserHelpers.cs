@@ -43,7 +43,7 @@ namespace commonItems {
 
         public static void IgnoreAndLogItem(BufferedReader sr, string keyword) {
             IgnoreItem(sr);
-            Log.WriteLine(LogLevel.Debug, "Ignoring keyword: " + keyword);
+            Logger.Log(LogLevel.Debug, "Ignoring keyword: " + keyword);
         }
     }
     public class SingleString : Parser {
@@ -51,7 +51,7 @@ namespace commonItems {
             GetNextTokenWithoutMatching(sr); // remove equals
             var token = GetNextTokenWithoutMatching(sr);
             if (token == null) {
-                Log.WriteLine(LogLevel.Error, "SingleString: next token not found!"); ;
+                Logger.Log(LogLevel.Error, "SingleString: next token not found!"); ;
             } else {
                 String = RemQuotes(token);
             }
@@ -63,7 +63,7 @@ namespace commonItems {
         public SingleInt(BufferedReader sr) {
             var intString = Parser.RemQuotes(new SingleString(sr).String);
             if (!int.TryParse(intString, out int theInt)) {
-                Log.WriteLine(LogLevel.Warning, "Could not convert string " + intString + " to int!");
+                Logger.Log(LogLevel.Warning, "Could not convert string " + intString + " to int!");
                 return;
             }
             Int = theInt;
@@ -75,7 +75,7 @@ namespace commonItems {
         public SingleDouble(BufferedReader sr) {
             var doubleString = Parser.RemQuotes(new SingleString(sr).String);
             if (!double.TryParse(doubleString, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
-                Log.WriteLine(LogLevel.Warning, "Could not convert string " + doubleString + " to double!");
+                Logger.Log(LogLevel.Warning, "Could not convert string " + doubleString + " to double!");
                 return;
             }
             Double = theDouble;

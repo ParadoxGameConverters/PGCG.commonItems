@@ -253,7 +253,7 @@ namespace commonItems {
                                         }
                                 }
                             }
-                            Log.WriteLine(LogLevel.Warning, "Broken token syntax at " + tokensSoFar.ToString());
+                            Logger.Log(LogLevel.Warning, "Broken token syntax at " + tokensSoFar.ToString());
                             return;
                         }
                     } else if (token == "{") {
@@ -264,7 +264,7 @@ namespace commonItems {
                             break;
                         }
                     } else {
-                        Log.WriteLine(LogLevel.Warning, "Unknown token while parsing stream: " + token);
+                        Logger.Log(LogLevel.Warning, "Unknown token while parsing stream: " + token);
                     }
                 } else {
                     break;
@@ -274,7 +274,7 @@ namespace commonItems {
 
         public void ParseFile(string filename) {
             if (!File.Exists(filename)) {
-                Log.WriteLine(LogLevel.Error, "Could not open " + filename + " for parsing");
+                Logger.Log(LogLevel.Error, "Could not open " + filename + " for parsing");
                 return;
             }
             var file = new BufferedReader(File.OpenText(filename));
