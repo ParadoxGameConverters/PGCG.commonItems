@@ -3,8 +3,12 @@ using System.IO;
 using System.Text;
 
 namespace commonItems {
+    /// <summary>
+    /// This is a derivation of StreamReader that allows for returning one character earlier in a stream.
+    /// Reading may not work correctly when using methods not overridden below.
+    /// http://web.archive.org/web/20210702221522/https://stackoverflow.com/questions/7049401/c-sharp-roll-back-streamreader-1-character/7050430#7050430
+    /// </summary>
     public class BufferedReader : StreamReader {
-        // http://web.archive.org/web/20210702221522/https://stackoverflow.com/questions/7049401/c-sharp-roll-back-streamreader-1-character/7050430#7050430
         public BufferedReader(Stream stream) : base(stream) { }
 
         public BufferedReader(string input) : base(new MemoryStream(Encoding.UTF8.GetBytes(input))) {}
