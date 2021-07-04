@@ -176,5 +176,28 @@ namespace commonItems.UnitTests {
             Assert.Equal("\"this = is a silly { key\t} \"", test.key);
             Assert.Equal("value", test.value);
         }
+
+        [Fact]
+        public void GetNextLexemeSkipsComments() {
+            var reader = new BufferedReader("key1 = value1#this is a comment\n key2=value2");
+            var lexeme1 = Parser.GetNextLexeme(reader);
+            Assert.Equal("key1", lexeme1);
+            var lexeme2 = Parser.GetNextLexeme(reader);
+            Assert.Equal("=", lexeme2);
+            var lexeme3 = Parser.GetNextLexeme(reader);
+            Assert.Equal("value1", lexeme3);
+            var lexeme4 = Parser.GetNextLexeme(reader);
+            Assert.Equal("key2", lexeme4);
+        }
+
+        [Fact]
+        public void NewLineEndsLexeme()
+        {
+            var reader = new BufferedReader("lexe\nme");
+            var lexeme = Parser.GetNextLexeme(reader);
+            Assert.Equal("lexe", lexeme);
+            lexeme = Parser.GetNextLexeme(reader);
+            Assert.Equal("me", lexeme);
+        }
     }
 }
