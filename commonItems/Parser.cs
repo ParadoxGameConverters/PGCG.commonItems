@@ -195,7 +195,7 @@ namespace commonItems {
                     return null;
                 }
 
-                sb.Length = 0;
+                sb.Clear();
                 sb.Append(GetNextLexeme(reader));
 
                 var strippedToken = RemQuotes(sb.ToString());
@@ -220,8 +220,9 @@ namespace commonItems {
                 if (token != null) {
                     tokensSoFar.Append(token);
                     if (token == "=") {
+                        // swapping to value part.
                         if (!value) {
-                            value = true; // swapping to value part.
+                            value = true;
                             continue;
                         } else { // leaving else to be noticeable.
                             // value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
