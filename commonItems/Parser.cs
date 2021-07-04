@@ -220,8 +220,8 @@ namespace commonItems {
                 if (token != null) {
                     tokensSoFar.Append(token);
                     if (token == "=") {
+                        // swapping to value part.
                         if (!value) {
-                            // swapping to value part.
                             value = true;
                             continue;
                         }
