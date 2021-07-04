@@ -181,18 +181,9 @@ namespace commonItems {
             return sb.ToString();
         }
 
-        public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
-            string? toReturn = null;
-            var gotToken = false;
-            while (!gotToken) {
-                if (reader.EndOfStream) {
-                    return null;
-                }
-                toReturn = GetNextLexeme(reader);
-                gotToken = true;
-            }
-
-            return toReturn;
+        public static string? GetNextTokenWithoutMatching(BufferedReader reader)
+        {
+            return reader.EndOfStream ? null : GetNextLexeme(reader);
         }
 
         public string? GetNextToken(BufferedReader reader) {
