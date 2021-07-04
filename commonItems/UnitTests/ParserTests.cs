@@ -206,5 +206,15 @@ namespace commonItems.UnitTests {
             var lexeme = Parser.GetNextLexeme(reader);
             Assert.Equal("lexeme", lexeme);
         }
+
+        [Fact]
+        public void FileNotFoundIsLogged()
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            new Parser().ParseFile("missingFile.txt");
+            Assert.Equal("    [ERROR] Could not open missingFile.txt for parsing", output.ToString().TrimEnd());
+        }
     }
 }
