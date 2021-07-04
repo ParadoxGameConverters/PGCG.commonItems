@@ -197,7 +197,7 @@ namespace commonItems.UnitTests {
             var lexeme = Parser.GetNextLexeme(reader);
             Assert.Equal("lexeme", lexeme);
             lexeme = Parser.GetNextLexeme(reader);
-            Assert.Equal("nlexeme2", lexeme);
+            Assert.Equal("lexeme2", lexeme);
         }
 
         [Fact]
