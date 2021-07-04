@@ -276,9 +276,9 @@ namespace commonItems {
                 Logger.Log(LogLevel.Error, "Could not open " + filename + " for parsing");
                 return;
             }
-            var file = new BufferedReader(File.OpenText(filename));
-            AbsorbBOM(file);
-            ParseStream(file);
+            var reader = new BufferedReader(File.OpenText(filename));
+            AbsorbBOM(reader);
+            ParseStream(reader);
         }
 
         private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();

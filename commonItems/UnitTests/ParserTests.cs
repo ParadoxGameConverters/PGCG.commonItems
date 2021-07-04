@@ -193,11 +193,18 @@ namespace commonItems.UnitTests {
         [Fact]
         public void NewLineEndsLexeme()
         {
-            var reader = new BufferedReader("lexe\nme");
+            var reader = new BufferedReader("lexeme\nlexeme2");
             var lexeme = Parser.GetNextLexeme(reader);
-            Assert.Equal("lexe", lexeme);
+            Assert.Equal("lexeme", lexeme);
             lexeme = Parser.GetNextLexeme(reader);
-            Assert.Equal("me", lexeme);
+            Assert.Equal("nlexeme2", lexeme);
+        }
+
+        [Fact]
+        public void OpeningBraceEndsLexeme() {
+            var reader = new BufferedReader("lexeme{stuff}");
+            var lexeme = Parser.GetNextLexeme(reader);
+            Assert.Equal("lexeme", lexeme);
         }
     }
 }
