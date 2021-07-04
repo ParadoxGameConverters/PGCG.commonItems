@@ -32,19 +32,19 @@ namespace commonItems {
 
     public class Parser {
         private abstract class RegisteredKeywordOrRegex {
-            public abstract bool Match(string token);
+            public abstract bool Matches(string token);
         }
         private class RegisteredKeyword : RegisteredKeywordOrRegex {
             private readonly string keyword;
             public RegisteredKeyword(string keyword) {
                 this.keyword = keyword;
             }
-            public override bool Match(string token) { return keyword == token; }
+            public override bool Matches(string token) { return keyword == token; }
         }
         private class RegisteredRegex : RegisteredKeywordOrRegex {
             private readonly Regex regex;
             public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
-            public override bool Match(string token) {
+            public override bool Matches(string token) {
                 var match = regex.Match(token);
                 return match.Success && match.Length == token.Length;
             }
@@ -69,32 +69,32 @@ namespace commonItems {
 
 
         public void RegisterKeyword(string keyword, Del del) {
-            registeredDict.Add(new RegisteredKeyword(keyword), new TwoArgDelegate(del));
+            registeredRules.Add(new RegisteredKeyword(keyword), new TwoArgDelegate(del));
         }
         public void RegisterKeyword(string keyword, SimpleDel del) {
-            registeredDict.Add(new RegisteredKeyword(keyword), new OneArgDelegate(del));
+            registeredRules.Add(new RegisteredKeyword(keyword), new OneArgDelegate(del));
         }
         public void RegisterRegex(string keyword, Del del) {
-            registeredDict.Add(new RegisteredRegex(keyword), new TwoArgDelegate(del));
+            registeredRules.Add(new RegisteredRegex(keyword), new TwoArgDelegate(del));
         }
         public void RegisterRegex(string keyword, SimpleDel del) {
-            registeredDict.Add(new RegisteredRegex(keyword), new OneArgDelegate(del));
+            registeredRules.Add(new RegisteredRegex(keyword), new OneArgDelegate(del));
         }
 
         public void ClearRegisteredDict() {
-            registeredDict.Clear();
+            registeredRules.Clear();
         }
 
         private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
-            foreach (var (regex, fun) in registeredDict) {
-                if (regex.Match(token)) {
+            foreach (var (rule, fun) in registeredRules) {
+                if (rule.Matches(token)) {
                     fun.Execute(reader, token);
                     return true;
                 }
             }
             if (isTokenQuoted) {
-                foreach (var (regex, fun) in registeredDict) {
-                    if (regex.Match(strippedToken)) {
+                foreach (var (rule, fun) in registeredRules) {
+                    if (rule.Matches(strippedToken)) {
                         fun.Execute(reader, token);
                         return true;
                     }
@@ -282,6 +282,6 @@ namespace commonItems {
             ParseStream(file);
         }
 
-        private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredDict = new();
+        private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();
     }
 }

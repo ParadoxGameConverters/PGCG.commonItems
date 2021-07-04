@@ -48,7 +48,9 @@ namespace commonItems {
     }
     public class SingleString : Parser {
         public SingleString(BufferedReader sr) {
-            GetNextTokenWithoutMatching(sr); // remove equals
+            // remove equals
+            GetNextTokenWithoutMatching(sr);
+
             var token = GetNextTokenWithoutMatching(sr);
             if (token == null) {
                 Logger.Log(LogLevel.Error, "SingleString: next token not found!"); ;
@@ -90,7 +92,7 @@ namespace commonItems {
                 Strings.Add(theString);
             });
             RegisterRegex(CommonRegexes.QuotedString, (sr, theString) => {
-                Strings.Add(RemQuotes(theString) ?? string.Empty);
+                Strings.Add(RemQuotes(theString));
             });
             ParseStream(sr);
         }
@@ -103,7 +105,8 @@ namespace commonItems {
                 Ints.Add(int.Parse(intString));
             });
             RegisterRegex(CommonRegexes.QuotedInteger, (sr, intString) => {
-                intString = intString[1..^1]; // remove quotes
+                // remove quotes
+                intString = intString[1..^1];
                 Ints.Add(int.Parse(intString));
             });
             ParseStream(sr);
@@ -117,7 +120,8 @@ namespace commonItems {
                 Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
             });
             RegisterRegex(CommonRegexes.QuotedFloat, (sr, floatString) => {
-                floatString = floatString[1..^1]; // remove quotes
+                // remove quotes
+                floatString = floatString[1..^1];
                 Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
             });
             ParseStream(sr);
