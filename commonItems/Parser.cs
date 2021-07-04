@@ -220,31 +220,16 @@ namespace commonItems {
                 if (token != null) {
                     tokensSoFar.Append(token);
                     if (token == "=") {
-                        // swapping to value part.
                         if (!value) {
+                            // swapping to value part.
                             value = true;
                             continue;
-                        } else { // leaving else to be noticeable.
+                        }
+                        // leaving else to be noticeable.
+                        else {
                             // value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
                             // manually fast-forward to brace-lvl 0 and die.
-                            while (braceDepth != 0) {
-                                var inputChar = (char)reader.Read();
-                                switch (inputChar) {
-                                    case '{':
-                                        ++braceDepth;
-                                        break;
-                                    case '}':
-                                        --braceDepth;
-                                        break;
-                                    default: {
-                                            if (!char.IsWhiteSpace(inputChar)) {
-                                                tokensSoFar.Append(inputChar);
-                                            }
-
-                                            break;
-                                        }
-                                }
-                            }
+                            FastForwardTo0Depth(ref reader, ref braceDepth, ref tokensSoFar);
                             Logger.Log(LogLevel.Warning, "Broken token syntax at " + tokensSoFar.ToString());
                             return;
                         }
@@ -260,6 +245,28 @@ namespace commonItems {
                     }
                 } else {
                     break;
+                }
+            }
+        }
+
+        public static void FastForwardTo0Depth(ref BufferedReader reader, ref int braceDepth, ref StringBuilder tokensSoFar)
+        {
+            while (braceDepth != 0) {
+                var inputChar = (char)reader.Read();
+                switch (inputChar) {
+                    case '{':
+                        ++braceDepth;
+                        break;
+                    case '}':
+                        --braceDepth;
+                        break;
+                    default: {
+                        if (!char.IsWhiteSpace(inputChar)) {
+                            tokensSoFar.Append(inputChar);
+                        }
+
+                        break;
+                    }
                 }
             }
         }
