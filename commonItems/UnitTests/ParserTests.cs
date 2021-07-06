@@ -216,5 +216,26 @@ namespace commonItems.UnitTests {
             new Parser().ParseFile("missingFile.txt");
             Assert.Equal("    [ERROR] Could not open missingFile.txt for parsing", output.ToString().TrimEnd());
         }
+
+        private class FileTest : Parser
+        {
+            public string? value;
+            public FileTest(string filename)
+            {
+                RegisterKeyword("key1", (sr) =>
+                {
+                    value = new SingleString(sr).String;
+                });
+                ParseFile(filename);
+            }
+        }
+
+        [Fact]
+        public void ParserCanParseFiles()
+        {
+            const string filename = "UnitTests/TestFiles/keyValuePair.txt";
+            var value = new FileTest(filename).value;
+            Assert.Equal("value1", value);
+        }
     }
 }

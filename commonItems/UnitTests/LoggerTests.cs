@@ -10,7 +10,7 @@ using System.IO;
 namespace commonItems.UnitTests {
     [Collection("Sequential")]
     [CollectionDefinition("Sequential", DisableParallelization = true)]
-    public class LogTests {
+    public class LoggerTests {
         [Fact]
         public void ErrorMessagesLogged() {
             var output = new StringWriter();
