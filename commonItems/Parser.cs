@@ -81,7 +81,7 @@ namespace commonItems {
             registeredRules.Add(new RegisteredRegex(keyword), new OneArgDelegate(del));
         }
 
-        public void ClearRegisteredDict() {
+        public void ClearRegisteredRules() {
             registeredRules.Clear();
         }
 

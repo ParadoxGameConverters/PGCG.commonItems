@@ -237,5 +237,19 @@ namespace commonItems.UnitTests {
             var value = new FileTest(filename).value;
             Assert.Equal("value1", value);
         }
+
+        [Fact]
+        public void RegisteredRulesCanBeCleared() {
+            const string filename = "UnitTests/TestFiles/keyValuePair.txt";
+            var parser = new FileTest(filename);
+            var value = parser.value;
+            Assert.Equal("value1", value);
+
+            parser.value = null;
+            parser.ClearRegisteredRules();
+            parser.ParseFile(filename);
+            value = parser.value;
+            Assert.Null(value);
+        }
     }
 }
