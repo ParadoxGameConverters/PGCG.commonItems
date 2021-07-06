@@ -36,6 +36,13 @@ namespace commonItems.UnitTests {
             Assert.Equal(" More text", input.ReadToEnd());
         }
 
+        [Fact]
+        public void IgnoreItemIgnoresUnclosedBlockInTheEnd() {
+            var reader = new BufferedReader("= { ignore_me=");
+            ParserHelpers.IgnoreItem(reader);
+            Assert.True(reader.EndOfStream);
+        }
+
 
         private class Test1 : Parser {
             public string? value1;
@@ -250,6 +257,16 @@ namespace commonItems.UnitTests {
             var input = new BufferedReader(" = \"foo\"");
             var theString = new SingleString(input);
             Assert.Equal("foo", theString.String);
+        }
+
+        [Fact]
+        public void SingleStringLogsErrorOnTokenNotFound()
+        {
+            var output = new StringWriter();
+            Console.SetOut(output);
+            var reader = new BufferedReader(" =");
+            var theString = new SingleString(reader).String;
+            Assert.Equal("    [ERROR] SingleString: next token not found!", output.ToString().TrimEnd());
         }
 
         private class TestClass : Parser
