@@ -37,5 +37,12 @@ namespace commonItems.UnitTests {
             reader.PushBack('2'); // in stream: 2345
             Assert.Throws<InvalidOperationException>(()=>reader.PushBack('1'));
         }
+        [Fact]
+        public void BufferedReaderBreaksReadingOnStreamEnd() {
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
+            var reader = new BufferedReader(stream);
+            var read = reader.Read(7);
+            Assert.Equal("12345", read);
+        }
     }
 }

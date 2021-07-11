@@ -49,6 +49,15 @@ namespace commonItems.UnitTests {
             Assert.Equal("value", test.value);
         }
 
+        [Fact]
+        public void WrongQuotedKeywordsAreMatched()
+        {
+            var bufferedReader = new BufferedReader("\"key_wrong\" = value");
+            var test = new Test(bufferedReader);
+            Assert.Null(test.key);
+            Assert.Null(test.value);
+        }
+
         private class Test2 : Parser {
             public string key;
             public string? value;
@@ -176,6 +185,26 @@ namespace commonItems.UnitTests {
             Assert.Equal("\"this = is a silly { key\t} \"", test.key);
             Assert.Equal("value", test.value);
         }
+        
+        private class Test6 : Parser
+        {
+            public uint keyCount = 0;
+            public Test6(BufferedReader bufferedReader) {
+                RegisterRegex(CommonRegexes.Catchall, sr =>
+                {
+                    ++keyCount;
+                    ParserHelpers.IgnoreItem(sr);
+                });
+                ParseStream(bufferedReader);
+            }
+        };
+
+        [Fact]
+        public void SimpleDelegateRegexCanBeRegistered() {
+            var bufferedReader = new BufferedReader("key = value key2 = value2 key3 = value3");
+            var test = new Test6(bufferedReader);
+            Assert.Equal((uint)3, test.keyCount);
+        }
 
         [Fact]
         public void GetNextLexemeSkipsComments() {
@@ -250,6 +279,29 @@ namespace commonItems.UnitTests {
             parser.ParseFile(filename);
             value = parser.value;
             Assert.Null(value);
+        }
+
+        private class Test7 : Parser {
+            public string? key;
+            public string? value;
+            public string? broken;
+            public Test7(BufferedReader bufferedReader) {
+                RegisterKeyword("key", (sr, k) => {
+                    key = k;
+                    value = new SingleString(sr).String;
+                });
+                RegisterKeyword("broken", (sr, k) => { broken = k; });
+                ParseStream(bufferedReader);
+            }
+        };
+
+        [Fact]
+        public void FastForwardTo0DepthWorksWithOpeningBrackets() {
+            var bufferedReader = new BufferedReader("= { key = value = { broken } }");
+            var test = new Test7(bufferedReader);
+            Assert.Equal("key", test.key);
+            Assert.Equal("value", test.value);
+            Assert.Null(test.broken);
         }
     }
 }
