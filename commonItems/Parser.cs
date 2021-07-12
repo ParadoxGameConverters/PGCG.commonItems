@@ -50,16 +50,6 @@ namespace commonItems {
             }
         }
         
-        public static string RemQuotes(string str) {
-            var length = str.Length;
-            if (length < 2) {
-                return str;
-            }
-            if (!str.StartsWith('"') || !str.EndsWith('"')) {
-                return str;
-            }
-            return str.Substring(1, length - 2);
-        }
         public static void AbsorbBOM(BufferedReader reader) {
             var firstChar = reader.Peek();
             if (firstChar == '\xEF') {
@@ -198,7 +188,7 @@ namespace commonItems {
                 sb.Clear();
                 sb.Append(GetNextLexeme(reader));
 
-                var strippedToken = RemQuotes(sb.ToString());
+                var strippedToken = StringUtils.RemQuotes(sb.ToString());
                 var isTokenQuoted = (strippedToken.Length < sb.ToString().Length);
 
                 var matched = TryToMatch(sb.ToString(), strippedToken, isTokenQuoted, reader);
