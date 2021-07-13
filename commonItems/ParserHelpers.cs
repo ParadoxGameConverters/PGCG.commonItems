@@ -55,7 +55,7 @@ namespace commonItems {
             if (token == null) {
                 Logger.Log(LogLevel.Error, "SingleString: next token not found!"); ;
             } else {
-                String = RemQuotes(token);
+                String = StringUtils.RemQuotes(token);
             }
         }
         public string String { get; } = "";
@@ -63,7 +63,7 @@ namespace commonItems {
 
     public class SingleInt {
         public SingleInt(BufferedReader sr) {
-            var intString = Parser.RemQuotes(new SingleString(sr).String);
+            var intString = StringUtils.RemQuotes(new SingleString(sr).String);
             if (!int.TryParse(intString, out int theInt)) {
                 Logger.Log(LogLevel.Warning, "Could not convert string " + intString + " to int!");
                 return;
@@ -75,7 +75,7 @@ namespace commonItems {
 
     public class SingleDouble {
         public SingleDouble(BufferedReader sr) {
-            var doubleString = Parser.RemQuotes(new SingleString(sr).String);
+            var doubleString = StringUtils.RemQuotes(new SingleString(sr).String);
             if (!double.TryParse(doubleString, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
                 Logger.Log(LogLevel.Warning, "Could not convert string " + doubleString + " to double!");
                 return;
@@ -92,7 +92,7 @@ namespace commonItems {
                 Strings.Add(theString);
             });
             RegisterRegex(CommonRegexes.QuotedString, (sr, theString) => {
-                Strings.Add(RemQuotes(theString));
+                Strings.Add(StringUtils.RemQuotes(theString));
             });
             ParseStream(sr);
         }
