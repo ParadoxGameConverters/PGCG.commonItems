@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace commonItems {
     /// <summary>
     /// This is a wrapper for StreamReader with a limited set of methods
-    /// that allows for returning one character earlier in a stream.
-    /// Idea for the buffer implementation was borrowed from:
+    /// that allows for returning multiple characters earlier in a stream.
+    /// Idea for the buffer implementation was initially borrowed from:
     /// http://web.archive.org/web/20210702221522/https://stackoverflow.com/questions/7049401/c-sharp-roll-back-streamreader-1-character/7050430#7050430
+    /// but later replaced with a stack to allows 
     /// </summary>
     public class BufferedReader {
         private readonly StreamReader streamReader;
@@ -20,13 +22,12 @@ namespace commonItems {
             streamReader = new StreamReader(stream);
         }
 
-        private int lastChar = -1;
+        private Stack<int> characterStack = new();
+
         public int Read() {
             int ch;
-
-            if (lastChar >= 0) {
-                ch = lastChar;
-                lastChar = -1;
+            if (characterStack.TryPop(out int character)) {
+                ch = character;
             } else {
                 ch = streamReader.Read();  // could be -1 
             }
@@ -53,11 +54,16 @@ namespace commonItems {
         }
 
         public string ReadToEnd() {
-            return (char)Read() + streamReader.ReadToEnd();
+            var sb = new StringBuilder();
+            while (characterStack.TryPop(out int character)) {
+                sb.Append((char)character);
+            }
+            sb.Append(streamReader.ReadToEnd());
+            return sb.ToString();
         }
 
         public int Peek() {
-            return lastChar >= 0 ? lastChar : streamReader.Peek();
+            return characterStack.TryPeek(out int character) ? character : streamReader.Peek();
         }
 
         public bool EndOfStream => streamReader.EndOfStream;
@@ -69,12 +75,9 @@ namespace commonItems {
             }
         }
 
-        public void PushBack(char ch)  // char, don't allow Pushback(-1)
+        public void PushBack(char ch)
         {
-            if (lastChar >= 0)
-                throw new InvalidOperationException("PushBack of more than 1 char");
-
-            lastChar = ch;
+            characterStack.Push(ch);
         }
     }
 }
