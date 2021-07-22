@@ -128,4 +128,37 @@ namespace commonItems {
         }
         public List<double> Doubles { get; } = new();
     }
+
+    public class StringOfItem : Parser {
+        public StringOfItem(BufferedReader reader) {
+            var next = GetNextLexeme(reader);
+            if (next == "=") {
+                String += next + ' ';
+                next = GetNextLexeme(reader);
+            }
+            String += next;
+
+            if (next == "{") {
+                var braceDepth = 1;
+                while (true) {
+                    if (reader.EndOfStream) {
+                        return;
+                    }
+
+                    char inputChar = (char)reader.Read();
+                    String += inputChar;
+
+                    if (inputChar == '{') {
+                        ++braceDepth;
+                    } else if (inputChar == '}') {
+                        --braceDepth;
+                        if (braceDepth == 0) {
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        public string String { get; }
+    }
 }
