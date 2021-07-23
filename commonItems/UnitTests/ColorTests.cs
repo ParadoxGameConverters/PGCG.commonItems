@@ -7,7 +7,7 @@ using Xunit;
 
 namespace commonItems.UnitTests {
     public class ColorTests {
-        readonly int decimalPlaces = 3;
+        readonly int decimalPlaces = 2;
 
         [Fact] public void ColorDefaultToBlack() {
             var testColor = new Color();
@@ -29,9 +29,9 @@ namespace commonItems.UnitTests {
             Assert.Equal(128, testColor.G);
             Assert.Equal(128, testColor.B);
 
-            Assert.Equal(0.5, testColor.H);
-            Assert.Equal(0.5, testColor.S);
-            Assert.Equal(0.5, testColor.V);
+            Assert.Equal(0.5, testColor.H, decimalPlaces);
+            Assert.Equal(0.5, testColor.S, decimalPlaces);
+            Assert.Equal(0.5, testColor.V, decimalPlaces);
         }
 
         [Fact] public void HsvConversion_GreyHasZeroHue() {
@@ -105,101 +105,101 @@ namespace commonItems.UnitTests {
         [Fact]
         public void RgbConversion_ZeroHueGivesRed() {
             var testColor = new Color(new double[] { 0, 1, 1 });
-            Assert.Equal(255, testColor.R);
-            Assert.Equal(0, testColor.G);
-            Assert.Equal(0, testColor.B);
+            Assert.InRange(testColor.R, 255 - 1, 255 + 1);
+            Assert.InRange(testColor.G, 0 - 1, 0 + 1);
+            Assert.InRange(testColor.B, 0 - 1, 0 + 1);
         }
 
         [Fact]
         public void RgbConversion_OneSixthHueGivesYellow() {
             var testColor = new Color(new double[] { 0.167, 1, 1 });
-            Assert.Equal(254, testColor.R);
-            Assert.Equal(254, testColor.G);
-            Assert.Equal(0, testColor.B);
+            Assert.InRange(testColor.R, 254 - 1, 254 + 1);
+            Assert.InRange(testColor.G, 254 - 1, 254 + 1);
+            Assert.InRange(testColor.B, 0 - 1, 0 + 1);
         }
 
         [Fact]
         public void RgbConversion_OneThirdHueGivesGreen() {
             var testColor = new Color(new double[] { 0.333, 1, 1 });
-            Assert.Equal(0, testColor.R);
-            Assert.Equal(255, testColor.G);
-            Assert.Equal(0, testColor.B);
+            Assert.InRange(testColor.R, 0 - 1, 0 + 1);
+            Assert.InRange(testColor.G, 255 - 1, 255 + 1);
+            Assert.InRange(testColor.B, 0 - 1, 0 + 1);
         }
 
         [Fact]
         public void RgbConversion_OneHalfHueGivesCyan() {
             var testColor = new Color(new double[] { 0.5, 1, 1 });
-            Assert.Equal(0, testColor.R);
-            Assert.Equal(255, testColor.G);
-            Assert.Equal(255, testColor.B);
+            Assert.InRange(testColor.R, 0 - 1, 0 + 1);
+            Assert.InRange(testColor.G, 255 - 1, 255 + 1);
+            Assert.InRange(testColor.B, 255 - 1, 255 + 1);
         }
 
         [Fact]
         public void RgbConversion_TwoThirdHueGivesBlue() {
             var testColor = new Color(new double[] { 0.667, 1, 1 });
-            Assert.Equal(0, testColor.R);
-            Assert.Equal(0, testColor.G);
-            Assert.Equal(255, testColor.B);
+            Assert.InRange(testColor.R, 0 - 1, 0 + 1);
+            Assert.InRange(testColor.G, 0 - 1, 0 + 1);
+            Assert.InRange(testColor.B, 255 - 1, 255 + 1);
         }
 
         [Fact]
         public void RgbConversion_FiveSixthsHueGivesMagenta() {
             var testColor = new Color(new double[] { 0.833, 1, 1 });
-            Assert.Equal(254, testColor.R);
-            Assert.Equal(0, testColor.G);
-            Assert.Equal(254, testColor.B);
+            Assert.InRange(testColor.R, 254 - 1, 254 + 1);
+            Assert.InRange(testColor.G, 0-1, 0+1);
+            Assert.InRange(testColor.B, 254-1, 254+1);
         }
 
         [Fact]
         public void RgbConversion_ZeroSaturationIsGreyscale() {
             var testColor = new Color(new double[] { 0, 0, 0.5 });
-            Assert.Equal(127, testColor.R);
-            Assert.Equal(127, testColor.G);
-            Assert.Equal(127, testColor.B);
+            Assert.InRange(testColor.R, 127-1, 127+1);
+            Assert.InRange(testColor.G, 127 - 1, 127 + 1);
+            Assert.InRange(testColor.B, 127 - 1, 127 + 1);
         }
 
         [Fact]
         public void RgbConversion_FullSaturationisPureColor() {
             var testColor = new Color(new double[] { 0, 1, 1 });
-            Assert.Equal(255, testColor.R);
-            Assert.Equal(0, testColor.G);
-            Assert.Equal(0, testColor.B);
+            Assert.InRange(testColor.R, 255-1, 255+1);
+            Assert.InRange(testColor.G, 0 - 1, 0 + 1);
+            Assert.InRange(testColor.B, 0-1, 0+1);
         }
 
         [Fact]
         public void RgbConversion_SaturationWhitensColor() {
             var testColor = new Color(new double[] { 0, 0.5, 1 });
-            Assert.Equal(255, testColor.R);
-            Assert.Equal(127, testColor.G);
-            Assert.Equal(127, testColor.B);
+            Assert.InRange(testColor.R, 255 - 1, 255 + 1);
+            Assert.InRange(testColor.G, 127-1, 127+1);
+            Assert.InRange(testColor.B, 127 - 1, 127 + 1);
         }
 
         [Fact]
         public void RgbConversion_ZeroValueIsBlack() {
             var testColor = new Color(new double[] { 0, 1, 0 });
-            Assert.Equal(0, testColor.R);
-            Assert.Equal(0, testColor.G);
-            Assert.Equal(0, testColor.B);
+            Assert.InRange(testColor.R, 0-1, 0+1);
+            Assert.InRange(testColor.G, 0 - 1, 0 + 1);
+            Assert.InRange(testColor.B, 0 - 1, 0 + 1);
         }
 
         [Fact]
         public void RgbConversion_ValueDarkensColor() {
             var testColor = new Color(new double[] { 0, 1, 0.5 });
-            Assert.Equal(127, testColor.R);
-            Assert.Equal(0, testColor.G);
-            Assert.Equal(0, testColor.B);
+            Assert.InRange(testColor.R, 127-1, 127+1);
+            Assert.InRange(testColor.G, 0 - 1, 0 + 1);
+            Assert.InRange(testColor.B, 0 - 1, 0 + 1);
         }
 
         [Fact]
         public void RgbConversion_ExcessiveHueIsDiscarded() {
             var testColor1 = new Color(new double[] { 1, 1, 1 });
             var testColor2 = new Color(new double[] { 1.1, 1.0, 1.0 });
-            Assert.Equal(255, testColor1.R);
-            Assert.Equal(0, testColor1.G);
-            Assert.Equal(0, testColor1.B);
-            Assert.Equal(255, testColor2.R);
-            Assert.Equal(0, testColor2.G);
-            Assert.Equal(0, testColor2.B);
+            Assert.InRange(testColor1.R, 255 - 1, 255 + 1);
+            Assert.InRange(testColor1.G, 0 - 1, 0 + 1);
+            Assert.InRange(testColor1.B, 0 - 1, 0 + 1);
+            Assert.InRange(testColor2.R, 255 - 1, 255 + 1);
+            Assert.InRange(testColor2.G, 0 - 1, 0 + 1);
+            Assert.InRange(testColor2.B, 0-1, 0+1);
         }
     }
 }

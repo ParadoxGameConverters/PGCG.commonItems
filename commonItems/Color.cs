@@ -10,8 +10,14 @@ namespace commonItems {
     class Color
     {
         public Color() {}
-        public Color(int[] rgbComponents) { RgbComponents = rgbComponents; }
-        public Color(double[] hsvComponents) { HsvComponents = hsvComponents; }
+        public Color(int[] rgbComponents) {
+            RgbComponents = rgbComponents;
+            DeriveHsvFromRgb();
+        }
+        public Color(double[] hsvComponents) {
+            HsvComponents = hsvComponents;
+            DeriveRgbFromHsv();
+        }
 
         public static bool operator ==(Color lhs, Color rhs) {
             return lhs.RgbComponents == rhs.RgbComponents;
