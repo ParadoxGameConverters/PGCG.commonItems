@@ -66,7 +66,14 @@ namespace commonItems {
             return characterStack.TryPeek(out int character) ? character : streamReader.Peek();
         }
 
-        public bool EndOfStream => streamReader.EndOfStream;
+        public bool EndOfStream {
+            get {
+                if (characterStack.Count == 0) {
+                    return streamReader.EndOfStream;
+                }
+                return false;
+            }
+        } 
 
         public void Skip(uint numberOfBytes) // not present in StreamReader
         {

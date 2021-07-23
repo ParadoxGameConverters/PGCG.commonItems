@@ -26,12 +26,14 @@ namespace commonItems.UnitTests {
             Assert.Equal("2345", reader.ReadToEnd());
         }
         [Fact]
-        public void BufferedReaderThrowsExceptionOnPushBackOfMultipleCharsInARow() {
+        public void BufferedReaderAllowsPushBackOfMultipleChars() {
             var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
             var reader = new BufferedReader(stream);
             reader.Read(2); // in stream: 345
             reader.PushBack('2'); // in stream: 2345
-            Assert.Throws<InvalidOperationException>(()=>reader.PushBack('1'));
+            reader.PushBack('1'); // in stream: 12345
+            reader.PushBack('0'); // in stream: 012345
+            Assert.Equal("012345", reader.ReadToEnd());
         }
         [Fact]
         public void BufferedReaderBreaksReadingOnStreamEnd() {
@@ -39,6 +41,18 @@ namespace commonItems.UnitTests {
             var reader = new BufferedReader(stream);
             var read = reader.Read(7);
             Assert.Equal("12345", read);
+        }
+
+        [Fact] public void EndOfStreamIsFalseIfThereAreCharactersInStack() {
+            var reader = new BufferedReader("token");
+            Parser.GetNextTokenWithoutMatching(reader);
+            Assert.True(reader.EndOfStream);
+            reader.PushBack('e');
+            reader.PushBack('v');
+            reader.PushBack('a');
+            Assert.False(reader.EndOfStream);
+            Assert.Equal("ave", Parser.GetNextTokenWithoutMatching(reader));
+            Assert.True(reader.EndOfStream);
         }
     }
 }
