@@ -355,5 +355,26 @@ namespace commonItems.UnitTests {
             Assert.Equal(" next_parameter = 69 More text", reader1.ReadToEnd());
             Assert.Equal(" next_parameter = 420 More text", reader2.ReadToEnd());
         }
+
+        
+        [Fact] public void StringOfItemConvertsBracedObjectsToStrings() {
+            var input =
+                @"= {\n
+                \t{\n
+                \t\tid = 180\n
+                \t\ttype = 46\n
+                \t}\n
+                }";
+            var reader = new BufferedReader(input);
+
+            var theItem = new StringOfItem(reader);
+            Assert.Equal(input, theItem.String);
+        }
+        [Fact]
+        public void StringOfItemGetsStringAfterEquals() {
+            var reader = new BufferedReader(" = foo");
+            var theItem = new StringOfItem(reader);
+            Assert.Equal("= foo", theItem.String);
+        }
     }
 }
