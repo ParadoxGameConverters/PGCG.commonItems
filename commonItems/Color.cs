@@ -9,29 +9,24 @@ using System.Text.RegularExpressions;
 namespace commonItems {
     class Color
     {
+        public Color() {}
         public Color(int[] rgbComponents) { RgbComponents = rgbComponents; }
         public Color(double[] hsvComponents) { HsvComponents = hsvComponents; }
 
-        public int R()
-        {
-            return RgbComponents[0];
+        public static bool operator ==(Color lhs, Color rhs) {
+            return lhs.RgbComponents == rhs.RgbComponents;
         }
-        public int G() {
-            return RgbComponents[1];
-        }
-        public int B() {
-            return RgbComponents[2];
+        public static bool operator !=(Color lhs, Color rhs) {
+            return !(lhs == rhs);
         }
 
-        public double H() {
-            return HsvComponents[0];
-        }
-        public double S() {
-            return HsvComponents[1];
-        }
-        public double V() {
-            return HsvComponents[2];
-        }
+        public int R => RgbComponents[0];
+        public int G => RgbComponents[1];
+        public int B => RgbComponents[2];
+
+        public double H => HsvComponents[0];
+        public double S => HsvComponents[1];
+        public double V => HsvComponents[2];
 
         public string OutputRgb()
         {
