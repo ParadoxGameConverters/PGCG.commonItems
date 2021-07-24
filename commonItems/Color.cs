@@ -194,18 +194,6 @@ namespace commonItems {
         public double[] HsvComponents { get; private set; } = {
             0, 0, 0
         };
-
-        public override string ToString() {
-            var sb = new StringBuilder();
-            sb.Append(" { ");
-            sb.Append(RgbComponents[0]);
-            sb.Append(' ');
-            sb.Append(RgbComponents[1]);
-            sb.Append(' ');
-            sb.Append(RgbComponents[2]);
-            sb.Append(" }");
-            return sb.ToString();
-        }
     }
 
     class ColorFactory {
@@ -296,10 +284,13 @@ namespace commonItems {
             NamedColors[name] = GetColor(reader);
         }
 
-        void AddNamedColorDict(Dictionary<string, Color> colorMap) {
+        public void AddNamedColorDict(Dictionary<string, Color> colorMap) {
             foreach (var (key, value) in colorMap) {
                 NamedColors[key] = value;
             }
+        }
+        public void Clear() {
+            NamedColors.Clear();
         }
     }
 }
