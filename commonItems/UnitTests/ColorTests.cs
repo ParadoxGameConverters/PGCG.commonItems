@@ -201,5 +201,308 @@ namespace commonItems.UnitTests {
             Assert.InRange(testColor2.G, 0 - 1, 0 + 1);
             Assert.InRange(testColor2.B, 0-1, 0+1);
         }
+
+        [Fact] public void ColorCanBeInitializedFromStream() {
+            var reader = new BufferedReader("= { 64 128 128 }");
+            var testColor = new ColorFactory().GetColor(reader);
+
+            Assert.Equal(64, testColor.R);
+            Assert.Equal(128, testColor.G);
+            Assert.Equal(128, testColor.B);
+
+            Assert.Equal(0.5, testColor.H, decimalPlaces);
+            Assert.Equal(0.5, testColor.S, decimalPlaces);
+            Assert.Equal(0.5, testColor.V, decimalPlaces);
+        }
+
+        [Fact] public void ColorRGBDoublesCanBeInitializedFromStream() { // Yes, this is a thing.
+            var reader = new BufferedReader("= { 0.5 0.9 0.1 }");
+            var color = new ColorFactory().GetColor(reader);
+            Assert.Equal(128, color.R);
+            Assert.Equal(230, color.G);
+            Assert.Equal(26, color.B);
+
+            Assert.Equal(0.25, color.H, decimalPlaces);
+            Assert.Equal(0.89, color.S, decimalPlaces);
+            Assert.Equal(0.9, color.V, decimalPlaces);
+        }
+
+        [Fact] public void ColorCanBeInitializedFromStreamWithQuotes() {
+            var reader = new BufferedReader("= { \"64\" \"128\" \"128\" }");
+            var color = new ColorFactory().GetColor(reader);
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        [Fact] public void ColorInitializationRequiresThreeComponentsWhenUnspecified() {
+            var reader = new BufferedReader("= { 64 128 }");
+            Assert.Throws<Exception>(()=>new ColorFactory().GetColor(reader));
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedFromStreamInRgb() {
+            var reader = new BufferedReader("= rgb { 64 128 128 }");
+            var color = new ColorFactory().GetColor(reader);
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        [Fact]
+        public void ColorInitializationRequiresThreeComponentsWhenRgb() {
+            var reader = new BufferedReader("= rgb { 64 128 }");
+            Assert.Throws<Exception>(() => new ColorFactory().GetColor(reader));
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedFromStreamInHex() {
+            var reader = new BufferedReader("= hex { 408080 }");
+            var color = new ColorFactory().GetColor(reader);
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        [Fact]
+        public void ColorInitializationRequiresSixDigitsWhenHex() {
+            var reader = new BufferedReader("= hex { 12345 }");
+            Assert.Throws<Exception>(() => new ColorFactory().GetColor(reader));
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedFromStreamInHsv() {
+            var reader = new BufferedReader("= hsv { 0.5 0.5 0.5 }");
+            var color = new ColorFactory().GetColor(reader);
+            Assert.Equal(63, color.R);
+            Assert.Equal(127, color.G);
+            Assert.Equal(127, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        [Fact]
+        public void ColorInitializationRequiresThreeComponentsWhenHsv() {
+            var reader = new BufferedReader("= hsv { 0.333 0.5 }");
+            Assert.Throws<Exception>(() => new ColorFactory().GetColor(reader));
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedFromStreamInHsv360() {
+            var reader = new BufferedReader("= hsv360 { 180 50 50 }");
+            var color = new ColorFactory().GetColor(reader);
+            Assert.Equal(63, color.R);
+            Assert.Equal(127, color.G);
+            Assert.Equal(127, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        [Fact]
+        public void ColorInitializationRequiresThreeComponentsWhenHsv360() {
+            var reader = new BufferedReader("= hsv360 { 120 50 }");
+            Assert.Throws<Exception>(() => new ColorFactory().GetColor(reader));
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedFromStreamWithName() {
+            var colorFactory = new ColorFactory();
+            colorFactory.AddNamedColor("dark_moderate_cyan", new Color(new int[] { 64, 128, 128 }));
+
+            var reader = new BufferedReader("= dark_moderate_cyan");
+            var color = colorFactory.GetColor(reader);
+
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedFromQuotedStreamWithName() {
+            var colorFactory = new ColorFactory();
+            colorFactory.AddNamedColor("dark_moderate_cyan", new Color(new int[] { 64, 128, 128 }));
+
+            var reader = new BufferedReader("= \"dark_moderate_cyan\"");
+            var color = colorFactory.GetColor(reader);
+
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        [Fact] public void ColorInitializingRequiresCachedColorWhenUsingName() {
+            var colorFactory = new ColorFactory();
+            var reader = new BufferedReader("= dark_moderate_cyan");
+            Assert.Throws<Exception>(() => colorFactory.GetColor(reader));
+        }
+
+        [Fact]
+        public void ColorCanBeCachedFromStream() {
+            var colorFactory = new ColorFactory();
+            var cacheReader = new BufferedReader("= rgb { 64 128 128 }");
+            colorFactory.AddNamedColor("dark_moderate_cyan", cacheReader);
+
+            var reader = new BufferedReader("= dark_moderate_cyan");
+            var color = colorFactory.GetColor(reader);
+
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedWithName() {
+            var colorFactory = new ColorFactory();
+            colorFactory.AddNamedColor("dark_moderate_cyan", new Color(new int[] { 64, 128, 128} ));
+            
+            var color = colorFactory.GetColor("dark_moderate_cyan");
+
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+        }
+
+        private class Foo : Parser {
+            public Foo(BufferedReader reader) {
+                RegisterKeyword("color", (BufferedReader reader) => {
+                    color = new ColorFactory().GetColor(reader);
+                });
+                ParseStream(reader);
+            }
+            public Color? color;
+        }
+        [Fact] public void ColorCanBeInitializedFromLongerStream() {
+            var reader = new BufferedReader("= { color = { 64 128 128 } } more text");
+            var color = new Foo(reader).color;
+
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+
+            Assert.Equal(" more text", reader.ReadLine());
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedInRgbFromLongerStream() {
+            var reader = new BufferedReader("= { color = rgb { 64 128 128 } } more text");
+            var color = new Foo(reader).color;
+
+            Assert.Equal(64, color.R);
+            Assert.Equal(128, color.G);
+            Assert.Equal(128, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+
+            Assert.Equal(" more text", reader.ReadLine());
+        }
+
+        [Fact]
+        public void ColorCanBeInitializedInHsvFromLongerStream() {
+            var reader = new BufferedReader("= { color = hsv { 0.5 0.5 0.5 } } more text");
+            var color = new Foo(reader).color;
+
+            Assert.Equal(63, color.R);
+            Assert.Equal(127, color.G);
+            Assert.Equal(127, color.B);
+
+            Assert.Equal(0.5, color.H, decimalPlaces);
+            Assert.Equal(0.5, color.S, decimalPlaces);
+            Assert.Equal(0.5, color.V, decimalPlaces);
+
+            Assert.Equal(" more text", reader.ReadLine());
+        }
+
+        [Fact] public void ColorCanBeOutputInUnspecifiedColorSpace() {
+            var color = new Color(new int[] { 64, 128, 128 });
+            Assert.Equal("= { 64 128 128 }", color.Output());
+        }
+
+        [Fact]
+        public void ColorCanBeOutputInRgbColorSpace() {
+            var color = new Color(new int[] { 64, 128, 128 });
+            Assert.Equal("= rgb { 64 128 128 }", color.OutputRgb());
+        }
+
+        [Fact]
+        public void ColorCanBeOutputInHexColorSpace() {
+            var color = new Color(new int[] { 64, 128, 128 });
+            Assert.Equal("= hex { 408080 }", color.OutputHex());
+        }
+
+        [Fact]
+        public void ColorCanBeOutputInHexColorSpacePreservingZeroes() {
+            var color = new Color(new int[] { 0, 0, 0 });
+            Assert.Equal("= hex { 000000 }", color.OutputHex());
+        }
+
+        [Fact]
+        public void ColorCanBeOutputInHsvColorSpace() {
+            var color = new Color(new int[] { 64, 128, 128 });
+            Assert.Equal("= hsv { 0.5 0.5 0.5 }", color.OutputHsv());
+        }
+
+        [Fact]
+        public void ColorCanBeOutputInHsv360ColorSpace() {
+            var color = new Color(new int[] { 64, 128, 128 });
+            Assert.Equal("= hsv360 { 180 50 50 }", color.OutputHsv360());
+        }
+
+        [Fact]
+        public void UnequalFromDifferentRgb() {
+            var color1 = new Color(new int[] { 2, 4, 8 });
+            var color2 = new Color(new int[] { 3, 4, 8 });
+            Assert.NotEqual(color1, color2);
+        }
+
+        [Fact] public void UnequalFromDifferentHsv() {
+            var color1 = new Color(new double[] { 0.333, 0.50, 0.50 });
+            var color2 = new Color(new double[] { 0.333, 0.75, 0.75 });
+            Assert.NotEqual(color1, color2);
+        }
+
+        [Fact]
+        public void Equality() {
+            var color1 = new Color(new int[] { 2, 4, 8 });
+            var color2 = new Color(new int[] { 2, 4, 8 });
+            Assert.NotEqual(color1, color2);
+        }
     }
 }

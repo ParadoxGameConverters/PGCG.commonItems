@@ -34,6 +34,17 @@ namespace commonItems {
         public double S => HsvComponents[1];
         public double V => HsvComponents[2];
 
+        public string Output() {
+            var sb = new StringBuilder("= { ");
+            sb.Append(RgbComponents[0]);
+            sb.Append(' ');
+            sb.Append(RgbComponents[1]);
+            sb.Append(' ');
+            sb.Append(RgbComponents[2]);
+            sb.Append(" }");
+            return sb.ToString();
+        }
+
         public string OutputRgb()
         {
             var sb = new StringBuilder("= rgb { ");
@@ -54,13 +65,26 @@ namespace commonItems {
             return sb.ToString();
         }
 
-        public string OutputHsv360()
-        {
-            var sb = new StringBuilder("= hsv360 { ");
-            sb.AppendFormat("{0:0.000}", HsvComponents[0] * 360);
-            sb.AppendFormat("{0:0.00}", HsvComponents[1] * 100);
+        public string OutputHsv() {
+            var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
+            var sb = new StringBuilder("= hsv { ");
+            sb.Append(HsvComponents[0].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
             sb.Append(' ');
-            sb.AppendFormat("{0:0.00}", HsvComponents[2] * 100);
+            sb.Append(HsvComponents[1].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+            sb.Append(' ');
+            sb.Append(HsvComponents[2].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+            sb.Append(" }");
+            return sb.ToString();
+        }
+
+        public string OutputHsv360() {
+            var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
+            var sb = new StringBuilder("= hsv360 { ");
+            sb.Append((HsvComponents[0] * 360).ToString("0.000", cultureInfo).TrimEnd('0').TrimEnd('.'));
+            sb.Append(' ');
+            sb.Append((HsvComponents[1] * 100).ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+            sb.Append(' ');
+            sb.Append((HsvComponents[2] * 100).ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
             sb.Append(" }");
             return sb.ToString();
         }
@@ -190,8 +214,8 @@ namespace commonItems {
             var match = re.Match(str);
             return match.Success && match.Length == str.Length;
         }
-        public Dictionary<string, Color> namedColors { get; } = new();
-        Color GetColor(BufferedReader reader) {
+        public Dictionary<string, Color> NamedColors { get; } = new();
+        public Color GetColor(BufferedReader reader) {
             Parser.GetNextTokenWithoutMatching(reader); // equals sign
 
             var token = Parser.GetNextTokenWithoutMatching(reader);
@@ -224,9 +248,9 @@ namespace commonItems {
                 if (hsv.Count != 3) {
                     throw new Exception("Color has wrong number of components");
                 }
-                return new Color(new double[] { hsv[0] / 360, hsv[1] / 360, hsv[2] / 360 });
+                return new Color(new double[] { hsv[0] / 360, hsv[1] / 100, hsv[2] / 100 });
             } else if (DoesRegexFullyMatch(new Regex(CommonRegexes.Catchall), token)) {
-                if (namedColors.TryGetValue(token, out Color value)) {
+                if (NamedColors.TryGetValue(token, out Color value)) {
                     return value;
                 } else {
                     throw new Exception(token + " was not a cached color");
@@ -257,24 +281,24 @@ namespace commonItems {
             }
         }
 
-        Color GetColor(string colorName) {
-            if (namedColors.TryGetValue(colorName, out Color value)) {
+        public Color GetColor(string colorName) {
+            if (NamedColors.TryGetValue(colorName, out Color value)) {
                 return value;
             } else {
                 throw new Exception(colorName + " was not a cached color");
             }
         }
 
-        void AddNamedColor(string name, Color color) {
-            namedColors[name] = color;
+        public void AddNamedColor(string name, Color color) {
+            NamedColors[name] = color;
         }
-        void AddNamedColor(string name, BufferedReader reader) {
-            namedColors[name] = GetColor(reader);
+        public void AddNamedColor(string name, BufferedReader reader) {
+            NamedColors[name] = GetColor(reader);
         }
 
         void AddNamedColorDict(Dictionary<string, Color> colorMap) {
             foreach (var (key, value) in colorMap) {
-                namedColors[key] = value;
+                NamedColors[key] = value;
             }
         }
     }
