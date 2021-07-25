@@ -241,7 +241,7 @@ namespace commonItems.UnitTests {
 
         [Fact] public void ColorInitializationRequiresThreeComponentsWhenUnspecified() {
             var reader = new BufferedReader("= { 64 128 }");
-            Assert.Throws<Exception>(()=>new ColorFactory().GetColor(reader));
+            Assert.Throws<FormatException>(()=>new ColorFactory().GetColor(reader));
         }
 
         [Fact]
@@ -260,7 +260,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void ColorInitializationRequiresThreeComponentsWhenRgb() {
             var reader = new BufferedReader("= rgb { 64 128 }");
-            Assert.Throws<Exception>(() => new ColorFactory().GetColor(reader));
+            Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
         }
 
         [Fact]
@@ -279,7 +279,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void ColorInitializationRequiresSixDigitsWhenHex() {
             var reader = new BufferedReader("= hex { 12345 }");
-            Assert.Throws<Exception>(() => new ColorFactory().GetColor(reader));
+            Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
         }
 
         [Fact]
@@ -298,7 +298,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void ColorInitializationRequiresThreeComponentsWhenHsv() {
             var reader = new BufferedReader("= hsv { 0.333 0.5 }");
-            Assert.Throws<Exception>(() => new ColorFactory().GetColor(reader));
+            Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
         }
 
         [Fact]
@@ -317,7 +317,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void ColorInitializationRequiresThreeComponentsWhenHsv360() {
             var reader = new BufferedReader("= hsv360 { 120 50 }");
-            Assert.Throws<Exception>(() => new ColorFactory().GetColor(reader));
+            Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
         }
 
         [Fact]

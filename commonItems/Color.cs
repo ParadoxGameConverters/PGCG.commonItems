@@ -213,13 +213,13 @@ namespace commonItems {
             if (token == "rgb") {
                 var rgb = new IntList(reader).Ints;
                 if (rgb.Count != 3) {
-                    throw new Exception("Color has wrong number of components");
+                    throw new FormatException("Color has wrong number of components");
                 }
                 return new Color(rgb.ToArray());
             } else if (token == "hex") {
                 var hex = new SingleString(reader).String;
                 if (hex.Length != 6) {
-                    throw new Exception("Color has wrong number of digits");
+                    throw new FormatException("Color has wrong number of digits");
                 }
                 var r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
                 var g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
@@ -228,13 +228,13 @@ namespace commonItems {
             } else if (token == "hsv") {
                 var hsv = new DoubleList(reader).Doubles;
                 if (hsv.Count != 3) {
-                    throw new Exception("Color has wrong number of components");
+                    throw new FormatException("Color has wrong number of components");
                 }
                 return new Color(new double[] { hsv[0], hsv[1], hsv[2] });
             } else if (token == "hsv360") {
                 var hsv = new DoubleList(reader).Doubles;
                 if (hsv.Count != 3) {
-                    throw new Exception("Color has wrong number of components");
+                    throw new FormatException("Color has wrong number of components");
                 }
                 return new Color(new double[] { hsv[0] / 360, hsv[1] / 100, hsv[2] / 100 });
             } else if (DoesRegexFullyMatch(new Regex(CommonRegexes.Catchall), token)) {
@@ -254,7 +254,7 @@ namespace commonItems {
                     var doubleStreamReader = new BufferedReader(questionableList);
                     var hsv = new DoubleList(doubleStreamReader).Doubles;
                     if (hsv.Count != 3) {
-                        throw new Exception("Color has wrong number of components");
+                        throw new FormatException("Color has wrong number of components");
                     }
                     return new Color(new int[] { (int)Math.Round(hsv[0] * 255), (int)Math.Round(hsv[1] * 255), (int)Math.Round(hsv[2] * 255) });
                 } else {
@@ -262,7 +262,7 @@ namespace commonItems {
                     var integerStreamReader = new BufferedReader(questionableList);
                     var rgb = new IntList(integerStreamReader).Ints;
                     if (rgb.Count != 3) {
-                        throw new Exception("Color has wrong number of components");
+                        throw new FormatException("Color has wrong number of components");
                     }
                     return new Color(rgb.ToArray());
                 }
