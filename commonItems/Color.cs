@@ -240,7 +240,7 @@ namespace commonItems {
                 if (NamedColors.TryGetValue(token, out Color value)) {
                     return value;
                 } else {
-                    throw new Exception(token + " was not a cached color");
+                    throw new ArgumentException(token + " was not a cached color");
                 }
             } else {
                 var actualToken = token;
@@ -272,7 +272,7 @@ namespace commonItems {
             if (NamedColors.TryGetValue(colorName, out Color value)) {
                 return value;
             } else {
-                throw new Exception(colorName + " was not a cached color");
+                throw new ArgumentException(colorName + " was not a cached color");
             }
         }
 

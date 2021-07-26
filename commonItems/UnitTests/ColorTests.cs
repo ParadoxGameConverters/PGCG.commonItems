@@ -370,7 +370,7 @@ namespace commonItems.UnitTests {
         [Fact] public void ColorInitializingRequiresCachedColorWhenUsingName() {
             var colorFactory = new ColorFactory();
             var reader = new BufferedReader("= dark_moderate_cyan");
-            Assert.Throws<Exception>(() => colorFactory.GetColor(reader));
+            Assert.Throws<ArgumentException>(() => colorFactory.GetColor(reader));
         }
 
         [Fact]
