@@ -7,8 +7,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 
 namespace commonItems {
-    class Color
-    {
+    class Color {
         public Color() {}
         public Color(int[] rgbComponents) {
             RgbComponents = rgbComponents;
@@ -139,10 +138,10 @@ namespace commonItems {
                 if (h >= 1.0f)
                     h = 0.0f;
                 int sector = (int)Math.Floor(h * 6.0f);
-                double fraction = h * 6.0f - sector;
+                double fraction = (h * 6.0f) - sector;
                 double p = v * (1 - s);
-                double q = v * (1 - s * fraction);
-                double t = v * (1 - s * (1 - fraction));
+                double q = v * (1 - (s * fraction));
+                double t = v * (1 - (s * (1 - fraction)));
                 switch (sector) {
                     case 0:
                         r = v;
@@ -196,7 +195,6 @@ namespace commonItems {
     }
 
     class ColorFactory {
-
         private static bool DoesRegexFullyMatch(Regex re, string str) {
             var match = re.Match(str);
             return match.Success && match.Length == str.Length;

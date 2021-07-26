@@ -356,7 +356,6 @@ namespace commonItems.UnitTests {
             Assert.Equal(" next_parameter = 420 More text", reader2.ReadToEnd());
         }
 
-        
         [Fact] public void StringOfItemConvertsBracedObjectsToStrings() {
             var input =
                 @"= {\n
