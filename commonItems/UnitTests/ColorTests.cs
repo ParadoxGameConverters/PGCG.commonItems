@@ -34,6 +34,19 @@ namespace commonItems.UnitTests {
             Assert.Equal(0.5, testColor.V, decimalPlaces);
         }
 
+        [Fact]
+        public void ColorCanBeInitializedWithHsvComponents() {
+            var testColor = new Color(new double[] { 0.5f, 0.5f, 0.5f });
+
+            Assert.Equal(63, testColor.R);
+            Assert.Equal(127, testColor.G);
+            Assert.Equal(127, testColor.B);
+
+            Assert.Equal(0.5, testColor.H, decimalPlaces);
+            Assert.Equal(0.5, testColor.S, decimalPlaces);
+            Assert.Equal(0.5, testColor.V, decimalPlaces);
+        }
+
         [Fact] public void HsvConversion_GreyHasZeroHue() {
             var testColor = new Color(new int[] { 128, 128, 128 });
             Assert.Equal(0, testColor.H);
