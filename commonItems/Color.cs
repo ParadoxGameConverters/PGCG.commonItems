@@ -133,8 +133,7 @@ namespace commonItems {
             var v = HsvComponents[2];
 
             double r, g, b;
-            if (s == 0.0f) // achromatic (grey)
-    {
+            if (s == 0.0f) { // achromatic (grey)
                 r = g = b = v;
             } else {
                 if (h >= 1.0f)
