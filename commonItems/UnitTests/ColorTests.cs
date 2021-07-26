@@ -23,7 +23,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact] public void ColorCanBeInitializedWithRgbComponents() {
-            var testColor = new Color(new int[] { 64, 128, 128 });
+            var testColor = new Color(new [] { 64, 128, 128 });
 
             Assert.Equal(64, testColor.R);
             Assert.Equal(128, testColor.G);
@@ -48,70 +48,70 @@ namespace commonItems.UnitTests {
         }
 
         [Fact] public void HsvConversion_GreyHasZeroHue() {
-            var testColor = new Color(new int[] { 128, 128, 128 });
+            var testColor = new Color(new [] { 128, 128, 128 });
             Assert.Equal(0, testColor.H);
         }
 
         [Fact] public void HsvConversion_RedHasHueOfZero() {
-            var testColor = new Color(new int[] { 128, 0, 0 });
+            var testColor = new Color(new [] { 128, 0, 0 });
             Assert.Equal(0, testColor.H);
         }
 
         [Fact] public void HsvConversion_YellowHasHueOfOneSixth() {
-            var testColor = new Color(new int[] { 128, 128, 64 });
+            var testColor = new Color(new [] { 128, 128, 64 });
             Assert.Equal(0.167, testColor.H, decimalPlaces);
         }
 
         [Fact]
         public void HsvConversion_GreenHasHueOfOneThird() {
-            var testColor = new Color(new int[] { 0, 128, 0 });
+            var testColor = new Color(new [] { 0, 128, 0 });
             Assert.Equal(0.333, testColor.H, decimalPlaces);
         }
 
         [Fact]
         public void HsvConversion_CyanHasHueOfOneHalf() {
-            var testColor = new Color(new int[] { 64, 128, 128 });
+            var testColor = new Color(new [] { 64, 128, 128 });
             Assert.Equal(0.5, testColor.H, decimalPlaces);
         }
 
         [Fact]
         public void HsvConversion_BlueHasHueOfTwoThirds() {
-            var testColor = new Color(new int[] { 0, 0, 128 });
+            var testColor = new Color(new [] { 0, 0, 128 });
             Assert.Equal(0.667, testColor.H, decimalPlaces);
         }
 
         [Fact]
         public void HsvConversion_MagentaHasHueOfFiveSixths() {
-            var testColor = new Color(new int[] { 128, 64, 128 });
+            var testColor = new Color(new [] { 128, 64, 128 });
             Assert.Equal(0.833, testColor.H, decimalPlaces);
         }
 
         [Fact] public void HsvConversion_BlackHasZeroSaturation() {
-            var testColor = new Color(new int[] { 0, 0, 0 });
+            var testColor = new Color(new [] { 0, 0, 0 });
             Assert.Equal(0, testColor.S);
         }
 
         [Fact]
         public void HsvConversion_GreyHasZeroSaturation() {
-            var testColor = new Color(new int[] { 128, 128, 128 });
+            var testColor = new Color(new [] { 128, 128, 128 });
             Assert.Equal(0, testColor.S);
         }
 
         [Fact]
         public void HsvConversion_ColorHasSaturation() {
-            var testColor = new Color(new int[] { 128, 128, 64 });
+            var testColor = new Color(new [] { 128, 128, 64 });
             Assert.Equal(0.5, testColor.S, decimalPlaces);
         }
 
         [Fact]
         public void HsvConversion_BlackHasZeroValue() {
-            var testColor = new Color(new int[] { 0, 0, 0 });
+            var testColor = new Color(new [] { 0, 0, 0 });
             Assert.Equal(0, testColor.V);
         }
 
         [Fact]
         public void HsvConversion_ColorHasValue() {
-            var testColor = new Color(new int[] { 128, 64, 64 });
+            var testColor = new Color(new [] { 128, 64, 64 });
             Assert.Equal(0.5, testColor.V, decimalPlaces);
         }
 

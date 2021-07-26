@@ -77,7 +77,6 @@ namespace commonItems {
         }
 
         public string OutputHsv360() {
-            var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
             var sb = new StringBuilder("= hsv360 { ");
             sb.Append(Math.Round(HsvComponents[0] * 360));
             sb.Append(' ');
@@ -135,8 +134,9 @@ namespace commonItems {
             if (s == 0.0f) { // achromatic (grey)
                 r = g = b = v;
             } else {
-                if (h >= 1.0f)
+                if (h >= 1.0f) {
                     h = 0.0f;
+                }
                 int sector = (int)Math.Floor(h * 6.0f);
                 double fraction = (h * 6.0f) - sector;
                 double p = v * (1 - s);
@@ -182,7 +182,7 @@ namespace commonItems {
             g *= 255;
             b *= 255;
 
-            RgbComponents = new int[]{ (int)r, (int)g, (int)b };
+            RgbComponents = new []{ (int)r, (int)g, (int)b };
         }
 
         public int[] RgbComponents { get; private set; } = {
@@ -221,7 +221,7 @@ namespace commonItems {
                 var r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
                 var g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
                 var b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-                return new Color(new int[] { r, g, b });
+                return new Color(new [] { r, g, b });
             } else if (token == "hsv") {
                 var hsv = new DoubleList(reader).Doubles;
                 if (hsv.Count != 3) {
@@ -253,7 +253,7 @@ namespace commonItems {
                     if (hsv.Count != 3) {
                         throw new FormatException("Color has wrong number of components");
                     }
-                    return new Color(new int[] { (int)Math.Round(hsv[0] * 255), (int)Math.Round(hsv[1] * 255), (int)Math.Round(hsv[2] * 255) });
+                    return new Color(new [] { (int)Math.Round(hsv[0] * 255), (int)Math.Round(hsv[1] * 255), (int)Math.Round(hsv[2] * 255) });
                 } else {
                     // integer list
                     var integerStreamReader = new BufferedReader(questionableList);
