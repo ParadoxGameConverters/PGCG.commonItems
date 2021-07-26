@@ -175,7 +175,7 @@ namespace commonItems {
                         b = q;
                         break;
                     default:
-                        throw new Exception("Hue greater than 1.0");
+                        throw new ArgumentOutOfRangeException("Hue greater than 1.0");
                 }
             }
 
