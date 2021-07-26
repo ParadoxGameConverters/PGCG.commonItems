@@ -80,11 +80,11 @@ namespace commonItems {
         public string OutputHsv360() {
             var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
             var sb = new StringBuilder("= hsv360 { ");
-            sb.Append((HsvComponents[0] * 360).ToString("0.000", cultureInfo).TrimEnd('0').TrimEnd('.'));
+            sb.Append(Math.Round(HsvComponents[0] * 360));
             sb.Append(' ');
-            sb.Append((HsvComponents[1] * 100).ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+            sb.Append(Math.Round(HsvComponents[1] * 100));
             sb.Append(' ');
-            sb.Append((HsvComponents[2] * 100).ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+            sb.Append(Math.Round(HsvComponents[2] * 100));
             sb.Append(" }");
             return sb.ToString();
         }

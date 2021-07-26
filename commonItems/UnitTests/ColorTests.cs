@@ -495,7 +495,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void ColorCanBeOutputInHsv360ColorSpace() {
             var color = new Color(new int[] { 64, 128, 128 });
-            Assert.Equal("= hsv360 { 180 50 50.2 }", color.OutputHsv360());
+            Assert.Equal("= hsv360 { 180 50 50 }", color.OutputHsv360());
         }
 
         [Fact]
