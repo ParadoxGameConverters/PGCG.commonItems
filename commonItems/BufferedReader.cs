@@ -22,7 +22,7 @@ namespace commonItems {
             streamReader = new StreamReader(stream);
         }
 
-        private Stack<int> characterStack = new();
+        private readonly Stack<int> characterStack = new();
 
         public int Read() {
             int ch;

@@ -464,44 +464,44 @@ namespace commonItems.UnitTests {
         }
 
         [Fact] public void ColorCanBeOutputInUnspecifiedColorSpace() {
-            var color = new Color(new int[] { 64, 128, 128 });
+            var color = new Color(new [] { 64, 128, 128 });
             Assert.Equal("= { 64 128 128 }", color.Output());
         }
 
         [Fact]
         public void ColorCanBeOutputInRgbColorSpace() {
-            var color = new Color(new int[] { 64, 128, 128 });
+            var color = new Color(new [] { 64, 128, 128 });
             Assert.Equal("= rgb { 64 128 128 }", color.OutputRgb());
         }
 
         [Fact]
         public void ColorCanBeOutputInHexColorSpace() {
-            var color = new Color(new int[] { 64, 128, 128 });
+            var color = new Color(new [] { 64, 128, 128 });
             Assert.Equal("= hex { 408080 }", color.OutputHex());
         }
 
         [Fact]
         public void ColorCanBeOutputInHexColorSpacePreservingZeroes() {
-            var color = new Color(new int[] { 0, 0, 0 });
+            var color = new Color(new [] { 0, 0, 0 });
             Assert.Equal("= hex { 000000 }", color.OutputHex());
         }
 
         [Fact]
         public void ColorCanBeOutputInHsvColorSpace() {
-            var color = new Color(new int[] { 64, 128, 128 });
+            var color = new Color(new [] { 64, 128, 128 });
             Assert.Equal("= hsv { 0.5 0.5 0.5 }", color.OutputHsv());
         }
 
         [Fact]
         public void ColorCanBeOutputInHsv360ColorSpace() {
-            var color = new Color(new int[] { 64, 128, 128 });
+            var color = new Color(new [] { 64, 128, 128 });
             Assert.Equal("= hsv360 { 180 50 50 }", color.OutputHsv360());
         }
 
         [Fact]
         public void UnequalFromDifferentRgb() {
-            var color1 = new Color(new int[] { 2, 4, 8 });
-            var color2 = new Color(new int[] { 3, 4, 8 });
+            var color1 = new Color(new [] { 2, 4, 8 });
+            var color2 = new Color(new [] { 3, 4, 8 });
             Assert.NotEqual(color1, color2);
         }
 
@@ -513,15 +513,15 @@ namespace commonItems.UnitTests {
 
         [Fact]
         public void Equality() {
-            var color1 = new Color(new int[] { 2, 4, 8 });
-            var color2 = new Color(new int[] { 2, 4, 8 });
+            var color1 = new Color(new [] { 2, 4, 8 });
+            var color2 = new Color(new [] { 2, 4, 8 });
             Assert.NotEqual(color1, color2);
         }
 
         [Fact] public void ColorPaletteCanBeInitializedByDict() {
             var dict = new Dictionary<string, Color>();
-            dict.Add("white", new Color(new int[] { 255, 255, 255 }));
-            dict.Add("gray", new Color(new int[] { 50,50,50}));
+            dict.Add("white", new Color(new [] { 255, 255, 255 }));
+            dict.Add("gray", new Color(new [] { 50, 50, 50}));
             var colorFactory = new ColorFactory();
             colorFactory.AddNamedColorDict(dict);
 
@@ -569,8 +569,8 @@ namespace commonItems.UnitTests {
         [Fact]
         public void ColorPaletteCanBeAlteredDirectly() {
             var colorFactory = new ColorFactory();
-            colorFactory.AddNamedColor("gold", new Color(new int[] { 255,0,0 }));
-            colorFactory.AddNamedColor("gold", new Color(new int[] { 255, 215, 0 }));
+            colorFactory.AddNamedColor("gold", new Color(new [] { 255, 0, 0 }));
+            colorFactory.AddNamedColor("gold", new Color(new [] { 255, 215, 0 }));
 
             var gold = colorFactory.GetColor("gold");
 
@@ -585,15 +585,15 @@ namespace commonItems.UnitTests {
 
         [Fact] public void ColorPaletteCanBeAlteredByDict() {
             var wrongDict = new Dictionary<string, Color>();
-            wrongDict.Add("white", new Color(new int[] { 0, 0, 0 }));
-            wrongDict.Add("red", new Color(new int[] { 255, 255, 19 }));
+            wrongDict.Add("white", new Color(new [] { 0, 0, 0 }));
+            wrongDict.Add("red", new Color(new [] { 255, 255, 19 }));
 
             var colorFactory = new ColorFactory();
             colorFactory.AddNamedColorDict(wrongDict);
 
             var correctDict = new Dictionary<string, Color>();
-            correctDict.Add("white", new Color(new int[] { 255, 255, 255 }));
-            correctDict.Add("red", new Color(new int[] { 255, 0, 0 }));
+            correctDict.Add("white", new Color(new [] { 255, 255, 255 }));
+            correctDict.Add("red", new Color(new [] { 255, 0, 0 }));
             colorFactory.AddNamedColorDict(correctDict);
 
             var reader1 = new BufferedReader("= white");
@@ -621,8 +621,8 @@ namespace commonItems.UnitTests {
         [Fact]
         public void ColorPaletteCanBeCleared() {
             var colorDict = new Dictionary<string, Color>();
-            colorDict.Add("white", new Color(new int[] { 0, 0, 0 }));
-            colorDict.Add("red", new Color(new int[] { 255, 255, 19 }));
+            colorDict.Add("white", new Color(new [] { 0, 0, 0 }));
+            colorDict.Add("red", new Color(new [] { 255, 255, 19 }));
 
             var colorFactory = new ColorFactory();
             colorFactory.AddNamedColorDict(colorDict);
