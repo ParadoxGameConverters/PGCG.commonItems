@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Numerics;
 using System.Collections.Generic;
+using System.Text;
 using System.Globalization;
 
 namespace commonItems {
@@ -30,12 +31,12 @@ namespace commonItems {
                             ++braceDepth;
                             break;
                         case "}": {
-                                --braceDepth;
-                                if (braceDepth == 0) {
-                                    return;
-                                }
-                                break;
+                            --braceDepth;
+                            if (braceDepth == 0) {
+                                return;
                             }
+                            break;
+                        }
                     }
                 }
             }
@@ -132,32 +133,37 @@ namespace commonItems {
     public class StringOfItem : Parser {
         public StringOfItem(BufferedReader reader) {
             var next = GetNextLexeme(reader);
+            var sb = new StringBuilder();
             if (next == "=") {
-                String += next + ' ';
+                sb.Append(next);
+                sb.Append(' ');
                 next = GetNextLexeme(reader);
             }
-            String += next;
+            sb.Append(next);
 
             if (next == "{") {
                 var braceDepth = 1;
                 while (true) {
                     if (reader.EndOfStream) {
+                        String = sb.ToString();
                         return;
                     }
 
                     char inputChar = (char)reader.Read();
-                    String += inputChar;
+                    sb.Append(inputChar);
 
                     if (inputChar == '{') {
                         ++braceDepth;
                     } else if (inputChar == '}') {
                         --braceDepth;
                         if (braceDepth == 0) {
+                            String = sb.ToString();
                             return;
                         }
                     }
                 }
             }
+            String = sb.ToString();
         }
         public string String { get; }
     }

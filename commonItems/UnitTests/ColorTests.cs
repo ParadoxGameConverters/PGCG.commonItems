@@ -206,7 +206,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void RgbConversion_ExcessiveHueIsDiscarded() {
             var testColor1 = new Color(new double[] { 1, 1, 1 });
-            var testColor2 = new Color(new double[] { 1.1, 1.0, 1.0 });
+            var testColor2 = new Color(new [] { 1.1, 1.0, 1.0 });
             Assert.InRange(testColor1.R, 255 - 1, 255 + 1);
             Assert.InRange(testColor1.G, 0 - 1, 0 + 1);
             Assert.InRange(testColor1.B, 0 - 1, 0 + 1);
@@ -336,7 +336,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void ColorCanBeInitializedFromStreamWithName() {
             var colorFactory = new ColorFactory();
-            colorFactory.AddNamedColor("dark_moderate_cyan", new Color(new int[] { 64, 128, 128 }));
+            colorFactory.AddNamedColor("dark_moderate_cyan", new Color(new [] { 64, 128, 128 }));
 
             var reader = new BufferedReader("= dark_moderate_cyan");
             var color = colorFactory.GetColor(reader);
@@ -506,8 +506,8 @@ namespace commonItems.UnitTests {
         }
 
         [Fact] public void UnequalFromDifferentHsv() {
-            var color1 = new Color(new double[] { 0.333, 0.50, 0.50 });
-            var color2 = new Color(new double[] { 0.333, 0.75, 0.75 });
+            var color1 = new Color(new [] { 0.333, 0.50, 0.50 });
+            var color2 = new Color(new [] { 0.333, 0.75, 0.75 });
             Assert.NotEqual(color1, color2);
         }
 
