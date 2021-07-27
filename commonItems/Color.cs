@@ -18,11 +18,9 @@ namespace commonItems {
             DeriveRgbFromHsv();
         }
 
-        public static bool operator ==(Color lhs, Color rhs) {
-            return lhs.RgbComponents == rhs.RgbComponents;
-        }
-        public static bool operator !=(Color lhs, Color rhs) {
-            return !(lhs == rhs);
+        public override bool Equals(object? obj) {
+            return obj is Color color &&
+                   EqualityComparer<int[]>.Default.Equals(RgbComponents, color.RgbComponents);
         }
 
         public int R => RgbComponents[0];
