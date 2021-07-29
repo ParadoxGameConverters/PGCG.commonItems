@@ -21,7 +21,7 @@ namespace commonItems {
         }
 
         public override int GetHashCode() {
-            return R*1000000 + G*1000 + B;
+            return (R*1000000) + (G*1000) + B;
         }
 
         public int R => RgbComponents[0];
