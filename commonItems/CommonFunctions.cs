@@ -1,7 +1,7 @@
 ﻿using System.Text;
 
 namespace commonItems {
-    class CommonFunctions {
+    public static class CommonFunctions {
         public static string TrimPath(string fileName) {
             string trimmedFileName = fileName;
             var lastSlash = trimmedFileName.LastIndexOf('\\');
@@ -58,8 +58,8 @@ namespace commonItems {
             };
         }
         public static string CardinalToRoman(int number) {
-            var num = new int[] { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
-            var sym = new string[] { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
+            var num = new [] { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
+            var sym = new [] { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
             int i = 12;
             var sb = new StringBuilder();
             while (number > 0) {
