@@ -20,8 +20,8 @@ namespace commonItems {
                    EqualityComparer<int[]>.Default.Equals(RgbComponents, color.RgbComponents);
         }
 
-        public override int[] GetHashCode() {
-            return RgbComponents;
+        public override int GetHashCode() {
+            return R*1000000 + G*1000 + B;
         }
 
         public int R => RgbComponents[0];
