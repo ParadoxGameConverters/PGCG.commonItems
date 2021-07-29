@@ -7,7 +7,8 @@ using Xunit;
 
 namespace commonItems.UnitTests {
     public class CommonFunctionsTests {
-        [Fact] public void LastDigitOneGivesSt() {
+        [Fact]
+        public void LastDigitOneGivesSt() {
             Assert.Equal("st", CommonFunctions.CardinalToOrdinal(1));
         }
         [Fact]
@@ -80,7 +81,8 @@ namespace commonItems.UnitTests {
             var input = @"/this/is\a\path.txt";
             Assert.Equal(@"/this/is\a\", CommonFunctions.GetPath(input));
         }
-        [Fact] public void GetReturnsBlankStringForRawFiles() {
+        [Fact]
+        public void GetReturnsBlankStringForRawFiles() {
             var input = "path.txt";
             Assert.Empty(CommonFunctions.GetPath(input));
         }
