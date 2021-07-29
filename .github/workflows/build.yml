@@ -21,4 +21,4 @@ jobs:
     - name: "Build project"
       run: |
        cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
-       .\MSBuild.exe -m -p:Configuration=Release $Env:GITHUB_WORKSPACE\commonItems.sln -target:commonItems
+       .\MSBuild.exe -m -p:Configuration=Release $Env:GITHUB_WORKSPACE\commonItems\commonItems.sln -target:commonItems
