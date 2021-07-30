@@ -82,7 +82,7 @@ namespace commonItems.UnitTests {
             Assert.Equal(@"/this/is\a\", CommonFunctions.GetPath(input));
         }
         [Fact]
-        public void GetReturnsBlankStringForRawFiles() {
+        public void GetPathReturnsBlankStringForRawFiles() {
             var input = "path.txt";
             Assert.Empty(CommonFunctions.GetPath(input));
         }
