@@ -1,7 +1,7 @@
 ﻿using Xunit;
 
 namespace commonItems.UnitTests {
-    public class CardinalToRomanTests {
+    public class CardinalToOrdinalTests {
         [Fact]
         public void LastDigitOneGivesSt() {
             Assert.Equal("st", CommonFunctions.CardinalToOrdinal(1));
