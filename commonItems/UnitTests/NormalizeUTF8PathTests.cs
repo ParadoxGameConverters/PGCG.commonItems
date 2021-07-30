@@ -4,7 +4,9 @@ namespace commonItems.UnitTests {
     public class NormalizeUTF8PathTests {
         [Fact] public void NonAllowedCharactersAreReplaced() {
             var str = @"/\:*?""<>|";
-            Assert.Equal("_________", CommonFunctions.NormalizeUTF8Path(str));
+            var expected = "_________";
+            Assert.Equal(expected.Length, str.Length);
+            Assert.Equal(expected, CommonFunctions.NormalizeUTF8Path(str));
         }
         [Fact]
         public void AllowedCharactersAreNotReplaced() {
