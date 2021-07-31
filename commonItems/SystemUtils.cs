@@ -75,7 +75,7 @@ namespace commonItems {
 
                 return true;
             } catch (Exception e) {
-                Logger.Log(LogLevel.Error, "Could not rename folder: " + e.ToString());
+                Logger.Log(LogLevel.Error, "Could not copy folder: " + e.ToString());
                 return false;
             }
         }
