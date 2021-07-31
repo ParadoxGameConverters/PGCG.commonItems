@@ -28,7 +28,7 @@ namespace commonItems {
             try {
                 return Directory.CreateDirectory(path).Exists;
             } catch (Exception e) {
-                Logger.Log(LogLevel.Error, "Could not create directory: " + path + " : " + e.ToString());
+                Logger.Log(LogLevel.Error, "Could not create directory: " + path + " : " + e);
                 return false;
             }
         }
@@ -38,7 +38,7 @@ namespace commonItems {
                 File.Copy(sourcePath, destPath);
                 return true;
             } catch (Exception e) {
-                Logger.Log(LogLevel.Warning, "Could not copy file " + sourcePath + " to " + destPath + " - " + e.ToString());
+                Logger.Log(LogLevel.Warning, "Could not copy file " + sourcePath + " to " + destPath + " - " + e);
                 return false;
             }
         }
@@ -75,7 +75,7 @@ namespace commonItems {
 
                 return true;
             } catch (Exception e) {
-                Logger.Log(LogLevel.Error, "Could not copy folder: " + e.ToString());
+                Logger.Log(LogLevel.Error, "Could not copy folder: " + e);
                 return false;
             }
         }
@@ -85,7 +85,7 @@ namespace commonItems {
                 Directory.Move(sourceFolder, destFolder);
                 return true;
             } catch (Exception e) {
-                Logger.Log(LogLevel.Error, "Could not rename folder: " + e.ToString());
+                Logger.Log(LogLevel.Error, "Could not rename folder: " + e);
                 return false;
             }
         }
@@ -103,7 +103,7 @@ namespace commonItems {
                 Directory.Delete(folder, recursive: true);
                 return true;
             } catch (Exception e) {
-                Logger.Log(LogLevel.Error, "Could not delete folder: " + folder + " : " + e.ToString());
+                Logger.Log(LogLevel.Error, "Could not delete folder: " + folder + " : " + e);
                 return false;
             }
         }

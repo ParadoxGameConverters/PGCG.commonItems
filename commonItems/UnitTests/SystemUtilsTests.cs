@@ -6,7 +6,7 @@ namespace commonItems.UnitTests {
     [Collection("Sequential")]
     [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class SystemUtilsTests {
-        string testFilesPath = "UnitTests/TestFiles";
+        readonly string testFilesPath = "UnitTests/TestFiles";
         [Fact] public void GetAllFilesInFolderDoesntWorkRecursively() {
             var files = SystemUtils.GetAllFilesInFolder(testFilesPath);
             Assert.Single(files);
