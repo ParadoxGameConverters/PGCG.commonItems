@@ -80,7 +80,8 @@ namespace commonItems {
             return toReturn;
         }
 
-        /// from C++ version's OSCommonLayer
+        /// ===========================================================
+        /// functions from C++ version's OSCommonLayer
         public static string NormalizeUTF8Path(string utf8Path) {
             string asciiPath = EncodingConversions.ConvertUTF8ToASCII(utf8Path);
             asciiPath = asciiPath.Replace('/', '_');
