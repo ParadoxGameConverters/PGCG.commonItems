@@ -50,7 +50,17 @@ namespace commonItems.UnitTests {
             var version = new GameVersion(reader);
             Assert.Equal("1.2.3.4", version.ToString());
         }
-        // TODO: GameVersionCanBeSetByFactory
+        [Fact] public void GameVersionCanBeSetByFactory() {
+            var input = "= {\n"
+            + "\tfirst = 1\n"
+            + "\tsecond = 2\n"
+            + "\tthird = 3\n"
+            + "\tforth = 4\n" // paradox's misspelling
+            + "}";
+            var reader = new BufferedReader(input);
+            var version = new GameVersionFactory().GetVersion(reader);
+            Assert.Equal("1.2.3.4", version.ToString());
+        }
         [Fact]
         public void EqualityCanBeTrue() {
             var version = new GameVersion(1, 2, 3, 4);
