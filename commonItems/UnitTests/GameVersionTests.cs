@@ -256,7 +256,6 @@ namespace commonItems.UnitTests {
             Assert.True(requiredVersion.IsLargerishThan(new GameVersion("2.1.1.1")));
         }
 
-
         [Fact]
         public void LargerishFalseForLargerish() {
             var requiredVersion = new GameVersion("2.1");
