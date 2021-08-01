@@ -5,20 +5,20 @@ using System.IO;
 namespace commonItems {
     public static class SystemUtils {
         public static SortedSet<string> GetAllFilesInFolder(string path) {
-            if (DoesFolderExist(path)) {
+            if (Directory.Exists(path)) {
                 return new SortedSet<string>(Directory.GetFiles(path));
             }
             return new SortedSet<string>();
         }
         public static SortedSet<string> GetAllFilesInFolderRecursive(string path) {
-            if (DoesFolderExist(path)) {
+            if (Directory.Exists(path)) {
                 return new SortedSet<string>(Directory.GetFiles(path, "*.*", SearchOption.AllDirectories));
             }
             return new SortedSet<string>();
         }
 
         public static SortedSet<string> GetAllSubfolders(string path) {
-            if (DoesFolderExist(path)) {
+            if (Directory.Exists(path)) {
                 return new SortedSet<string>(Directory.GetDirectories(path));
             }
             return new SortedSet<string>();
@@ -90,13 +90,8 @@ namespace commonItems {
             }
         }
 
-        public static bool DoesFileExist(string path) {
-            return File.Exists(path);
-        }
-
-        public static bool DoesFolderExist(string path) {
-            return Directory.Exists(path);
-        }
+        // instead of bool DoesFileExist(path) use File.Exists(path)
+        // instead of bool DoesFolderExist(path) use Directory.Exists(path)
 
         public static bool DeleteFolder(string folder) {
             try {
