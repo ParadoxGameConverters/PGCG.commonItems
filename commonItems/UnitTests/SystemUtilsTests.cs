@@ -7,7 +7,7 @@ namespace commonItems.UnitTests {
     [Collection("Sequential")]
     [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class SystemUtilsTests {
-        readonly string testFilesPath = "UnitTests/TestFiles";
+        readonly string testFilesPath = "UnitTests/TestFiles/SystemUtilsTestFiles";
         [Fact] public void GetAllFilesInFolderDoesntWorkRecursively() {
             var files = SystemUtils.GetAllFilesInFolder(testFilesPath);
             var expected = new SortedSet<string>{
@@ -114,7 +114,7 @@ namespace commonItems.UnitTests {
             Assert.False(success);
             Assert.False(Directory.Exists(destPath));
             Assert.StartsWith("    [ERROR] Could not copy folder: " +
-                "System.IO.DirectoryNotFoundException: Source directory does not exist or could not be found: UnitTests/TestFiles/missingFolder",
+                "System.IO.DirectoryNotFoundException: Source directory does not exist or could not be found",
                 output.ToString());
         }
 

@@ -2,6 +2,7 @@
 
 namespace commonItems.UnitTests {
     public class GameVersionTests {
+        private readonly string testFilesPath = "UnitTests/TestFiles/";
         [Fact]
         public void GameVersionDefaultsToZeroZeroZeroZero() {
             var version = new GameVersion();
@@ -279,43 +280,43 @@ namespace commonItems.UnitTests {
 
         [Fact]
         public void ExtractVersionFromLauncherExtractsGameVersion() {
-            var version = GameVersion.ExtractVersionFromLauncher("launcher-settings.json");
+            var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "launcher-settings.json");
             Assert.Equal(new GameVersion("1.31.5"), version);
         }
 
         [Fact]
         public void ExtractVersionFromLauncherReturnsNulloptForMissingFile() {
-            var version = GameVersion.ExtractVersionFromLauncher("launcher-settings.json2");
+            var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "launcher-settings.json2");
             Assert.Null(version);
         }
 
         [Fact]
         public void ExtractVersionFromLauncherReturnsNulloptForMissingRawVersion() {
-            var version = GameVersion.ExtractVersionFromLauncher("ChangeLog.txt");
+            var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "ChangeLog.txt");
             Assert.Null(version);
         }
 
         [Fact]
         public void ExtractVersionFromLauncherReturnsNulloptForBrokenRawVersion() {
-            var version = GameVersion.ExtractVersionFromLauncher("broken-settings.json");
+            var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "broken-settings.json");
             Assert.Null(version);
         }
 
         [Fact]
         public void ExtractVersionFromLauncherReturnsNulloptForNonsenseRawVersion() {
-            var version = GameVersion.ExtractVersionFromLauncher("broken-settings2.json");
+            var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "broken-settings2.json");
             Assert.Null(version);
         }
 
         [Fact]
         public void ExtractVersionFromLauncherReturnsVersionForChangedRawVersion() {
-            var version = GameVersion.ExtractVersionFromLauncher("changed-settings.json");
+            var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "changed-settings.json");
             Assert.Equal(new GameVersion("1.31.5"), version);
         }
 
         [Fact]
         public void ExtractVersionFromLauncherReturnsVersionForRome() {
-            var version = GameVersion.ExtractVersionFromLauncher("rome-settings.json");
+            var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "rome-settings.json");
             Assert.Equal(new GameVersion("2.0.3"), version);
         }
     }
