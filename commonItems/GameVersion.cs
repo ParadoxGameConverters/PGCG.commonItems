@@ -11,6 +11,8 @@ namespace commonItems {
         private int? thirdPart;
         private int? fourthPart;
 
+        public GameVersion() {}
+
         public GameVersion(int? theFirstPart,
             int? theSecondPart,
             int? theThirdPart,
@@ -22,33 +24,24 @@ namespace commonItems {
         }
 
         public GameVersion(string version) {
+            version = version.Trim();
             if (string.IsNullOrEmpty(version)) {
                 return;
             }
+            var parts = version.Split('.');
 
-            var dot = version.IndexOf('.');
-            firstPart = int.Parse(version.Substring(0, dot));
-            if (dot == -1) {
-                return;
-            }
-
-            version = version.Substring(dot + 1);
-            dot = version.IndexOf('.');
-            secondPart = int.Parse(version.Substring(0, dot));
-            if (dot == -1) {
-                return;
-            }
-
-            version = version.Substring(dot + 1);
-            dot = version.IndexOf('.');
-            thirdPart = int.Parse(version.Substring(0, dot));
-            if (dot == -1) {
-                return;
-            }
-
-            version = version.Substring(dot + 1);
-            dot = version.IndexOf('.');
-            fourthPart = int.Parse(version.Substring(0, dot));
+            if (parts.Length > 0) {
+                firstPart = int.Parse(parts[0]);
+            } else return;
+            if (parts.Length > 1) {
+                secondPart = int.Parse(parts[1]);
+            } else return;
+            if (parts.Length > 2) {
+                thirdPart = int.Parse(parts[2]);
+            } else return;
+            if (parts.Length > 3) {
+                fourthPart = int.Parse(parts[3]);
+            } else return;
         }
 
         public GameVersion(BufferedReader reader) {
@@ -311,9 +304,8 @@ namespace commonItems {
             }
             if (fourthPart != null) {
                 sb.Append(fourthPart.Value);
-                sb.Append('.');
             } else {
-                sb.Append("0.");
+                sb.Append('0');
             }
             return sb.ToString();
         }
@@ -334,7 +326,6 @@ namespace commonItems {
             }
             if (firstPart != null) {
                 sb.Insert(0, firstPart.Value);
-                sb.Insert(0, '.');
             }
             return sb.ToString();
         }
@@ -417,7 +408,7 @@ namespace commonItems {
             return true;
         }
 
-        GameVersion? ExtractVersionFromLauncher(string filePath) {
+        public static GameVersion? ExtractVersionFromLauncher(string filePath) {
             // use this for modern PDX games, point filePath to launcher-settings.json to get installation version.
 
             if (!File.Exists(filePath)) {
@@ -437,8 +428,7 @@ namespace commonItems {
             return result;
         }
 
-        GameVersion? ExtractVersionByStringFromLauncher(string versionString, string filePath)
-        {
+        public static GameVersion? ExtractVersionByStringFromLauncher(string versionString, string filePath) {
             try {
                 using (StreamReader sr = File.OpenText(filePath)) {
                     while (!sr.EndOfStream) {
@@ -465,7 +455,6 @@ namespace commonItems {
                             sr.Close();
                             return null;
                         }
-
                         line = line.Substring(0, pos);
 
                         try {
@@ -475,8 +464,6 @@ namespace commonItems {
                             return null;
                         }
                     }
-
-                    sr.Close();
                 }
             } catch (Exception) {
                 return null;
