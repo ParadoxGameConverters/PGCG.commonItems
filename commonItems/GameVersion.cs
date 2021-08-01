@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +10,16 @@ namespace commonItems {
         private int? secondPart;
         private int? thirdPart;
         private int? fourthPart;
+
+        public GameVersion(int? theFirstPart,
+            int? theSecondPart,
+            int? theThirdPart,
+            int? theFourthPart) {
+            firstPart = theFirstPart;
+            secondPart = theSecondPart;
+            thirdPart = theThirdPart;
+            fourthPart = theFourthPart;
+        }
 
         public GameVersion(string version) {
             if (string.IsNullOrEmpty(version)) {
@@ -362,6 +372,117 @@ namespace commonItems {
             }
 
             return sb.ToString();
+        }
+
+        // Largerish is intended for fuzzy comparisons like "converter works with up to 1.9",
+        // so everything incoming on rhs from 0.0.0.0 to 1.9.x.y will match, (where x and y are >= 0),
+        // thus overshooting the internal "1.9.0.0" setup. This works if ".0.0" are actually undefined.
+        public bool IsLargerishThan(GameVersion rhs) {
+            var testDigit = 0;
+            if (rhs.firstPart != null) {
+                testDigit = rhs.firstPart.Value;
+            }
+
+            if (firstPart != null && testDigit > firstPart) {
+                return false;
+            }
+
+            testDigit = 0;
+            if (rhs.secondPart != null) {
+                testDigit = rhs.secondPart.Value;
+            }
+
+            if (secondPart != null && testDigit > secondPart) {
+                return false;
+            }
+
+            testDigit = 0;
+            if (rhs.thirdPart != null) {
+                testDigit = rhs.thirdPart.Value;
+            }
+
+            if (thirdPart != null && testDigit > thirdPart) {
+                return false;
+            }
+
+            testDigit = 0;
+            if (rhs.fourthPart != null) {
+                testDigit = rhs.fourthPart.Value;
+            }
+
+            if (fourthPart != null && testDigit > fourthPart) {
+                return false;
+            }
+
+            return true;
+        }
+
+        GameVersion? ExtractVersionFromLauncher(string filePath) {
+            // use this for modern PDX games, point filePath to launcher-settings.json to get installation version.
+
+            if (!File.Exists(filePath)) {
+                Logger.Log(LogLevel.Warning, "Failure extracting version: " + filePath + " does not exist.");
+                return null;
+            }
+
+            var result = ExtractVersionByStringFromLauncher("rawVersion", filePath);
+            if (result == null) {
+                // imperator rome?
+                result = ExtractVersionByStringFromLauncher("version", filePath);
+            }
+            if (result == null) {
+                Logger.Log(LogLevel.Warning, "Failure extracting version: " + filePath + " does not contain installation version!");
+                return null;
+            }
+            return result;
+        }
+
+        GameVersion? ExtractVersionByStringFromLauncher(string versionString, string filePath)
+        {
+            try {
+                using (StreamReader sr = File.OpenText(filePath)) {
+                    while (!sr.EndOfStream) {
+                        string? line = sr.ReadLine();
+                        if (line == null || !line.Contains(versionString, StringComparison.InvariantCulture)) {
+                            continue;
+                        }
+                        var pos = line.IndexOf(':');
+                        if (pos == -1) {
+                            sr.Close();
+                            return null;
+                        }
+
+                        line = line.Substring(pos + 1);
+                        pos = line.IndexOf('\"');
+                        if (pos == -1) {
+                            sr.Close();
+                            return null;
+                        }
+
+                        line = line.Substring(pos + 1);
+                        pos = line.IndexOf('\"');
+                        if (pos == -1) {
+                            sr.Close();
+                            return null;
+                        }
+
+                        line = line.Substring(0, pos);
+
+                        try {
+                            return new GameVersion(line);
+                        } catch (Exception) {
+                            sr.Close();
+                            return null;
+                        }
+                    }
+
+                    sr.Close();
+                }
+            } catch (Exception) {
+                return null;
+            }
+
+            return null;
         }
     }
 }
