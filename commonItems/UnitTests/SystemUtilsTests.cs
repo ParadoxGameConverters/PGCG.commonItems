@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
@@ -9,7 +10,10 @@ namespace commonItems.UnitTests {
         readonly string testFilesPath = "UnitTests/TestFiles";
         [Fact] public void GetAllFilesInFolderDoesntWorkRecursively() {
             var files = SystemUtils.GetAllFilesInFolder(testFilesPath);
-            Assert.Single(files);
+            var expected = new SortedSet<string>{
+                testFilesPath+"\\keyValuePair.txt"
+            };
+            Assert.Equal(expected, files);
         }
         [Fact]
         public void GetAllFilesInFolderReturnsEmptySetOnNonexistentFolder() {
@@ -19,7 +23,13 @@ namespace commonItems.UnitTests {
         [Fact]
         public void GetAllFilesInFolderRecursiveWorkRecursively() {
             var files = SystemUtils.GetAllFilesInFolderRecursive(testFilesPath);
-            Assert.Equal(4, files.Count);
+            var expected = new SortedSet<string>{
+                testFilesPath+"\\keyValuePair.txt",
+                testFilesPath+"\\subfolder\\subfolder_file.txt",
+                testFilesPath+"\\subfolder\\subfolder_file2.txt",
+                testFilesPath+"\\subfolder2\\subfolder2_file.txt"
+            };
+            Assert.Equal(expected, files);
         }
         [Fact]
         public void GetAllFilesInFolderRecursiveReturnsEmptySetOnNonexistentFolder() {
@@ -29,7 +39,11 @@ namespace commonItems.UnitTests {
         [Fact]
         public void GetAllSubfoldersGetsSubfolders() {
             var subfolders = SystemUtils.GetAllSubfolders(testFilesPath);
-            Assert.Equal(2, subfolders.Count);
+            var expected = new SortedSet<string>{
+                testFilesPath+"\\subfolder",
+                testFilesPath+"\\subfolder2"
+            };
+            Assert.Equal(expected, subfolders);
         }
         [Fact]
         public void GetAllSubfoldersReturnsEmptySetOnNonexistentFolder() {
