@@ -98,7 +98,7 @@ namespace commonItems.UnitTests {
             var sourcePath = testFilesPath + "/subfolder2";
             var destPath = testFilesPath + "/subfolder3";
             Assert.False(Directory.Exists(destPath));
-            var success = SystemUtils.CopyFolder(sourcePath, destPath);
+            var success = SystemUtils.TryCopyFolder(sourcePath, destPath);
             Assert.True(success);
             Assert.True(Directory.Exists(destPath));
             Directory.Delete(destPath, recursive: true); // cleanup
@@ -110,7 +110,7 @@ namespace commonItems.UnitTests {
 
             var sourcePath = testFilesPath + "/missingFolder";
             var destPath = testFilesPath + "/newFolder";
-            var success = SystemUtils.CopyFolder(sourcePath, destPath);
+            var success = SystemUtils.TryCopyFolder(sourcePath, destPath);
             Assert.False(success);
             Assert.False(Directory.Exists(destPath));
             Assert.StartsWith("    [ERROR] Could not copy folder: " +
@@ -124,11 +124,11 @@ namespace commonItems.UnitTests {
             var newPath = testFilesPath + "/subfolderRenamed";
             Assert.True(Directory.Exists(path));
             Assert.False(Directory.Exists(newPath));
-            var success = SystemUtils.RenameFolder(path, newPath);
+            var success = SystemUtils.TryRenameFolder(path, newPath);
             Assert.True(success);
             Assert.False(Directory.Exists(path));
             Assert.True(Directory.Exists(newPath));
-            SystemUtils.RenameFolder(newPath, path); // cleanup
+            SystemUtils.TryRenameFolder(newPath, path); // cleanup
         }
         [Fact]
         public void RenameFolderLogsErrorOnMissingSourceFolder() {
@@ -137,7 +137,7 @@ namespace commonItems.UnitTests {
 
             var sourcePath = testFilesPath + "/missingFolder";
             var destPath = testFilesPath + "/newFolder";
-            var success = SystemUtils.RenameFolder(sourcePath, destPath);
+            var success = SystemUtils.TryRenameFolder(sourcePath, destPath);
             Assert.False(success);
             Assert.False(Directory.Exists(destPath));
             Assert.StartsWith("    [ERROR] Could not rename folder: " +
@@ -149,7 +149,7 @@ namespace commonItems.UnitTests {
             var path = testFilesPath + "/tempFolder";
             SystemUtils.TryCreateFolder(path);
             Assert.True(Directory.Exists(path));
-            var success = SystemUtils.DeleteFolder(path);
+            var success = SystemUtils.TryDeleteFolder(path);
             Assert.True(success);
             Assert.False(Directory.Exists(path));
         }
@@ -159,7 +159,7 @@ namespace commonItems.UnitTests {
             Console.SetOut(output);
 
             var path = testFilesPath + "/missingFolder";
-            var success = SystemUtils.DeleteFolder(path);
+            var success = SystemUtils.TryDeleteFolder(path);
             Assert.False(success);
             Assert.StartsWith("    [ERROR] Could not delete folder: " + path + " : " + 
                 "System.IO.DirectoryNotFoundException: Could not find a part of the path",

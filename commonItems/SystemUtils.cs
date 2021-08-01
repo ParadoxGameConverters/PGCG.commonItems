@@ -43,7 +43,7 @@ namespace commonItems {
             }
         }
 
-        public static bool CopyFolder(string sourceFolder, string destFolder) {
+        public static bool TryCopyFolder(string sourceFolder, string destFolder) {
             // https://docs.microsoft.com/pl-pl/dotnet/standard/io/how-to-copy-directories
             try {
                 // Get the subdirectories for the specified directory.
@@ -70,7 +70,7 @@ namespace commonItems {
                 // Copy subdirectories and their contents to new location.
                 foreach (DirectoryInfo subdir in dirs) {
                     string tempPath = Path.Combine(destFolder, subdir.Name);
-                    CopyFolder(subdir.FullName, tempPath);
+                    TryCopyFolder(subdir.FullName, tempPath);
                 }
 
                 return true;
@@ -80,7 +80,7 @@ namespace commonItems {
             }
         }
 
-        public static bool RenameFolder(string sourceFolder, string destFolder) {
+        public static bool TryRenameFolder(string sourceFolder, string destFolder) {
             try {
                 Directory.Move(sourceFolder, destFolder);
                 return true;
@@ -90,10 +90,7 @@ namespace commonItems {
             }
         }
 
-        // instead of bool DoesFileExist(path) use File.Exists(path)
-        // instead of bool DoesFolderExist(path) use Directory.Exists(path)
-
-        public static bool DeleteFolder(string folder) {
+        public static bool TryDeleteFolder(string folder) {
             try {
                 Directory.Delete(folder, recursive: true);
                 return true;
@@ -102,5 +99,8 @@ namespace commonItems {
                 return false;
             }
         }
+
+        // instead of bool DoesFileExist(path) use File.Exists(path)
+        // instead of bool DoesFolderExist(path) use Directory.Exists(path)
     }
 }
