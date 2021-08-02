@@ -1,6 +1,6 @@
 ﻿using System;
-using Xunit;
 using System.IO;
+using Xunit;
 
 namespace commonItems.UnitTests {
     [Collection("Sequential")]
