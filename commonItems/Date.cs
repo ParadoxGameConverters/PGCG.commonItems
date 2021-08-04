@@ -88,7 +88,7 @@ namespace commonItems {
             return sb.ToString();
         }
 
-        private int[] DaysByMonth = new[] {
+        private readonly int[] DaysByMonth = new[] {
              0,	// January
 	         31,	// February
 	         59,	// March

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace commonItems.UnitTests {
     public class DateTests {
-        int decimalPlaces = 4;
+        readonly int decimalPlaces = 4;
 
         [Fact]
         public void DefaultDateIsNotSet() {
@@ -31,7 +31,7 @@ namespace commonItems.UnitTests {
         public void DateLogsBadInitialization() {
             var output = new StringWriter();
             Console.SetOut(output);
-            var date = new Date("2020.4");
+            _ = new Date("2020.4");
             Assert.StartsWith("  [WARNING] Problem inputting date: System.ArgumentOutOfRangeException", output.ToString());
         }
 
