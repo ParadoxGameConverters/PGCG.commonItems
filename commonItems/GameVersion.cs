@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace commonItems {
-    public class GameVersion : Parser {
+    public class GameVersion {
         private int? firstPart;
         private int? secondPart;
         private int? thirdPart;
@@ -45,25 +43,22 @@ namespace commonItems {
         }
 
         public GameVersion(BufferedReader reader) {
-            RegisterKeys();
-            ParseStream(reader);
-            ClearRegisteredRules();
-        }
-
-        private void RegisterKeys() {
-            RegisterKeyword("first", (reader) => {
+            var parser = new Parser();
+            parser.RegisterKeyword("first", (reader) => {
                 firstPart = new SingleInt(reader).Int;
             });
-            RegisterKeyword("second", (reader) => {
+            parser.RegisterKeyword("second", (reader) => {
                 secondPart = new SingleInt(reader).Int;
             });
-            RegisterKeyword("third", (reader) => {
+            parser.RegisterKeyword("third", (reader) => {
                 thirdPart = new SingleInt(reader).Int;
             });
-            RegisterKeyword("forth", (reader) => {
+            parser.RegisterKeyword("forth", (reader) => {
                 fourthPart = new SingleInt(reader).Int;
             });
-            RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
+            parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
+            parser.ParseStream(reader);
+            parser.ClearRegisteredRules();
         }
 
         public override bool Equals(object? obj) {
