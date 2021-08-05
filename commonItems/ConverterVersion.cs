@@ -22,18 +22,18 @@ namespace commonItems {
 
         public void LoadVersion(string fileName) {
             var parser = new Parser();
-            RegisterKeys(parser);
+            RegisterKeys(ref parser);
             parser.ParseFile(fileName);
             parser.ClearRegisteredRules();
         }
         public void LoadVersion(BufferedReader reader) {
             var parser = new Parser();
-            RegisterKeys(parser);
+            RegisterKeys(ref parser);
             parser.ParseStream(reader);
             parser.ClearRegisteredRules();
         }
 
-        private void RegisterKeys(Parser parser) {
+        private void RegisterKeys(ref Parser parser) {
             parser.RegisterKeyword("name", (sr) => {
                 Name = new SingleString(sr).String;
             });
@@ -47,18 +47,22 @@ namespace commonItems {
                 Target = new SingleString(sr).String;
             });
             parser.RegisterKeyword("minSource", (sr) => {
-                MinSource = new GameVersion(sr);
+                var str = new SingleString(sr).String;
+                MinSource = new GameVersion(str);
             });
             parser.RegisterKeyword("maxSource", (sr) => {
-                MaxSource = new GameVersion(sr);
+                var str = new SingleString(sr).String;
+                MaxSource = new GameVersion(str);
             });
             parser.RegisterKeyword("minTarget", (sr) => {
-                MinTarget = new GameVersion(sr);
+                var str = new SingleString(sr).String;
+                MinTarget = new GameVersion(str);
             });
             parser.RegisterKeyword("maxTarget", (sr) => {
-                MaxTarget = new GameVersion(sr);
+                var str = new SingleString(sr).String;
+                MaxTarget = new GameVersion(str);
             });
-            parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
+            parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreItem);
         }
 
         public string GetDescription() {
@@ -76,7 +80,7 @@ namespace commonItems {
             sb.Append(" [v");
             sb.Append(MinTarget.ToShortString());
             if (!MaxTarget.Equals(MinTarget)) {
-                sb.Append(" -v");
+                sb.Append("-v");
                 sb.Append(MaxTarget.ToShortString());
             }
             sb.Append(']');

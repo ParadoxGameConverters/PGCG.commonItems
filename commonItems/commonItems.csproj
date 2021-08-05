@@ -75,6 +75,9 @@
     <None Update="UnitTests\TestFiles\SystemUtilsTestFiles\subfolder\subfolder_file2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="UnitTests\TestFiles\version.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="Date" BeforeTargets="CoreCompile">
