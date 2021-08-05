@@ -33,7 +33,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="UnitTests\TestFiles\broken-settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\broken-settings2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\changed-settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\ChangeLog.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="UnitTests\TestFiles\keyValuePair.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\launcher-settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\rome-settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="UnitTests\TestFiles\subfolder2\subfolder2_file.txt">
@@ -43,6 +61,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="UnitTests\TestFiles\subfolder\subfolder_file2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\SystemUtilsTestFiles\keyValuePair.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\SystemUtilsTestFiles\subfolder2\subfolder2_file.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\SystemUtilsTestFiles\subfolder\subfolder_file.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="UnitTests\TestFiles\SystemUtilsTestFiles\subfolder\subfolder_file2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
