@@ -45,8 +45,6 @@ namespace commonItems {
             }
             if (parts.Length > 3) {
                 fourthPart = int.Parse(parts[3]);
-            } else {
-                return;
             }
         }
 
