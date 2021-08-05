@@ -30,16 +30,24 @@ namespace commonItems {
 
             if (parts.Length > 0) {
                 firstPart = int.Parse(parts[0]);
-            } else return;
+            } else {
+                return;
+            }
             if (parts.Length > 1) {
                 secondPart = int.Parse(parts[1]);
-            } else return;
+            } else {
+                return;
+            }
             if (parts.Length > 2) {
                 thirdPart = int.Parse(parts[2]);
-            } else return;
+            } else {
+                return;
+            }
             if (parts.Length > 3) {
                 fourthPart = int.Parse(parts[3]);
-            } else return;
+            } else {
+                return;
+            }
         }
 
         public GameVersion(BufferedReader reader) {
