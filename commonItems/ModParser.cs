@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace commonItems.ModLoader {
+namespace commonItems {
     public class ModParser : Parser {
         public string Name { get; private set; } = "";
         public string Path { get; set; } = "";

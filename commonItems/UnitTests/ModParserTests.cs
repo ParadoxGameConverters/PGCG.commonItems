@@ -1,7 +1,8 @@
-﻿using commonItems.ModLoader;
-using Xunit;
+﻿using Xunit;
 
 namespace commonItems.UnitTests {
+    [Collection("Sequential")]
+    [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class ModParserTests {
         [Fact]
         public void PrimitivesDefaultToBlank() {

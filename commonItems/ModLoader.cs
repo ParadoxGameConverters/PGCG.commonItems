@@ -33,7 +33,7 @@ public class Mod {
 }
 
 
-namespace commonItems.ModLoader {
+namespace commonItems {
     public class ModLoader {
         private Mods possibleUncompressedMods = new(); // name, absolute path to mod directory
         private Mods possibleCompressedMods = new(); // name, absolute path to zip file
@@ -41,7 +41,7 @@ namespace commonItems.ModLoader {
         
         public ModLoader() { }
 
-        void LoadMods (string gameDocumentsPath, Mods incomingMods) {
+        public void LoadMods (string gameDocumentsPath, Mods incomingMods) {
             if (incomingMods.Count == 0) {
                 // We shouldn't even be here if the save didn't have mods! Why were Mods called?
                 Logger.Log(LogLevel.Info, "No mods were detected in savegame. Skipping mod processing.");
@@ -78,6 +78,7 @@ namespace commonItems.ModLoader {
         }
         private void LoadModDirectory(string gameDocumentsPath, Mods incomingMods) {
             var modsPath = System.IO.Path.Combine(gameDocumentsPath, "mod");
+            Logger.Log(LogLevel.Debug, "MOD DEBUGGING: modsPath " + modsPath); // TODO: REMOVE DEBUG
             if (!Directory.Exists(modsPath)) {
                 throw new DirectoryNotFoundException("Mods directory path is invalid! Is it at: " + modsPath + " ?");
             }
@@ -85,15 +86,23 @@ namespace commonItems.ModLoader {
             Logger.Log(LogLevel.Info, "\tMods directory is " + modsPath);
 
             var diskModNames = SystemUtils.GetAllFilesInFolder(modsPath);
+            Logger.Log(LogLevel.Debug, "MOD DEBUGGING: mod count " + diskModNames.Count); // TODO: REMOVE DEBUG
+            foreach (var a in diskModNames) {
+                Logger.Log(LogLevel.Debug, "MOD DEBUGGING: diskmodname: " + a); // TODO: REMOVE DEBUG
+            }
+
+
             foreach (var mod in incomingMods) {
                 var trimmedModFileName = CommonFunctions.TrimPath(mod.path);
+
+                Logger.Log(LogLevel.Debug, "MOD DEBUGGING: mod trimmedModFileName " + trimmedModFileName); // TODO: REMOVE DEBUG
                 if (!diskModNames.Contains(trimmedModFileName)) {
                     if (string.IsNullOrEmpty(mod.name)) {
                         Logger.Log(LogLevel.Warning, "\t\tSavegame uses mod at " + mod.path +
-                            " which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
+                            ", which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
                     } else {
                         Logger.Log(LogLevel.Warning, "\t\tSavegame uses [" + mod.name + "] at " + mod.path +
-                            " which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
+                            ", which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
                     }
                     continue;
                 }
