@@ -58,7 +58,7 @@ namespace commonItems.UnitTests {
         }
 
         private class Test2 : Parser {
-            public string key;
+            public string key = "";
             public string? value;
             public Test2(BufferedReader bufferedReader) {
                 RegisterKeyword("\"key\"", (sr, k) => {
@@ -110,7 +110,7 @@ namespace commonItems.UnitTests {
         }
 
         private class Test3 : Parser {
-            public string key;
+            public string key = "";
             public string? value;
             public Test3(BufferedReader bufferedReader) {
                 RegisterRegex("[key]+", (sr, k) => {
@@ -130,7 +130,7 @@ namespace commonItems.UnitTests {
         }
 
         private class Test4 : Parser {
-            public string key;
+            public string key = "";
             public string? value;
             public Test4(BufferedReader bufferedReader) {
                 RegisterRegex("[k\"ey]+", (sr, k) => {
@@ -150,7 +150,7 @@ namespace commonItems.UnitTests {
         }
 
         private class Test5 : Parser {
-            public string key;
+            public string key = "";
             public string? value;
             public Test5(BufferedReader bufferedReader) {
                 RegisterRegex(CommonRegexes.Catchall, (sr, k) => {
