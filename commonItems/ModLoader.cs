@@ -25,7 +25,7 @@ public class Mod {
     public override bool Equals(object? obj) {
         return obj is Mod mod &&
                name == mod.name &&
-               path == mod.path;
+               System.IO.Path.GetFullPath(path) == System.IO.Path.GetFullPath(mod.path);
     }
     public override int GetHashCode() {
         return HashCode.Combine(name, path);
