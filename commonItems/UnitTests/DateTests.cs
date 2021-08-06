@@ -3,6 +3,8 @@ using System.IO;
 using Xunit;
 
 namespace commonItems.UnitTests {
+    [Collection("Sequential")]
+    [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class DateTests {
         readonly int decimalPlaces = 4;
 
