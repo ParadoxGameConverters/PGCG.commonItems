@@ -60,5 +60,19 @@ namespace commonItems.UnitTests {
                 item => Assert.Equal(new Mod("Packed Mod", System.IO.Path.Combine("mods", "packedmod")), item));
             Assert.True(Directory.Exists(System.IO.Path.Combine("mods", "packedmod")));
         }
+        [Fact]
+        public void BrokenCompressedModsAreNotSkippedEvenThoughTheyShouldBe() {
+            var incomingMods = new Mods {
+                new Mod("broken packed mod", "mod/brokenpacked.mod")
+            };
+
+            var modLoader = new ModLoader();
+            modLoader.LoadMods(testFilesPath, incomingMods);
+            var mods = modLoader.UsableMods;
+
+            Assert.Collection(mods,
+                item => Assert.Equal(new Mod("Broken Packed Mod", System.IO.Path.Combine("mods", "brokenpacked")), item));
+            Assert.True(Directory.Exists(System.IO.Path.Combine("mods", "brokenpacked")));
+        }
     }
 }
