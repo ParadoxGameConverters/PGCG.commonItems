@@ -42,8 +42,7 @@ namespace commonItems {
                 Path = new SingleString(sr).String;
             });
             RegisterKeyword("dependencies", (sr) => {
-                var newDependencies = new StringList(sr).Strings;
-                Dependencies.UnionWith(newDependencies);
+                Dependencies.UnionWith(new StringList(sr).Strings);
             });
             RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreItem);
         }

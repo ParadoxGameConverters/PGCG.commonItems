@@ -48,7 +48,7 @@ namespace commonItems {
                 return;
             }
 
-            // We enter this function with a vector of (optional) mod names and (required) mod file locations from the savegame.
+            // We enter this function with a List of (optional) mod names and (required) mod file locations from the savegame.
             // We need to read all the mod files, check their paths (and potential archives for ancient mods) unpack what's
             // necessary, and exit with a vector of updated mod names (savegame can differ from actual mod file) and mod folder
             // locations.
@@ -59,7 +59,8 @@ namespace commonItems {
 
             // Now we merge all detected .mod files together.
             Logger.Log(LogLevel.Info, "\tDetermining mod usability");
-            var allMods = possibleUncompressedMods;
+            var allMods = new Mods();
+            allMods.AddRange(possibleUncompressedMods);
             allMods.AddRange(possibleCompressedMods);
 
             // With a list of all detected and matched mods, we unpack the compressed ones (if any) and store the results.
@@ -78,7 +79,6 @@ namespace commonItems {
         }
         private void LoadModDirectory(string gameDocumentsPath, Mods incomingMods) {
             var modsPath = System.IO.Path.Combine(gameDocumentsPath, "mod");
-            Logger.Log(LogLevel.Debug, "MOD DEBUGGING: modsPath " + modsPath); // TODO: REMOVE DEBUG
             if (!Directory.Exists(modsPath)) {
                 throw new DirectoryNotFoundException("Mods directory path is invalid! Is it at: " + modsPath + " ?");
             }
@@ -86,16 +86,9 @@ namespace commonItems {
             Logger.Log(LogLevel.Info, "\tMods directory is " + modsPath);
 
             var diskModNames = SystemUtils.GetAllFilesInFolder(modsPath);
-            Logger.Log(LogLevel.Debug, "MOD DEBUGGING: mod count " + diskModNames.Count); // TODO: REMOVE DEBUG
-            foreach (var a in diskModNames) {
-                Logger.Log(LogLevel.Debug, "MOD DEBUGGING: diskmodname: " + a); // TODO: REMOVE DEBUG
-            }
-
-
             foreach (var mod in incomingMods) {
                 var trimmedModFileName = CommonFunctions.TrimPath(mod.path);
 
-                Logger.Log(LogLevel.Debug, "MOD DEBUGGING: mod trimmedModFileName " + trimmedModFileName); // TODO: REMOVE DEBUG
                 if (!diskModNames.Contains(trimmedModFileName)) {
                     if (string.IsNullOrEmpty(mod.name)) {
                         Logger.Log(LogLevel.Warning, "\t\tSavegame uses mod at " + mod.path +
@@ -180,7 +173,7 @@ namespace commonItems {
         }
 
         string? UncompressAndReturnNewPath(string modName) {
-            foreach(var mod in possibleUncompressedMods) {
+            foreach (var mod in possibleUncompressedMods) {
                 if (mod.name == modName) {
                     return mod.path;
                 }
@@ -190,14 +183,14 @@ namespace commonItems {
                 if (compressedMod.name != modName) {
                     continue;
                 }
+                string uncompressedName = System.IO.Path.GetFileNameWithoutExtension(compressedMod.path);
 
-                var uncompressedName = CommonFunctions.TrimPath(CommonFunctions.TrimExtension(compressedMod.path));
+                SystemUtils.TryCreateFolder("mods");
 
-                SystemUtils.TryCreateFolder("mods/");
-
-                if (!Directory.Exists("mods/" + uncompressedName)) {
+                var uncompressedPath = System.IO.Path.Combine("mods", uncompressedName);
+                if (!Directory.Exists(uncompressedPath)) {
                     Logger.Log(LogLevel.Info, "\t\tUncompressing: " + compressedMod.path);
-                    if (!ExtractZip(compressedMod.path, "mods/" + uncompressedName)) {
+                    if (!ExtractZip(compressedMod.path, uncompressedPath)) {
                         Logger.Log(LogLevel.Warning, "We're having trouble automatically uncompressing your mod.");
                         Logger.Log(LogLevel.Warning, "Please, manually uncompress: " + compressedMod.path);
                         Logger.Log(LogLevel.Warning, "Into converter's folder, mods/" + uncompressedName + " subfolder.");
@@ -206,8 +199,8 @@ namespace commonItems {
                     }
                 }
 
-                if (Directory.Exists("mods/" + uncompressedName)) {
-                    return "mods/" + uncompressedName;
+                if (Directory.Exists(uncompressedPath)) {
+                    return uncompressedPath;
                 }
                 return null;
             }
