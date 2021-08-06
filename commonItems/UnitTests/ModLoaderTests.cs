@@ -22,7 +22,7 @@ namespace commonItems.UnitTests {
             modLoader.LoadMods("UnitTests/TestFiles", incomingMods);
             var mods = modLoader.UsableMods;
 
-            Assert.Collection(mods, item => Assert.Equal(new Mod("The Mod", "TestFiles/mod/themod/"), item));
+            Assert.Collection(mods, item => Assert.Equal(new Mod("The Mod", "UnitTests/TestFiles/mod/themod"), item));
             Assert.Collection(mods[0].dependencies,
                 item => Assert.Equal("Packed Mod", item),
                 item => Assert.Equal("Missing Mod", item)
