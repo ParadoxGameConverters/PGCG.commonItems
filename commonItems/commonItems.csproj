@@ -75,6 +75,16 @@
     <None Update="UnitTests\TestFiles\SystemUtilsTestFiles\subfolder\subfolder_file2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="UnitTests\TestFiles\version.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
+
+  <Target Name="Date" BeforeTargets="CoreCompile">
+    <WriteLinesToFile File="$(IntermediateOutputPath)gen.cs" Lines="static partial class Builtin { public static long CompileTime = $([System.DateTime]::UtcNow.Ticks) %3B }" Overwrite="true" />
+    <ItemGroup>
+      <Compile Include="$(IntermediateOutputPath)gen.cs" />
+    </ItemGroup>
+  </Target>
 
 </Project>
