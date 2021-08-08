@@ -35,7 +35,6 @@ namespace commonItems {
                     subfolders.Add(System.IO.Path.GetRelativePath(path, filePath));
                 }
                 return subfolders;
-
             }
             return new SortedSet<string>();
         }
