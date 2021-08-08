@@ -151,7 +151,7 @@ namespace commonItems {
             FileUnderCategory(theMod, modFilePath);
         }
 
-        void WarnForInvalidPath(ModParser theMod, string name, string path) {
+        static void WarnForInvalidPath(ModParser theMod, string name, string path) {
             if (string.IsNullOrEmpty(name)) {
                 Logger.Log(LogLevel.Warning, "\t\tMod at " + path + " points to " + theMod.Path +
                       " which does not exist! Skipping at your risk, but this can greatly affect conversion.");
@@ -208,42 +208,9 @@ namespace commonItems {
             return null;
         }
 
-        bool ExtractZip(string archive, string path) {
-            SystemUtils.TryCreateFolder(path);
+        static bool ExtractZip(string archive, string path) {
             try {
-                using (var modFile = new ZipFile(archive)) {
-                    var enumerator = modFile.GetEnumerator();
-                    while (enumerator.MoveNext()) {
-                        var entry = (ZipEntry)enumerator.Current;
-                        var inPath = entry.Name;
-                        var name = System.IO.Path.GetFileName(inPath);
-                        if (entry.IsDirectory) {
-                            continue;
-                        }
-
-                        // Does target directory exist?
-                        var dirNamePos = inPath.IndexOf(name);
-
-                        var dirName = System.IO.Path.Combine(path, inPath.Substring(0, dirNamePos));
-                        if (!Directory.Exists(dirName)) {
-                            // We need to craft our way through to target directory.
-                            var remainder = inPath;
-                            var currentPath = path;
-                            while (remainder != name) {
-                                var pos = remainder.IndexOf('/');
-                                if (pos != -1) {
-                                    var makeDirName = remainder.Substring(0, pos);
-                                    currentPath = System.IO.Path.Combine(currentPath, makeDirName);
-                                    SystemUtils.TryCreateFolder(currentPath);
-                                    remainder = remainder.Substring(pos + 1);
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                        new FastZip().ExtractZip(archive, System.IO.Path.Combine(path, inPath), inPath);
-                    }
-                }
+                new FastZip().ExtractZip(archive, path, ".*");
             } catch(Exception e) {
                 Logger.Log(LogLevel.Error, "Extracting zip failed: " + e);
                 return false;
