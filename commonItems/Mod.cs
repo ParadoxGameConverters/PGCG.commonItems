@@ -20,7 +20,6 @@ namespace commonItems {
             Dependencies = dependencies;
         }
 
-
         public override bool Equals(object? obj) {
             return obj is Mod mod &&
                    Name == mod.Name &&

@@ -3,11 +3,10 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using Mods = System.Collections.Generic.List<commonItems.Mod>;
 
-
 namespace commonItems {
     public class ModLoader {
-        private Mods possibleUncompressedMods = new(); // name, absolute path to mod directory
-        private Mods possibleCompressedMods = new(); // name, absolute path to zip file
+        private readonly Mods possibleUncompressedMods = new(); // name, absolute path to mod directory
+        private readonly Mods possibleCompressedMods = new(); // name, absolute path to zip file
         public Mods UsableMods { get; private set; } = new(); // name, absolute path for directories, relative for unpacked
         
         public void LoadMods (string gameDocumentsPath, Mods incomingMods) {
