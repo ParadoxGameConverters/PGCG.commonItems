@@ -8,7 +8,6 @@ namespace commonItems {
         private bool compressed = false;
         public SortedSet<string> Dependencies { get; private set; } = new();
 
-        public ModParser() { }
         public void ParseMod(BufferedReader reader) {
             RegisterKeys();
             ParseStream(reader);

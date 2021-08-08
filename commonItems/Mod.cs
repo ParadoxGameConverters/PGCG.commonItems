@@ -6,27 +6,28 @@ using Path = System.String;
 
 namespace commonItems {
     public class Mod {
-        public Name name = "";
-        public Path path = "";
-        public SortedSet<Name> dependencies = new();
+        public Name Name { get; private set; } = "";
+        public Path Path { get; private set; } = "";
+        public SortedSet<string> Dependencies { get; private set; } = new();
         public Mod() { }
         public Mod(Name name, Path path) {
-            this.name = name;
-            this.path = path;
+            Name = name;
+            Path = path;
         }
         public Mod(Name name, Path path, SortedSet<Name> dependencies) {
-            this.name = name;
-            this.path = path;
-            this.dependencies = dependencies;
+            Name = name;
+            Path = path;
+            Dependencies = dependencies;
         }
+
 
         public override bool Equals(object? obj) {
             return obj is Mod mod &&
-                   name == mod.name &&
-                   System.IO.Path.GetFullPath(path) == System.IO.Path.GetFullPath(mod.path);
+                   Name == mod.Name &&
+                   System.IO.Path.GetFullPath(Path) == System.IO.Path.GetFullPath(mod.Path);
         }
         public override int GetHashCode() {
-            return HashCode.Combine(name, path);
+            return HashCode.Combine(Name, Path);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
-using Mods = System.Collections.Generic.List<Mod>;
+using Mods = System.Collections.Generic.List<commonItems.Mod>;
 
 
 namespace commonItems {
@@ -10,8 +10,6 @@ namespace commonItems {
         private Mods possibleCompressedMods = new(); // name, absolute path to zip file
         public Mods UsableMods { get; private set; } = new(); // name, absolute path for directories, relative for unpacked
         
-        public ModLoader() { }
-
         public void LoadMods (string gameDocumentsPath, Mods incomingMods) {
             if (incomingMods.Count == 0) {
                 // We shouldn't even be here if the save didn't have mods! Why were Mods called?
@@ -37,15 +35,15 @@ namespace commonItems {
             // With a list of all detected and matched mods, we unpack the compressed ones (if any) and store the results.
             foreach(var mod in allMods) {
                 // This invocation will unpack any compressed mods into our converter's folder, and skip already unpacked ones.
-                var possibleModPath = UncompressAndReturnNewPath(mod.name);
+                var possibleModPath = UncompressAndReturnNewPath(mod.Name);
                 if (possibleModPath == null) {
-                    Logger.Log(LogLevel.Warning, "\t\tFailure unpacking " + mod.name + ", skipping this mod at your risk.");
+                    Logger.Log(LogLevel.Warning, "\t\tFailure unpacking " + mod.Name + ", skipping this mod at your risk.");
                     continue;
                 }
 
                 // All verified mods go into usableMods
-                Logger.Log(LogLevel.Info, "\t\t->> Found potentially useful [" + mod.name + "]: " + possibleModPath + "/");
-                UsableMods.Add(new Mod(mod.name, possibleModPath, mod.dependencies));
+                Logger.Log(LogLevel.Info, "\t\t->> Found potentially useful [" + mod.Name + "]: " + possibleModPath + "/");
+                UsableMods.Add(new Mod(mod.Name, possibleModPath, mod.Dependencies));
             }
         }
         private void LoadModDirectory(string gameDocumentsPath, Mods incomingMods) {
@@ -58,14 +56,14 @@ namespace commonItems {
 
             var diskModNames = SystemUtils.GetAllFilesInFolder(modsPath);
             foreach (var mod in incomingMods) {
-                var trimmedModFileName = CommonFunctions.TrimPath(mod.path);
+                var trimmedModFileName = CommonFunctions.TrimPath(mod.Path);
 
                 if (!diskModNames.Contains(trimmedModFileName)) {
-                    if (string.IsNullOrEmpty(mod.name)) {
-                        Logger.Log(LogLevel.Warning, "\t\tSavegame uses mod at " + mod.path +
+                    if (string.IsNullOrEmpty(mod.Name)) {
+                        Logger.Log(LogLevel.Warning, "\t\tSavegame uses mod at " + mod.Path +
                             ", which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
                     } else {
-                        Logger.Log(LogLevel.Warning, "\t\tSavegame uses [" + mod.name + "] at " + mod.path +
+                        Logger.Log(LogLevel.Warning, "\t\tSavegame uses [" + mod.Name + "] at " + mod.Path +
                             ", which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
                     }
                     continue;
@@ -85,7 +83,7 @@ namespace commonItems {
                         "! Mod will not be useable for conversions.");
                     continue;
                 }
-                ProcessLoadedMod(theMod, mod.name, trimmedModFileName, mod.path, modsPath, gameDocumentsPath);
+                ProcessLoadedMod(theMod, mod.Name, trimmedModFileName, mod.Path, modsPath, gameDocumentsPath);
             }
         }
 
@@ -145,25 +143,25 @@ namespace commonItems {
 
         string? UncompressAndReturnNewPath(string modName) {
             foreach (var mod in possibleUncompressedMods) {
-                if (mod.name == modName) {
-                    return mod.path;
+                if (mod.Name == modName) {
+                    return mod.Path;
                 }
             }
 
             foreach (var compressedMod in possibleCompressedMods) {
-                if (compressedMod.name != modName) {
+                if (compressedMod.Name != modName) {
                     continue;
                 }
-                string uncompressedName = System.IO.Path.GetFileNameWithoutExtension(compressedMod.path);
+                string uncompressedName = System.IO.Path.GetFileNameWithoutExtension(compressedMod.Path);
 
                 SystemUtils.TryCreateFolder("mods");
 
                 var uncompressedPath = System.IO.Path.Combine("mods", uncompressedName);
                 if (!Directory.Exists(uncompressedPath)) {
-                    Logger.Log(LogLevel.Info, "\t\tUncompressing: " + compressedMod.path);
-                    if (!ExtractZip(compressedMod.path, uncompressedPath)) {
+                    Logger.Log(LogLevel.Info, "\t\tUncompressing: " + compressedMod.Path);
+                    if (!ExtractZip(compressedMod.Path, uncompressedPath)) {
                         Logger.Log(LogLevel.Warning, "We're having trouble automatically uncompressing your mod.");
-                        Logger.Log(LogLevel.Warning, "Please, manually uncompress: " + compressedMod.path);
+                        Logger.Log(LogLevel.Warning, "Please, manually uncompress: " + compressedMod.Path);
                         Logger.Log(LogLevel.Warning, "Into converter's folder, mods/" + uncompressedName + " subfolder.");
                         Logger.Log(LogLevel.Warning, "Then run the converter again. Thank you and good luck.");
                         return null;
