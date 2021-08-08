@@ -6,20 +6,35 @@ namespace commonItems {
     public static class SystemUtils {
         public static SortedSet<string> GetAllFilesInFolder(string path) {
             if (Directory.Exists(path)) {
-                return new SortedSet<string>(Directory.GetFiles(path));
+                var paths = new SortedSet<string>(Directory.GetFiles(path));
+                var files = new SortedSet<string>();
+                foreach (var filePath in paths) {
+                    files.Add(System.IO.Path.GetRelativePath(path, filePath));
+                }
+                return files;
             }
             return new SortedSet<string>();
         }
         public static SortedSet<string> GetAllFilesInFolderRecursive(string path) {
             if (Directory.Exists(path)) {
-                return new SortedSet<string>(Directory.GetFiles(path, "*.*", SearchOption.AllDirectories));
+                var paths = new SortedSet<string>(Directory.GetFiles(path, "*.*", SearchOption.AllDirectories));
+                var files = new SortedSet<string>();
+                foreach (var filePath in paths) {
+                    files.Add(System.IO.Path.GetRelativePath(path, filePath));
+                }
+                return files;
             }
             return new SortedSet<string>();
         }
 
         public static SortedSet<string> GetAllSubfolders(string path) {
             if (Directory.Exists(path)) {
-                return new SortedSet<string>(Directory.GetDirectories(path));
+                var paths = new SortedSet<string>(Directory.GetDirectories(path));
+                var subfolders = new SortedSet<string>();
+                foreach (var filePath in paths) {
+                    subfolders.Add(System.IO.Path.GetRelativePath(path, filePath));
+                }
+                return subfolders;
             }
             return new SortedSet<string>();
         }

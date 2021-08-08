@@ -21,7 +21,7 @@ namespace commonItems {
             return fileName.Substring(0, filePos);
         }
 
-        public static string TrimExtenstion(string fileName) {
+        public static string TrimExtension(string fileName) {
             var rawFile = TrimPath(fileName);
             var dotPos = rawFile.LastIndexOf('.');
             if (dotPos == -1) {
