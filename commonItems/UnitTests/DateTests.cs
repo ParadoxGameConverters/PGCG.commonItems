@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
@@ -226,6 +227,30 @@ namespace commonItems.UnitTests {
             Assert.Equal(-450, testDate.Year);
             Assert.Equal(10, testDate.Month);
             Assert.Equal(7, testDate.Day);
+        }
+
+        class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
+            public int Compare(T x, T y) {
+                return y.CompareTo(x);
+            }
+        }
+        [Fact] public void DateCanBeUsedByIComparer() {
+            var dates = new SortedSet<Date>(new DescendingComparer<Date>()) { // should keep dates in descending order
+                new Date(1000, 1, 1),
+                new Date(1000, 2, 3),
+                new Date(1000, 2, 1),
+                new Date(900, 1, 1),
+                new Date(5000, 1, 1),
+                new Date(4, 1, 1)
+            };
+            Assert.Collection(dates,
+                item => Assert.Equal(new Date(5000, 1, 1), item),
+                item => Assert.Equal(new Date(1000, 2, 3), item),
+                item => Assert.Equal(new Date(1000, 2, 1), item),
+                item => Assert.Equal(new Date(1000, 1, 1), item),
+                item => Assert.Equal(new Date(900, 1, 1), item),
+                item => Assert.Equal(new Date(4, 1, 1), item)
+            );
         }
     }
 }
