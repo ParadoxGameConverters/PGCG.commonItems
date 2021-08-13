@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace commonItems {
-    public class Date {
+    public class Date : IComparable {
         public int Year { get; private set; } = 1;
         public int Month { get; private set; } = 1;
         public int Day { get; private set; } = 1;
@@ -59,7 +59,7 @@ namespace commonItems {
             Year -= years;
         }
 
-        private int ConvertAUCtoAD(int yearAUC) {
+        private static int ConvertAUCtoAD(int yearAUC) {
             var yearAD = yearAUC - 753;
             if (yearAD <= 0) {
                 --yearAD;
@@ -135,6 +135,26 @@ namespace commonItems {
         }
         public static bool operator >=(Date lhs, Date rhs) {
             return (lhs.Equals(rhs) || (lhs > rhs));
+        }
+
+        public int CompareTo(object? obj) {
+            if (obj == null) {
+                return 1;
+            }
+
+            if (obj is Date otherDate) {
+                var result = Year.CompareTo(otherDate.Year);
+                if (result != 0) {
+                    return result;
+                }
+                result = Month.CompareTo(otherDate.Month);
+                if (result != 0) {
+                    return result;
+                }
+                return Day.CompareTo(otherDate.Day);
+            } else {
+                throw new ArgumentException("Object is not a Date");
+            }
         }
     }
 }
