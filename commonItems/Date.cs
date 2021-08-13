@@ -138,7 +138,7 @@ namespace commonItems {
         }
 
         public int CompareTo(Date? obj) {
-            if (obj == null) {
+            if (obj is null) {
                 return 1;
             }
 
@@ -151,6 +151,15 @@ namespace commonItems {
                 return result;
             }
             return Day.CompareTo(obj.Day);
+        }
+        public static bool operator ==(Date? left, Date? right) {
+            if (left is null) {
+                return right is null;
+            }
+            return left.Equals(right);
+        }
+        public static bool operator !=(Date? left, Date? right) {
+            return !(left == right);
         }
     }
 }
