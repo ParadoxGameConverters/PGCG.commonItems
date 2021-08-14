@@ -2,6 +2,7 @@
 
 namespace commonItems {
     public static class CommonFunctions {
+        public static string UTF8BOM { get; } = "\xEF\xBB\xBF";
         public static string TrimPath(string fileName) {
             string trimmedFileName = fileName;
             var lastSlash = trimmedFileName.LastIndexOf('\\');
