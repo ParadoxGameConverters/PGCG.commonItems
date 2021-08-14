@@ -12,14 +12,14 @@ namespace commonItems {
     /// but later updated
     /// </summary>
     public class BufferedReader {
-        public StreamReader StreamReader { get; }
+        private readonly StreamReader streamReader;
 
-        public BufferedReader(StreamReader reader) { StreamReader = reader; }
-        public BufferedReader(Stream stream) { StreamReader = new StreamReader(stream); }
+        public BufferedReader(StreamReader reader) { streamReader = reader; }
+        public BufferedReader(Stream stream) { streamReader = new StreamReader(stream); }
 
         public BufferedReader(string input) {
             var stream = new MemoryStream(Encoding.UTF8.GetBytes(input));
-            StreamReader = new StreamReader(stream);
+            streamReader = new StreamReader(stream);
         }
 
         private readonly Stack<int> characterStack = new();
@@ -29,7 +29,7 @@ namespace commonItems {
             if (characterStack.TryPop(out int character)) {
                 ch = character;
             } else {
-                ch = StreamReader.Read();  // could be -1 
+                ch = streamReader.Read();  // could be -1 
             }
             return ch;
         }
@@ -47,7 +47,7 @@ namespace commonItems {
         }
 
         public string? ReadLine() {
-            return StreamReader.ReadLine();
+            return streamReader.ReadLine();
         }
 
         public string ReadToEnd() {
@@ -55,18 +55,18 @@ namespace commonItems {
             while (characterStack.TryPop(out int character)) {
                 sb.Append((char)character);
             }
-            sb.Append(StreamReader.ReadToEnd());
+            sb.Append(streamReader.ReadToEnd());
             return sb.ToString();
         }
 
         public int Peek() {
-            return characterStack.TryPeek(out int character) ? character : StreamReader.Peek();
+            return characterStack.TryPeek(out int character) ? character : streamReader.Peek();
         }
 
         public bool EndOfStream {
             get {
                 if (characterStack.Count == 0) {
-                    return StreamReader.EndOfStream;
+                    return streamReader.EndOfStream;
                 }
                 return false;
             }
