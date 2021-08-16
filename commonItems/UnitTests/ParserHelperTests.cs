@@ -364,6 +364,84 @@ namespace commonItems.UnitTests {
             Assert.Equal("= foo", theItem.String);
         }
 
+
+        [Fact]
+        public void SingleLongGetsLongAfterEquals() {
+            var reader = new BufferedReader(" = 123456789012345");
+            var theLong = new SingleLong(reader).Long;
+
+            Assert.Equal(123456789012345, theLong);
+        }
+
+        [Fact]
+        public void SingleLongGetsNegativeLongAfterEquals() {
+            var reader = new BufferedReader(" = -123456789012345");
+            var theLong = new SingleLong(reader).Long;
+
+            Assert.Equal(-123456789012345, theLong);
+        }
+
+
+        [Fact]
+        public void SingleULongGetsULongAfterEquals() {
+            var reader = new BufferedReader(" = 299792458000000000");
+            var theULong = new SingleULong(reader).ULong;
+
+            Assert.Equal((ulong)299792458000000000, theULong);
+        }
+
+
+        [Fact]
+        public void SingleLongGetsQuotedLongAfterEquals() {
+            var reader = new BufferedReader(@"= ""123456789012345""");
+            var theLong = new SingleLong(reader).Long;
+
+            Assert.Equal(123456789012345, theLong);
+        }
+
+        [Fact]
+        public void SingleLongGetsQuotedNegativeLongAfterEquals() {
+            var reader = new BufferedReader(@"= ""-123456789012345""");
+            var theLong = new SingleLong(reader).Long;
+
+            Assert.Equal(-123456789012345, theLong);
+        }
+
+        [Fact]
+        public void SingleULongGetsQuotedUlongAfterEquals() {
+            var reader = new BufferedReader(@"= ""123456789012345""");
+            var theULong = new SingleULong(reader).ULong;
+
+            Assert.Equal((ulong)123456789012345, theULong);
+        }
+
+        [Fact]
+        public void SingleLongLogsInvalidInput() {
+            var reader = new BufferedReader("= foo");
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+            var theLong = new SingleLong(reader).Long;
+
+            Assert.Contains("Could not convert string foo to long!", output.ToString());
+            Assert.Equal(0, theLong);
+        }
+
+        [Fact]
+        public void SingleULongLogsInvalidInput() {
+            var reader = new BufferedReader("= foo");
+
+            var output = new StringWriter();
+            Console.SetOut(output);
+
+            var theULong = new SingleULong(reader).ULong;
+
+            Assert.Contains("Could not convert string foo to ulong!", output.ToString());
+            Assert.Equal((ulong)0, theULong);
+        }
+
+
+
         [Fact]
         public void LongListDefaultsToEmpty() {
             var reader = new BufferedReader("");
