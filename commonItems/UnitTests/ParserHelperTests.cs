@@ -82,24 +82,25 @@ namespace commonItems.UnitTests {
         public void IntListAddsInts() {
             var input = new BufferedReader("1 2 3");
             var theIntegers = new IntList(input);
-            Assert.Equal(new List<int>{1,2,3}, theIntegers.Ints);
+            Assert.Equal(new List<int> { 1, 2, 3 }, theIntegers.Ints);
         }
 
         [Fact]
-        public void IntListAddsNegativeInts()
-        {
+        public void IntListAddsNegativeInts() {
             var input = new BufferedReader("-1 -2 -3");
             var theIntegers = new IntList(input);
             Assert.Equal(new List<int> { -1, -2, -3 }, theIntegers.Ints);
         }
 
-        [Fact] public void IntListAddsQuotedInts() {
+        [Fact]
+        public void IntListAddsQuotedInts() {
             var input = new BufferedReader("\"1\" \"2\" \"3\"");
             var theIntegers = new IntList(input);
             Assert.Equal(new List<int> { 1, 2, 3 }, theIntegers.Ints);
         }
 
-        [Fact] public void IntListAddsQuotedNegativeInts() {
+        [Fact]
+        public void IntListAddsQuotedNegativeInts() {
             var input = new BufferedReader("\"-1\" \"-2\" \"-3\"");
             var theIntegers = new IntList(input);
             Assert.Equal(new List<int> { -1, -2, -3 }, theIntegers.Ints);
@@ -113,14 +114,14 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void SingleIntGetsIntAfterEquals()
-        {
+        public void SingleIntGetsIntAfterEquals() {
             var input = new BufferedReader(" = 1");
             var theInteger = new SingleInt(input);
-            Assert.Equal(1,theInteger.Int);
+            Assert.Equal(1, theInteger.Int);
         }
 
-        [Fact] public void SingleIntGetsNegativeIntAfterEquals() {
+        [Fact]
+        public void SingleIntGetsNegativeIntAfterEquals() {
             var input = new BufferedReader(" = -1");
             var theInteger = new SingleInt(input);
             Assert.Equal(-1, theInteger.Int);
@@ -134,8 +135,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void SingleIntLogsInvalidInput()
-        {
+        public void SingleIntLogsInvalidInput() {
             var output = new StringWriter();
             Console.SetOut(output);
 
@@ -146,8 +146,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void DoubleListDefaultsToEmpty()
-        {
+        public void DoubleListDefaultsToEmpty() {
             var input = new BufferedReader(string.Empty);
             var theDoubles = new DoubleList(input);
             Assert.Empty(theDoubles.Doubles);
@@ -157,7 +156,7 @@ namespace commonItems.UnitTests {
         public void DoubleListAddsDoubles() {
             var input = new BufferedReader("1.25 2.5 3.75");
             var theDoubles = new DoubleList(input);
-            Assert.Equal(new List<double> {1.25, 2.5, 3.75}, theDoubles.Doubles);
+            Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, theDoubles.Doubles);
         }
 
         [Fact]
@@ -189,8 +188,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void SingleDoubleGetsDoubleAfterEquals()
-        {
+        public void SingleDoubleGetsDoubleAfterEquals() {
             var input = new BufferedReader(" = 1.25");
             var theDouble = new SingleDouble(input);
             Assert.Equal(1.25, theDouble.Double);
@@ -215,19 +213,17 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void StringListDefaultsToEmpty()
-        {
+        public void StringListDefaultsToEmpty() {
             var input = new BufferedReader(string.Empty);
             var theStrings = new StringList(input);
             Assert.Empty(theStrings.Strings);
         }
 
         [Fact]
-        public void StringListAddsStrings()
-        {
+        public void StringListAddsStrings() {
             var input = new BufferedReader("foo bar baz");
             var theStrings = new StringList(input);
-            Assert.Equal(new List<string>{"foo","bar","baz"},theStrings.Strings);
+            Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
         }
 
         [Fact]
@@ -259,8 +255,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void SingleStringLogsErrorOnTokenNotFound()
-        {
+        public void SingleStringLogsErrorOnTokenNotFound() {
             var output = new StringWriter();
             Console.SetOut(output);
             var reader = new BufferedReader(" =");
@@ -268,12 +263,9 @@ namespace commonItems.UnitTests {
             Assert.Equal("    [ERROR] SingleString: next token not found!", output.ToString().TrimEnd());
         }
 
-        private class TestClass : Parser
-        {
-            public TestClass(BufferedReader reader)
-            {
-                RegisterKeyword("test", reader =>
-                {
+        private class TestClass : Parser {
+            public TestClass(BufferedReader reader) {
+                RegisterKeyword("test", reader => {
                     var testStr = new SingleString(reader);
                     test = testStr.String.Equals("yes");
                 });
@@ -282,12 +274,9 @@ namespace commonItems.UnitTests {
             public bool test = false;
         }
 
-        private class WrapperClass : Parser
-        {
-            public WrapperClass(BufferedReader reader)
-            {
-                RegisterRegex("[a-z]", (reader, theKey) =>
-                {
+        private class WrapperClass : Parser {
+            public WrapperClass(BufferedReader reader) {
+                RegisterRegex("[a-z]", (reader, theKey) => {
                     var newTest = new TestClass(reader);
                     theMap[theKey] = newTest.test;
                 });
@@ -297,8 +286,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void ParseStreamSkipsMissingKeyInBraces()
-        {
+        public void ParseStreamSkipsMissingKeyInBraces() {
             var output = new StringWriter();
             Console.SetOut(output);
 
@@ -312,8 +300,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void IgnoreItemIgnoresSimpleColorWithColorSpace()
-        {
+        public void IgnoreItemIgnoresSimpleColorWithColorSpace() {
             var reader1 = new BufferedReader("rgb {6 7 15} More text");
             var reader2 = new BufferedReader("hsv {0.1 1.0 0.6} More text");
             ParserHelpers.IgnoreItem(reader1);
@@ -356,7 +343,8 @@ namespace commonItems.UnitTests {
             Assert.Equal(" next_parameter = 420 More text", reader2.ReadToEnd());
         }
 
-        [Fact] public void StringOfItemConvertsBracedObjectsToStrings() {
+        [Fact]
+        public void StringOfItemConvertsBracedObjectsToStrings() {
             var input =
                 @"= {\n
                 \t{\n
@@ -374,6 +362,101 @@ namespace commonItems.UnitTests {
             var reader = new BufferedReader(" = foo");
             var theItem = new StringOfItem(reader);
             Assert.Equal("= foo", theItem.String);
+        }
+
+        [Fact]
+        public void LongListDefaultsToEmpty() {
+            var reader = new BufferedReader("");
+            var longs = new LongList(reader).Longs;
+            Assert.Empty(longs);
+        }
+
+        [Fact]
+        public void ULongListDefaultsToEmpty() {
+            var reader = new BufferedReader("");
+            var ulongs = new ULongList(reader).ULongs;
+            Assert.Empty(ulongs);
+        }
+
+
+        [Fact]
+        public void LongListAddsLongs() {
+            var reader = new BufferedReader("123456789012345 234567890123456 345678901234567");
+            var theLongs = new LongList(reader).Longs;
+
+            var expectedLlongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
+            Assert.Equal(expectedLlongs, theLongs);
+        }
+
+        [Fact]
+        public void LongListAddsNegativeLongs() {
+            var reader = new BufferedReader("-123456789012345 -234567890123456 -345678901234567");
+            var theLongs = new LongList(reader).Longs;
+
+            var expectedLongs = new List<long> { -123456789012345, -234567890123456, -345678901234567 };
+            Assert.Equal(expectedLongs, theLongs);
+        }
+
+        [Fact]
+        public void ULongListAddsLongs() {
+            var reader = new BufferedReader("299792458000000000 299792458000000304 256792458000000304");
+
+            var ulongs = new ULongList(reader).ULongs;
+
+            var expectedULongs =
+                 new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+            Assert.Equal(expectedULongs, ulongs);
+        }
+
+
+        [Fact]
+        public void LongListAddsQuotedLongs() {
+            var reader = new BufferedReader(@"""123456789012345"" ""234567890123456"" ""345678901234567""");
+            var theLongs = new LongList(reader).Longs;
+
+            var expectedLongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
+            Assert.Equal(expectedLongs, theLongs);
+        }
+
+        [Fact]
+        public void LongListAddsQuotedNegativeLongs() {
+            var reader = new BufferedReader(@"""-123456789012345"" ""-234567890123456"" ""-345678901234567""");
+            var theLongs = new LongList(reader).Longs;
+
+            var expectedLongs = new List<long> { -123456789012345, -234567890123456, -345678901234567 };
+            Assert.Equal(expectedLongs, theLongs);
+        }
+
+        [Fact]
+        public void ULongListAddsQuotedLongs() {
+            var reader = new BufferedReader(@"""299792458000000000"" ""299792458000000304"" ""256792458000000304""");
+
+            var ulongs = new ULongList(reader).ULongs;
+
+            var expectedULongs =
+                 new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+            Assert.Equal(expectedULongs, ulongs);
+        }
+
+
+        [Fact]
+        public void LongListAddsLongsFromBracedBlock() {
+            var reader = new BufferedReader(" = {123456789012345 234567890123456 345678901234567} 456789012345678");
+            var theLongs = new LongList(reader).Longs;
+
+            var expectedLongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
+            Assert.Equal(expectedLongs, theLongs);
+        }
+
+        [Fact]
+        public void ULongListAddsULongsFromBracedBlock() {
+            var reader = new BufferedReader(" = {299792458000000000 299792458000000304 256792458000000304} 256796558000000304");
+
+            var ulongs = new ULongList(reader).ULongs;
+
+            var expectedULongs =
+                 new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+            Assert.Equal(expectedULongs, ulongs);
         }
     }
 }
