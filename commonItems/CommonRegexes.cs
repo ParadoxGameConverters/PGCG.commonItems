@@ -12,7 +12,10 @@
         public const string QuotedFloat = @"""-?\d+(.\d+)?""";
 
         // strings
-        public const string StringRegex = @"[^\s^=^\{^\}^\""]+";
+        public const string String = @"[^\s^=^\{^\}^\""]+";
         public const string QuotedString = @"""[^\n^=^\{^\}^\""]+""";
+
+        // dates
+        public const string Date = @"\d+[.]\d+[.]\d+";
     }
 }
