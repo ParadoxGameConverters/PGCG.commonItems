@@ -16,7 +16,7 @@ jobs:
     - name: "Init submodules"
       run: |
        git submodule update --init --recursive
-       
+
     # install dependencies, build, and test
     - name: Setup Dotnet for use with actions
       uses: actions/setup-dotnet@v1
@@ -28,4 +28,4 @@ jobs:
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: commonItems/TestResults/coverage.info 
+        path-to-lcov: commonItems/TestResults/coverage.info
