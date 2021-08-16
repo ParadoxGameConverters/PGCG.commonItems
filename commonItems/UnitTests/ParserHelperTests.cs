@@ -364,7 +364,6 @@ namespace commonItems.UnitTests {
             Assert.Equal("= foo", theItem.String);
         }
 
-
         [Fact]
         public void SingleLongGetsLongAfterEquals() {
             var reader = new BufferedReader(" = 123456789012345");
@@ -381,7 +380,6 @@ namespace commonItems.UnitTests {
             Assert.Equal(-123456789012345, theLong);
         }
 
-
         [Fact]
         public void SingleULongGetsULongAfterEquals() {
             var reader = new BufferedReader(" = 299792458000000000");
@@ -389,7 +387,6 @@ namespace commonItems.UnitTests {
 
             Assert.Equal((ulong)299792458000000000, theULong);
         }
-
 
         [Fact]
         public void SingleLongGetsQuotedLongAfterEquals() {
@@ -440,8 +437,6 @@ namespace commonItems.UnitTests {
             Assert.Equal((ulong)0, theULong);
         }
 
-
-
         [Fact]
         public void LongListDefaultsToEmpty() {
             var reader = new BufferedReader("");
@@ -455,7 +450,6 @@ namespace commonItems.UnitTests {
             var ulongs = new ULongList(reader).ULongs;
             Assert.Empty(ulongs);
         }
-
 
         [Fact]
         public void LongListAddsLongs() {
@@ -486,7 +480,6 @@ namespace commonItems.UnitTests {
             Assert.Equal(expectedULongs, ulongs);
         }
 
-
         [Fact]
         public void LongListAddsQuotedLongs() {
             var reader = new BufferedReader(@"""123456789012345"" ""234567890123456"" ""345678901234567""");
@@ -515,7 +508,6 @@ namespace commonItems.UnitTests {
                  new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
             Assert.Equal(expectedULongs, ulongs);
         }
-
 
         [Fact]
         public void LongListAddsLongsFromBracedBlock() {
