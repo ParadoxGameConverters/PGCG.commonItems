@@ -86,6 +86,18 @@ namespace commonItems {
         public long Long { get; }
     }
 
+    public class SingleULong {
+        public SingleULong(BufferedReader sr) {
+            var ulongString = StringUtils.RemQuotes(new SingleString(sr).String);
+            if (!ulong.TryParse(ulongString, out ulong theULong)) {
+                Logger.Log(LogLevel.Warning, "Could not convert string " + ulongString + " to ulong!");
+                return;
+            }
+            ULong = theULong;
+        }
+        public ulong ULong { get; }
+    }
+
     public class SingleDouble {
         public SingleDouble(BufferedReader sr) {
             var doubleString = StringUtils.RemQuotes(new SingleString(sr).String);
@@ -140,6 +152,21 @@ namespace commonItems {
             ParseStream(sr);
         }
         public List<long> Longs { get; } = new();
+    }
+
+    public class ULongList : Parser {
+        public ULongList(BufferedReader sr) {
+            RegisterRegex(CommonRegexes.Integer, (sr, ulongString) => {
+                ULongs.Add(ulong.Parse(ulongString));
+            });
+            RegisterRegex(CommonRegexes.QuotedInteger, (sr, ulongString) => {
+                // remove quotes
+                ulongString = ulongString[1..^1];
+                ULongs.Add(ulong.Parse(ulongString));
+            });
+            ParseStream(sr);
+        }
+        public List<ulong> ULongs { get; } = new();
     }
 
     public class DoubleList : Parser {
