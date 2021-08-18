@@ -79,7 +79,7 @@ namespace commonItems {
                     theMod.ParseMod(modFilePath);
                 } catch(Exception e) {
                     Logger.Log(LogLevel.Warning, "\t\tError while reading " + modFilePath +
-                        "! Mod will not be useable for conversions.");
+                        "! Mod will not be useable for conversions. Exception: " + e);
                     continue;
                 }
                 ProcessLoadedMod(theMod, mod.Name, trimmedModFileName, mod.Path, modsPath, gameDocumentsPath);

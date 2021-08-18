@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace commonItems {
-    class StringUtils {
+﻿namespace commonItems {
+    public static class StringUtils {
         public static string RemQuotes(string str) {
             var length = str.Length;
             if (length < 2) {

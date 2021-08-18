@@ -414,7 +414,7 @@ namespace commonItems.UnitTests {
                 });
                 ParseStream(reader);
             }
-            public Color? color;
+            public Color color = new();
         }
         [Fact] public void ColorCanBeInitializedFromLongerStream() {
             var reader = new BufferedReader("= { color = { 64 128 128 } } more text");

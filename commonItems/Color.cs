@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace commonItems {
-    class Color {
+    public class Color {
         public Color() {}
         public Color(int[] rgbComponents) {
             RgbComponents = rgbComponents;
