@@ -6,7 +6,7 @@ namespace commonItems {
         public string Path { get; set; } = "";
 
         private bool compressed = false;
-        public SortedSet<string> Dependencies { get; private set; } = new();
+        public SortedSet<string> Dependencies { get; } = new();
 
         public void ParseMod(BufferedReader reader) {
             RegisterKeys();

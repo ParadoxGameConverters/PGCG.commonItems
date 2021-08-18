@@ -7,7 +7,7 @@ namespace commonItems {
     public class ModLoader {
         private readonly Mods possibleUncompressedMods = new(); // name, absolute path to mod directory
         private readonly Mods possibleCompressedMods = new(); // name, absolute path to zip file
-        public Mods UsableMods { get; private set; } = new(); // name, absolute path for directories, relative for unpacked
+        public Mods UsableMods { get; } = new(); // name, absolute path for directories, relative for unpacked
         
         public void LoadMods (string gameDocumentsPath, Mods incomingMods) {
             if (incomingMods.Count == 0) {

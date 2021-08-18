@@ -6,9 +6,9 @@ using Path = System.String;
 
 namespace commonItems {
     public class Mod {
-        public Name Name { get; private set; } = "";
-        public Path Path { get; private set; } = "";
-        public SortedSet<string> Dependencies { get; private set; } = new();
+        public Name Name { get; } = "";
+        public Path Path { get; } = "";
+        public SortedSet<string> Dependencies { get; } = new();
         public Mod() { }
         public Mod(Name name, Path path) {
             Name = name;

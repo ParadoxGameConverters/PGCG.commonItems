@@ -53,8 +53,8 @@ namespace commonItems {
             GetNextTokenWithoutMatching(sr);
 
             var token = GetNextTokenWithoutMatching(sr);
-            if (token == null) {
-                Logger.Log(LogLevel.Error, "SingleString: next token not found!"); ;
+            if (token is null) {
+                Logger.Log(LogLevel.Error, "SingleString: next token not found!");
             } else {
                 String = StringUtils.RemQuotes(token);
             }

@@ -7,7 +7,7 @@ namespace commonItems.UnitTests {
     [Collection("Sequential")]
     [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class DateTests {
-        readonly int decimalPlaces = 4;
+        private const int decimalPlaces = 4;
 
         [Fact]
         public void DefaultDateIsNotSet() {

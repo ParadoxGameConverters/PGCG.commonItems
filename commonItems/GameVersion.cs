@@ -418,18 +418,18 @@ namespace commonItems {
             }
 
             var result = ExtractVersionByStringFromLauncher("rawVersion", filePath);
-            if (result == null) {
+            if (result is null) {
                 // imperator rome?
                 result = ExtractVersionByStringFromLauncher("version", filePath);
             }
-            if (result == null) {
+            if (result is null) {
                 Logger.Log(LogLevel.Warning, "Failure extracting version: " + filePath + " does not contain installation version!");
                 return null;
             }
             return result;
         }
 
-        public static GameVersion? ExtractVersionByStringFromLauncher(string versionString, string filePath) {
+        private static GameVersion? ExtractVersionByStringFromLauncher(string versionString, string filePath) {
             try {
                 using (StreamReader sr = File.OpenText(filePath)) {
                     while (!sr.EndOfStream) {

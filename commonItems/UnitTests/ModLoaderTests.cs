@@ -10,7 +10,7 @@ namespace commonItems.UnitTests {
         readonly string testFilesPath = "UnitTests/TestFiles";
         [Fact] public void ModsCanBeLocatedUnpackedAndUpdated() {
             var incomingMods = new Mods {
-                new Mod("Some mod", "mod/themod.mod") // mod's in fact named "The Mod" in the file
+                new("Some mod", "mod/themod.mod") // mod's in fact named "The Mod" in the file
             };
 
             var modLoader = new ModLoader();
@@ -26,10 +26,10 @@ namespace commonItems.UnitTests {
         }
         [Fact] public void BrokenMissingAndNonexistentModsAreDiscarded() {
             var incomingMods = new Mods {
-                new Mod("", "mod/themod.mod"), // no name given
-                new Mod("Broken mod", "mod/brokenmod.mod"), // no path
-                new Mod("Missing mod", "mod/missingmod.mod"), // missing directory
-                new Mod("Nonexistent mod", "mod/nonexistentmod.mod") // doesn't exist.
+                new("", "mod/themod.mod"), // no name given
+                new("Broken mod", "mod/brokenmod.mod"), // no path
+                new("Missing mod", "mod/missingmod.mod"), // missing directory
+                new("Nonexistent mod", "mod/nonexistentmod.mod") // doesn't exist.
             };
 
             var modLoader = new ModLoader();
@@ -42,7 +42,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void CompressedModsCanBeUnpacked() {
             var incomingMods = new Mods {
-                new Mod("some packed mod", "mod/packedmod.mod")
+                new("some packed mod", "mod/packedmod.mod")
             };
 
             var modLoader = new ModLoader();
@@ -59,7 +59,7 @@ namespace commonItems.UnitTests {
             Console.SetOut(output);
 
             var incomingMods = new Mods {
-                new Mod("broken packed mod", "mod/brokenpacked.mod")
+                new("broken packed mod", "mod/brokenpacked.mod")
             };
 
             var modLoader = new ModLoader();

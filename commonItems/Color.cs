@@ -188,7 +188,7 @@ namespace commonItems {
             0, 0, 0
         };
 
-        public double[] HsvComponents { get; private set; } = {
+        public double[] HsvComponents { get; } = {
             0, 0, 0
         };
     }
