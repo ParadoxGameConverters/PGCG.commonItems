@@ -1,0 +1,31 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: "Init submodules"
+      run: |
+       git submodule update --init --recursive
+
+    # install dependencies, build, and test
+    - name: Setup Dotnet for use with actions
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.*'
+    - name: Run tests
+      run: dotnet test commonItems/commonItems.csproj /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=\"**/Microsoft.NET.Test.Sdk.Program.cs\"
+    - name: Publish coverage report to coveralls.io
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: commonItems/TestResults/coverage.info
