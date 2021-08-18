@@ -74,6 +74,30 @@ namespace commonItems {
         public int Int { get; }
     }
 
+    public class SingleLong {
+        public SingleLong(BufferedReader sr) {
+            var longString = StringUtils.RemQuotes(new SingleString(sr).String);
+            if (!long.TryParse(longString, out long theLong)) {
+                Logger.Log(LogLevel.Warning, "Could not convert string " + longString + " to long!");
+                return;
+            }
+            Long = theLong;
+        }
+        public long Long { get; }
+    }
+
+    public class SingleULong {
+        public SingleULong(BufferedReader sr) {
+            var ulongString = StringUtils.RemQuotes(new SingleString(sr).String);
+            if (!ulong.TryParse(ulongString, out ulong theULong)) {
+                Logger.Log(LogLevel.Warning, "Could not convert string " + ulongString + " to ulong!");
+                return;
+            }
+            ULong = theULong;
+        }
+        public ulong ULong { get; }
+    }
+
     public class SingleDouble {
         public SingleDouble(BufferedReader sr) {
             var doubleString = StringUtils.RemQuotes(new SingleString(sr).String);
@@ -89,7 +113,7 @@ namespace commonItems {
     public class StringList : Parser {
         public StringList(BufferedReader sr) {
             RegisterKeyword("\"\"", sr => { });
-            RegisterRegex(CommonRegexes.StringRegex, (sr, theString) => {
+            RegisterRegex(CommonRegexes.String, (sr, theString) => {
                 Strings.Add(theString);
             });
             RegisterRegex(CommonRegexes.QuotedString, (sr, theString) => {
@@ -113,6 +137,36 @@ namespace commonItems {
             ParseStream(sr);
         }
         public List<int> Ints { get; } = new();
+    }
+
+    public class LongList : Parser {
+        public LongList(BufferedReader sr) {
+            RegisterRegex(CommonRegexes.Integer, (sr, longString) => {
+                Longs.Add(long.Parse(longString));
+            });
+            RegisterRegex(CommonRegexes.QuotedInteger, (sr, longString) => {
+                // remove quotes
+                longString = longString[1..^1];
+                Longs.Add(long.Parse(longString));
+            });
+            ParseStream(sr);
+        }
+        public List<long> Longs { get; } = new();
+    }
+
+    public class ULongList : Parser {
+        public ULongList(BufferedReader sr) {
+            RegisterRegex(CommonRegexes.Integer, (sr, ulongString) => {
+                ULongs.Add(ulong.Parse(ulongString));
+            });
+            RegisterRegex(CommonRegexes.QuotedInteger, (sr, ulongString) => {
+                // remove quotes
+                ulongString = ulongString[1..^1];
+                ULongs.Add(ulong.Parse(ulongString));
+            });
+            ParseStream(sr);
+        }
+        public List<ulong> ULongs { get; } = new();
     }
 
     public class DoubleList : Parser {
