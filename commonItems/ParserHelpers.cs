@@ -113,7 +113,7 @@ namespace commonItems {
     public class StringList : Parser {
         public StringList(BufferedReader sr) {
             RegisterKeyword("\"\"", sr => { });
-            RegisterRegex(CommonRegexes.StringRegex, (sr, theString) => {
+            RegisterRegex(CommonRegexes.String, (sr, theString) => {
                 Strings.Add(theString);
             });
             RegisterRegex(CommonRegexes.QuotedString, (sr, theString) => {
