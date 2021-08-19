@@ -26,18 +26,10 @@ namespace commonItems {
         }
 
         private void RegisterKeys(ref Parser parser) {
-            parser.RegisterKeyword("name", (sr) => {
-                Name = new SingleString(sr).String;
-            });
-            parser.RegisterKeyword("version", (sr) => {
-                Version = new SingleString(sr).String;
-            });
-            parser.RegisterKeyword("source", (sr) => {
-                Source = new SingleString(sr).String;
-            });
-            parser.RegisterKeyword("target", (sr) => {
-                Target = new SingleString(sr).String;
-            });
+            parser.RegisterKeyword("name", (sr) => Name = new SingleString(sr).String);
+            parser.RegisterKeyword("version", (sr) => Version = new SingleString(sr).String);
+            parser.RegisterKeyword("source", (sr) => Source = new SingleString(sr).String);
+            parser.RegisterKeyword("target", (sr) => Target = new SingleString(sr).String);
             parser.RegisterKeyword("minSource", (sr) => {
                 var str = new SingleString(sr).String;
                 MinSource = new GameVersion(str);
@@ -83,7 +75,7 @@ namespace commonItems {
             var sb = new StringBuilder();
             sb.Append("\n\n");
             sb.Append("************ -= The Paradox Game Converters Group =- *****************\n");
-            
+
             if (!string.IsNullOrEmpty(Version) && !string.IsNullOrEmpty(Name)) {
                 sb.Append("* Converter version ");
                 sb.Append(Version);

@@ -49,8 +49,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void WrongQuotedKeywordsAreMatched()
-        {
+        public void WrongQuotedKeywordsAreMatched() {
             var bufferedReader = new BufferedReader("\"key_wrong\" = value");
             var test = new Test(bufferedReader);
             Assert.Null(test.key);
@@ -103,7 +102,7 @@ namespace commonItems.UnitTests {
 
         [Fact]
         public void WrongKeywordsAreIgnored() {
-            var bufferedReader = new BufferedReader(@"wrongKey = value");
+            var bufferedReader = new BufferedReader("wrongKey = value");
             var test = new Test(bufferedReader);
             Assert.True(string.IsNullOrEmpty(test.key));
             Assert.True(string.IsNullOrEmpty(test.value));
@@ -184,13 +183,11 @@ namespace commonItems.UnitTests {
             Assert.Equal("\"this = is a silly { key\t} \"", test.key);
             Assert.Equal("value", test.value);
         }
-        
-        private class Test6 : Parser
-        {
+
+        private class Test6 : Parser {
             public uint keyCount = 0;
             public Test6(BufferedReader bufferedReader) {
-                RegisterRegex(CommonRegexes.Catchall, sr =>
-                {
+                RegisterRegex(CommonRegexes.Catchall, sr => {
                     ++keyCount;
                     ParserHelpers.IgnoreItem(sr);
                 });
@@ -219,8 +216,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void NewLineEndsLexeme()
-        {
+        public void NewLineEndsLexeme() {
             var reader = new BufferedReader("lexeme\nlexeme2");
             var lexeme = Parser.GetNextLexeme(reader);
             Assert.Equal("lexeme", lexeme);
@@ -236,8 +232,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void FileNotFoundIsLogged()
-        {
+        public void FileNotFoundIsLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
 
@@ -245,13 +240,10 @@ namespace commonItems.UnitTests {
             Assert.Equal("    [ERROR] Could not open missingFile.txt for parsing", output.ToString().TrimEnd());
         }
 
-        private class FileTest : Parser
-        {
+        private class FileTest : Parser {
             public string? value;
-            public FileTest(string filename)
-            {
-                RegisterKeyword("key1", (sr) =>
-                {
+            public FileTest(string filename) {
+                RegisterKeyword("key1", (sr) => {
                     value = new SingleString(sr).String;
                 });
                 ParseFile(filename);
@@ -259,8 +251,7 @@ namespace commonItems.UnitTests {
         }
 
         [Fact]
-        public void ParserCanParseFiles()
-        {
+        public void ParserCanParseFiles() {
             const string filename = "UnitTests/TestFiles/keyValuePair.txt";
             var value = new FileTest(filename).value;
             Assert.Equal("value1", value);
@@ -289,7 +280,7 @@ namespace commonItems.UnitTests {
                     key = k;
                     value = new SingleString(sr).String;
                 });
-                RegisterKeyword("broken", (sr, k) => { broken = k; });
+                RegisterKeyword("broken", (_, k) => broken = k);
                 ParseStream(bufferedReader);
             }
         };

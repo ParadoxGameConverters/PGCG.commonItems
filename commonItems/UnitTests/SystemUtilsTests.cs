@@ -7,7 +7,7 @@ namespace commonItems.UnitTests {
     [Collection("Sequential")]
     [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class SystemUtilsTests {
-        readonly string testFilesPath = "UnitTests/TestFiles/SystemUtilsTestFiles";
+        private readonly string testFilesPath = "UnitTests/TestFiles/SystemUtilsTestFiles";
         [Fact] public void GetAllFilesInFolderDoesntWorkRecursively() {
             var files = SystemUtils.GetAllFilesInFolder(testFilesPath);
             var expected = new SortedSet<string>{
@@ -61,7 +61,7 @@ namespace commonItems.UnitTests {
             var output = new StringWriter();
             Console.SetOut(output);
 
-            var path = "";
+            const string path = "";
             var created = SystemUtils.TryCreateFolder(path);
             Assert.False(created);
             Assert.False(Directory.Exists(path));
@@ -161,7 +161,7 @@ namespace commonItems.UnitTests {
             var path = testFilesPath + "/missingFolder";
             var success = SystemUtils.TryDeleteFolder(path);
             Assert.False(success);
-            Assert.StartsWith("    [ERROR] Could not delete folder: " + path + " : " + 
+            Assert.StartsWith("    [ERROR] Could not delete folder: " + path + " : " +
                 "System.IO.DirectoryNotFoundException: Could not find a part of the path",
                 output.ToString());
         }

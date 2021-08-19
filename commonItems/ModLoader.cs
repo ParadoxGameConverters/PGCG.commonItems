@@ -8,8 +8,8 @@ namespace commonItems {
         private readonly Mods possibleUncompressedMods = new(); // name, absolute path to mod directory
         private readonly Mods possibleCompressedMods = new(); // name, absolute path to zip file
         public Mods UsableMods { get; } = new(); // name, absolute path for directories, relative for unpacked
-        
-        public void LoadMods (string gameDocumentsPath, Mods incomingMods) {
+
+        public void LoadMods(string gameDocumentsPath, Mods incomingMods) {
             if (incomingMods.Count == 0) {
                 // We shouldn't even be here if the save didn't have mods! Why were Mods called?
                 Logger.Log(LogLevel.Info, "No mods were detected in savegame. Skipping mod processing.");
@@ -32,7 +32,7 @@ namespace commonItems {
             allMods.AddRange(possibleCompressedMods);
 
             // With a list of all detected and matched mods, we unpack the compressed ones (if any) and store the results.
-            foreach(var mod in allMods) {
+            foreach (var mod in allMods) {
                 // This invocation will unpack any compressed mods into our converter's folder, and skip already unpacked ones.
                 var possibleModPath = UncompressAndReturnNewPath(mod.Name);
                 if (possibleModPath == null) {
@@ -77,7 +77,7 @@ namespace commonItems {
                 var modFilePath = System.IO.Path.Combine(modsPath, trimmedModFileName);
                 try {
                     theMod.ParseMod(modFilePath);
-                } catch(Exception e) {
+                } catch (Exception e) {
                     Logger.Log(LogLevel.Warning, "\t\tError while reading " + modFilePath +
                         "! Mod will not be useable for conversions. Exception: " + e);
                     continue;
@@ -86,7 +86,7 @@ namespace commonItems {
             }
         }
 
-        void ProcessLoadedMod(ModParser theMod, string modName, string modFileName, string modPath, string modsPath, string gameDocumentsPath) {
+        private void ProcessLoadedMod(ModParser theMod, string modName, string modFileName, string modPath, string modsPath, string gameDocumentsPath) {
             var modFilePath = System.IO.Path.Combine(modsPath, modFileName);
             if (!theMod.IsValid()) {
                 Logger.Log(LogLevel.Warning, "\t\tMod at " + modFilePath + " does not look valid.");
@@ -119,7 +119,7 @@ namespace commonItems {
             FileUnderCategory(theMod, modFilePath);
         }
 
-        static void WarnForInvalidPath(ModParser theMod, string name, string path) {
+        private static void WarnForInvalidPath(ModParser theMod, string name, string path) {
             if (string.IsNullOrEmpty(name)) {
                 Logger.Log(LogLevel.Warning, "\t\tMod at " + path + " points to " + theMod.Path +
                       " which does not exist! Skipping at your risk, but this can greatly affect conversion.");
@@ -128,7 +128,7 @@ namespace commonItems {
             }
         }
 
-        void FileUnderCategory(ModParser theMod, string path) {
+        private void FileUnderCategory(ModParser theMod, string path) {
             if (!theMod.IsCompressed()) {
                 possibleUncompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies));
                 Logger.Log(LogLevel.Info, "\t\tFound a potential mod [" + theMod.Name + "] with a mod file at " + path
@@ -140,7 +140,7 @@ namespace commonItems {
             }
         }
 
-        string? UncompressAndReturnNewPath(string modName) {
+        private string? UncompressAndReturnNewPath(string modName) {
             foreach (var mod in possibleUncompressedMods) {
                 if (mod.Name == modName) {
                     return mod.Path;
@@ -179,7 +179,7 @@ namespace commonItems {
         static bool ExtractZip(string archive, string path) {
             try {
                 new FastZip().ExtractZip(archive, path, ".*");
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Logger.Log(LogLevel.Error, "Extracting zip failed: " + e);
                 return false;
             }

@@ -73,11 +73,11 @@ namespace commonItems {
             }
             var testL = 0;
             var testR = 0;
-            if (firstPart != null) {
+            if (firstPart is not null) {
                 testL = firstPart.Value;
             }
 
-            if (rhs.firstPart != null) {
+            if (rhs.firstPart is not null) {
                 testR = rhs.firstPart.Value;
             }
 
@@ -87,11 +87,11 @@ namespace commonItems {
 
             testL = 0;
             testR = 0;
-            if (secondPart != null) {
+            if (secondPart is not null) {
                 testL = secondPart.Value;
             }
 
-            if (rhs.secondPart != null) {
+            if (rhs.secondPart is not null) {
                 testR = rhs.secondPart.Value;
             }
 
@@ -101,11 +101,11 @@ namespace commonItems {
 
             testL = 0;
             testR = 0;
-            if (thirdPart != null) {
+            if (thirdPart is not null) {
                 testL = thirdPart.Value;
             }
 
-            if (rhs.thirdPart != null) {
+            if (rhs.thirdPart is not null) {
                 testR = rhs.thirdPart.Value;
             }
 
@@ -115,19 +115,15 @@ namespace commonItems {
 
             testL = 0;
             testR = 0;
-            if (fourthPart != null) {
+            if (fourthPart is not null) {
                 testL = fourthPart.Value;
             }
 
-            if (rhs.fourthPart != null) {
+            if (rhs.fourthPart is not null) {
                 testR = rhs.fourthPart.Value;
             }
 
-            if (testL != testR) {
-                return false;
-            }
-
-            return true;
+            return testL == testR;
         }
 
         public override int GetHashCode() {
@@ -285,25 +281,25 @@ namespace commonItems {
 
         public override string ToString() {
             var sb = new StringBuilder();
-            if (firstPart != null) {
+            if (firstPart is not null) {
                 sb.Append(firstPart.Value);
                 sb.Append('.');
             } else {
                 sb.Append("0.");
             }
-            if (secondPart != null) {
+            if (secondPart is not null) {
                 sb.Append(secondPart.Value);
                 sb.Append('.');
             } else {
                 sb.Append("0.");
             }
-            if (thirdPart != null) {
+            if (thirdPart is not null) {
                 sb.Append(thirdPart.Value);
                 sb.Append('.');
             } else {
                 sb.Append("0.");
             }
-            if (fourthPart != null) {
+            if (fourthPart is not null) {
                 sb.Append(fourthPart.Value);
             } else {
                 sb.Append('0');
@@ -313,19 +309,19 @@ namespace commonItems {
 
         public string ToShortString() {
             var sb = new StringBuilder();
-            if (fourthPart != null) {
+            if (fourthPart is not null) {
                 sb.Append('.');
                 sb.Append(fourthPart.Value);
             }
-            if (thirdPart != null) {
+            if (thirdPart is not null) {
                 sb.Insert(0, thirdPart.Value);
                 sb.Insert(0, '.');
             }
-            if (secondPart != null) {
+            if (secondPart is not null) {
                 sb.Insert(0, secondPart.Value);
                 sb.Insert(0, '.');
             }
-            if (firstPart != null) {
+            if (firstPart is not null) {
                 sb.Insert(0, firstPart.Value);
             }
             return sb.ToString();
@@ -371,38 +367,38 @@ namespace commonItems {
         // thus overshooting the internal "1.9.0.0" setup. This works if ".0.0" are actually undefined.
         public bool IsLargerishThan(GameVersion rhs) {
             var testDigit = 0;
-            if (rhs.firstPart != null) {
+            if (rhs.firstPart is not null) {
                 testDigit = rhs.firstPart.Value;
             }
 
-            if (firstPart != null && testDigit > firstPart) {
+            if (firstPart is not null && testDigit > firstPart) {
                 return false;
             }
 
             testDigit = 0;
-            if (rhs.secondPart != null) {
+            if (rhs.secondPart is not null) {
                 testDigit = rhs.secondPart.Value;
             }
 
-            if (secondPart != null && testDigit > secondPart) {
+            if (secondPart is not null && testDigit > secondPart) {
                 return false;
             }
 
             testDigit = 0;
-            if (rhs.thirdPart != null) {
+            if (rhs.thirdPart is not null) {
                 testDigit = rhs.thirdPart.Value;
             }
 
-            if (thirdPart != null && testDigit > thirdPart) {
+            if (thirdPart is not null && testDigit > thirdPart) {
                 return false;
             }
 
             testDigit = 0;
-            if (rhs.fourthPart != null) {
+            if (rhs.fourthPart is not null) {
                 testDigit = rhs.fourthPart.Value;
             }
 
-            if (fourthPart != null && testDigit > fourthPart) {
+            if (fourthPart is not null && testDigit > fourthPart) {
                 return false;
             }
 
@@ -434,7 +430,7 @@ namespace commonItems {
                 using (StreamReader sr = File.OpenText(filePath)) {
                     while (!sr.EndOfStream) {
                         string? line = sr.ReadLine();
-                        if (line == null || !line.Contains(versionString, StringComparison.InvariantCulture)) {
+                        if (line is null || !line.Contains(versionString, StringComparison.InvariantCulture)) {
                             continue;
                         }
                         var pos = line.IndexOf(':');
