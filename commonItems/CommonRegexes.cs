@@ -3,19 +3,19 @@
         // catchall:
         //		We grab everything that's NOT =, { or }, OR we grab everything within quotes, except newlines, which we already drop
         //		in the parser.
-        public static string Catchall { get; } = @""".+""|[^={}]+";
+        public static string Catchall => @""".+""|[^={}]+";
 
         // numbers
-        public static string Integer { get; } = @"-?\d+";
-        public static string QuotedInteger { get; } = @"""-?\d+""";
-        public static string Float { get; } = @"-?\d+(.\d+)?";
-        public static string QuotedFloat { get; } = @"""-?\d+(.\d+)?""";
+        public static string Integer => @"-?\d+";
+        public static string QuotedInteger => @"""-?\d+""";
+        public static string Float => @"-?\d+(.\d+)?";
+        public static string QuotedFloat => @"""-?\d+(.\d+)?""";
 
         // strings
-        public static string String { get; } = @"[^\s^=^\{^\}^\""]+";
-        public static string QuotedString { get; } = @"""[^\n^=^\{^\}^\""]+""";
+        public static string String => @"[^\s^=^\{^\}^\""]+";
+        public static string QuotedString => @"""[^\n^=^\{^\}^\""]+""";
 
         // dates
-        public static string Date { get; } = @"\d+[.]\d+[.]\d+";
+        public static string Date => @"\d+[.]\d+[.]\d+";
     }
 }

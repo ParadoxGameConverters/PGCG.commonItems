@@ -7,7 +7,7 @@ using Xunit;
 
 namespace commonItems.UnitTests {
     public class ColorTests {
-        readonly int decimalPlaces = 2;
+        private const int decimalPlaces = 2;
 
         [Fact] public void ColorDefaultToBlack() {
             var testColor = new Color();
@@ -414,7 +414,7 @@ namespace commonItems.UnitTests {
                 });
                 ParseStream(reader);
             }
-            public Color? color;
+            public Color color = new();
         }
         [Fact] public void ColorCanBeInitializedFromLongerStream() {
             var reader = new BufferedReader("= { color = { 64 128 128 } } more text");
@@ -519,9 +519,10 @@ namespace commonItems.UnitTests {
         }
 
         [Fact] public void ColorPaletteCanBeInitializedByDict() {
-            var dict = new Dictionary<string, Color>();
-            dict.Add("white", new Color(new [] { 255, 255, 255 }));
-            dict.Add("gray", new Color(new [] { 50, 50, 50}));
+            var dict = new Dictionary<string, Color> {
+                {"white", new Color(new[] {255, 255, 255})},
+                {"gray", new Color(new[] {50, 50, 50})}
+            };
             var colorFactory = new ColorFactory();
             colorFactory.AddNamedColorDict(dict);
 
@@ -584,16 +585,18 @@ namespace commonItems.UnitTests {
         }
 
         [Fact] public void ColorPaletteCanBeAlteredByDict() {
-            var wrongDict = new Dictionary<string, Color>();
-            wrongDict.Add("white", new Color(new [] { 0, 0, 0 }));
-            wrongDict.Add("red", new Color(new [] { 255, 255, 19 }));
+            var wrongDict = new Dictionary<string, Color> {
+                {"white", new Color(new[] {0, 0, 0})},
+                {"red", new Color(new[] {255, 255, 19})}
+            };
 
             var colorFactory = new ColorFactory();
             colorFactory.AddNamedColorDict(wrongDict);
 
-            var correctDict = new Dictionary<string, Color>();
-            correctDict.Add("white", new Color(new [] { 255, 255, 255 }));
-            correctDict.Add("red", new Color(new [] { 255, 0, 0 }));
+            var correctDict = new Dictionary<string, Color> {
+                {"white", new Color(new[] {255, 255, 255})},
+                {"red", new Color(new[] {255, 0, 0})}
+            };
             colorFactory.AddNamedColorDict(correctDict);
 
             var reader1 = new BufferedReader("= white");
@@ -620,9 +623,10 @@ namespace commonItems.UnitTests {
 
         [Fact]
         public void ColorPaletteCanBeCleared() {
-            var colorDict = new Dictionary<string, Color>();
-            colorDict.Add("white", new Color(new [] { 0, 0, 0 }));
-            colorDict.Add("red", new Color(new [] { 255, 255, 19 }));
+            var colorDict = new Dictionary<string, Color> {
+                {"white", new Color(new[] {0, 0, 0})},
+                {"red", new Color(new[] {255, 255, 19})}
+            };
 
             var colorFactory = new ColorFactory();
             colorFactory.AddNamedColorDict(colorDict);

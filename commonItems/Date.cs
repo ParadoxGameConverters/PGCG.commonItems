@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace commonItems {
     public class Date : IComparable<Date> {
         public int Year { get; private set; } = 1;
         public int Month { get; private set; } = 1;
-        public int Day { get; private set; } = 1;
+        public int Day { get; } = 1;
 
         public Date() { }
 
@@ -104,11 +101,10 @@ namespace commonItems {
         };
 
         private int CalculateDayInYear() {
-            if (Month >= 1 && Month <= 12) {
+            if (Month is >= 1 and <= 12) {
                 return Day + DaysByMonth[Month - 1];
-            } else {
-                return Day;
             }
+            return Day;
         }
 
         public override bool Equals(object? obj) {

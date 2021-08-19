@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace commonItems {
     public static class CommonFunctions {
@@ -18,7 +19,7 @@ namespace commonItems {
 
         public static string GetPath(string fileName) {
             var rawFile = TrimPath(fileName);
-            var filePos = fileName.IndexOf(rawFile);
+            var filePos = fileName.IndexOf(rawFile, StringComparison.Ordinal);
             return fileName.Substring(0, filePos);
         }
 
@@ -28,7 +29,7 @@ namespace commonItems {
             if (dotPos == -1) {
                 return fileName;
             } else {
-                return rawFile.Substring(0, fileName.IndexOf(rawFile) + dotPos);
+                return rawFile.Substring(0, fileName.IndexOf(rawFile, StringComparison.Ordinal) + dotPos);
             }
         }
 

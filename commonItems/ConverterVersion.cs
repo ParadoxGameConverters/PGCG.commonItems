@@ -7,10 +7,10 @@ namespace commonItems {
         public string Version { get; private set; } = "";
         public string Source { get; private set; } = "";
         public string Target { get; private set; } = "";
-        public GameVersion MinSource { get; private set; } = new GameVersion();
-        public GameVersion MaxSource { get; private set; } = new GameVersion();
-        public GameVersion MinTarget { get; private set; } = new GameVersion();
-        public GameVersion MaxTarget { get; private set; } = new GameVersion();
+        public GameVersion MinSource { get; private set; } = new();
+        public GameVersion MaxSource { get; private set; } = new();
+        public GameVersion MinTarget { get; private set; } = new();
+        public GameVersion MaxTarget { get; private set; } = new();
 
         public void LoadVersion(string fileName) {
             var parser = new Parser();

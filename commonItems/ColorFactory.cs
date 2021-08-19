@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace commonItems {
-    class ColorFactory {
+    public class ColorFactory {
         private static bool DoesRegexFullyMatch(Regex re, string str) {
             var match = re.Match(str);
             return match.Success && match.Length == str.Length;
@@ -47,9 +47,8 @@ namespace commonItems {
             } else if (DoesRegexFullyMatch(new Regex(CommonRegexes.Catchall), token)) {
                 if (NamedColors.TryGetValue(token, out var value)) {
                     return value;
-                } else {
-                    throw new ArgumentException(token + " was not a cached color");
                 }
+                throw new ArgumentException(token + " was not a cached color");
             } else {
                 var actualToken = token;
                 foreach(var ch in actualToken.ToCharArray().Reverse()) {
@@ -79,9 +78,8 @@ namespace commonItems {
         public Color GetColor(string colorName) {
             if (NamedColors.TryGetValue(colorName, out var value)) {
                 return value;
-            } else {
-                throw new ArgumentException(colorName + " was not a cached color");
             }
+            throw new ArgumentException(colorName + " was not a cached color");
         }
 
         public void AddNamedColor(string name, Color color) {
