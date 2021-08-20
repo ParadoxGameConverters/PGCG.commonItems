@@ -32,7 +32,7 @@ namespace commonItems {
                 Month = int.Parse(init.Substring(firstDot + 1, lastDot - firstDot -1));
                 Day = int.Parse(init.Substring(lastDot + 1));
             } catch (Exception e) {
-                Logger.Log(LogLevel.Warning, "Problem inputting date: " + e);
+                Logger.Warn("Problem inputting date: " + e);
                 Year = 1;
                 Month = 1;
                 Day = 1;

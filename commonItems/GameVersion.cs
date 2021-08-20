@@ -409,7 +409,7 @@ namespace commonItems {
             // use this for modern PDX games, point filePath to launcher-settings.json to get installation version.
 
             if (!File.Exists(filePath)) {
-                Logger.Log(LogLevel.Warning, "Failure extracting version: " + filePath + " does not exist.");
+                Logger.Warn("Failure extracting version: " + filePath + " does not exist.");
                 return null;
             }
 
@@ -419,7 +419,7 @@ namespace commonItems {
                 result = ExtractVersionByStringFromLauncher("version", filePath);
             }
             if (result is null) {
-                Logger.Log(LogLevel.Warning, "Failure extracting version: " + filePath + " does not contain installation version!");
+                Logger.Warn("Failure extracting version: " + filePath + " does not contain installation version!");
                 return null;
             }
             return result;

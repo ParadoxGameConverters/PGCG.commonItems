@@ -220,7 +220,7 @@ namespace commonItems {
                             // value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
                             // manually fast-forward to brace-lvl 0 and die.
                             FastForwardTo0Depth(ref reader, ref braceDepth, ref tokensSoFar);
-                            Logger.Log(LogLevel.Warning, "Broken token syntax at " + tokensSoFar.ToString());
+                            Logger.Warn("Broken token syntax at " + tokensSoFar.ToString());
                             return;
                         }
                     } else if (token == "{") {
@@ -231,7 +231,7 @@ namespace commonItems {
                             break;
                         }
                     } else {
-                        Logger.Log(LogLevel.Warning, "Unknown token while parsing stream: " + token);
+                        Logger.Warn("Unknown token while parsing stream: " + token);
                     }
                 } else {
                     break;
@@ -263,7 +263,7 @@ namespace commonItems {
 
         public void ParseFile(string filename) {
             if (!File.Exists(filename)) {
-                Logger.Log(LogLevel.Error, "Could not open " + filename + " for parsing");
+                Logger.Error("Could not open " + filename + " for parsing");
                 return;
             }
             var reader = new BufferedReader(File.OpenText(filename));

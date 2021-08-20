@@ -10,40 +10,40 @@ namespace commonItems.UnitTests {
         public void ErrorMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Logger.Log(LogLevel.Error, "Error message");
-            Assert.Equal(" [ERROR] Error message", output.ToString().TrimEnd());
+            Logger.Error("Error message");
+            Assert.Equal("[ERROR] Error message", output.ToString().TrimEnd());
         }
 
         [Fact]
         public void WarningMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Logger.Log(LogLevel.Warning, "Warning message");
-            Assert.Equal(" [WARNING] Warning message", output.ToString().TrimEnd());
+            Logger.Warn("Warning message");
+            Assert.Equal("[WARN] Warning message", output.ToString().TrimEnd());
         }
 
         [Fact]
         public void InfoMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Logger.Log(LogLevel.Info, "Info message");
-            Assert.Equal(" [INFO] Info message", output.ToString().TrimEnd());
+            Logger.Info("Info message");
+            Assert.Equal("[INFO] Info message", output.ToString().TrimEnd());
         }
 
         [Fact]
         public void DebugMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Logger.Log(LogLevel.Debug, "Debug message");
-            Assert.Equal(" [DEBUG] Debug message", output.ToString().TrimEnd());
+            Logger.Debug("Debug message");
+            Assert.Equal("[DEBUG] Debug message", output.ToString().TrimEnd());
         }
 
         [Fact]
         public void ProgressMessagesLogged() {
             var output = new StringWriter();
             Console.SetOut(output);
-            Logger.Log(LogLevel.Progress, "Progress message");
-            Assert.Equal(" [PROGRESS] Progress message", output.ToString().TrimEnd());
+            Logger.Progress("Progress message");
+            Assert.Equal("[PROGRESS] Progress message", output.ToString().TrimEnd());
         }
     }
 }

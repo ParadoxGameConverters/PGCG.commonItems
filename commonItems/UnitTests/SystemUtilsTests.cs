@@ -65,7 +65,7 @@ namespace commonItems.UnitTests {
             var created = SystemUtils.TryCreateFolder(path);
             Assert.False(created);
             Assert.False(Directory.Exists(path));
-            Assert.StartsWith(" [ERROR] Could not create directory: " + path +
+            Assert.StartsWith("[ERROR] Could not create directory: " + path +
                 " : System.ArgumentException: Path cannot be the empty string or all whitespace. (Parameter 'path')",
                 output.ToString());
         }
@@ -88,7 +88,7 @@ namespace commonItems.UnitTests {
             var success = SystemUtils.TryCopyFile(sourcePath, destPath);
             Assert.False(success);
             Assert.False(File.Exists(destPath));
-            Assert.StartsWith(" [WARNING] Could not copy file " + sourcePath +
+            Assert.StartsWith("[WARN] Could not copy file " + sourcePath +
                 " to " + destPath + " - System.IO.FileNotFoundException: Could not find file",
                 output.ToString());
         }
@@ -113,7 +113,7 @@ namespace commonItems.UnitTests {
             var success = SystemUtils.TryCopyFolder(sourcePath, destPath);
             Assert.False(success);
             Assert.False(Directory.Exists(destPath));
-            Assert.StartsWith(" [ERROR] Could not copy folder: " +
+            Assert.StartsWith("[ERROR] Could not copy folder: " +
                 "System.IO.DirectoryNotFoundException: Source directory does not exist or could not be found",
                 output.ToString());
         }
@@ -140,7 +140,7 @@ namespace commonItems.UnitTests {
             var success = SystemUtils.TryRenameFolder(sourcePath, destPath);
             Assert.False(success);
             Assert.False(Directory.Exists(destPath));
-            Assert.StartsWith(" [ERROR] Could not rename folder: " +
+            Assert.StartsWith("[ERROR] Could not rename folder: " +
                 "System.IO.DirectoryNotFoundException: Could not find a part of the path",
                 output.ToString());
         }
@@ -161,7 +161,7 @@ namespace commonItems.UnitTests {
             var path = testFilesPath + "/missingFolder";
             var success = SystemUtils.TryDeleteFolder(path);
             Assert.False(success);
-            Assert.StartsWith(" [ERROR] Could not delete folder: " + path + " : " +
+            Assert.StartsWith("[ERROR] Could not delete folder: " + path + " : " +
                 "System.IO.DirectoryNotFoundException: Could not find a part of the path",
                 output.ToString());
         }

@@ -44,7 +44,7 @@ namespace commonItems {
 
         public static void IgnoreAndLogItem(BufferedReader sr, string keyword) {
             IgnoreItem(sr);
-            Logger.Log(LogLevel.Debug, "Ignoring keyword: " + keyword);
+            Logger.Debug("Ignoring keyword: " + keyword);
         }
     }
     public class SingleString : Parser {
@@ -54,7 +54,7 @@ namespace commonItems {
 
             var token = GetNextTokenWithoutMatching(sr);
             if (token is null) {
-                Logger.Log(LogLevel.Error, "SingleString: next token not found!");
+                Logger.Error("SingleString: next token not found!");
             } else {
                 String = StringUtils.RemQuotes(token);
             }
@@ -66,7 +66,7 @@ namespace commonItems {
         public SingleInt(BufferedReader sr) {
             var intString = StringUtils.RemQuotes(new SingleString(sr).String);
             if (!int.TryParse(intString, out int theInt)) {
-                Logger.Log(LogLevel.Warning, "Could not convert string " + intString + " to int!");
+                Logger.Warn("Could not convert string " + intString + " to int!");
                 return;
             }
             Int = theInt;
@@ -78,7 +78,7 @@ namespace commonItems {
         public SingleLong(BufferedReader sr) {
             var longString = StringUtils.RemQuotes(new SingleString(sr).String);
             if (!long.TryParse(longString, out long theLong)) {
-                Logger.Log(LogLevel.Warning, "Could not convert string " + longString + " to long!");
+                Logger.Warn("Could not convert string " + longString + " to long!");
                 return;
             }
             Long = theLong;
@@ -90,7 +90,7 @@ namespace commonItems {
         public SingleULong(BufferedReader sr) {
             var ulongString = StringUtils.RemQuotes(new SingleString(sr).String);
             if (!ulong.TryParse(ulongString, out ulong theULong)) {
-                Logger.Log(LogLevel.Warning, "Could not convert string " + ulongString + " to ulong!");
+                Logger.Warn("Could not convert string " + ulongString + " to ulong!");
                 return;
             }
             ULong = theULong;
@@ -102,7 +102,7 @@ namespace commonItems {
         public SingleDouble(BufferedReader sr) {
             var doubleString = StringUtils.RemQuotes(new SingleString(sr).String);
             if (!double.TryParse(doubleString, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
-                Logger.Log(LogLevel.Warning, "Could not convert string " + doubleString + " to double!");
+                Logger.Warn("Could not convert string " + doubleString + " to double!");
                 return;
             }
             Double = theDouble;
