@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using log4net;
+using log4net.Appender;
+using log4net.Config;
+using log4net.Core;
+using log4net.Layout;
+using log4net.Repository.Hierarchy;
 
 namespace commonItems {
     public enum LogLevel {
@@ -13,6 +19,10 @@ namespace commonItems {
     }
 
     public static class Logger {
+        static Logger() {
+            FileInfo logConfiguration = new FileInfo("log4net.config");
+            XmlConfigurator.Configure(logConfiguration);
+        }
         private static bool logFileCreated = false;
         public static void Log(LogLevel level, string message) {
             StringBuilder logLine = new();
@@ -34,10 +44,10 @@ namespace commonItems {
         }
 
         private static readonly Dictionary<LogLevel, string> logLevelStrings = new() {
-            { LogLevel.Error, "    [ERROR] " },
-            { LogLevel.Warning, "  [WARNING] " },
-            { LogLevel.Info, "     [INFO] " },
-            { LogLevel.Debug, "    [DEBUG]         " },
+            { LogLevel.Error, " [ERROR] " },
+            { LogLevel.Warning, " [WARNING] " },
+            { LogLevel.Info, " [INFO] " },
+            { LogLevel.Debug, " [DEBUG] " },
             { LogLevel.Progress, " [PROGRESS] " }
         };
     }

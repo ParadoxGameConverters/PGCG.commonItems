@@ -11,7 +11,7 @@ namespace commonItems.UnitTests {
             var output = new StringWriter();
             Console.SetOut(output);
             Logger.Log(LogLevel.Error, "Error message");
-            Assert.Equal("    [ERROR] Error message", output.ToString().TrimEnd());
+            Assert.Equal(" [ERROR] Error message", output.ToString().TrimEnd());
         }
 
         [Fact]
@@ -19,7 +19,7 @@ namespace commonItems.UnitTests {
             var output = new StringWriter();
             Console.SetOut(output);
             Logger.Log(LogLevel.Warning, "Warning message");
-            Assert.Equal("  [WARNING] Warning message", output.ToString().TrimEnd());
+            Assert.Equal(" [WARNING] Warning message", output.ToString().TrimEnd());
         }
 
         [Fact]
@@ -27,7 +27,7 @@ namespace commonItems.UnitTests {
             var output = new StringWriter();
             Console.SetOut(output);
             Logger.Log(LogLevel.Info, "Info message");
-            Assert.Equal("     [INFO] Info message", output.ToString().TrimEnd());
+            Assert.Equal(" [INFO] Info message", output.ToString().TrimEnd());
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace commonItems.UnitTests {
             var output = new StringWriter();
             Console.SetOut(output);
             Logger.Log(LogLevel.Debug, "Debug message");
-            Assert.Equal("    [DEBUG]         Debug message", output.ToString().TrimEnd());
+            Assert.Equal(" [DEBUG] Debug message", output.ToString().TrimEnd());
         }
 
         [Fact]
