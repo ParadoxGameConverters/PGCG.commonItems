@@ -42,7 +42,6 @@ namespace commonItems.UnitTests {
             Assert.True(reader.EndOfStream);
         }
 
-
         private class Test1 : Parser {
             public string? value1;
             public string? value2;
@@ -50,9 +49,7 @@ namespace commonItems.UnitTests {
                 RegisterKeyword("key1", sr => {
                     value1 = new SingleString(sr).String;
                 });
-                RegisterKeyword("key2", sr => {
-                    value2 = new SingleString(sr).String;
-                });
+                RegisterKeyword("key2", sr => value2 = new SingleString(sr).String);
                 RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
                 ParseStream(bufferedReader);
             }
@@ -258,7 +255,7 @@ namespace commonItems.UnitTests {
             var output = new StringWriter();
             Console.SetOut(output);
             var reader = new BufferedReader(" =");
-            var theString = new SingleString(reader).String;
+            _ = new SingleString(reader).String;
             Assert.Equal("    [ERROR] SingleString: next token not found!", output.ToString().TrimEnd());
         }
 
@@ -344,7 +341,7 @@ namespace commonItems.UnitTests {
 
         [Fact]
         public void StringOfItemConvertsBracedObjectsToStrings() {
-            var input =
+            const string input =
                 @"= {\n
                 \t{\n
                 \t\tid = 180\n

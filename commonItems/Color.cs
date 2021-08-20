@@ -86,7 +86,7 @@ namespace commonItems {
             return sb.ToString();
         }
 
-        void DeriveHsvFromRgb()
+        private void DeriveHsvFromRgb()
         {
             var r = (double) RgbComponents[0] / 255;
             var g = (double)RgbComponents[1] / 255;
@@ -124,7 +124,7 @@ namespace commonItems {
             HsvComponents[2] = xMax;
         }
 
-        void DeriveRgbFromHsv() {
+        private void DeriveRgbFromHsv() {
             var h = HsvComponents[0];
             var s = HsvComponents[1];
             var v = HsvComponents[2];

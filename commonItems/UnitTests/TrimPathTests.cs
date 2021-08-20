@@ -4,7 +4,7 @@ namespace commonItems.UnitTests {
     public class TrimPathTests {
         [Fact]
         public void TrimPathTrimsSlashes() {
-            var input = @"/this/is/a/path.txt";
+            var input = "/this/is/a/path.txt";
             Assert.Equal("path.txt", CommonFunctions.TrimPath(input));
         }
         [Fact]
@@ -24,7 +24,7 @@ namespace commonItems.UnitTests {
         }
         [Fact]
         public void TrimPathDoesNotAffectRawFiles() {
-            var input = @"path.txt";
+            var input = "path.txt";
             Assert.Equal("path.txt", CommonFunctions.TrimPath(input));
         }
     }

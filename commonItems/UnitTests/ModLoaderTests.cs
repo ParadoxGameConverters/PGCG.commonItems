@@ -7,7 +7,7 @@ namespace commonItems.UnitTests {
     [Collection("Sequential")]
     [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class ModLoaderTests {
-        readonly string testFilesPath = "UnitTests/TestFiles";
+        private readonly string testFilesPath = "UnitTests/TestFiles";
         [Fact] public void ModsCanBeLocatedUnpackedAndUpdated() {
             var incomingMods = new Mods {
                 new("Some mod", "mod/themod.mod") // mod's in fact named "The Mod" in the file
