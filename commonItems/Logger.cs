@@ -4,7 +4,7 @@ using log4net.Config;
 
 namespace commonItems {
     public static class Logger {
-        static readonly ILog log = LogManager.GetLogger("mainLogger");
+        private static readonly ILog log = LogManager.GetLogger("mainLogger");
         static Logger() {
             // add custom "Progress" level
             LogManager.GetRepository().LevelMap.Add(LogExtensions.progressLevel);
