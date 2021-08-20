@@ -6,7 +6,7 @@ namespace commonItems {
     public static class Logger {
         private static readonly ILog log = LogManager.GetLogger("mainLogger");
         static Logger() {
-            // add custom "Progress" level
+            // add custom "PROGRESS" level
             LogManager.GetRepository().LevelMap.Add(LogExtensions.progressLevel);
 
             // configure log4net
