@@ -1,16 +1,15 @@
 ﻿using System.IO;
 using log4net;
 using log4net.Config;
-using log4net.Core;
 
 namespace commonItems {
     public static class Logger {
         static readonly ILog log = LogManager.GetLogger("mainLogger");
         static Logger() {
             // add custom "Progress" level
-            var progressLevel = new Level(35000, "PROGRESS");
-            LogManager.GetRepository().LevelMap.Add(progressLevel);
+            LogManager.GetRepository().LevelMap.Add(LogExtensions.progressLevel);
 
+            // configure log4net
             var logConfiguration = new FileInfo("log4net.config");
             XmlConfigurator.Configure(logConfiguration);
         }
