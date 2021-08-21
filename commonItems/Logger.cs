@@ -1,44 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.IO;
+using log4net;
+using log4net.Config;
 
 namespace commonItems {
-    public enum LogLevel {
-        Error,
-        Warning,
-        Info,
-        Debug,
-        Progress
-    }
-
     public static class Logger {
-        private static bool logFileCreated = false;
-        public static void Log(LogLevel level, string message) {
-            StringBuilder logLine = new();
-            logLine.Append(logLevelStrings[level]);
-            logLine.Append(message);
-            Console.WriteLine(logLine);
+        private static readonly ILog log = LogManager.GetLogger("mainLogger");
+        static Logger() {
+            // add custom "PROGRESS" level
+            LogManager.GetRepository().LevelMap.Add(LogExtensions.progressLevel);
 
-            if (!logFileCreated) {
-                File.WriteAllText("log.txt", string.Empty);
-                logFileCreated = true;
-            }
-
-            using (StreamWriter logFile = File.AppendText("log.txt"))
-            {
-                logFile.Write(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                logFile.Write(logLine);
-                logFile.Write(Environment.NewLine);
-            }
+            // configure log4net
+            var logConfiguration = new FileInfo("log4net.config");
+            XmlConfigurator.Configure(logConfiguration);
         }
-
-        private static readonly Dictionary<LogLevel, string> logLevelStrings = new() {
-            { LogLevel.Error, "    [ERROR] " },
-            { LogLevel.Warning, "  [WARNING] " },
-            { LogLevel.Info, "     [INFO] " },
-            { LogLevel.Debug, "    [DEBUG]         " },
-            { LogLevel.Progress, " [PROGRESS] " }
-        };
+        public static void Error(string message) {
+            log.Error(message);
+        }
+        public static void Warn(string message) {
+            log.Warn(message);
+        }
+        public static void Info(string message) {
+            log.Info(message);
+        }
+        public static void Debug(string message) {
+            log.Debug(message);
+        }
+        public static void Progress(string message) {
+            log.Progress(message);
+        }
     }
 }
