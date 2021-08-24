@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Numerics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
 
@@ -45,6 +43,37 @@ namespace commonItems {
         public static void IgnoreAndLogItem(BufferedReader sr, string keyword) {
             IgnoreItem(sr);
             Logger.Debug("Ignoring keyword: " + keyword);
+        }
+
+        public static string GetString(BufferedReader reader) {
+            return new SingleString(reader).String;
+        }
+        public static int GetInt(BufferedReader reader) {
+            return new SingleInt(reader).Int;
+        }
+        public static long GetLong(BufferedReader reader) {
+            return new SingleLong(reader).Long;
+        }
+        public static ulong GetULong(BufferedReader reader) {
+            return new SingleULong(reader).ULong;
+        }
+        public static double GetDouble(BufferedReader reader) {
+            return new SingleDouble(reader).Double;
+        }
+        public static List<string> GetStrings(BufferedReader reader) {
+            return new StringList(reader).Strings;
+        }
+        public static List<int> GetInts(BufferedReader reader) {
+            return new IntList(reader).Ints;
+        }
+        public static List<long> GetLongs(BufferedReader reader) {
+            return new LongList(reader).Longs;
+        }
+        public static List<ulong> GetULongs(BufferedReader reader) {
+            return new ULongList(reader).ULongs;
+        }
+        public static List<double> GetDoubles(BufferedReader reader) {
+            return new DoubleList(reader).Doubles;
         }
     }
     public class SingleString : Parser {
