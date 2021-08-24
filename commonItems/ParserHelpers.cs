@@ -29,12 +29,12 @@ namespace commonItems {
                             ++braceDepth;
                             break;
                         case "}": {
-                            --braceDepth;
-                            if (braceDepth == 0) {
-                                return;
+                                --braceDepth;
+                                if (braceDepth == 0) {
+                                    return;
+                                }
+                                break;
                             }
-                            break;
-                        }
                     }
                 }
             }

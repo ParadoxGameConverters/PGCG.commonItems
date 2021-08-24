@@ -28,8 +28,6 @@ namespace commonItems {
         }
     }
 
-
-
     public class Parser {
         private abstract class RegisteredKeywordOrRegex {
             public abstract bool Matches(string token);
@@ -49,14 +47,13 @@ namespace commonItems {
                 return match.Success && match.Length == token.Length;
             }
         }
-        
+
         public static void AbsorbBOM(BufferedReader reader) {
             var firstChar = reader.Peek();
             if (firstChar == '\xEF') {
                 reader.Skip(3); // skip 3 bytes
             }
         }
-
 
         public void RegisterKeyword(string keyword, Del del) {
             registeredRules.Add(new RegisteredKeyword(keyword), new TwoArgDelegate(del));
@@ -101,7 +98,6 @@ namespace commonItems {
             var previousCharacter = '\0';
 
             while (true) {
-
                 if (reader.EndOfStream) {
                     break;
                 }
@@ -171,8 +167,7 @@ namespace commonItems {
             return sb.ToString();
         }
 
-        public static string? GetNextTokenWithoutMatching(BufferedReader reader)
-        {
+        public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
             return reader.EndOfStream ? null : GetNextLexeme(reader);
         }
 
@@ -239,8 +234,7 @@ namespace commonItems {
             }
         }
 
-        public static void FastForwardTo0Depth(ref BufferedReader reader, ref int braceDepth, ref StringBuilder tokensSoFar)
-        {
+        public static void FastForwardTo0Depth(ref BufferedReader reader, ref int braceDepth, ref StringBuilder tokensSoFar) {
             while (braceDepth != 0) {
                 var inputChar = (char)reader.Read();
                 switch (inputChar) {
@@ -251,12 +245,12 @@ namespace commonItems {
                         --braceDepth;
                         break;
                     default: {
-                        if (!char.IsWhiteSpace(inputChar)) {
-                            tokensSoFar.Append(inputChar);
-                        }
+                            if (!char.IsWhiteSpace(inputChar)) {
+                                tokensSoFar.Append(inputChar);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
         }

@@ -176,7 +176,7 @@ namespace commonItems {
             return null;
         }
 
-        static bool ExtractZip(string archive, string path) {
+        private static bool ExtractZip(string archive, string path) {
             try {
                 new FastZip().ExtractZip(archive, path, ".*");
             } catch (Exception e) {

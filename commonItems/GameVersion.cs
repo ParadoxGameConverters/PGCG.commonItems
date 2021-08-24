@@ -9,7 +9,7 @@ namespace commonItems {
         private int? thirdPart;
         private int? fourthPart;
 
-        public GameVersion() {}
+        public GameVersion() { }
 
         public GameVersion(int? theFirstPart,
             int? theSecondPart,
@@ -427,39 +427,38 @@ namespace commonItems {
 
         private static GameVersion? ExtractVersionByStringFromLauncher(string versionString, string filePath) {
             try {
-                using (StreamReader sr = File.OpenText(filePath)) {
-                    while (!sr.EndOfStream) {
-                        string? line = sr.ReadLine();
-                        if (line is null || !line.Contains(versionString, StringComparison.InvariantCulture)) {
-                            continue;
-                        }
-                        var pos = line.IndexOf(':');
-                        if (pos == -1) {
-                            sr.Close();
-                            return null;
-                        }
+                using StreamReader sr = File.OpenText(filePath);
+                while (!sr.EndOfStream) {
+                    string? line = sr.ReadLine();
+                    if (line is null || !line.Contains(versionString, StringComparison.InvariantCulture)) {
+                        continue;
+                    }
+                    var pos = line.IndexOf(':');
+                    if (pos == -1) {
+                        sr.Close();
+                        return null;
+                    }
 
-                        line = line.Substring(pos + 1);
-                        pos = line.IndexOf('\"');
-                        if (pos == -1) {
-                            sr.Close();
-                            return null;
-                        }
+                    line = line.Substring(pos + 1);
+                    pos = line.IndexOf('\"');
+                    if (pos == -1) {
+                        sr.Close();
+                        return null;
+                    }
 
-                        line = line.Substring(pos + 1);
-                        pos = line.IndexOf('\"');
-                        if (pos == -1) {
-                            sr.Close();
-                            return null;
-                        }
-                        line = line.Substring(0, pos);
+                    line = line.Substring(pos + 1);
+                    pos = line.IndexOf('\"');
+                    if (pos == -1) {
+                        sr.Close();
+                        return null;
+                    }
+                    line = line.Substring(0, pos);
 
-                        try {
-                            return new GameVersion(line);
-                        } catch (Exception) {
-                            sr.Close();
-                            return null;
-                        }
+                    try {
+                        return new GameVersion(line);
+                    } catch (Exception) {
+                        sr.Close();
+                        return null;
                     }
                 }
             } catch (Exception) {

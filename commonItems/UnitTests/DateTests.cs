@@ -234,7 +234,8 @@ namespace commonItems.UnitTests {
                 return y.CompareTo(x);
             }
         }
-        [Fact] public void DateCanBeUsedByIComparer() {
+        [Fact]
+        public void DateCanBeUsedByIComparer() {
             var dates = new SortedSet<Date>(new DescendingComparer<Date>()) { // should keep dates in descending order
                 new Date(1000, 1, 1),
                 new Date(1000, 2, 3),
