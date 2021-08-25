@@ -29,7 +29,7 @@ namespace commonItems {
                 if (AUC) {
                     Year = ConvertAUCtoAD(Year);
                 }
-                Month = int.Parse(init.Substring(firstDot + 1, lastDot - firstDot -1));
+                Month = int.Parse(init.Substring(firstDot + 1, lastDot - firstDot - 1));
                 Day = int.Parse(init.Substring(lastDot + 1));
             } catch (Exception e) {
                 Logger.Warn("Problem inputting date: " + e);

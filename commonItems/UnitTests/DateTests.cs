@@ -229,12 +229,16 @@ namespace commonItems.UnitTests {
             Assert.Equal(7, testDate.Day);
         }
 
-        class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
-            public int Compare(T x, T y) {
+        private class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
+            public int Compare(T? x, T? y) {
+                if (y is null) {
+                    return -1;
+                }
                 return y.CompareTo(x);
             }
         }
-        [Fact] public void DateCanBeUsedByIComparer() {
+        [Fact]
+        public void DateCanBeUsedByIComparer() {
             var dates = new SortedSet<Date>(new DescendingComparer<Date>()) { // should keep dates in descending order
                 new Date(1000, 1, 1),
                 new Date(1000, 2, 3),

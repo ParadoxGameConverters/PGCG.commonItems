@@ -40,7 +40,7 @@ namespace commonItems.UnitTests {
         }
         [Fact]
         public void GameVersionCanBeSetByStream() {
-            var input = "= {\n"
+            const string input = "= {\n"
             + "\tfirst = 1\n"
             + "\tsecond = 2\n"
             + "\tthird = 3\n"

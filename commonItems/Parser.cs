@@ -28,8 +28,6 @@ namespace commonItems {
         }
     }
 
-
-
     public class Parser {
         private abstract class RegisteredKeywordOrRegex {
             public abstract bool Matches(string token);
@@ -49,14 +47,13 @@ namespace commonItems {
                 return match.Success && match.Length == token.Length;
             }
         }
-        
+
         public static void AbsorbBOM(BufferedReader reader) {
             var firstChar = reader.Peek();
             if (firstChar == '\xEF') {
                 reader.Skip(3); // skip 3 bytes
             }
         }
-
 
         public void RegisterKeyword(string keyword, Del del) {
             registeredRules.Add(new RegisteredKeyword(keyword), new TwoArgDelegate(del));
@@ -100,12 +97,7 @@ namespace commonItems {
             var inLiteralQuote = false;
             var previousCharacter = '\0';
 
-            while (true) {
-
-                if (reader.EndOfStream) {
-                    break;
-                }
-
+            while (!reader.EndOfStream) {
                 var inputChar = (char)reader.Read();
 
                 if (!inQuotes && inputChar == '#') {
@@ -171,8 +163,7 @@ namespace commonItems {
             return sb.ToString();
         }
 
-        public static string? GetNextTokenWithoutMatching(BufferedReader reader)
-        {
+        public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
             return reader.EndOfStream ? null : GetNextLexeme(reader);
         }
 
@@ -219,7 +210,7 @@ namespace commonItems {
                         else {
                             // value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
                             // manually fast-forward to brace-lvl 0 and die.
-                            FastForwardTo0Depth(ref reader, ref braceDepth, ref tokensSoFar);
+                            FastForwardTo0Depth(reader, ref braceDepth, tokensSoFar);
                             Logger.Warn("Broken token syntax at " + tokensSoFar.ToString());
                             return;
                         }
@@ -239,8 +230,7 @@ namespace commonItems {
             }
         }
 
-        public static void FastForwardTo0Depth(ref BufferedReader reader, ref int braceDepth, ref StringBuilder tokensSoFar)
-        {
+        private static void FastForwardTo0Depth(BufferedReader reader, ref int braceDepth, StringBuilder tokensSoFar) {
             while (braceDepth != 0) {
                 var inputChar = (char)reader.Read();
                 switch (inputChar) {
@@ -250,13 +240,11 @@ namespace commonItems {
                     case '}':
                         --braceDepth;
                         break;
-                    default: {
+                    default:
                         if (!char.IsWhiteSpace(inputChar)) {
                             tokensSoFar.Append(inputChar);
                         }
-
                         break;
-                    }
                 }
             }
         }
