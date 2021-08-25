@@ -14,9 +14,10 @@ namespace commonItems {
             Parser.GetNextTokenWithoutMatching(reader); // equals sign
 
             var token = Parser.GetNextTokenWithoutMatching(reader);
-            if (token != null) {
-                token = StringUtils.RemQuotes(token);
+            if (token is null) {
+                throw new FormatException("Cannot get color without token");
             }
+            token = StringUtils.RemQuotes(token);
             if (token == "rgb") {
                 var rgb = new IntList(reader).Ints;
                 if (rgb.Count != 3) {

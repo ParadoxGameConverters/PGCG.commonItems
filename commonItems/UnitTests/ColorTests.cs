@@ -245,6 +245,10 @@ namespace commonItems.UnitTests {
             Assert.Equal(0.9, color.V, decimalPlaces);
         }
 
+        [Fact] public void ColorInitializationRequiresNonNullToken() {
+            var reader = new BufferedReader("=");
+            Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
+        }
         [Fact]
         public void ColorCanBeInitializedFromStreamWithQuotes() {
             var reader = new BufferedReader("= { \"64\" \"128\" \"128\" }");

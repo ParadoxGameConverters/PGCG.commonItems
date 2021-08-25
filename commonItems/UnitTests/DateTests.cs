@@ -229,8 +229,11 @@ namespace commonItems.UnitTests {
             Assert.Equal(7, testDate.Day);
         }
 
-        class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
-            public int Compare(T x, T y) {
+        private class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
+            public int Compare(T? x, T? y) {
+                if (y is null) {
+                    return -1;
+                }
                 return y.CompareTo(x);
             }
         }
