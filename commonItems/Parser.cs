@@ -230,7 +230,7 @@ namespace commonItems {
             }
         }
 
-        public static void FastForwardTo0Depth(BufferedReader reader, ref int braceDepth, StringBuilder tokensSoFar) {
+        private static void FastForwardTo0Depth(BufferedReader reader, ref int braceDepth, StringBuilder tokensSoFar) {
             while (braceDepth != 0) {
                 var inputChar = (char)reader.Read();
                 switch (inputChar) {
