@@ -179,25 +179,25 @@ namespace commonItems.UnitTests {
         [Fact]
         public void MonthsCanBeIncreased() {
             var date = new Date(2020, 4, 25);
-            date.IncreaseByMonths(4);
+            date.ChangeByMonths(4);
             Assert.Equal("2020.8.25", date.ToString());
         }
         [Fact]
         public void MonthsCanBeIncreasedAndWrapAround() {
             var date = new Date(2020, 4, 25);
-            date.IncreaseByMonths(9);
+            date.ChangeByMonths(9);
             Assert.Equal("2021.1.25", date.ToString());
         }
         [Fact]
         public void YearsCanBeIncreased() {
             var date = new Date(2020, 4, 25);
-            date.AddYears(4);
+            date.ChangeByYears(4);
             Assert.Equal("2024.4.25", date.ToString());
         }
         [Fact]
         public void YearsCanBeDecreased() {
             var date = new Date(2020, 4, 25);
-            date.SubtractYears(4);
+            date.ChangeByYears(-4);
             Assert.Equal("2016.4.25", date.ToString());
         }
         [Fact]

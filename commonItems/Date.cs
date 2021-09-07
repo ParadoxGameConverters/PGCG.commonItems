@@ -39,7 +39,7 @@ namespace commonItems {
             }
         }
 
-        public void IncreaseByMonths(int months) {
+        public void ChangeByMonths(int months) {
             Year += months / 12;
             Month += months % 12;
             if (Month > 12) {
@@ -48,12 +48,8 @@ namespace commonItems {
             }
         }
 
-        public void AddYears(int years) {
+        public void ChangeByYears(int years) {
             Year += years;
-        }
-
-        public void SubtractYears(int years) {
-            Year -= years;
         }
 
         private static int ConvertAUCtoAD(int yearAUC) {
