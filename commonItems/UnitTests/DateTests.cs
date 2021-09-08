@@ -200,6 +200,44 @@ namespace commonItems.UnitTests {
             date.ChangeByYears(-4);
             Assert.Equal("2016.4.25", date.ToString());
         }
+
+        [Fact] public void DayCanBeIncreasedWithoutChangingMonth() {
+            var date = new Date(500, 1, 5);
+            date.ChangeByDays(6);
+            Assert.Equal("500.1.11", date.ToString());
+        }
+        [Fact]
+        public void DayCanBeIncreasedWithChangingMonth() {
+            var date = new Date(500, 1, 30);
+            date.ChangeByDays(6);
+            Assert.Equal("500.2.5", date.ToString());
+        }
+        [Fact]
+        public void DayCanBeIncreasedWithChangingYear() {
+            var date = new Date(500, 12, 31);
+            date.ChangeByDays(2);
+            Assert.Equal("501.1.2", date.ToString());
+        }
+
+        [Fact]
+        public void DayCanBeDecreasedWithoutChangingMonth() {
+            var date = new Date(500, 1, 29);
+            date.ChangeByDays(-9);
+            Assert.Equal("500.1.20", date.ToString());
+        }
+        [Fact]
+        public void DayCanBeDecreasedWithChangingMonth() {
+            var date = new Date(500, 2, 5);
+            date.ChangeByDays(-7);
+            Assert.Equal("500.1.29", date.ToString());
+        }
+        [Fact]
+        public void DayCanBeDecreasedWithChangingYear() {
+            var date = new Date(501, 1, 5);
+            date.ChangeByDays(-7);
+            Assert.Equal("500.12.29", date.ToString());
+        }
+
         [Fact]
         public void AUCcanBeConvertedToAD() {
             var testDate = new Date(450, 10, 1, true);

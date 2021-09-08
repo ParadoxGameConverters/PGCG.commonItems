@@ -5,7 +5,7 @@ namespace commonItems {
     public class Date : IComparable<Date> {
         public int Year { get; private set; } = 1;
         public int Month { get; private set; } = 1;
-        public int Day { get; } = 1;
+        public int Day { get; private set; } = 1;
 
         public Date() { }
 
@@ -38,6 +38,71 @@ namespace commonItems {
                 Day = 1;
             }
         }
+        private static int DaysInMonth(int month) {
+            Logger.Debug("DaysInMonthMonth: " + month);
+            if (month == 12) {
+                return 31;
+            } else {
+                return DaysByMonth[month] - DaysByMonth[month - 1];
+            }
+        }
+
+        public void ChangeByDays(int days) {
+            if (days > 0) {
+                do {
+                    var currentMonthIndex = Month - 1;
+                    bool doesMonthChange;
+                    var currentDayInYear = DaysByMonth[currentMonthIndex] + Day + days;
+                    if (Month < 12) {
+                        var nextMonthIndex = Month;
+                        doesMonthChange = currentDayInYear > DaysByMonth[nextMonthIndex];
+                    } else {
+                        doesMonthChange = currentDayInYear > 365;
+                    }
+
+                    if (doesMonthChange) {
+                        var daysInMonth = DaysInMonth(Month);
+                        ChangeByMonths(1);
+
+                        var daysForward = daysInMonth - Day + 1;
+                        Day = 1;
+                        days -= daysForward;
+                    } else {
+                        Day += days;
+                        days = 0;
+                    }
+                }
+                while (days > 0);
+            }
+            else if (days < 0) {
+                do {
+                    var currentMonthIndex = Month - 1;
+                    bool doesMonthChange;
+                    var currentDayInYear = DaysByMonth[currentMonthIndex] + Day + days;
+                    if (Month > 1) {
+                        doesMonthChange = currentDayInYear < DaysByMonth[currentMonthIndex];
+                        Logger.Debug("does: " + currentDayInYear + " " + DaysByMonth[currentMonthIndex] + " " + doesMonthChange.ToString());
+                    } else {
+                        doesMonthChange = currentDayInYear < 0;
+                    }
+
+                    if (doesMonthChange) {
+                        ChangeByMonths(-1);
+                        var daysInMonth = DaysInMonth(Month);
+                        Logger.Debug("FUCK " + daysInMonth);
+                        var daysBackward = Day;
+                        Logger.Debug(nameof(daysBackward) + daysBackward);
+                        Day = daysInMonth;
+                        Logger.Debug(nameof(Day) + Day);
+                        days += daysBackward;
+                    } else {
+                        Day += days;
+                        days = 0;
+                    }
+                }
+                while (days < 0) ;
+            }
+        }
 
         public void ChangeByMonths(int months) {
             Year += months / 12;
@@ -45,6 +110,9 @@ namespace commonItems {
             if (Month > 12) {
                 ++Year;
                 Month -= 12;
+            } else if (Month < 1) {
+                --Year;
+                Month += 12;
             }
         }
 
@@ -81,7 +149,7 @@ namespace commonItems {
             return sb.ToString();
         }
 
-        private readonly int[] DaysByMonth = new[] {
+        private static readonly int[] DaysByMonth = new[] {
              0,	// January
 	         31,	// February
 	         59,	// March
