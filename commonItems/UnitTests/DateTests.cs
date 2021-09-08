@@ -209,8 +209,8 @@ namespace commonItems.UnitTests {
         [Fact]
         public void DayCanBeIncreasedWithChangingMonth() {
             var date = new Date(500, 1, 30);
-            date.ChangeByDays(6);
-            Assert.Equal("500.2.5", date.ToString());
+            date.ChangeByDays(28+6);
+            Assert.Equal("500.3.5", date.ToString());
         }
         [Fact]
         public void DayCanBeIncreasedWithChangingYear() {
@@ -233,8 +233,8 @@ namespace commonItems.UnitTests {
         }
         [Fact]
         public void DayCanBeDecreasedWithChangingYear() {
-            var date = new Date(501, 1, 5);
-            date.ChangeByDays(-7);
+            var date = new Date(501, 2, 5);
+            date.ChangeByDays(-31 - 7);
             Assert.Equal("500.12.29", date.ToString());
         }
 
