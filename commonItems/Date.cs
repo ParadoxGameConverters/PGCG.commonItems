@@ -39,7 +39,6 @@ namespace commonItems {
             }
         }
         private static int DaysInMonth(int month) {
-            Logger.Debug("DaysInMonthMonth: " + month);
             if (month == 12) {
                 return 31;
             } else {
@@ -80,7 +79,6 @@ namespace commonItems {
                     var currentDayInYear = DaysByMonth[currentMonthIndex] + Day + days;
                     if (Month > 1) {
                         doesMonthChange = currentDayInYear < DaysByMonth[currentMonthIndex];
-                        Logger.Debug("does: " + currentDayInYear + " " + DaysByMonth[currentMonthIndex] + " " + doesMonthChange.ToString());
                     } else {
                         doesMonthChange = currentDayInYear < 0;
                     }
@@ -88,11 +86,8 @@ namespace commonItems {
                     if (doesMonthChange) {
                         ChangeByMonths(-1);
                         var daysInMonth = DaysInMonth(Month);
-                        Logger.Debug("FUCK " + daysInMonth);
                         var daysBackward = Day;
-                        Logger.Debug(nameof(daysBackward) + daysBackward);
                         Day = daysInMonth;
-                        Logger.Debug(nameof(Day) + Day);
                         days += daysBackward;
                     } else {
                         Day += days;
