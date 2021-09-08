@@ -73,8 +73,7 @@ namespace commonItems {
                     }
                 }
                 while (days > 0);
-            }
-            else if (days < 0) {
+            } else if (days < 0) {
                 do {
                     var currentMonthIndex = Month - 1;
                     bool doesMonthChange;
@@ -100,7 +99,7 @@ namespace commonItems {
                         days = 0;
                     }
                 }
-                while (days < 0) ;
+                while (days < 0);
             }
         }
 
