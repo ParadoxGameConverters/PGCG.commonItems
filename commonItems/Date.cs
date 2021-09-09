@@ -78,9 +78,9 @@ namespace commonItems {
                     bool doesMonthChange;
                     var currentDayInYear = DaysByMonth[currentMonthIndex] + Day + days;
                     if (Month > 1) {
-                        doesMonthChange = currentDayInYear < DaysByMonth[currentMonthIndex];
+                        doesMonthChange = currentDayInYear <= DaysByMonth[currentMonthIndex];
                     } else {
-                        doesMonthChange = currentDayInYear < 0;
+                        doesMonthChange = currentDayInYear <= 0;
                     }
 
                     if (doesMonthChange) {
