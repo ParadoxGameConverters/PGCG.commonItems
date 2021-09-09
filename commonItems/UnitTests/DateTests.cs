@@ -15,6 +15,12 @@ namespace commonItems.UnitTests {
             Assert.False(date.IsSet());
         }
         [Fact]
+        public void DateCanBeCopyConstructed() {
+            var baseDate = new Date(500, 1, 1);
+            var copyDate = new Date(baseDate);
+            Assert.Equal("500.1.1", copyDate.ToString());
+        }
+        [Fact]
         public void DefaultDateEqualsOneJanuaryFirst() {
             var date = new Date();
             Assert.Equal("1.1.1", date.ToString());
@@ -201,7 +207,8 @@ namespace commonItems.UnitTests {
             Assert.Equal("2016.4.25", date.ToString());
         }
 
-        [Fact] public void DayCanBeIncreasedWithoutChangingMonth() {
+        [Fact]
+        public void DayCanBeIncreasedWithoutChangingMonth() {
             var date = new Date(500, 1, 5);
             date.ChangeByDays(6);
             Assert.Equal("500.1.11", date.ToString());
@@ -209,7 +216,7 @@ namespace commonItems.UnitTests {
         [Fact]
         public void DayCanBeIncreasedWithChangingMonth() {
             var date = new Date(500, 1, 30);
-            date.ChangeByDays(28+6);
+            date.ChangeByDays(28 + 6);
             Assert.Equal("500.3.5", date.ToString());
         }
         [Fact]
