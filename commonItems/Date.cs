@@ -8,7 +8,11 @@ namespace commonItems {
         public int Day { get; private set; } = 1;
 
         public Date() { }
-
+        public Date(Date otherDate) {
+            Year = otherDate.Year;
+            Month = otherDate.Month;
+            Day = otherDate.Day;
+        }
         public Date(int year, int month, int day, bool AUC) {
             Year = AUC ? ConvertAUCtoAD(year) : year;
             Month = month;
