@@ -239,6 +239,12 @@ namespace commonItems.UnitTests {
             Assert.Equal("500.1.29", date.ToString());
         }
         [Fact]
+        public void MonthChangesWhenDateIsDecreasedByOneDayOnTheFirstDayOfAMonth() {
+            var date = new Date(500, 2, 1);
+            date.ChangeByDays(-1);
+            Assert.Equal("500.1.31", date.ToString());
+        }
+        [Fact]
         public void DayCanBeDecreasedWithChangingYear() {
             var date = new Date(501, 2, 5);
             date.ChangeByDays(-31 - 7);
