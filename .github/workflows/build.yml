@@ -18,8 +18,10 @@ jobs:
     - name: "Init submodules"
       run: |
        git submodule update --init --recursive
+    - name: Setup Dotnet for use with actions
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.*'
     - name: "Build project"
       run: |
-       cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
-       .\MSBuild.exe $Env:GITHUB_WORKSPACE\commonItems.sln /t:Restore
-       .\MSBuild.exe -m -p:Configuration=Release $Env:GITHUB_WORKSPACE\commonItems.sln -target:commonItems
+       dotnet build commonItems/commonItems.csproj /m /p:Configuration=Debug
