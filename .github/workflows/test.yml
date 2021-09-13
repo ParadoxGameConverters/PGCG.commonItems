@@ -23,9 +23,9 @@ jobs:
       with:
         dotnet-version: '5.*'
     - name: Run tests
-      run: dotnet test commonItems/commonItems.csproj /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=**/Microsoft.NET.Test.Sdk.Program.cs
+      run: dotnet test commonItems/commonItems.UnitTests.csproj /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=**/Microsoft.NET.Test.Sdk.Program.cs
     - name: Publish coverage report to coveralls.io
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: commonItems/TestResults/coverage.info
+        path-to-lcov: commonItems.UnitTests/TestResults/coverage.info
