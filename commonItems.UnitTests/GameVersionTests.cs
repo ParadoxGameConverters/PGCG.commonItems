@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests {
     public class GameVersionTests {
-        private readonly string testFilesPath = "UnitTests/TestFiles/";
+        private readonly string testFilesPath = "TestFiles/";
         [Fact]
         public void GameVersionDefaultsToZeroZeroZeroZero() {
             var version = new GameVersion();

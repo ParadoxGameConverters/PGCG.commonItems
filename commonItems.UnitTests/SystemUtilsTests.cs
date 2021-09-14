@@ -7,7 +7,7 @@ namespace commonItems.UnitTests {
     [Collection("Sequential")]
     [CollectionDefinition("Sequential", DisableParallelization = true)]
     public class SystemUtilsTests {
-        private readonly string testFilesPath = "UnitTests/TestFiles/SystemUtilsTestFiles";
+        private readonly string testFilesPath = "TestFiles/SystemUtilsTestFiles";
         [Fact] public void GetAllFilesInFolderDoesntWorkRecursively() {
             var files = SystemUtils.GetAllFilesInFolder(testFilesPath);
             var expected = new SortedSet<string>{
