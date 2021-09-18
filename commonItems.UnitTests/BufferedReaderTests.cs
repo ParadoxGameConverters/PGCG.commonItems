@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using Xunit;
 
@@ -16,8 +15,7 @@ namespace commonItems.UnitTests {
             Assert.Equal("345", reader.ReadToEnd());
         }
         [Fact]
-        public void BufferedReaderAllowsPushBackOfOneChar()
-        {
+        public void BufferedReaderAllowsPushBackOfOneChar() {
             var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
             var reader = new BufferedReader(stream);
             reader.Read(); // in stream: 2345
@@ -43,7 +41,8 @@ namespace commonItems.UnitTests {
             Assert.Equal("12345", read);
         }
 
-        [Fact] public void EndOfStreamIsFalseIfThereAreCharactersInStack() {
+        [Fact]
+        public void EndOfStreamIsFalseIfThereAreCharactersInStack() {
             var reader = new BufferedReader("token");
             Parser.GetNextTokenWithoutMatching(reader);
             Assert.True(reader.EndOfStream);
@@ -53,6 +52,12 @@ namespace commonItems.UnitTests {
             Assert.False(reader.EndOfStream);
             Assert.Equal("ave", Parser.GetNextTokenWithoutMatching(reader));
             Assert.True(reader.EndOfStream);
+        }
+
+        [Fact]
+        public void BufferedReaderCanBeConstructedWithoutParameters() {
+            var reader = new BufferedReader();
+            Assert.Equal(string.Empty, reader.ReadToEnd());
         }
     }
 }

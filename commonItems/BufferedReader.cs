@@ -13,6 +13,7 @@ namespace commonItems {
     public class BufferedReader {
         private readonly StreamReader streamReader;
 
+        public BufferedReader() : this(string.Empty) { }
         public BufferedReader(StreamReader reader) { streamReader = reader; }
         public BufferedReader(Stream stream) { streamReader = new StreamReader(stream); }
 
