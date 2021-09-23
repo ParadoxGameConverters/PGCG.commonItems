@@ -374,14 +374,17 @@ namespace commonItems.UnitTests {
 
             var expectedBlobs = new List<string> {
                 "foo\t=\nbar\n \n{bar\t=\tbaz\n\n}",
-         "BROKEN\t\t\tbar\n=\nbaz\n \t\tbaz\t=\nfoo\t",
-         "\t\nbaz\n\t=\t\n\tfoo\n {} \n\tfoo\t=\tbar\t"};
+                "BROKEN\t\t\tbar\n=\nbaz\n \t\tbaz\t=\nfoo\t",
+                "\t\nbaz\n\t=\t\n\tfoo\n {} \n\tfoo\t=\tbar\t"
+            };
             Assert.Equal(expectedBlobs, theBlobs.Blobs);
         }
 
         [Fact]
         public void BlobListIgnoresEverythingOutsideBlobs() {
-            var reader = new BufferedReader("= {\n\n\t\t{foo}\nkey=value\n\t {bar}\t\nsome=value\t\n{baz}\t\n  randomLooseText   }");
+            var reader = new BufferedReader(
+                "= {\n\n\t\t{foo}\nkey=value\n\t {bar}\t\nsome=value\t\n{baz}\t\n  randomLooseText   }"
+            );
 
             var theBlobs = new BlobList(reader);
 
