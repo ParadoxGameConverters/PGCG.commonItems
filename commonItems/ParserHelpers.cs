@@ -142,12 +142,8 @@ namespace commonItems {
     public class StringList : Parser {
         public StringList(BufferedReader sr) {
             RegisterKeyword("\"\"", _ => { });
-            RegisterRegex(CommonRegexes.String, (_, theString) => {
-                Strings.Add(theString);
-            });
-            RegisterRegex(CommonRegexes.QuotedString, (_, theString) => {
-                Strings.Add(StringUtils.RemQuotes(theString));
-            });
+            RegisterRegex(CommonRegexes.String, (_, theString) => Strings.Add(theString));
+            RegisterRegex(CommonRegexes.QuotedString, (_, theString) => Strings.Add(StringUtils.RemQuotes(theString)));
             ParseStream(sr);
         }
         public List<string> Strings { get; } = new();
@@ -155,9 +151,7 @@ namespace commonItems {
 
     public class IntList : Parser {
         public IntList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Integer, (_, intString) => {
-                Ints.Add(int.Parse(intString));
-            });
+            RegisterRegex(CommonRegexes.Integer, (_, intString) => Ints.Add(int.Parse(intString)));
             RegisterRegex(CommonRegexes.QuotedInteger, (_, intString) => {
                 // remove quotes
                 intString = intString[1..^1];
@@ -170,9 +164,7 @@ namespace commonItems {
 
     public class LongList : Parser {
         public LongList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Integer, (_, longString) => {
-                Longs.Add(long.Parse(longString));
-            });
+            RegisterRegex(CommonRegexes.Integer, (_, longString) => Longs.Add(long.Parse(longString)));
             RegisterRegex(CommonRegexes.QuotedInteger, (_, longString) => {
                 // remove quotes
                 longString = longString[1..^1];
@@ -185,9 +177,7 @@ namespace commonItems {
 
     public class ULongList : Parser {
         public ULongList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Integer, (_, ulongString) => {
-                ULongs.Add(ulong.Parse(ulongString));
-            });
+            RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ULongs.Add(ulong.Parse(ulongString)));
             RegisterRegex(CommonRegexes.QuotedInteger, (_, ulongString) => {
                 // remove quotes
                 ulongString = ulongString[1..^1];
@@ -200,9 +190,7 @@ namespace commonItems {
 
     public class DoubleList : Parser {
         public DoubleList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Float, (_, floatString) => {
-                Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
-            });
+            RegisterRegex(CommonRegexes.Float, (_, floatString) => Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture)));
             RegisterRegex(CommonRegexes.QuotedFloat, (_, floatString) => {
                 // remove quotes
                 floatString = floatString[1..^1];
