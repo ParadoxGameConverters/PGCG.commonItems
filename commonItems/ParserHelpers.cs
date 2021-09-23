@@ -250,4 +250,44 @@ namespace commonItems {
         }
         public string String { get; }
     }
+
+    public class BlobList : Parser {
+        public List<string> Blobs { get; } = new();
+        public BlobList(BufferedReader reader) {
+            var next = GetNextLexeme(reader);
+            if (next == "=") {
+                next = GetNextLexeme(reader);
+            }
+            while (next == "{") {
+                var braceDepth = 0;
+                string toReturn = string.Empty;
+                while (true) {
+                    if (reader.EndOfStream) {
+                        return;
+                    }
+                    char inputChar = (char)reader.Read();
+                    if (inputChar == '{') {
+                        if (braceDepth > 0) {
+                            toReturn += inputChar;
+                        }
+                        braceDepth++;
+                    } else if (inputChar == '}') {
+                        braceDepth--;
+                        if (braceDepth > 0) {
+                            toReturn += inputChar;
+                        } else if (braceDepth == 0) {
+                            Blobs.Add(toReturn);
+                            toReturn = string.Empty;
+                        } else if (braceDepth == -1) {
+                            return;
+                        }
+                    } else if (braceDepth == 0) {
+                        // Ignore this character. Only look for blobs.
+                    } else {
+                        toReturn += inputChar;
+                    }
+                }
+            }
+        }
+    }
 }
