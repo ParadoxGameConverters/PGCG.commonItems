@@ -248,7 +248,7 @@ namespace commonItems {
             }
             while (next == "{") {
                 var braceDepth = 0;
-                string toReturn = string.Empty;
+                var sb = new StringBuilder();
                 while (true) {
                     if (reader.EndOfStream) {
                         return;
@@ -256,23 +256,23 @@ namespace commonItems {
                     char inputChar = (char)reader.Read();
                     if (inputChar == '{') {
                         if (braceDepth > 0) {
-                            toReturn += inputChar;
+                            sb.Append(inputChar);
                         }
                         braceDepth++;
                     } else if (inputChar == '}') {
                         braceDepth--;
                         if (braceDepth > 0) {
-                            toReturn += inputChar;
+                            sb.Append(inputChar);
                         } else if (braceDepth == 0) {
-                            Blobs.Add(toReturn);
-                            toReturn = string.Empty;
+                            Blobs.Add(sb.ToString());
+                            sb.Clear();
                         } else if (braceDepth == -1) {
                             return;
                         }
                     } else if (braceDepth == 0) {
                         // Ignore this character. Only look for blobs.
                     } else {
-                        toReturn += inputChar;
+                        sb.Append(inputChar);
                     }
                 }
             }
