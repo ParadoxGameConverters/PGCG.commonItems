@@ -8,6 +8,11 @@ namespace commonItems.UnitTests {
 			Assert.True(new ParadoxBool());
 		}
 		[Fact]
+		public void ParadoxBoolCanBeConstructedFromBool() {
+			Assert.True(new ParadoxBool(true));
+			Assert.False(new ParadoxBool(false));
+		}
+		[Fact]
 		public void ParadoxBoolCanBeConstructedFromString() {
 			Assert.True(new ParadoxBool("yes"));
 			Assert.False(new ParadoxBool("no"));
