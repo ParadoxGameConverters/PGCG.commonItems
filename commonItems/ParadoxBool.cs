@@ -11,9 +11,7 @@ namespace commonItems {
 				return "no";
 			}
 		}
-		public ParadoxBool() {
-			Value = true;
-		}
+		public ParadoxBool() { }
 		public ParadoxBool(string valueString) {
 			if (valueString == "yes") {
 				Value = true;
