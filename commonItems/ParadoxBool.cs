@@ -3,27 +3,22 @@
 namespace commonItems {
 	public class ParadoxBool {
 		public bool Value { get; set; } = true;
-		public string YesOrNo {
-			get {
-				if (Value) {
-					return "yes";
-				}
-				return "no";
-			}
-		}
+		public string YesOrNo => Value ? "yes" : "no";
 		public ParadoxBool() { }
+
+		public ParadoxBool(bool value) {
+			Value = value;
+		}
 		public ParadoxBool(string valueString) {
-			if (valueString == "yes") {
-				Value = true;
-			} else if (valueString == "no") {
-				Value = false;
-			} else {
-				throw new FormatException("Text representation of ParadoxBool should be \"yes\" or \"no\"!");
-			}
+			Value = valueString switch {
+				"yes" => true,
+				"no" => false,
+				_ => throw new FormatException("Text representation of ParadoxBool should be \"yes\" or \"no\"!")
+			};
 		}
 		public ParadoxBool(BufferedReader reader) : this(ParserHelpers.GetString(reader)) { }
 		public static implicit operator bool(ParadoxBool m) {
-			return m?.Value == true;
+			return m.Value;
 		}
 	}
 }
