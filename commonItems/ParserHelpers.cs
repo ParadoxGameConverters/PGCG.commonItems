@@ -93,9 +93,9 @@ namespace commonItems {
 
     public class SingleInt {
         public SingleInt(BufferedReader sr) {
-            var intString = StringUtils.RemQuotes(new SingleString(sr).String);
-            if (!int.TryParse(intString, out int theInt)) {
-                Logger.Warn("Could not convert string " + intString + " to int!");
+            var intStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr));
+            if (!int.TryParse(intStr, out int theInt)) {
+                Logger.Warn($"Could not convert string {intStr} to int!");
                 return;
             }
             Int = theInt;
@@ -105,9 +105,9 @@ namespace commonItems {
 
     public class SingleLong {
         public SingleLong(BufferedReader sr) {
-            var longString = StringUtils.RemQuotes(new SingleString(sr).String);
-            if (!long.TryParse(longString, out long theLong)) {
-                Logger.Warn("Could not convert string " + longString + " to long!");
+            var longStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr));
+            if (!long.TryParse(longStr, out long theLong)) {
+                Logger.Warn($"Could not convert string {longStr} to long!");
                 return;
             }
             Long = theLong;
@@ -117,9 +117,9 @@ namespace commonItems {
 
     public class SingleULong {
         public SingleULong(BufferedReader sr) {
-            var ulongString = StringUtils.RemQuotes(new SingleString(sr).String);
-            if (!ulong.TryParse(ulongString, out ulong theULong)) {
-                Logger.Warn("Could not convert string " + ulongString + " to ulong!");
+            var ulongStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr));
+            if (!ulong.TryParse(ulongStr, out ulong theULong)) {
+                Logger.Warn($"Could not convert string {ulongStr} to ulong!");
                 return;
             }
             ULong = theULong;
@@ -129,9 +129,9 @@ namespace commonItems {
 
     public class SingleDouble {
         public SingleDouble(BufferedReader sr) {
-            var doubleString = StringUtils.RemQuotes(new SingleString(sr).String);
-            if (!double.TryParse(doubleString, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
-                Logger.Warn("Could not convert string " + doubleString + " to double!");
+            var doubleStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr));
+            if (!double.TryParse(doubleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
+                Logger.Warn($"Could not convert string {doubleStr} to double!");
                 return;
             }
             Double = theDouble;
@@ -142,12 +142,12 @@ namespace commonItems {
     public class StringList : Parser {
         public StringList(BufferedReader sr) {
             RegisterKeyword("\"\"", _ => { });
-            RegisterRegex(CommonRegexes.String, (_, theString) => {
-                Strings.Add(theString);
-            });
-            RegisterRegex(CommonRegexes.QuotedString, (_, theString) => {
-                Strings.Add(StringUtils.RemQuotes(theString));
-            });
+            RegisterRegex(CommonRegexes.String, (_, theString) =>
+                Strings.Add(theString)
+            );
+            RegisterRegex(CommonRegexes.QuotedString, (_, theString) =>
+                Strings.Add(StringUtils.RemQuotes(theString))
+            );
             ParseStream(sr);
         }
         public List<string> Strings { get; } = new();
@@ -200,9 +200,9 @@ namespace commonItems {
 
     public class DoubleList : Parser {
         public DoubleList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Float, (_, floatString) => {
-                Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
-            });
+            RegisterRegex(CommonRegexes.Float, (_, floatString) =>
+                Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture))
+            );
             RegisterRegex(CommonRegexes.QuotedFloat, (_, floatString) => {
                 // remove quotes
                 floatString = floatString[1..^1];
