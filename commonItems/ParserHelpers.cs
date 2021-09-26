@@ -155,9 +155,7 @@ namespace commonItems {
 
     public class IntList : Parser {
         public IntList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Integer, (_, intString) => {
-                Ints.Add(int.Parse(intString));
-            });
+            RegisterRegex(CommonRegexes.Integer, (_, intString) => Ints.Add(int.Parse(intString)));
             RegisterRegex(CommonRegexes.QuotedInteger, (_, intString) => {
                 // remove quotes
                 intString = intString[1..^1];
@@ -170,9 +168,7 @@ namespace commonItems {
 
     public class LongList : Parser {
         public LongList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Integer, (_, longString) => {
-                Longs.Add(long.Parse(longString));
-            });
+            RegisterRegex(CommonRegexes.Integer, (_, longString) => Longs.Add(long.Parse(longString)));
             RegisterRegex(CommonRegexes.QuotedInteger, (_, longString) => {
                 // remove quotes
                 longString = longString[1..^1];
@@ -185,9 +181,7 @@ namespace commonItems {
 
     public class ULongList : Parser {
         public ULongList(BufferedReader sr) {
-            RegisterRegex(CommonRegexes.Integer, (_, ulongString) => {
-                ULongs.Add(ulong.Parse(ulongString));
-            });
+            RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ULongs.Add(ulong.Parse(ulongString)));
             RegisterRegex(CommonRegexes.QuotedInteger, (_, ulongString) => {
                 // remove quotes
                 ulongString = ulongString[1..^1];
@@ -249,5 +243,45 @@ namespace commonItems {
             String = sb.ToString();
         }
         public string String { get; }
+    }
+
+    public class BlobList : Parser {
+        public List<string> Blobs { get; } = new();
+        public BlobList(BufferedReader reader) {
+            var next = GetNextLexeme(reader);
+            if (next == "=") {
+                next = GetNextLexeme(reader);
+            }
+            while (next == "{") {
+                var braceDepth = 0;
+                var sb = new StringBuilder();
+                while (true) {
+                    if (reader.EndOfStream) {
+                        return;
+                    }
+                    char inputChar = (char)reader.Read();
+                    if (inputChar == '{') {
+                        if (braceDepth > 0) {
+                            sb.Append(inputChar);
+                        }
+                        braceDepth++;
+                    } else if (inputChar == '}') {
+                        braceDepth--;
+                        if (braceDepth > 0) {
+                            sb.Append(inputChar);
+                        } else if (braceDepth == 0) {
+                            Blobs.Add(sb.ToString());
+                            sb.Clear();
+                        } else if (braceDepth == -1) {
+                            return;
+                        }
+                    } else if (braceDepth == 0) {
+                        // Ignore this character. Only look for blobs.
+                    } else {
+                        sb.Append(inputChar);
+                    }
+                }
+            }
+        }
     }
 }
