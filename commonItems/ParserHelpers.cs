@@ -84,7 +84,7 @@ namespace commonItems {
 				Parser.GetNextTokenWithoutMatching(reader); // remove equals
 				var assignmentValue = Parser.GetNextTokenWithoutMatching(reader);
 				if (assignmentValue is null) {
-					throw new NullReferenceException($"Cannot assign null to {assignmentName}!");
+					throw new FormatException($"Cannot assign null to {assignmentName}!");
 				}
 				assignments[assignmentName] = assignmentValue;
 			});

@@ -277,8 +277,8 @@ namespace commonItems.UnitTests {
 				"\tid = 180\n" +
 				"\ttype ="
 			);
-			var e = Assert.Throws<NullReferenceException>(() => ParserHelpers.GetAssignments(reader));
-			Assert.StartsWith("System.NullReferenceException: Cannot assign null to type!", e.ToString());
+			var e = Assert.Throws<FormatException>(() => ParserHelpers.GetAssignments(reader));
+			Assert.StartsWith("System.FormatException: Cannot assign null to type!", e.ToString());
 		}
 
 		private class WrapperClass : Parser {
