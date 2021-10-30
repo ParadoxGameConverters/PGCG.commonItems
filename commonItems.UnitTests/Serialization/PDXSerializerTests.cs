@@ -21,12 +21,12 @@ namespace commonItems.UnitTests.Serialization {
 			var title = new Title();
 			var titleString = PDXSerializer.Serialize(title);
 
-			var expectedString = "{" +
-			                     "\tid = 20\n" +
-			                     "\tname = \"Papal States\"\n" +
-			                     "\tpope_names_list = { \"Peter\", \"John\", \"Hadrian\" }\n" +
-			                     "\tlandless = yes\n" +
-			                     "}";
+			var expectedString = "{" + Environment.NewLine +
+								 "\tid = 20" + Environment.NewLine +
+								 "\tname = \"Papal States\"" + Environment.NewLine +
+								 "\tpope_names_list = { \"Peter\", \"John\", \"Hadrian\" }" + Environment.NewLine +
+								 "\tlandless = yes" + Environment.NewLine +
+								 "}" + Environment.NewLine;
 			Assert.Equal(expectedString, titleString);
 		}
 	}
