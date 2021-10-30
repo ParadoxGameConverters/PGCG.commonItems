@@ -14,10 +14,10 @@ namespace commonItems.Serialization {
 			sb.AppendLine("{");
 			foreach (var field in fieldsInfo) {
 				if (field.IsNotSerialized) {
-					Logger.Debug("Skipping NonSerialized " + field.Name);
+					Logger.Debug("Skipping NonSerialized " + field.Name); // TODO: REMOVE DEBUG LOGGING
 					continue;
 				}
-				Logger.Debug("\t" + field);// TODO: REMOVE DEBUG LOGGING
+				Logger.Debug("\t" + field); // TODO: REMOVE DEBUG LOGGING
 
 				var fieldValue = field.GetValue(obj);
 				if (fieldValue is null) {
@@ -26,35 +26,36 @@ namespace commonItems.Serialization {
 
 				sb.Append('\t').Append(field.Name).Append(" = ");
 
-				if (field.FieldType == typeof(string)) {
-					// add double quotes to string
-					var str = fieldValue as string;
-					sb.AppendLine(GetValueForSerializer(str ?? string.Empty));
-				} else if (field.FieldType == typeof(Dictionary<Type, string>)) {
-					if (fieldValue is not Dictionary<Type, string> dict) {
-						Logger.Warn($"PDXSerializer: skipping outputting of {field.Name} in {type}!");
-						continue;
-					}
-
-					sb.AppendLine("{");
-					foreach (var (key, value) in dict) {
-						sb.Append(key).Append(" = ").AppendLine(value);
-					}
-					sb.AppendLine("}");
-				} else switch (fieldValue) {
-						case IEnumerable<string> strEnumerable: {
-								IEnumerable<string> list = strEnumerable.ToList();
-								var strEnumerableWithDoubleQuotes = list.Select(GetValueForSerializer);
-								sb.AppendLine($"{{ {string.Join(", ", strEnumerableWithDoubleQuotes)} }}");
-								break;
-							}
-						case ParadoxBool pdxBool:
-							sb.AppendLine(pdxBool.YesOrNo);
-							break;
-						default:
-							sb.AppendLine(fieldValue.ToString());
-							break;
-					}
+				switch (fieldValue) {
+					case string str:
+						// add double quotes to string
+						sb.AppendLine(GetValueForSerializer(str));
+						break;
+					case Dictionary<Type, string> stringValueDict:
+						sb.AppendLine("{");
+						foreach (var (key, value) in stringValueDict) {
+							sb.Append(key).Append(" = ").AppendLine(value);
+						}
+						sb.AppendLine("}");
+						break;
+					case IEnumerable<string> strEnumerable:
+						IEnumerable<string> list = strEnumerable.ToList();
+						var strEnumerableWithDoubleQuotes = list.Select(GetValueForSerializer);
+						sb.AppendLine($"{{ {string.Join(", ", strEnumerableWithDoubleQuotes)} }}");
+						break;
+					case IPDXSerializable serializableType:
+						sb.AppendLine(Serialize(serializableType));
+						break;
+					case ParadoxBool pdxBool:
+						sb.AppendLine(pdxBool.YesOrNo);
+						break;
+					case Color color:
+						sb.AppendLine(color.Output());
+						break;
+					default:
+						sb.AppendLine(fieldValue.ToString());
+						break;
+				}
 			}
 			sb.AppendLine("}");
 			return sb.ToString();

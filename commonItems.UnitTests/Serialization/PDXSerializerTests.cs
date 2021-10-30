@@ -10,9 +10,10 @@ namespace commonItems.UnitTests.Serialization {
 	public class PDXSerializerTests {
 		private class Title : IPDXSerializable {
 			public int id = 20;
-			[NonSerializedAttribute] public int priority = 50;
+			[NonSerialized] public int priority = 50;
 			public string name = "Papal States";
 			public List<string> pope_names_list = new(){"Peter", "John", "Hadrian"};
+			public Color color1 = new (new[] {2, 4, 6});
 			public ParadoxBool landless = new(true);
 		}
 
@@ -25,6 +26,7 @@ namespace commonItems.UnitTests.Serialization {
 								 "\tid = 20" + Environment.NewLine +
 								 "\tname = \"Papal States\"" + Environment.NewLine +
 								 "\tpope_names_list = { \"Peter\", \"John\", \"Hadrian\" }" + Environment.NewLine +
+								 "\tcolor1 = { 2 4 6 }" + Environment.NewLine +
 								 "\tlandless = yes" + Environment.NewLine +
 								 "}" + Environment.NewLine;
 			Assert.Equal(expectedString, titleString);
