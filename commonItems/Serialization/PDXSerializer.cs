@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -42,15 +41,20 @@ namespace commonItems.Serialization {
 						sb.Append(key).Append(" = ").AppendLine(value);
 					}
 					sb.AppendLine("}");
-				} else if (fieldValue is IEnumerable<string> strEnumerable) {
-					IEnumerable<string> list = strEnumerable.ToList();
-					var strEnumerableWithDoubleQuotes = list.Select(GetValueForSerializer);
-					sb.AppendLine($"{{ {string.Join(", ", strEnumerableWithDoubleQuotes)} }}");
-				} else if (fieldValue is ParadoxBool pdxBool) {
-					sb.AppendLine(pdxBool.YesOrNo);
-				}else {
-					sb.AppendLine(fieldValue.ToString());
-				}
+				} else switch (fieldValue) {
+						case IEnumerable<string> strEnumerable: {
+								IEnumerable<string> list = strEnumerable.ToList();
+								var strEnumerableWithDoubleQuotes = list.Select(GetValueForSerializer);
+								sb.AppendLine($"{{ {string.Join(", ", strEnumerableWithDoubleQuotes)} }}");
+								break;
+							}
+						case ParadoxBool pdxBool:
+							sb.AppendLine(pdxBool.YesOrNo);
+							break;
+						default:
+							sb.AppendLine(fieldValue.ToString());
+							break;
+					}
 			}
 			sb.AppendLine("}");
 			return sb.ToString();
