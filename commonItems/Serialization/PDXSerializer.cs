@@ -44,13 +44,7 @@ namespace commonItems.Serialization {
 						sb.AppendLine($"{{ {string.Join(", ", strEnumerableWithDoubleQuotes)} }}");
 						break;
 					case IPDXSerializable serializableType:
-						sb.AppendLine(Serialize(serializableType));
-						break;
-					case ParadoxBool pdxBool:
-						sb.AppendLine(pdxBool.YesOrNo);
-						break;
-					case Color color:
-						sb.AppendLine(color.Output());
+						sb.AppendLine(serializableType.Serialize());
 						break;
 					default:
 						sb.AppendLine(fieldValue.ToString());

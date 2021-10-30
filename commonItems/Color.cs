@@ -1,9 +1,10 @@
-﻿using System;
+﻿using commonItems.Serialization;
+using System;
 using System.Linq;
 using System.Text;
 
 namespace commonItems {
-	public class Color {
+	public class Color : IPDXSerializable {
 		public Color() { }
 		public Color(int[] rgbComponents) {
 			RgbComponents = rgbComponents;
@@ -29,6 +30,10 @@ namespace commonItems {
 		public double H => HsvComponents[0];
 		public double S => HsvComponents[1];
 		public double V => HsvComponents[2];
+
+		public string Serialize() {
+			return Output();
+		}
 
 		public string Output() {
 			var sb = new StringBuilder("{ ");
