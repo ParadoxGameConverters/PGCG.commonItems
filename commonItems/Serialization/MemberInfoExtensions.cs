@@ -16,10 +16,7 @@ namespace ExtensionMethods {
 			};
 		}
 
-		public static string GetName(this MemberInfo? memberInfo) {
-			if (memberInfo is null) {
-				return string.Empty;
-			}
+		public static string GetName(this MemberInfo memberInfo) {
 			var attr = Attribute.GetCustomAttribute(memberInfo, typeof(SerializedName));
 			return attr is null ? memberInfo.Name : ((SerializedName)attr).Name;
 		}
