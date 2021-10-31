@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace commonItems.Serialization {
@@ -62,7 +63,9 @@ namespace commonItems.Serialization {
 			} else if (fieldValue.GetType().IsValueType && fieldValue is IFormattable fp) { // for numbers
 				sb.Append(fp.ToString("G", cultureInfo));
 			} else {
-				Logger.Error($"Field {field.Name} of type {fieldValue.GetType()} is not yet supported by PDXSerializer!");
+				var errName = $"Field {field.Name} of type {fieldValue.GetType()} is not yet supported by PDXSerializer!";
+				//Logger.Error(errName);
+				throw new SerializationException(errName);
 				return null;
 			}
 

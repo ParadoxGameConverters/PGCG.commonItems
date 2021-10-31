@@ -20,6 +20,8 @@ namespace commonItems.UnitTests.Serialization {
 				{ "diffuse", "gfx/models/diffuse.dds" },
 				{ "normal", "gfx/models/normal.dds" }
 			};
+
+			public Dictionary<int, string> weights = new() {{10, "roman_gfx"}, {5, "italian_gfx"}};
 		}
 
 		[Fact]
@@ -39,6 +41,10 @@ namespace commonItems.UnitTests.Serialization {
 								 "\ttextures = {" + Environment.NewLine +
 								 "\t\tdiffuse = \"gfx/models/diffuse.dds\"" + Environment.NewLine +
 								 "\t\tnormal = \"gfx/models/normal.dds\"" + Environment.NewLine +
+								 "\t}" + Environment.NewLine +
+								 "\tweights = {" + Environment.NewLine +
+								 "\t\t10 = \"roman_gfx\"" + Environment.NewLine +
+								 "\t\t5 = \"italian_gfx\"" + Environment.NewLine +
 								 "\t}" + Environment.NewLine +
 								 "}" + Environment.NewLine;
 			Assert.Equal(expectedString, titleString);
