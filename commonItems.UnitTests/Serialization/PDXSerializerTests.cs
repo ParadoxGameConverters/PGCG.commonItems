@@ -74,5 +74,21 @@ namespace commonItems.UnitTests.Serialization {
 			var c2Str = PDXSerializer.Serialize(c2, string.Empty);
 			Assert.DoesNotContain("nickname", c2Str);
 		}
+
+		private class PascalClass : IPDXSerializable {
+			[SerializedName("name")] public string Name { get; } = "Property";
+			[SerializedName("culture")] public string Culture = "roman";
+		}
+
+		[Fact]
+		public void MembersCanHaveCustomSerializedNames() {
+			var pascal = new PascalClass();
+			var str = PDXSerializer.Serialize(pascal);
+			var expectedStr = "{" + Environment.NewLine +
+				"\tname = \"Property\"" + Environment.NewLine +
+				"\tculture = \"roman\"" + Environment.NewLine +
+				"}";
+			Assert.Equal(expectedStr, str);
+		}
 	}
 }
