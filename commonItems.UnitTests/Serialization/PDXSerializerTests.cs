@@ -41,27 +41,28 @@ namespace commonItems.UnitTests.Serialization {
 			var title = new Title();
 			var titleString = PDXSerializer.Serialize(title);
 
-			var expectedString = "{" + Environment.NewLine +
-								 "\tid = 20" + Environment.NewLine +
-								 "\tcapital_prov_id = 420" + Environment.NewLine +
-								 "\tdevelopment = 50.5" + Environment.NewLine +
-								 "\tname = \"Papal States\"" + Environment.NewLine +
-								 "\tpope_names_list = { \"Peter\" \"John\" \"Hadrian\" }" + Environment.NewLine +
-								 "\tcolor1 = { 2 4 6 }" + Environment.NewLine +
-								 "\tdefinite_form = no" + Environment.NewLine +
-								 "\tlandless = yes" + Environment.NewLine +
-								 "\ttextures = {" + Environment.NewLine +
-								 "\t\tdiffuse = \"gfx/models/diffuse.dds\"" + Environment.NewLine +
-								 "\t\tnormal = \"gfx/models/normal.dds\"" + Environment.NewLine +
-								 "\t}" + Environment.NewLine +
-								 "\tweights = {" + Environment.NewLine +
-								 "\t\t10 = \"roman_gfx\"" + Environment.NewLine +
-								 "\t\t5 = \"italian_gfx\"" + Environment.NewLine +
-								 "\t}" + Environment.NewLine +
-								 "\truler_info = {" + Environment.NewLine +
-								 "\t\tnickname = \"the_great\"" + Environment.NewLine +
-								 "\t}" + Environment.NewLine +
-								 "}";
+			var expectedString =
+				"{" + Environment.NewLine +
+				"\tid = 20" + Environment.NewLine +
+				"\tcapital_prov_id = 420" + Environment.NewLine +
+				"\tdevelopment = 50.5" + Environment.NewLine +
+				"\tname = \"Papal States\"" + Environment.NewLine +
+				"\tpope_names_list = { \"Peter\" \"John\" \"Hadrian\" }" + Environment.NewLine +
+				"\tcolor1 = { 2 4 6 }" + Environment.NewLine +
+				"\tdefinite_form = no" + Environment.NewLine +
+				"\tlandless = yes" + Environment.NewLine +
+				"\ttextures = {" + Environment.NewLine +
+				"\t\tdiffuse = \"gfx/models/diffuse.dds\"" + Environment.NewLine +
+				"\t\tnormal = \"gfx/models/normal.dds\"" + Environment.NewLine +
+				"\t}" + Environment.NewLine +
+				"\tweights = {" + Environment.NewLine +
+				"\t\t10 = \"roman_gfx\"" + Environment.NewLine +
+				"\t\t5 = \"italian_gfx\"" + Environment.NewLine +
+				"\t}" + Environment.NewLine +
+				"\truler_info = {" + Environment.NewLine +
+				"\t\tnickname = \"the_great\"" + Environment.NewLine +
+				"\t}" + Environment.NewLine +
+				"}";
 			Assert.Equal(expectedString, titleString);
 		}
 
