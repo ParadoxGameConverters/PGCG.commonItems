@@ -1,8 +1,9 @@
-﻿using System;
+﻿using commonItems.Serialization;
+using System;
 using System.Text;
 
 namespace commonItems {
-	public class Date : IComparable<Date> {
+	public class Date : IComparable<Date>, IPDXSerializable {
 		public int Year { get; private set; } = 1;
 		public int Month { get; private set; } = 1;
 		public int Day { get; private set; } = 1;
@@ -14,7 +15,7 @@ namespace commonItems {
 			Day = otherDate.Day;
 		}
 		public Date(int year, int month, int day, bool AUC) {
-			Year = AUC ? ConvertAUCtoAD(year) : year;
+			Year = AUC ? ConvertAUCToAD(year) : year;
 			Month = month;
 			Day = day;
 		}
@@ -31,7 +32,7 @@ namespace commonItems {
 			try {
 				Year = int.Parse(init.Substring(0, firstDot));
 				if (AUC) {
-					Year = ConvertAUCtoAD(Year);
+					Year = ConvertAUCToAD(Year);
 				}
 				Month = int.Parse(init.Substring(firstDot + 1, lastDot - firstDot - 1));
 				Day = int.Parse(init.Substring(lastDot + 1));
@@ -118,7 +119,7 @@ namespace commonItems {
 			Year += years;
 		}
 
-		private static int ConvertAUCtoAD(int yearAUC) {
+		private static int ConvertAUCToAD(int yearAUC) {
 			var yearAD = yearAUC - 753;
 			if (yearAD <= 0) {
 				--yearAD;
@@ -145,6 +146,10 @@ namespace commonItems {
 			sb.Append('.');
 			sb.Append(Day);
 			return sb.ToString();
+		}
+
+		public string Serialize(string indent) {
+			return ToString();
 		}
 
 		private static readonly int[] DaysByMonth = new[] {
