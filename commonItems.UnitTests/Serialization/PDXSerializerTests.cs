@@ -22,17 +22,15 @@ namespace commonItems.UnitTests.Serialization {
 			public bool definite_form { get; private set; }
 			// public fields
 			public ParadoxBool landless = new(true);
-
+			public Date creation_date = new(600, 4, 5);
 			public Dictionary<string, string> textures = new() {
 				{ "diffuse", "gfx/models/diffuse.dds" },
 				{ "normal", "gfx/models/normal.dds" }
 			};
-
 			public Dictionary<int, string> weights = new() {
 				{ 10, "roman_gfx" },
 				{ 5, "italian_gfx" }
 			};
-
 			public RulerInfo ruler_info = new() { nickname = "the_great" };
 		}
 
@@ -51,6 +49,7 @@ namespace commonItems.UnitTests.Serialization {
 				"\tcolor1 = { 2 4 6 }" + Environment.NewLine +
 				"\tdefinite_form = no" + Environment.NewLine +
 				"\tlandless = yes" + Environment.NewLine +
+				"\tcreation_date = 600.4.5" + Environment.NewLine +
 				"\ttextures = {" + Environment.NewLine +
 				"\t\tdiffuse = \"gfx/models/diffuse.dds\"" + Environment.NewLine +
 				"\t\tnormal = \"gfx/models/normal.dds\"" + Environment.NewLine +
