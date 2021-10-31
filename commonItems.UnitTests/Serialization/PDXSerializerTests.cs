@@ -19,7 +19,7 @@ namespace commonItems.UnitTests.Serialization {
 			public string name { get; set; } = "Papal States";
 			public List<string> pope_names_list { get; set; } = new() { "Peter", "John", "Hadrian" };
 			public Color color1 { get; set; } = new(new[] { 2, 4, 6 });
-			public bool definite_form { get; private set; } = false;
+			public bool definite_form { get; private set; }
 			// public fields
 			public ParadoxBool landless = new(true);
 
@@ -39,7 +39,7 @@ namespace commonItems.UnitTests.Serialization {
 		[Fact]
 		public void PDXSerializableClassIsProperlySerialized() {
 			var title = new Title();
-			var titleString = PDXSerializer.Serialize(title);
+			var titleString = PDXSerializer.Serialize(title, string.Empty);
 
 			var expectedString =
 				"{" + Environment.NewLine +
@@ -68,11 +68,11 @@ namespace commonItems.UnitTests.Serialization {
 
 		[Fact]
 		public void NullMembersAreNotSerialized() {
-			var c1 = new RulerInfo() { nickname = "the_great" };
-			var c1Str = PDXSerializer.Serialize(c1);
+			var c1 = new RulerInfo { nickname = "the_great" };
+			var c1Str = PDXSerializer.Serialize(c1, string.Empty);
 			Assert.Contains("nickname = \"the_great\"", c1Str);
-			var c2 = new RulerInfo() { nickname = null };
-			var c2Str = PDXSerializer.Serialize(c2);
+			var c2 = new RulerInfo { nickname = null };
+			var c2Str = PDXSerializer.Serialize(c2, string.Empty);
 			Assert.DoesNotContain("nickname", c2Str);
 		}
 	}

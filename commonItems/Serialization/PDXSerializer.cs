@@ -8,7 +8,7 @@ using System.Text;
 namespace commonItems.Serialization {
 	public static class PDXSerializer {
 		private static readonly CultureInfo cultureInfo = CultureInfo.InvariantCulture;
-		public static string Serialize(IPDXSerializable obj, string indent = "") {
+		public static string Serialize(IPDXSerializable obj, string indent) {
 			var sb = new StringBuilder();
 			var type = obj.GetType();
 			var mi = type.GetMembers(BindingFlags.Public | BindingFlags.Instance);
