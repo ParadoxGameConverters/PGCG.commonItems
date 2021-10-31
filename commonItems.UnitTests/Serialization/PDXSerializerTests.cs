@@ -33,7 +33,7 @@ namespace commonItems.UnitTests.Serialization {
 		}
 
 		private class RulerInfo : IPDXSerializable {
-			public string? nickname;
+			public string nickname;
 		}
 
 		[Fact]
