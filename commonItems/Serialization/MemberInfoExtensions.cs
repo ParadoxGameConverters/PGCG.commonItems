@@ -15,5 +15,10 @@ namespace ExtensionMethods {
 				_ => throw new NotImplementedException()
 			};
 		}
+
+		public static string GetName(this MemberInfo memberInfo) {
+			var attr = Attribute.GetCustomAttribute(memberInfo, typeof(SerializedName));
+			return attr is null ? memberInfo.Name : ((SerializedName)attr).Name;
+		}
 	}
 }

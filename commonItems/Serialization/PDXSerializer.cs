@@ -28,10 +28,16 @@ namespace commonItems.Serialization {
 				if (valueRepresentation is null) {
 					continue;
 				}
-				sb.Append(indent).Append('\t').Append(member.Name).Append(" = ").AppendLine(valueRepresentation);
+
+				var name = member.GetName();
+				sb.Append(indent).Append('\t').Append(name).Append(" = ").AppendLine(valueRepresentation);
 			}
 			sb.Append(indent).Append("}");
 			return sb.ToString();
+		}
+
+		public static string Serialize(IPDXSerializable obj) {
+			return Serialize(obj, string.Empty);
 		}
 
 		private static string GetStringRepresentation(string value) {
