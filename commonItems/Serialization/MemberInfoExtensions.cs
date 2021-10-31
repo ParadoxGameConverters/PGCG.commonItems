@@ -2,8 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace ExtensionMethods
-{
+namespace ExtensionMethods {
 	public static class MemberInfoExtensions {
 		public static bool IsNonSerialized(this MemberInfo? mi) {
 			return mi is not null && Attribute.IsDefined(mi, typeof(NonSerialized));

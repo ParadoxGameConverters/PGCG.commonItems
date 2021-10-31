@@ -6,6 +6,10 @@ using Xunit;
 
 namespace commonItems.UnitTests.Serialization {
 	public class PDXSerializerTests {
+		private class RulerInfo : IPDXSerializable {
+			public string nickname;
+		}
+
 		private class Title : IPDXSerializable {
 			// public properties
 			public int id { get; set; } = 20;
@@ -29,11 +33,7 @@ namespace commonItems.UnitTests.Serialization {
 				{ 5, "italian_gfx" }
 			};
 
-			public RulerInfo ruler_info = new() {nickname = "the_great"};
-		}
-
-		private class RulerInfo : IPDXSerializable {
-			public string nickname;
+			public RulerInfo ruler_info = new() { nickname = "the_great" };
 		}
 
 		[Fact]
@@ -67,7 +67,7 @@ namespace commonItems.UnitTests.Serialization {
 
 		[Fact]
 		public void NullMembersAreNotSerialized() {
-			var c1 = new RulerInfo() {nickname = "the_great"};
+			var c1 = new RulerInfo() { nickname = "the_great" };
 			var c1Str = PDXSerializer.Serialize(c1);
 			Assert.Contains("nickname = \"the_great\"", c1Str);
 			var c2 = new RulerInfo() { nickname = null };

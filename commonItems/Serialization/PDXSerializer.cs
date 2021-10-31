@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace commonItems.Serialization {
@@ -24,7 +23,7 @@ namespace commonItems.Serialization {
 
 				var fieldValue = member.GetValue(obj);
 
-				var valueRepresentation = GetValueRepresentation(fieldValue, indent+'\t');
+				var valueRepresentation = GetValueRepresentation(fieldValue, indent + '\t');
 				if (valueRepresentation is null) {
 					continue;
 				}
@@ -49,7 +48,7 @@ namespace commonItems.Serialization {
 			} else if (memberValue is IDictionary dict) {
 				sb.AppendLine("{");
 				foreach (DictionaryEntry entry in dict) {
-					sb.Append(indent).Append("\t").Append(entry.Key).Append(" = ").AppendLine(GetValueRepresentation(entry.Value, indent+'\t'));
+					sb.Append(indent).Append("\t").Append(entry.Key).Append(" = ").AppendLine(GetValueRepresentation(entry.Value, indent + '\t'));
 				}
 				sb.Append(indent).Append('}');
 			} else if (memberValue is ICollection enumerable) {
