@@ -2,26 +2,38 @@
 using System;
 using System.Collections.Generic;
 using Xunit;
+// ReSharper disable InconsistentNaming
 
 namespace commonItems.UnitTests.Serialization {
 	public class PDXSerializerTests {
 		private class Title : IPDXSerializable {
-			public int id = 20;
-			public ulong capital_prov_id = 420;
-			public double development = 50.5;
-			[NonSerialized] public int priority = 50;
-			public string name = "Papal States";
-			public List<string> pope_names_list = new() { "Peter", "John", "Hadrian" };
-			public Color color1 = new(new[] { 2, 4, 6 });
+			// public properties
+			public int id { get; set; } = 20;
+			public ulong capital_prov_id { get; set; } = 420;
+			public double development { get; set; } = 50.5;
+			[commonItems.Serialization.NonSerialized] public int priority { get; set; } = 50;
+			public string name { get; set; } = "Papal States";
+			public List<string> pope_names_list { get; set; } = new() { "Peter", "John", "Hadrian" };
+			public Color color1 { get; set; } = new(new[] { 2, 4, 6 });
+			public bool definite_form { get; private set; } = false;
+			// public fields
 			public ParadoxBool landless = new(true);
-			public bool definite_form = false;
 
 			public Dictionary<string, string> textures = new() {
 				{ "diffuse", "gfx/models/diffuse.dds" },
 				{ "normal", "gfx/models/normal.dds" }
 			};
 
-			public Dictionary<int, string> weights = new() {{10, "roman_gfx"}, {5, "italian_gfx"}};
+			public Dictionary<int, string> weights = new() {
+				{ 10, "roman_gfx" },
+				{ 5, "italian_gfx" }
+			};
+
+			public RulerInfo ruler_info = new() {nickname = "the_great"};
+		}
+
+		private class RulerInfo : IPDXSerializable {
+			public string? nickname;
 		}
 
 		[Fact]
@@ -34,10 +46,10 @@ namespace commonItems.UnitTests.Serialization {
 								 "\tcapital_prov_id = 420" + Environment.NewLine +
 								 "\tdevelopment = 50.5" + Environment.NewLine +
 								 "\tname = \"Papal States\"" + Environment.NewLine +
-								 "\tpope_names_list = { \"Peter\", \"John\", \"Hadrian\" }" + Environment.NewLine +
+								 "\tpope_names_list = { \"Peter\" \"John\" \"Hadrian\" }" + Environment.NewLine +
 								 "\tcolor1 = { 2 4 6 }" + Environment.NewLine +
-								 "\tlandless = yes" + Environment.NewLine +
 								 "\tdefinite_form = no" + Environment.NewLine +
+								 "\tlandless = yes" + Environment.NewLine +
 								 "\ttextures = {" + Environment.NewLine +
 								 "\t\tdiffuse = \"gfx/models/diffuse.dds\"" + Environment.NewLine +
 								 "\t\tnormal = \"gfx/models/normal.dds\"" + Environment.NewLine +
@@ -46,8 +58,21 @@ namespace commonItems.UnitTests.Serialization {
 								 "\t\t10 = \"roman_gfx\"" + Environment.NewLine +
 								 "\t\t5 = \"italian_gfx\"" + Environment.NewLine +
 								 "\t}" + Environment.NewLine +
+								 "\truler_info = {" + Environment.NewLine +
+								 "\t\tnickname = \"the_great\"" + Environment.NewLine +
+								 "\t}" + Environment.NewLine +
 								 "}" + Environment.NewLine;
 			Assert.Equal(expectedString, titleString);
+		}
+
+		[Fact]
+		public void NullMembersAreNotSerialized() {
+			var c1 = new RulerInfo() {nickname = "the_great"};
+			var c1Str = PDXSerializer.Serialize(c1);
+			Assert.Contains("nickname = \"the_great\"", c1Str);
+			var c2 = new RulerInfo() { nickname = null };
+			var c2Str = PDXSerializer.Serialize(c2);
+			Assert.DoesNotContain("nickname", c2Str);
 		}
 	}
 }
