@@ -480,37 +480,37 @@ namespace commonItems.UnitTests {
 		[Fact]
 		public void ColorCanBeOutputInUnspecifiedColorSpace() {
 			var color = new Color(new[] { 64, 128, 128 });
-			Assert.Equal("= { 64 128 128 }", color.Output());
+			Assert.Equal("{ 64 128 128 }", color.Output());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInRgbColorSpace() {
 			var color = new Color(new[] { 64, 128, 128 });
-			Assert.Equal("= rgb { 64 128 128 }", color.OutputRgb());
+			Assert.Equal("rgb { 64 128 128 }", color.OutputRgb());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInHexColorSpace() {
 			var color = new Color(new[] { 64, 128, 128 });
-			Assert.Equal("= hex { 408080 }", color.OutputHex());
+			Assert.Equal("hex { 408080 }", color.OutputHex());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInHexColorSpacePreservingZeroes() {
 			var color = new Color(new[] { 0, 0, 0 });
-			Assert.Equal("= hex { 000000 }", color.OutputHex());
+			Assert.Equal("hex { 000000 }", color.OutputHex());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInHsvColorSpace() {
 			var color = new Color(new[] { 64, 128, 128 });
-			Assert.Equal("= hsv { 0.5 0.5 0.5 }", color.OutputHsv());
+			Assert.Equal("hsv { 0.5 0.5 0.5 }", color.OutputHsv());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInHsv360ColorSpace() {
 			var color = new Color(new[] { 64, 128, 128 });
-			Assert.Equal("= hsv360 { 180 50 50 }", color.OutputHsv360());
+			Assert.Equal("hsv360 { 180 50 50 }", color.OutputHsv360());
 		}
 
 		[Fact]

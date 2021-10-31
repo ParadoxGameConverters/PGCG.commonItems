@@ -1,7 +1,8 @@
-﻿using System;
+﻿using commonItems.Serialization;
+using System;
 
 namespace commonItems {
-	public class ParadoxBool {
+	public class ParadoxBool : IPDXSerializable {
 		public bool Value { get; set; } = true;
 		public string YesOrNo => Value ? "yes" : "no";
 		public ParadoxBool() { }
@@ -19,6 +20,10 @@ namespace commonItems {
 		public ParadoxBool(BufferedReader reader) : this(ParserHelpers.GetString(reader)) { }
 		public static implicit operator bool(ParadoxBool m) {
 			return m.Value;
+		}
+
+		public string Serialize(string indent) {
+			return YesOrNo;
 		}
 	}
 }

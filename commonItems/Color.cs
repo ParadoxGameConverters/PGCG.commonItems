@@ -1,9 +1,10 @@
-﻿using System;
+﻿using commonItems.Serialization;
+using System;
 using System.Linq;
 using System.Text;
 
 namespace commonItems {
-	public class Color {
+	public class Color : IPDXSerializable {
 		public Color() { }
 		public Color(int[] rgbComponents) {
 			RgbComponents = rgbComponents;
@@ -30,8 +31,12 @@ namespace commonItems {
 		public double S => HsvComponents[1];
 		public double V => HsvComponents[2];
 
+		public string Serialize(string indent) {
+			return Output();
+		}
+
 		public string Output() {
-			var sb = new StringBuilder("= { ");
+			var sb = new StringBuilder("{ ");
 			sb.Append(RgbComponents[0]);
 			sb.Append(' ');
 			sb.Append(RgbComponents[1]);
@@ -42,7 +47,7 @@ namespace commonItems {
 		}
 
 		public string OutputRgb() {
-			var sb = new StringBuilder("= rgb { ");
+			var sb = new StringBuilder("rgb { ");
 			sb.Append(RgbComponents[0]);
 			sb.Append(' ');
 			sb.Append(RgbComponents[1]);
@@ -53,7 +58,7 @@ namespace commonItems {
 		}
 
 		public string OutputHex() {
-			var sb = new StringBuilder("= hex { ");
+			var sb = new StringBuilder("hex { ");
 			sb.Append($"{RgbComponents[0]:X2}{RgbComponents[1]:X2}{RgbComponents[2]:X2}");
 			sb.Append(" }");
 			return sb.ToString();
@@ -61,7 +66,7 @@ namespace commonItems {
 
 		public string OutputHsv() {
 			var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
-			var sb = new StringBuilder("= hsv { ");
+			var sb = new StringBuilder("hsv { ");
 			sb.Append(HsvComponents[0].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
 			sb.Append(' ');
 			sb.Append(HsvComponents[1].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
@@ -72,7 +77,7 @@ namespace commonItems {
 		}
 
 		public string OutputHsv360() {
-			var sb = new StringBuilder("= hsv360 { ");
+			var sb = new StringBuilder("hsv360 { ");
 			sb.Append(Math.Round(HsvComponents[0] * 360));
 			sb.Append(' ');
 			sb.Append(Math.Round(HsvComponents[1] * 100));
@@ -165,7 +170,7 @@ namespace commonItems {
 						b = q;
 						break;
 					default:
-						throw new ArgumentOutOfRangeException("Hue greater than 1.0");
+						throw new ArgumentOutOfRangeException(nameof(h), "Hue greater than 1.0");
 				}
 			}
 
