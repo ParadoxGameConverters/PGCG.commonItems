@@ -8,12 +8,12 @@ using System.Text;
 
 namespace commonItems.Serialization {
 	public static class PDXSerializer {
-		private static CultureInfo cultureInfo = CultureInfo.InvariantCulture;
+		private static readonly CultureInfo cultureInfo = CultureInfo.InvariantCulture;
 		public static string Serialize(IPDXSerializable obj, string indent = "") {
 			var sb = new StringBuilder();
 			var type = obj.GetType();
 			var mi = type.GetMembers(BindingFlags.Public | BindingFlags.Instance);
-			sb.Append(indent).AppendLine("{");
+			sb.AppendLine("{");
 			foreach (var member in mi) {
 				if (member is not PropertyInfo && member is not FieldInfo) {
 					continue;
@@ -30,7 +30,7 @@ namespace commonItems.Serialization {
 				}
 				sb.Append(indent).Append('\t').Append(member.Name).Append(" = ").AppendLine(valueRepresentation);
 			}
-			sb.Append(indent).AppendLine("}");
+			sb.Append(indent).Append("}");
 			return sb.ToString();
 		}
 
@@ -59,7 +59,7 @@ namespace commonItems.Serialization {
 				}
 				sb.Append('}');
 			} else if (memberValue is IPDXSerializable serializableType) {
-				sb.Append(serializableType.Serialize(indent+'\t'));
+				sb.Append(serializableType.Serialize(indent));
 			} else if (memberValue is bool boolValue) {
 				sb.Append(new ParadoxBool(boolValue).YesOrNo);
 			} else if (memberValue.GetType().IsValueType && memberValue is IFormattable formattable) { // for numbers

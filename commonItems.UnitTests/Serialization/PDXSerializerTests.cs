@@ -61,7 +61,7 @@ namespace commonItems.UnitTests.Serialization {
 								 "\truler_info = {" + Environment.NewLine +
 								 "\t\tnickname = \"the_great\"" + Environment.NewLine +
 								 "\t}" + Environment.NewLine +
-								 "}" + Environment.NewLine;
+								 "}";
 			Assert.Equal(expectedString, titleString);
 		}
 
