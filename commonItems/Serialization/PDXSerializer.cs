@@ -9,7 +9,15 @@ using System.Text;
 namespace commonItems.Serialization {
 	public static class PDXSerializer {
 		private static readonly CultureInfo cultureInfo = CultureInfo.InvariantCulture;
-		public static string Serialize(IPDXSerializable obj, string indent) {
+
+		public static string Serialize(IPDXSerializable serializableObj, string indent) {
+			return serializableObj.Serialize(indent);
+		}
+		public static string Serialize(IPDXSerializable obj) {
+			return Serialize(obj, string.Empty);
+		}
+
+		public static string SerializeMembers(object obj, string indent) {
 			var sb = new StringBuilder();
 			var type = obj.GetType();
 			var mi = type.GetMembers(BindingFlags.Public | BindingFlags.Instance);
@@ -23,7 +31,6 @@ namespace commonItems.Serialization {
 				}
 
 				var fieldValue = member.GetValue(obj);
-
 				var valueRepresentation = GetValueRepresentation(fieldValue, indent + '\t');
 				if (valueRepresentation is null) {
 					continue;
@@ -34,10 +41,6 @@ namespace commonItems.Serialization {
 			}
 			sb.Append(indent).Append('}');
 			return sb.ToString();
-		}
-
-		public static string Serialize(IPDXSerializable obj) {
-			return Serialize(obj, string.Empty);
 		}
 
 		public static string? GetValueRepresentation(object? memberValue, string indent) {
