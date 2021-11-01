@@ -31,6 +31,7 @@ namespace commonItems.UnitTests.Serialization {
 				{ 10, "roman_gfx" },
 				{ 5, "italian_gfx" }
 			};
+			public HashSet<string> greetings = new() { "hi", "greetings" };
 			public RulerInfo ruler_info = new() { nickname = "the_great" };
 		}
 
@@ -58,6 +59,7 @@ namespace commonItems.UnitTests.Serialization {
 				"\t\t10 = \"roman_gfx\"" + Environment.NewLine +
 				"\t\t5 = \"italian_gfx\"" + Environment.NewLine +
 				"\t}" + Environment.NewLine +
+				"\tgreetings = { \"hi\" \"greetings\" }" + Environment.NewLine +
 				"\truler_info = {" + Environment.NewLine +
 				"\t\tnickname = \"the_great\"" + Environment.NewLine +
 				"\t}" + Environment.NewLine +
