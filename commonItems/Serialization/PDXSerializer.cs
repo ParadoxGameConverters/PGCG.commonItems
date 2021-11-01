@@ -43,7 +43,6 @@ namespace commonItems.Serialization {
 			return sb.ToString();
 		}
 
-
 		public static string? GetValueRepresentation(object? memberValue, string indent) {
 			if (memberValue is null) {
 				return null;
