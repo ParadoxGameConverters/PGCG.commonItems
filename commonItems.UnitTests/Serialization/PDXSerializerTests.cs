@@ -1,4 +1,5 @@
 ﻿using commonItems.Serialization;
+using commonItems.Serialization.commonItems.Serialization;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -91,6 +92,24 @@ namespace commonItems.UnitTests.Serialization {
 				"\tculture = \"roman\"" + Environment.NewLine +
 				"}";
 			Assert.Equal(expectedStr, str);
+		}
+
+		private class History : IPDXSerializable {
+			[SerializeOnlyValue] public Dictionary<string, object> HistoryFields { get; } = new() {
+				{ "culture", "roman" },
+				{ "development", 3.14 },
+				{ "buildings", new List<string> { "baths", "aqueduct" } }
+			};
+		}
+
+		[Fact]
+		public void MembersCanBeSerializedWithoutNames() {
+			var history = new History();
+			var expectedStr =
+				"culture = \"roman\"" + Environment.NewLine +
+				"development = 3.14" + Environment.NewLine +
+				"buildings = { \"baths\" \"aqueduct\" }";
+			Assert.Equal(expectedStr, PDXSerializer.Serialize(history));
 		}
 	}
 }
