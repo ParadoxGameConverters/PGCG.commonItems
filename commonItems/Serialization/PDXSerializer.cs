@@ -57,7 +57,13 @@ namespace commonItems.Serialization {
 					sb.Append(indent).Append('\t').Append(entry.Key).Append(" = ").AppendLine(GetValueRepresentation(entry.Value, indent + '\t'));
 				}
 				sb.Append(indent).Append('}');
-			} else if (memberValue is ICollection enumerable) {
+			} else if (memberValue is ICollection collection) {
+				sb.Append("{ ");
+				foreach (var entry in collection) {
+					sb.Append(GetValueRepresentation(entry, indent)).Append(' ');
+				}
+				sb.Append('}');
+			} else if (memberValue is IEnumerable enumerable) {
 				sb.Append("{ ");
 				foreach (var entry in enumerable) {
 					sb.Append(GetValueRepresentation(entry, indent)).Append(' ');
