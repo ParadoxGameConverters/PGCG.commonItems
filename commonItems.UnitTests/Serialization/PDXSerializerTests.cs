@@ -1,5 +1,4 @@
 ﻿using commonItems.Serialization;
-using commonItems.Serialization.commonItems.Serialization;
 using System;
 using System.Collections.Generic;
 using Xunit;
