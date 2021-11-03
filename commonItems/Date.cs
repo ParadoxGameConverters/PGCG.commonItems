@@ -148,7 +148,7 @@ namespace commonItems {
 			return sb.ToString();
 		}
 
-		public string Serialize(string indent) {
+		public string Serialize(string indent, bool withBraces) {
 			return ToString();
 		}
 

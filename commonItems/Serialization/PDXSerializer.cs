@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -8,27 +10,27 @@ namespace commonItems.Serialization {
 	public static class PDXSerializer {
 		private static readonly CultureInfo cultureInfo = CultureInfo.InvariantCulture;
 
-		public static string Serialize(object obj, string indent) {
+		public static string Serialize(object obj, string indent, bool withBraces = true) {
 			var sb = new StringBuilder();
 			if (obj is string str) {
 				sb.Append('\"').Append(str).Append('\"');
 			} else if (obj is IDictionary dict) {
-				sb.AppendLine("{");
-				foreach (DictionaryEntry entry in dict) {
-					if (entry.Value is null) {
-						continue;
-					}
-					sb.Append(indent).Append('\t').Append(entry.Key)
-						.Append(" = ")
-						.AppendLine(Serialize(entry.Value, indent + '\t'));
-				}
-				sb.Append(indent).Append('}');
+				SerializeDictionary(dict, withBraces, sb, indent);
 			} else if (obj is ICollection collection) {
-				SerializeEnumerable(collection, sb, indent);
+				SerializeEnumerable(collection, withBraces, sb, indent);
 			} else if (obj is IEnumerable enumerable) {
-				SerializeEnumerable(enumerable, sb, indent);
+				SerializeEnumerable(enumerable, withBraces, sb, indent);
+			} else if (IsKeyValuePair(obj)) {
+				Type valueType = obj.GetType();
+				object? kvpKey = valueType.GetProperty("Key")?.GetValue(obj, null);
+				object? kvpValue = valueType.GetProperty("Value")?.GetValue(obj, null);
+				if (kvpKey is not null && kvpValue is not null) {
+					sb.Append(indent).Append('\t').Append(kvpKey)
+						.Append(" = ")
+						.Append(Serialize(kvpValue, indent + '\t'));
+				}
 			} else if (obj is IPDXSerializable serializableType) {
-				sb.Append(serializableType.Serialize(indent));
+				sb.Append(serializableType.Serialize(indent, withBraces));
 			} else if (obj is bool boolValue) {
 				sb.Append(new ParadoxBool(boolValue).YesOrNo);
 			} else if (obj.GetType().IsValueType && obj is IFormattable formattable) { // for numbers
@@ -43,12 +45,45 @@ namespace commonItems.Serialization {
 			return Serialize(obj, string.Empty);
 		}
 
-		private static void SerializeEnumerable(IEnumerable enumerable, StringBuilder sb, string indent) {
-			sb.Append("{ ");
-			foreach (var entry in enumerable) {
-				sb.Append(Serialize(entry, indent)).Append(' ');
+		private static void SerializeEnumerable(IEnumerable enumerable, bool withBraces, StringBuilder sb, string indent) {
+			var serializedEntries = enumerable.Cast<object>().Select(e => Serialize(e, indent));
+			if (withBraces) {
+				sb.Append("{ ").AppendJoin(' ', serializedEntries).Append(" }");
+			} else {
+				sb.AppendJoin(Environment.NewLine, serializedEntries);
 			}
-			sb.Append('}');
+		}
+
+		private static void SerializeDictionary(IDictionary dictionary, bool withBraces, StringBuilder sb, string indent) {
+			if (withBraces) {
+				sb.AppendLine("{");
+			}
+
+			var internalIndent = "";
+			if (withBraces) {
+				internalIndent += '\t';
+			}
+			var serializedEntries = CastDict(dictionary).Where(e => e.Value is not null)
+				.Select(
+					e => indent + internalIndent + e.Key + " = " + Serialize(e.Value!, indent + '\t')
+				);
+			sb.AppendJoin(Environment.NewLine, serializedEntries);
+
+			if (withBraces) {
+				sb.AppendLine();
+				sb.Append(indent).Append('}');
+			}
+
+			static IEnumerable<DictionaryEntry> CastDict(IDictionary dictionary) {
+				foreach (DictionaryEntry entry in dictionary) {
+					yield return entry;
+				}
+			}
+		}
+
+		private static bool IsKeyValuePair(object obj) {
+			Type type = obj.GetType();
+			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>);
 		}
 	}
 }

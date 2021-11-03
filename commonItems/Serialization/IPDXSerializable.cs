@@ -6,12 +6,14 @@ using System.Text;
 
 namespace commonItems.Serialization {
 	public interface IPDXSerializable {
-		public string Serialize(string indent) {
+		public string Serialize(string indent, bool withBraces = true) {
 			// default implementation: serialize members
 			var sb = new StringBuilder();
 			var type = GetType();
 			var mi = type.GetMembers(BindingFlags.Public | BindingFlags.Instance);
-			sb.AppendLine("{");
+			if (withBraces) {
+				sb.AppendLine("{");
+			}
 			foreach (var member in mi) {
 				if (member is not PropertyInfo && member is not FieldInfo) {
 					continue;
@@ -24,14 +26,22 @@ namespace commonItems.Serialization {
 					continue;
 				}
 
-				var valueRepresentation = PDXSerializer.Serialize(fieldValue, indent + '\t');
-				if (!Attribute.IsDefined(member, typeof(SerializeOnlyValue))) {
-					var name = member.GetName();
-					sb.Append(indent).Append('\t').Append(name).Append(" = ");
+				string valueRepresentation;
+				sb.Append(indent);
+				if (Attribute.IsDefined(member, typeof(SerializeOnlyValue))) {
+					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent, false);
+				} else {
+					if (withBraces) {
+						sb.Append('\t');
+					}
+					sb.Append(member.GetName()).Append(" = ");
+					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent + '\t');
 				}
 				sb.AppendLine(valueRepresentation);
 			}
-			sb.Append(indent).Append('}');
+			if (withBraces) {
+				sb.Append(indent).Append('}');
+			}
 			return sb.ToString();
 		}
 	}
