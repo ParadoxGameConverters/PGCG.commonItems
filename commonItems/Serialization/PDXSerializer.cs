@@ -51,7 +51,11 @@ namespace commonItems.Serialization {
 		private static void SerializeEnumerable(IEnumerable enumerable, bool withBraces, StringBuilder sb, string indent) {
 			var serializedEntries = enumerable.Cast<object>().Select(e => Serialize(e, indent));
 			if (withBraces) {
-				sb.Append("{ ").AppendJoin(' ', serializedEntries).Append(" }");
+				sb.Append("{ ");
+				foreach (var entry in serializedEntries) {
+					sb.Append(entry).Append(' ');
+				}
+				sb.Append('}');
 			} else {
 				sb.AppendJoin(Environment.NewLine, serializedEntries);
 			}
