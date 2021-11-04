@@ -18,6 +18,7 @@ namespace commonItems.UnitTests.Serialization {
 			[commonItems.Serialization.NonSerialized] public int priority { get; set; } = 50;
 			public string name { get; set; } = "Papal States";
 			public List<string> pope_names_list { get; set; } = new() { "Peter", "John", "Hadrian" };
+			public List<short> empty_list { get; set; } = new();
 			public Color color1 { get; set; } = new(new[] { 2, 4, 6 });
 			public bool definite_form { get; private set; }
 
@@ -49,6 +50,7 @@ namespace commonItems.UnitTests.Serialization {
 				"\tdevelopment = 50.5" + Environment.NewLine +
 				"\tname = \"Papal States\"" + Environment.NewLine +
 				"\tpope_names_list = { \"Peter\" \"John\" \"Hadrian\" }" + Environment.NewLine +
+				"\tempty_list = { }" + Environment.NewLine +
 				"\tcolor1 = { 2 4 6 }" + Environment.NewLine +
 				"\tdefinite_form = no" + Environment.NewLine +
 				"\tlandless = yes" + Environment.NewLine +
