@@ -5,9 +5,6 @@ using System.Text;
 
 namespace commonItems.Serialization {
 	public interface IPDXSerializable {
-		public string Serialize(string indent) {
-			return Serialize(indent: indent, withBraces: true);
-		}
 		public string Serialize(string indent, bool withBraces) {
 			// default implementation: serialize members
 			var sb = new StringBuilder();

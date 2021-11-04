@@ -10,7 +10,10 @@ namespace commonItems.Serialization {
 	public static class PDXSerializer {
 		private static readonly CultureInfo cultureInfo = CultureInfo.InvariantCulture;
 
-		public static string Serialize(object obj, string indent, bool withBraces = true) {
+		public static string Serialize(object obj, string indent) {
+			return Serialize(obj, indent, true);
+		}
+		public static string Serialize(object obj, string indent, bool withBraces) {
 			var sb = new StringBuilder();
 			if (obj is string str) {
 				sb.Append('\"').Append(str).Append('\"');
