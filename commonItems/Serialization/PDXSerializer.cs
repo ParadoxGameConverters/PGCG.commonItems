@@ -28,9 +28,15 @@ namespace commonItems.Serialization {
 				object? kvpKey = valueType.GetProperty("Key")?.GetValue(obj, null);
 				object? kvpValue = valueType.GetProperty("Value")?.GetValue(obj, null);
 				if (kvpKey is not null && kvpValue is not null) {
-					sb.Append(indent).Append('\t').Append(kvpKey)
+					sb.Append(indent).Append(kvpKey)
 						.Append(" = ")
 						.Append(Serialize(kvpValue, indent + '\t'));
+				}
+			} else if (obj is DictionaryEntry entry) {
+				if (entry.Value is not null) {
+					sb.Append(indent).Append(entry.Key)
+						.Append(" = ")
+						.Append(Serialize(entry.Value, indent + '\t'));
 				}
 			} else if (obj is IPDXSerializable serializableType) {
 				sb.Append(serializableType.Serialize(indent, withBraces));
@@ -70,10 +76,8 @@ namespace commonItems.Serialization {
 			if (withBraces) {
 				internalIndent += '\t';
 			}
-			var serializedEntries = CastDict(dictionary).Where(e => e.Value is not null)
-				.Select(
-					e => indent + internalIndent + e.Key + " = " + Serialize(e.Value!, indent + '\t')
-				);
+			var notNullEntries = CastDict(dictionary).Where(e => e.Value is not null);
+			var serializedEntries = notNullEntries.Select(e => Serialize(e, indent + internalIndent));
 			sb.AppendJoin(Environment.NewLine, serializedEntries);
 
 			if (withBraces) {

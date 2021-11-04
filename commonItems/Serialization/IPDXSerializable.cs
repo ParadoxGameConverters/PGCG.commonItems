@@ -28,10 +28,14 @@ namespace commonItems.Serialization {
 					continue;
 				}
 
+				var internalIndent = "";
+				if (withBraces) {
+					internalIndent += '\t';
+				}
 				string valueRepresentation;
 				sb.Append(indent);
 				if (Attribute.IsDefined(member, typeof(SerializeOnlyValue))) {
-					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent, false);
+					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent + internalIndent, false);
 				} else {
 					if (withBraces) {
 						sb.Append('\t');

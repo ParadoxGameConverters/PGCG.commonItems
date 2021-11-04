@@ -116,5 +116,15 @@ namespace commonItems.UnitTests.Serialization {
 				"buildings = { \"baths\" \"aqueduct\" }" + Environment.NewLine;
 			Assert.Equal(expectedStr, PDXSerializer.Serialize(history, indent: string.Empty, withBraces: false));
 		}
+
+		[Fact]
+		public void EnumerableCanBeSerializedWithoutBraces() {
+			var list = new List<string> { "veni", "vidi", "vici" };
+			var expectedStr =
+				"\"veni\"" + Environment.NewLine +
+				"\"vidi\"" + Environment.NewLine +
+				"\"vici\"";
+			Assert.Equal(expectedStr, PDXSerializer.Serialize(list, string.Empty, withBraces: false));
+		}
 	}
 }
