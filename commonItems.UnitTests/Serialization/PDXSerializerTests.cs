@@ -20,6 +20,7 @@ namespace commonItems.UnitTests.Serialization {
 			public List<string> pope_names_list { get; set; } = new() { "Peter", "John", "Hadrian" };
 			public Color color1 { get; set; } = new(new[] { 2, 4, 6 });
 			public bool definite_form { get; private set; }
+
 			// public fields
 			public ParadoxBool landless = new(true);
 			public Date creation_date = new(600, 4, 5);
@@ -32,6 +33,7 @@ namespace commonItems.UnitTests.Serialization {
 				{ 5, "italian_gfx" }
 			};
 			public HashSet<string> greetings = new() { "hi", "salutations", "greetings" };
+			[SerializeOnlyValue] public KeyValuePair<string, string> kvPair = new("key", "value");
 			public RulerInfo ruler_info = new() { nickname = "the_great" };
 		}
 
@@ -60,6 +62,7 @@ namespace commonItems.UnitTests.Serialization {
 				"\t\t5 = \"italian_gfx\"" + Environment.NewLine +
 				"\t}" + Environment.NewLine +
 				"\tgreetings = { \"hi\" \"salutations\" \"greetings\" }" + Environment.NewLine +
+				"\tkey = \"value\"" + Environment.NewLine +
 				"\truler_info = {" + Environment.NewLine +
 				"\t\tnickname = \"the_great\"" + Environment.NewLine +
 				"\t}" + Environment.NewLine +
@@ -91,6 +94,25 @@ namespace commonItems.UnitTests.Serialization {
 				"\tculture = \"roman\"" + Environment.NewLine +
 				"}";
 			Assert.Equal(expectedStr, str);
+		}
+
+		private class History : IPDXSerializable {
+			[SerializeOnlyValue]
+			public Dictionary<string, object> HistoryFields { get; } = new() {
+				{ "culture", "roman" },
+				{ "development", 3.14 },
+				{ "buildings", new List<string> { "baths", "aqueduct" } }
+			};
+		}
+
+		[Fact]
+		public void MembersCanBeSerializedWithoutNames() {
+			var history = new History();
+			var expectedStr =
+				"culture = \"roman\"" + Environment.NewLine +
+				"development = 3.14" + Environment.NewLine +
+				"buildings = { \"baths\" \"aqueduct\" }" + Environment.NewLine;
+			Assert.Equal(expectedStr, PDXSerializer.Serialize(history, indent: string.Empty, withBraces: false));
 		}
 	}
 }

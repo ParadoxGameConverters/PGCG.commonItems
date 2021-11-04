@@ -31,7 +31,7 @@ namespace commonItems {
 		public double S => HsvComponents[1];
 		public double V => HsvComponents[2];
 
-		public string Serialize(string indent) {
+		public string Serialize(string indent, bool withBraces) {
 			return Output();
 		}
 

@@ -22,7 +22,7 @@ namespace commonItems {
 			return m.Value;
 		}
 
-		public string Serialize(string indent) {
+		public string Serialize(string indent, bool withBraces) {
 			return YesOrNo;
 		}
 	}

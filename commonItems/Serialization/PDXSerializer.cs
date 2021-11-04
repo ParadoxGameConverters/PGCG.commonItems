@@ -1,8 +1,8 @@
-﻿using ExtensionMethods;
-using System;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -10,76 +10,83 @@ namespace commonItems.Serialization {
 	public static class PDXSerializer {
 		private static readonly CultureInfo cultureInfo = CultureInfo.InvariantCulture;
 
-		public static string Serialize(IPDXSerializable serializableObj, string indent) {
-			return serializableObj.Serialize(indent);
+		public static string Serialize(object obj, string indent) {
+			return Serialize(obj, indent, true);
 		}
-		public static string Serialize(IPDXSerializable obj) {
+		public static string Serialize(object obj, string indent, bool withBraces) {
+			var sb = new StringBuilder();
+			if (obj is string str) {
+				sb.Append('\"').Append(str).Append('\"');
+			} else if (obj is IDictionary dict) {
+				SerializeDictionary(dict, withBraces, sb, indent);
+			} else if (obj is ICollection collection) {
+				SerializeEnumerable(collection, withBraces, sb, indent);
+			} else if (obj is IEnumerable enumerable) {
+				SerializeEnumerable(enumerable, withBraces, sb, indent);
+			} else if (IsKeyValuePair(obj)) {
+				Type valueType = obj.GetType();
+				object? kvpKey = valueType.GetProperty("Key")?.GetValue(obj, null);
+				object? kvpValue = valueType.GetProperty("Value")?.GetValue(obj, null);
+				if (kvpKey is not null && kvpValue is not null) {
+					sb.Append(indent).Append('\t').Append(kvpKey)
+						.Append(" = ")
+						.Append(Serialize(kvpValue, indent + '\t'));
+				}
+			} else if (obj is IPDXSerializable serializableType) {
+				sb.Append(serializableType.Serialize(indent, withBraces));
+			} else if (obj is bool boolValue) {
+				sb.Append(new ParadoxBool(boolValue).YesOrNo);
+			} else if (obj.GetType().IsValueType && obj is IFormattable formattable) { // for numbers
+				sb.Append(formattable.ToString("G", cultureInfo));
+			} else {
+				throw new SerializationException($"Objects of type {obj.GetType()} are not yet supported by PDXSerializer!");
+			}
+
+			return sb.ToString();
+		}
+		public static string Serialize(object obj) {
 			return Serialize(obj, string.Empty);
 		}
 
-		public static string SerializeMembers(object obj, string indent) {
-			var sb = new StringBuilder();
-			var type = obj.GetType();
-			var mi = type.GetMembers(BindingFlags.Public | BindingFlags.Instance);
-			sb.AppendLine("{");
-			foreach (var member in mi) {
-				if (member is not PropertyInfo && member is not FieldInfo) {
-					continue;
-				}
-				if (member.IsNonSerialized()) {
-					continue;
-				}
-
-				var fieldValue = member.GetValue(obj);
-				var valueRepresentation = GetValueRepresentation(fieldValue, indent + '\t');
-				if (valueRepresentation is null) {
-					continue;
-				}
-
-				var name = member.GetName();
-				sb.Append(indent).Append('\t').Append(name).Append(" = ").AppendLine(valueRepresentation);
+		private static void SerializeEnumerable(IEnumerable enumerable, bool withBraces, StringBuilder sb, string indent) {
+			var serializedEntries = enumerable.Cast<object>().Select(e => Serialize(e, indent));
+			if (withBraces) {
+				sb.Append("{ ").AppendJoin(' ', serializedEntries).Append(" }");
+			} else {
+				sb.AppendJoin(Environment.NewLine, serializedEntries);
 			}
-			sb.Append(indent).Append('}');
-			return sb.ToString();
 		}
 
-		public static string? GetValueRepresentation(object? memberValue, string indent) {
-			if (memberValue is null) {
-				return null;
-			}
-
-			var sb = new StringBuilder();
-			if (memberValue is string str) {
-				sb.Append('\"').Append(str).Append('\"');
-			} else if (memberValue is IDictionary dict) {
+		private static void SerializeDictionary(IDictionary dictionary, bool withBraces, StringBuilder sb, string indent) {
+			if (withBraces) {
 				sb.AppendLine("{");
-				foreach (DictionaryEntry entry in dict) {
-					sb.Append(indent).Append('\t').Append(entry.Key).Append(" = ").AppendLine(GetValueRepresentation(entry.Value, indent + '\t'));
-				}
-				sb.Append(indent).Append('}');
-			} else if (memberValue is ICollection collection) {
-				sb.Append("{ ");
-				foreach (var entry in collection) {
-					sb.Append(GetValueRepresentation(entry, indent)).Append(' ');
-				}
-				sb.Append('}');
-			} else if (memberValue is IEnumerable enumerable) {
-				sb.Append("{ ");
-				foreach (var entry in enumerable) {
-					sb.Append(GetValueRepresentation(entry, indent)).Append(' ');
-				}
-				sb.Append('}');
-			} else if (memberValue is IPDXSerializable serializableType) {
-				sb.Append(serializableType.Serialize(indent));
-			} else if (memberValue is bool boolValue) {
-				sb.Append(new ParadoxBool(boolValue).YesOrNo);
-			} else if (memberValue.GetType().IsValueType && memberValue is IFormattable formattable) { // for numbers
-				sb.Append(formattable.ToString("G", cultureInfo));
-			} else {
-				throw new SerializationException($"Fields of type {memberValue.GetType()} are not yet supported by PDXSerializer!");
 			}
 
-			return sb.ToString();
+			var internalIndent = "";
+			if (withBraces) {
+				internalIndent += '\t';
+			}
+			var serializedEntries = CastDict(dictionary).Where(e => e.Value is not null)
+				.Select(
+					e => indent + internalIndent + e.Key + " = " + Serialize(e.Value!, indent + '\t')
+				);
+			sb.AppendJoin(Environment.NewLine, serializedEntries);
+
+			if (withBraces) {
+				sb.AppendLine();
+				sb.Append(indent).Append('}');
+			}
+
+			static IEnumerable<DictionaryEntry> CastDict(IDictionary dictionary) {
+				foreach (DictionaryEntry entry in dictionary) {
+					yield return entry;
+				}
+			}
+		}
+
+		private static bool IsKeyValuePair(object obj) {
+			Type type = obj.GetType();
+			return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>);
 		}
 	}
 }
