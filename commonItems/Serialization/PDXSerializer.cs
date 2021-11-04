@@ -19,19 +19,12 @@ namespace commonItems.Serialization {
 				sb.Append('\"').Append(str).Append('\"');
 			} else if (obj is IDictionary dict) {
 				SerializeDictionary(dict, withBraces, sb, indent);
-			} else if (obj is ICollection collection) {
-				SerializeEnumerable(collection, withBraces, sb, indent);
 			} else if (obj is IEnumerable enumerable) {
 				SerializeEnumerable(enumerable, withBraces, sb, indent);
 			} else if (IsKeyValuePair(obj)) {
-				Type valueType = obj.GetType();
-				object? kvpKey = valueType.GetProperty("Key")?.GetValue(obj, null);
-				object? kvpValue = valueType.GetProperty("Value")?.GetValue(obj, null);
-				if (kvpKey is not null && kvpValue is not null) {
-					sb.Append(indent).Append('\t').Append(kvpKey)
-						.Append(" = ")
-						.Append(Serialize(kvpValue, indent + '\t'));
-				}
+				SerializeKeyValuePair(obj, sb, indent);
+			} else if (obj is DictionaryEntry entry) {
+				SerializeDictionaryEntry(entry, sb, indent);
 			} else if (obj is IPDXSerializable serializableType) {
 				sb.Append(serializableType.Serialize(indent, withBraces));
 			} else if (obj is bool boolValue) {
@@ -70,10 +63,8 @@ namespace commonItems.Serialization {
 			if (withBraces) {
 				internalIndent += '\t';
 			}
-			var serializedEntries = CastDict(dictionary).Where(e => e.Value is not null)
-				.Select(
-					e => indent + internalIndent + e.Key + " = " + Serialize(e.Value!, indent + '\t')
-				);
+			var notNullEntries = CastDict(dictionary).Where(e => e.Value is not null);
+			var serializedEntries = notNullEntries.Select(e => Serialize(e, indent + internalIndent));
 			sb.AppendJoin(Environment.NewLine, serializedEntries);
 
 			if (withBraces) {
@@ -85,6 +76,23 @@ namespace commonItems.Serialization {
 				foreach (DictionaryEntry entry in dictionary) {
 					yield return entry;
 				}
+			}
+		}
+		private static void SerializeKeyValuePair(object kvPair, StringBuilder sb, string indent) {
+			Type valueType = kvPair.GetType();
+			object? kvpKey = valueType.GetProperty("Key")?.GetValue(kvPair, null);
+			object? kvpValue = valueType.GetProperty("Value")?.GetValue(kvPair, null);
+			if (kvpKey is not null && kvpValue is not null) {
+				sb.Append(indent).Append(kvpKey)
+					.Append(" = ")
+					.Append(Serialize(kvpValue, indent + '\t'));
+			}
+		}
+		private static void SerializeDictionaryEntry(DictionaryEntry entry, StringBuilder sb, string indent) {
+			if (entry.Value is not null) {
+				sb.Append(indent).Append(entry.Key)
+					.Append(" = ")
+					.Append(Serialize(entry.Value, indent + '\t'));
 			}
 		}
 

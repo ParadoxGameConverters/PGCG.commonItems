@@ -5,9 +5,6 @@ using System.Text;
 
 namespace commonItems.Serialization {
 	public interface IPDXSerializable {
-		public string Serialize(string indent) {
-			return Serialize(indent: indent, withBraces: true);
-		}
 		public string Serialize(string indent, bool withBraces) {
 			// default implementation: serialize members
 			var sb = new StringBuilder();
@@ -28,10 +25,14 @@ namespace commonItems.Serialization {
 					continue;
 				}
 
+				var internalIndent = "";
+				if (withBraces) {
+					internalIndent += '\t';
+				}
 				string valueRepresentation;
 				sb.Append(indent);
 				if (Attribute.IsDefined(member, typeof(SerializeOnlyValue))) {
-					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent, false);
+					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent + internalIndent, false);
 				} else {
 					if (withBraces) {
 						sb.Append('\t');
