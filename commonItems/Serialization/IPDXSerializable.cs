@@ -31,12 +31,12 @@ namespace commonItems.Serialization {
 				}
 				string valueRepresentation;
 				sb.Append(indent);
+				if (withBraces) {
+					sb.Append('\t');
+				}
 				if (Attribute.IsDefined(member, typeof(SerializeOnlyValue))) {
 					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent + internalIndent, false);
 				} else {
-					if (withBraces) {
-						sb.Append('\t');
-					}
 					sb.Append(member.GetName()).Append(" = ");
 					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent + '\t');
 				}

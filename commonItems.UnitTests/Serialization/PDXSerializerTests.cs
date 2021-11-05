@@ -135,7 +135,6 @@ namespace commonItems.UnitTests.Serialization {
 		[Fact]
 		public void RecursiveClassesAreSerializedWithCorrectIndentation() {
 			var empire = new CK3Title { color = new(new[] { 1, 1, 1 }) };
-
 			var kingdom1 = new CK3Title { color = new(new[] { 2, 2, 2 }) };
 			empire.DeJureVassals.Add("k_kingdom1", kingdom1);
 			var duchy1 = new CK3Title { color = new(new[] { 3, 3, 3 }) };
@@ -143,6 +142,7 @@ namespace commonItems.UnitTests.Serialization {
 			var kingdom2 = new CK3Title { color = new(new[] { 4, 4, 4 }) };
 			empire.DeJureVassals.Add("k_kingdom2", kingdom2);
 			Dictionary<string, CK3Title> topLevelTitles = new() { { "e_empire", empire } };
+
 			var expectedStr =
 				"e_empire = {" + Environment.NewLine +
 				"\tcolor = { 1 1 1 }" + Environment.NewLine +

@@ -64,7 +64,7 @@ namespace commonItems.Serialization {
 				internalIndent += '\t';
 			}
 			var notNullEntries = CastDict(dictionary).Where(e => e.Value is not null);
-			var serializedEntries = notNullEntries.Select(e => Serialize(e, indent + internalIndent));
+			var serializedEntries = notNullEntries.Select(e => indent + internalIndent + Serialize(e, indent + internalIndent));
 			sb.AppendJoin(Environment.NewLine, serializedEntries);
 
 			if (withBraces) {
@@ -83,14 +83,14 @@ namespace commonItems.Serialization {
 			object? kvpKey = valueType.GetProperty("Key")?.GetValue(kvPair, null);
 			object? kvpValue = valueType.GetProperty("Value")?.GetValue(kvPair, null);
 			if (kvpKey is not null && kvpValue is not null) {
-				sb.Append(indent).Append(kvpKey)
+				sb.Append(kvpKey)
 					.Append(" = ")
 					.Append(Serialize(kvpValue, indent));
 			}
 		}
 		private static void SerializeDictionaryEntry(DictionaryEntry entry, StringBuilder sb, string indent) {
 			if (entry.Value is not null) {
-				sb.Append(indent).Append(entry.Key)
+				sb.Append(entry.Key)
 					.Append(" = ")
 					.Append(Serialize(entry.Value, indent));
 			}
