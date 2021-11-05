@@ -126,5 +126,40 @@ namespace commonItems.UnitTests.Serialization {
 				"\"vici\"";
 			Assert.Equal(expectedStr, PDXSerializer.Serialize(list, string.Empty, withBraces: false));
 		}
+
+		private class CK3Title : IPDXSerializable {
+			public Color? color { get; set; }
+			[SerializeOnlyValue]
+			public Dictionary<string, CK3Title> DeJureVassals = new();
+		}
+		[Fact]
+		public void RecursiveClassesAreSerializedWithCorrectIndentation() {
+			var empire = new CK3Title { color = new(new[] { 1, 1, 1 }) };
+
+			var kingdom1 = new CK3Title { color = new(new[] { 2, 2, 2 }) };
+			empire.DeJureVassals.Add("k_kingdom1", kingdom1);
+			var duchy1 = new CK3Title { color = new(new[] { 3, 3, 3 }) };
+			kingdom1.DeJureVassals.Add("d_duchy1", duchy1);
+			var kingdom2 = new CK3Title { color = new(new[] { 4, 4, 4 }) };
+			empire.DeJureVassals.Add("k_kingdom2", kingdom2);
+			Dictionary<string, CK3Title> topLevelTitles = new() { { "e_empire", empire } };
+			var expectedStr =
+				"e_empire = {" + Environment.NewLine +
+				"\tcolor = { 1 1 1 }" + Environment.NewLine +
+				"\tk_kingdom1 = {" + Environment.NewLine +
+				"\t\tcolor = { 2 2 2 }" + Environment.NewLine +
+				"\t\td_duchy1 = {" + Environment.NewLine +
+				"\t\t\tcolor = { 3 3 3 }" + Environment.NewLine +
+				"\t\t}" + Environment.NewLine +
+				"\t}" + Environment.NewLine +
+				"\tk_kingdom2 = {" + Environment.NewLine +
+				"\t\tcolor = { 4 4 4 }" + Environment.NewLine +
+				"\t}" + Environment.NewLine +
+				"}" + Environment.NewLine;
+			Assert.Equal(
+				expectedStr,
+				PDXSerializer.Serialize(topLevelTitles, indent: string.Empty, withBraces: false)
+			);
+		}
 	}
 }

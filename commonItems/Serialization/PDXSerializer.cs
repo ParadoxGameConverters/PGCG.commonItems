@@ -85,14 +85,14 @@ namespace commonItems.Serialization {
 			if (kvpKey is not null && kvpValue is not null) {
 				sb.Append(indent).Append(kvpKey)
 					.Append(" = ")
-					.Append(Serialize(kvpValue, indent + '\t'));
+					.Append(Serialize(kvpValue, indent));
 			}
 		}
 		private static void SerializeDictionaryEntry(DictionaryEntry entry, StringBuilder sb, string indent) {
 			if (entry.Value is not null) {
 				sb.Append(indent).Append(entry.Key)
 					.Append(" = ")
-					.Append(Serialize(entry.Value, indent + '\t'));
+					.Append(Serialize(entry.Value, indent));
 			}
 		}
 
