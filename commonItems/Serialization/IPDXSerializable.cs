@@ -29,18 +29,15 @@ namespace commonItems.Serialization {
 				if (withBraces) {
 					internalIndent += '\t';
 				}
-				string valueRepresentation;
-				sb.Append(indent);
-				if (withBraces) {
-					sb.Append('\t');
-				}
+				string lineRepresentation;
 				if (Attribute.IsDefined(member, typeof(SerializeOnlyValue))) {
-					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent + internalIndent, false);
+					lineRepresentation = PDXSerializer.Serialize(fieldValue, indent + internalIndent, false);
 				} else {
-					sb.Append(member.GetName()).Append(" = ");
-					valueRepresentation = PDXSerializer.Serialize(fieldValue, indent + '\t');
+					lineRepresentation = member.GetName() + '=' + PDXSerializer.Serialize(fieldValue, indent + '\t');
 				}
-				sb.AppendLine(valueRepresentation);
+				if (!string.IsNullOrWhiteSpace(lineRepresentation)) {
+					sb.Append(indent).Append(internalIndent).AppendLine(lineRepresentation);
+				}
 			}
 			if (withBraces) {
 				sb.Append(indent).Append('}');
