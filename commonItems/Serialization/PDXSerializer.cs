@@ -62,10 +62,11 @@ namespace commonItems.Serialization {
 			var internalIndent = "";
 			if (withBraces) {
 				internalIndent += '\t';
+				sb.Append(indent).Append(internalIndent);
 			}
 			var notNullEntries = CastDict(dictionary).Where(e => e.Value is not null);
 			var serializedEntries = notNullEntries.Select(e => Serialize(e, indent + internalIndent));
-			sb.AppendJoin(Environment.NewLine, serializedEntries);
+			sb.AppendJoin(Environment.NewLine + indent + internalIndent, serializedEntries);
 
 			if (withBraces) {
 				sb.AppendLine();
@@ -83,16 +84,16 @@ namespace commonItems.Serialization {
 			object? kvpKey = valueType.GetProperty("Key")?.GetValue(kvPair, null);
 			object? kvpValue = valueType.GetProperty("Value")?.GetValue(kvPair, null);
 			if (kvpKey is not null && kvpValue is not null) {
-				sb.Append(indent).Append(kvpKey)
-					.Append(" = ")
-					.Append(Serialize(kvpValue, indent + '\t'));
+				sb.Append(kvpKey)
+					.Append('=')
+					.Append(Serialize(kvpValue, indent));
 			}
 		}
 		private static void SerializeDictionaryEntry(DictionaryEntry entry, StringBuilder sb, string indent) {
 			if (entry.Value is not null) {
-				sb.Append(indent).Append(entry.Key)
-					.Append(" = ")
-					.Append(Serialize(entry.Value, indent + '\t'));
+				sb.Append(entry.Key)
+					.Append('=')
+					.Append(Serialize(entry.Value, indent));
 			}
 		}
 

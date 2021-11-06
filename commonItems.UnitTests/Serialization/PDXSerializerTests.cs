@@ -45,28 +45,28 @@ namespace commonItems.UnitTests.Serialization {
 
 			var expectedString =
 				"{" + Environment.NewLine +
-				"\tid = 20" + Environment.NewLine +
-				"\tcapital_prov_id = 420" + Environment.NewLine +
-				"\tdevelopment = 50.5" + Environment.NewLine +
-				"\tname = \"Papal States\"" + Environment.NewLine +
-				"\tpope_names_list = { \"Peter\" \"John\" \"Hadrian\" }" + Environment.NewLine +
-				"\tempty_list = { }" + Environment.NewLine +
-				"\tcolor1 = { 2 4 6 }" + Environment.NewLine +
-				"\tdefinite_form = no" + Environment.NewLine +
-				"\tlandless = yes" + Environment.NewLine +
-				"\tcreation_date = 600.4.5" + Environment.NewLine +
-				"\ttextures = {" + Environment.NewLine +
-				"\t\tdiffuse = \"gfx/models/diffuse.dds\"" + Environment.NewLine +
-				"\t\tnormal = \"gfx/models/normal.dds\"" + Environment.NewLine +
+				"\tid=20" + Environment.NewLine +
+				"\tcapital_prov_id=420" + Environment.NewLine +
+				"\tdevelopment=50.5" + Environment.NewLine +
+				"\tname=\"Papal States\"" + Environment.NewLine +
+				"\tpope_names_list={ \"Peter\" \"John\" \"Hadrian\" }" + Environment.NewLine +
+				"\tempty_list={ }" + Environment.NewLine +
+				"\tcolor1={ 2 4 6 }" + Environment.NewLine +
+				"\tdefinite_form=no" + Environment.NewLine +
+				"\tlandless=yes" + Environment.NewLine +
+				"\tcreation_date=600.4.5" + Environment.NewLine +
+				"\ttextures={" + Environment.NewLine +
+				"\t\tdiffuse=\"gfx/models/diffuse.dds\"" + Environment.NewLine +
+				"\t\tnormal=\"gfx/models/normal.dds\"" + Environment.NewLine +
 				"\t}" + Environment.NewLine +
-				"\tweights = {" + Environment.NewLine +
-				"\t\t10 = \"roman_gfx\"" + Environment.NewLine +
-				"\t\t5 = \"italian_gfx\"" + Environment.NewLine +
+				"\tweights={" + Environment.NewLine +
+				"\t\t10=\"roman_gfx\"" + Environment.NewLine +
+				"\t\t5=\"italian_gfx\"" + Environment.NewLine +
 				"\t}" + Environment.NewLine +
-				"\tgreetings = { \"hi\" \"salutations\" \"greetings\" }" + Environment.NewLine +
-				"\tkey = \"value\"" + Environment.NewLine +
-				"\truler_info = {" + Environment.NewLine +
-				"\t\tnickname = \"the_great\"" + Environment.NewLine +
+				"\tgreetings={ \"hi\" \"salutations\" \"greetings\" }" + Environment.NewLine +
+				"\tkey=\"value\"" + Environment.NewLine +
+				"\truler_info={" + Environment.NewLine +
+				"\t\tnickname=\"the_great\"" + Environment.NewLine +
 				"\t}" + Environment.NewLine +
 				"}";
 			Assert.Equal(expectedString, titleString);
@@ -76,7 +76,7 @@ namespace commonItems.UnitTests.Serialization {
 		public void NullMembersAreNotSerialized() {
 			var c1 = new RulerInfo { nickname = "the_great" };
 			var c1Str = PDXSerializer.Serialize(c1, string.Empty);
-			Assert.Contains("nickname = \"the_great\"", c1Str);
+			Assert.Contains("nickname=\"the_great\"", c1Str);
 			var c2 = new RulerInfo { nickname = null };
 			var c2Str = PDXSerializer.Serialize(c2, string.Empty);
 			Assert.DoesNotContain("nickname", c2Str);
@@ -92,8 +92,8 @@ namespace commonItems.UnitTests.Serialization {
 			var pascal = new PascalClass();
 			var str = PDXSerializer.Serialize(pascal);
 			var expectedStr = "{" + Environment.NewLine +
-				"\tname = \"Property\"" + Environment.NewLine +
-				"\tculture = \"roman\"" + Environment.NewLine +
+				"\tname=\"Property\"" + Environment.NewLine +
+				"\tculture=\"roman\"" + Environment.NewLine +
 				"}";
 			Assert.Equal(expectedStr, str);
 		}
@@ -111,9 +111,9 @@ namespace commonItems.UnitTests.Serialization {
 		public void MembersCanBeSerializedWithoutNames() {
 			var history = new History();
 			var expectedStr =
-				"culture = \"roman\"" + Environment.NewLine +
-				"development = 3.14" + Environment.NewLine +
-				"buildings = { \"baths\" \"aqueduct\" }" + Environment.NewLine;
+				"culture=\"roman\"" + Environment.NewLine +
+				"development=3.14" + Environment.NewLine +
+				"buildings={ \"baths\" \"aqueduct\" }" + Environment.NewLine;
 			Assert.Equal(expectedStr, PDXSerializer.Serialize(history, indent: string.Empty, withBraces: false));
 		}
 
@@ -125,6 +125,41 @@ namespace commonItems.UnitTests.Serialization {
 				"\"vidi\"" + Environment.NewLine +
 				"\"vici\"";
 			Assert.Equal(expectedStr, PDXSerializer.Serialize(list, string.Empty, withBraces: false));
+		}
+
+		private class CK3Title : IPDXSerializable {
+			public Color? color { get; set; }
+			[SerializeOnlyValue]
+			public Dictionary<string, CK3Title> DeJureVassals = new();
+		}
+		[Fact]
+		public void RecursiveClassesAreSerializedWithCorrectIndentation() {
+			var empire = new CK3Title { color = new(new[] { 1, 1, 1 }) };
+			var kingdom1 = new CK3Title { color = new(new[] { 2, 2, 2 }) };
+			empire.DeJureVassals.Add("k_kingdom1", kingdom1);
+			var duchy1 = new CK3Title { color = new(new[] { 3, 3, 3 }) };
+			kingdom1.DeJureVassals.Add("d_duchy1", duchy1);
+			var kingdom2 = new CK3Title { color = new(new[] { 4, 4, 4 }) };
+			empire.DeJureVassals.Add("k_kingdom2", kingdom2);
+			Dictionary<string, CK3Title> topLevelTitles = new() { { "e_empire", empire } };
+
+			var expectedStr =
+				"e_empire={" + Environment.NewLine +
+				"\tcolor={ 1 1 1 }" + Environment.NewLine +
+				"\tk_kingdom1={" + Environment.NewLine +
+				"\t\tcolor={ 2 2 2 }" + Environment.NewLine +
+				"\t\td_duchy1={" + Environment.NewLine +
+				"\t\t\tcolor={ 3 3 3 }" + Environment.NewLine +
+				"\t\t}" + Environment.NewLine +
+				"\t}" + Environment.NewLine +
+				"\tk_kingdom2={" + Environment.NewLine +
+				"\t\tcolor={ 4 4 4 }" + Environment.NewLine +
+				"\t}" + Environment.NewLine +
+				"}";
+			Assert.Equal(
+				expectedStr,
+				PDXSerializer.Serialize(topLevelTitles, indent: string.Empty, withBraces: false)
+			);
 		}
 	}
 }
