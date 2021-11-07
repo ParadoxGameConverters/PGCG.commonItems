@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Xunit;
+// ReSharper disable InconsistentNaming
 
 namespace commonItems.UnitTests {
 	[Collection("Sequential")]
@@ -21,8 +22,8 @@ namespace commonItems.UnitTests {
 		}
 
 		private class Test : Parser {
-			public string key;
-			public string value;
+			public string? key;
+			public string? value;
 			public Test(BufferedReader bufferedReader) {
 				RegisterKeyword("key", (sr, k) => {
 					key = k;
@@ -58,7 +59,7 @@ namespace commonItems.UnitTests {
 
 		private class Test2 : Parser {
 			public string key = "";
-			public string value;
+			public string? value;
 			public Test2(BufferedReader bufferedReader) {
 				RegisterKeyword("\"key\"", (sr, k) => {
 					key = k;
@@ -110,7 +111,7 @@ namespace commonItems.UnitTests {
 
 		private class Test3 : Parser {
 			public string key = "";
-			public string value;
+			public string? value;
 			public Test3(BufferedReader bufferedReader) {
 				RegisterRegex("[key]+", (sr, k) => {
 					key = k;
@@ -130,7 +131,7 @@ namespace commonItems.UnitTests {
 
 		private class Test4 : Parser {
 			public string key = "";
-			public string value;
+			public string? value;
 			public Test4(BufferedReader bufferedReader) {
 				RegisterRegex("[k\"ey]+", (sr, k) => {
 					key = k;
@@ -150,7 +151,7 @@ namespace commonItems.UnitTests {
 
 		private class Test5 : Parser {
 			public string key = "";
-			public string value;
+			public string? value;
 			public Test5(BufferedReader bufferedReader) {
 				RegisterRegex(CommonRegexes.Catchall, (sr, k) => {
 					key = k;
@@ -241,7 +242,7 @@ namespace commonItems.UnitTests {
 		}
 
 		private class FileTest : Parser {
-			public string value;
+			public string? value;
 			public FileTest(string filename) {
 				RegisterKeyword("key1", (sr) => value = new SingleString(sr).String);
 				ParseFile(filename);
@@ -270,9 +271,9 @@ namespace commonItems.UnitTests {
 		}
 
 		private class Test7 : Parser {
-			public string key;
-			public string value;
-			public string broken;
+			public string? key;
+			public string? value;
+			public string? broken;
 			public Test7(BufferedReader bufferedReader) {
 				RegisterKeyword("key", (sr, k) => {
 					key = k;

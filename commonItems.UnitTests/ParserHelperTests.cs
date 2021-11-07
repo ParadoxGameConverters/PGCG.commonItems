@@ -43,8 +43,8 @@ namespace commonItems.UnitTests {
 		}
 
 		private class Test1 : Parser {
-			public string value1;
-			public string value2;
+			public string? value1;
+			public string? value2;
 			public Test1(BufferedReader bufferedReader) {
 				RegisterKeyword("key1", sr => value1 = new SingleString(sr).String);
 				RegisterKeyword("key2", sr => value2 = new SingleString(sr).String);
