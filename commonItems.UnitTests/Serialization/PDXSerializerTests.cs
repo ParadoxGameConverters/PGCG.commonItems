@@ -7,7 +7,7 @@ using Xunit;
 namespace commonItems.UnitTests.Serialization {
 	public class PDXSerializerTests {
 		private class RulerInfo : IPDXSerializable {
-			public string nickname;
+			public string? nickname;
 		}
 
 		private class Title : IPDXSerializable {
