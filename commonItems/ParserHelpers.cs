@@ -24,8 +24,7 @@ namespace commonItems {
 					if (sr.EndOfStream) {
 						return;
 					}
-					var token = Parser.GetNextLexeme(sr);
-					switch (token) {
+					switch (Parser.GetNextLexeme(sr)) {
 						case "{":
 							++braceDepth;
 							break;

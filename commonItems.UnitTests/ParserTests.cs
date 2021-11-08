@@ -171,7 +171,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void CatchAllCatchesQuotedKeysWithWhitespaceInside() {
-			var bufferedReader = new BufferedReader("\"this\tis a\nkey\n\" = value");
+			var bufferedReader = new BufferedReader("\"this\tis a\nkey\r\n\" = value");
 			var test = new Test5(bufferedReader);
 			Assert.Equal("\"this\tis a key \"", test.key);
 			Assert.Equal("value", test.value);
