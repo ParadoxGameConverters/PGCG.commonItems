@@ -24,17 +24,14 @@ namespace commonItems {
 					if (sr.EndOfStream) {
 						return;
 					}
-					switch (Parser.GetNextLexeme(sr)) {
-						case "{":
-							++braceDepth;
-							break;
-						case "}": {
-								--braceDepth;
-								if (braceDepth == 0) {
-									return;
-								}
-								break;
-							}
+					var lexeme = Parser.GetNextLexeme(sr);
+					if (lexeme == "{") {
+						++braceDepth;
+					} else if (lexeme == "}") {
+						--braceDepth;
+						if (braceDepth == 0) {
+							return;
+						}
 					}
 				}
 			}
@@ -42,7 +39,7 @@ namespace commonItems {
 
 		public static void IgnoreAndLogItem(BufferedReader sr, string keyword) {
 			IgnoreItem(sr);
-			Logger.Debug("Ignoring keyword: " + keyword);
+			Logger.Debug($"Ignoring keyword: {keyword}");
 		}
 
 		public static string GetString(BufferedReader reader) {
