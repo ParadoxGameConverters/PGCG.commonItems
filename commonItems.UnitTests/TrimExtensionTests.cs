@@ -13,9 +13,14 @@ namespace commonItems.UnitTests {
 			Assert.Equal("file.name.with", CommonFunctions.TrimExtension(input));
 		}
 		[Fact]
+		public void TrimExtensionWorksOnPaths() {
+			const string input = "gfx/bm_converted.png";
+			Assert.Equal("gfx/bm_converted", CommonFunctions.TrimExtension(input));
+		}
+		[Fact]
 		public void TrimExtensionDoesNotAffectDirectories() {
-			const string input = "/path/with.extension/filename";
-			Assert.Equal("/path/with.extension/filename", CommonFunctions.TrimExtension(input));
+			const string input = "/path/with.extension/directory";
+			Assert.Equal("/path/with.extension/directory", CommonFunctions.TrimExtension(input));
 		}
 	}
 }

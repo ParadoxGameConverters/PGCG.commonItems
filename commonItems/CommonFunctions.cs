@@ -28,7 +28,7 @@ namespace commonItems {
 			if (dotPos == -1) {
 				return fileName;
 			} else {
-				return rawFile.Substring(0, fileName.IndexOf(rawFile, StringComparison.Ordinal) + dotPos);
+				return fileName.Substring(0, fileName.IndexOf(rawFile, StringComparison.Ordinal) + dotPos);
 			}
 		}
 
@@ -81,8 +81,7 @@ namespace commonItems {
 			return toReturn;
 		}
 
-		/// ===========================================================
-		/// functions from C++ version's OSCommonLayer
+		// from C++ version's OSCommonLayer
 		public static string NormalizeUTF8Path(string utf8Path) {
 			string asciiPath = EncodingConversions.ConvertUTF8ToASCII(utf8Path);
 			asciiPath = asciiPath.Replace('/', '_');
