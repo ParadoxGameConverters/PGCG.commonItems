@@ -105,13 +105,23 @@ namespace commonItems {
 					if (sb.Length != 0) {
 						break;
 					}
+				} else if (inputChar == '\r') {
+					if (inQuotes) {
+						// Fix Paradox' mistake and don't break proper names in half.
+						sb.Append(' ');
+					} else if (sb.Length != 0) {
+						break;
+					}
 				} else if (inputChar == '\n') {
-					if (!inQuotes) {
-						if (sb.Length != 0) {
+					if (previousCharacter == '\r') {
+						// We're in the middle of a Windows line ending, already handled by condition for '\r'.
+					} else {
+						if (inQuotes) {
+							// Fix Paradox' mistake and don't break proper names in half.
+							sb.Append(' ');
+						} else if (sb.Length != 0) {
 							break;
 						}
-					} else { // fix Paradox' mistake and don't break proper names in half
-						sb.Append(' ');
 					}
 				} else if (inputChar == '\"' && !inQuotes && sb.Length == 0) {
 					inQuotes = true;
@@ -211,7 +221,7 @@ namespace commonItems {
 							// value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
 							// manually fast-forward to brace-lvl 0 and die.
 							FastForwardTo0Depth(reader, ref braceDepth, tokensSoFar);
-							Logger.Warn("Broken token syntax at " + tokensSoFar.ToString());
+							Logger.Warn($"Broken token syntax at {tokensSoFar}");
 							return;
 						}
 					} else if (token == "{") {
@@ -222,7 +232,7 @@ namespace commonItems {
 							break;
 						}
 					} else {
-						Logger.Warn("Unknown token while parsing stream: " + token);
+						Logger.Warn($"Unknown token while parsing stream: {token}");
 					}
 				} else {
 					break;
@@ -251,7 +261,7 @@ namespace commonItems {
 
 		public void ParseFile(string filename) {
 			if (!File.Exists(filename)) {
-				Logger.Error("Could not open " + filename + " for parsing");
+				Logger.Error($"Could not open {filename} for parsing");
 				return;
 			}
 			var reader = new BufferedReader(File.OpenText(filename));
