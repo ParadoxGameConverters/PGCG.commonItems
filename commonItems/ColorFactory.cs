@@ -5,10 +5,6 @@ using System.Text.RegularExpressions;
 
 namespace commonItems {
 	public class ColorFactory {
-		private static bool DoesRegexFullyMatch(Regex re, string str) {
-			var match = re.Match(str);
-			return match.Success && match.Length == str.Length;
-		}
 		public Dictionary<string, Color> NamedColors { get; } = new();
 		public Color GetColor(BufferedReader reader) {
 			Parser.GetNextTokenWithoutMatching(reader); // equals sign
@@ -45,7 +41,7 @@ namespace commonItems {
 					throw new FormatException("Color has wrong number of components");
 				}
 				return new Color(new double[] { hsv[0] / 360, hsv[1] / 100, hsv[2] / 100 });
-			} else if (DoesRegexFullyMatch(CommonRegexes.Catchall, token)) {
+			} else if (CommonRegexes.Catchall.IsMatch(token)) {
 				if (NamedColors.TryGetValue(token, out var value)) {
 					return value;
 				}
