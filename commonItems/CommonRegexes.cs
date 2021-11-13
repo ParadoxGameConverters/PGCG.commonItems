@@ -5,6 +5,9 @@
 		//		in the parser.
 		public static string Catchall => @""".+""|[^={}]+";
 
+		// variables
+		public static string Variable => $"@{String}";
+
 		// numbers
 		public static string Integer => @"-?\d+";
 		public static string QuotedInteger => @"""-?\d+""";
