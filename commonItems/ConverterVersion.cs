@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 
 namespace commonItems {
@@ -89,7 +90,7 @@ namespace commonItems {
 			sb.Append('\n');
 			sb.Append("* Built on ");
 			var compileTime = new DateTime(Builtin.CompileTime, DateTimeKind.Utc);
-			sb.Append(compileTime.ToLongDateString());
+			sb.Append(compileTime.ToString("u", CultureInfo.InvariantCulture));
 			sb.Append('\n');
 
 			var footerTitleBuilder = new StringBuilder();
