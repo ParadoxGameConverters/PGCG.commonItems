@@ -5,6 +5,9 @@
 		//		in the parser.
 		public static string Catchall => @""".+""|[^={}]+";
 
+		// variables
+		public static string Variable => $"@{String}";
+
 		// numbers
 		public static string Integer => @"-?\d+";
 		public static string QuotedInteger => @"""-?\d+""";
@@ -12,10 +15,13 @@
 		public static string QuotedFloat => @"""-?\d+(.\d+)?""";
 
 		// strings
-		public static string String => @"[^\s^=^\{^\}^\""]+";
+		public static string String => $"[^{nonStringCharacters}]+";
 		public static string QuotedString => @"""[^\n^=^\{^\}^\""]+""";
 
 		// dates
 		public static string Date => @"\d+[.]\d+[.]\d+";
+
+		// characters that can't be part of an unquoted string
+		private const string nonStringCharacters = @"\s=\{\}\[\]\""";
 	}
 }
