@@ -3,23 +3,17 @@ using Xunit;
 
 namespace commonItems.UnitTests {
 	public class CommonRegexesTests {
-		private class TestParser : Parser {
-			public readonly Dictionary<string, string> variables = new();
-			public TestParser() {
-				RegisterRegex(CommonRegexes.Variable, (reader, varStr) =>
-					variables.Add(varStr.Substring(1), ParserHelpers.GetString(reader))
-				);
-			}
-		}
+		private class TestParser : Parser {}
 		[Fact]
-		public void VariableRegexMatchesVariable() {
+		public void VariableRegexMatchesVariables() {
 			var reader = new BufferedReader("@ai_aggresiveness = 70");
 			var instance = new TestParser();
 			instance.ParseStream(reader);
-			Assert.Collection(instance.variables,
+			Assert.Collection(instance.Variables,
 				pair => {
-					Assert.Equal("ai_aggresiveness", pair.Key);
-					Assert.Equal("70", pair.Value);
+					var (key, value) = pair;
+					Assert.Equal("ai_aggresiveness", key);
+					Assert.Equal("70", value);
 				}
 			);
 		}
@@ -28,7 +22,16 @@ namespace commonItems.UnitTests {
 			var reader = new BufferedReader("@[100-ai_aggresiveness] = 70");
 			var instance = new TestParser();
 			instance.ParseStream(reader);
-			Assert.Empty(instance.variables);
+			Assert.Empty(instance.Variables);
+		}
+
+		[Fact]
+		public void InterpolatedExpressionRegexMatchesInterpolatedExpressions() {
+			Assert.Matches(CommonRegexes.InterpolatedExpression, "@[100-ai_aggresiveness]");
+		}
+		[Fact]
+		public void InterpolatedExpressionRegexMatchesVariables() {
+			Assert.Matches(CommonRegexes.InterpolatedExpression, "@ai_aggresiveness");
 		}
 	}
 }

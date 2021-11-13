@@ -48,6 +48,14 @@ namespace commonItems {
 			}
 		}
 
+		public Parser() {
+			builtinRules.Add(
+				new RegisteredRegex(CommonRegexes.Variable), new TwoArgDelegate(
+					(reader, varStr) => Variables.Add(varStr[1..], ParserHelpers.GetString(reader))
+				)
+			);
+		}
+
 		public static void AbsorbBOM(BufferedReader reader) {
 			var firstChar = reader.Peek();
 			if (firstChar == '\xEF') {
@@ -73,18 +81,31 @@ namespace commonItems {
 		}
 
 		private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
-			foreach (var (rule, fun) in registeredRules) {
-				if (rule.Matches(token)) {
-					fun.Execute(reader, token);
-					return true;
+			foreach (var (rule, fun) in builtinRules) {
+				if (!rule.Matches(token)) {
+					continue;
 				}
+
+				fun.Execute(reader, token);
+				return true;
+			}
+
+			foreach (var (rule, fun) in registeredRules) {
+				if (!rule.Matches(token)) {
+					continue;
+				}
+
+				fun.Execute(reader, token);
+				return true;
 			}
 			if (isTokenQuoted) {
 				foreach (var (rule, fun) in registeredRules) {
-					if (rule.Matches(strippedToken)) {
-						fun.Execute(reader, token);
-						return true;
+					if (!rule.Matches(strippedToken)) {
+						continue;
 					}
+
+					fun.Execute(reader, token);
+					return true;
 				}
 			}
 			return false;
@@ -270,5 +291,9 @@ namespace commonItems {
 		}
 
 		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();
+
+		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> builtinRules = new();
+
+		public Dictionary<string, string> Variables { get; }= new();
 	}
 }
