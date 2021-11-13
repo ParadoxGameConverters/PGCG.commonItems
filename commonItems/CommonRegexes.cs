@@ -15,13 +15,13 @@
 		public static string QuotedFloat => @"""-?\d+(.\d+)?""";
 
 		// strings
-		public static string String => $"[^{NonStringCharacters}]+";
+		public static string String => $"[^{nonStringCharacters}]+";
 		public static string QuotedString => @"""[^\n^=^\{^\}^\""]+""";
 
 		// dates
 		public static string Date => @"\d+[.]\d+[.]\d+";
 
 		// characters that can't be part of an unquoted string
-		private static string NonStringCharacters => @"\s=\{\}\[\]\""";
+		private const string nonStringCharacters = @"\s=\{\}\[\]\""";
 	}
 }
