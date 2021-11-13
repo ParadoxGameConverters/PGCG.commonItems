@@ -42,6 +42,7 @@ namespace commonItems {
 		private class RegisteredRegex : RegisteredKeywordOrRegex {
 			private readonly Regex regex;
 			public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
+			public RegisteredRegex(Regex regex) { this.regex = regex; }
 			public override bool Matches(string token) {
 				var match = regex.Match(token);
 				return match.Success && match.Length == token.Length;
@@ -74,6 +75,12 @@ namespace commonItems {
 		}
 		public void RegisterRegex(string keyword, SimpleDel del) {
 			registeredRules.Add(new RegisteredRegex(keyword), new OneArgDelegate(del));
+		}
+		public void RegisterRegex(Regex regex, Del del) {
+			registeredRules.Add(new RegisteredRegex(regex), new TwoArgDelegate(del));
+		}
+		public void RegisterRegex(Regex regex, SimpleDel del) {
+			registeredRules.Add(new RegisteredRegex(regex), new OneArgDelegate(del));
 		}
 
 		public void ClearRegisteredRules() {
@@ -211,7 +218,7 @@ namespace commonItems {
 				sb.Append(GetNextLexeme(reader));
 
 				var strippedToken = StringUtils.RemQuotes(sb.ToString());
-				var isTokenQuoted = (strippedToken.Length < sb.ToString().Length);
+				var isTokenQuoted = strippedToken.Length < sb.Length;
 
 				var matched = TryToMatch(sb.ToString(), strippedToken, isTokenQuoted, reader);
 

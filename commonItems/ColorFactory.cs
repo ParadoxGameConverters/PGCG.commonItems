@@ -45,7 +45,7 @@ namespace commonItems {
 					throw new FormatException("Color has wrong number of components");
 				}
 				return new Color(new double[] { hsv[0] / 360, hsv[1] / 100, hsv[2] / 100 });
-			} else if (DoesRegexFullyMatch(new Regex(CommonRegexes.Catchall), token)) {
+			} else if (DoesRegexFullyMatch(CommonRegexes.Catchall, token)) {
 				if (NamedColors.TryGetValue(token, out var value)) {
 					return value;
 				}

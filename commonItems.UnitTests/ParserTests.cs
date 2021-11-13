@@ -292,5 +292,25 @@ namespace commonItems.UnitTests {
 			Assert.Equal("value", test.value);
 			Assert.Null(test.broken);
 		}
+
+		private class TestCountry : Parser {
+			public string Name { get; private set; }
+			public double Prestige { get; private set; }
+
+			public TestCountry(BufferedReader reader) {
+				RegisterKeyword("name", reader=>Name = ParserHelpers.GetString(reader));
+				RegisterKeyword("prestige", reader => Prestige = ParserHelpers.GetDouble(reader));
+				ParseStream(reader);
+			}
+		}
+		[Fact]
+		public void ParserResolvesVariables() {
+			var reader = new BufferedReader(
+				"@best_country_on_earth_name = \"Roman Empire\"\n" +
+				"name = @best_country_on_earth_name"
+			);
+			var country = new TestCountry(reader);
+			Assert.Equal("Roman Empire", country.Name);
+		}
 	}
 }
