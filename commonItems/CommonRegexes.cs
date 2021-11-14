@@ -19,7 +19,7 @@ namespace commonItems {
 
 		// strings
 		public static Regex String => new($"^(?!@).+[^{NonStringCharacters}]+$", RegexOptions.Compiled);
-		public static Regex QuotedString => new(@"^""[^\n^=^\{^\}^\""]+""$", RegexOptions.Compiled);
+		public static Regex QuotedString => new(@"^""[^\n=\{\}\""]+""$", RegexOptions.Compiled);
 
 		// dates
 		public static Regex Date => new(@"^\d+[.]\d+[.]\d+$", RegexOptions.Compiled);
