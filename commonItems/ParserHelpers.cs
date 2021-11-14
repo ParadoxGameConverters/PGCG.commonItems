@@ -42,38 +42,38 @@ namespace commonItems {
 			Logger.Debug($"Ignoring keyword: {keyword}");
 		}
 
-		public static string GetString(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static string GetString(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new SingleString(reader, variables).String;
 		}
-		public static int GetInt(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static int GetInt(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new SingleInt(reader, variables).Int;
 		}
-		public static long GetLong(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static long GetLong(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new SingleLong(reader, variables).Long;
 		}
-		public static ulong GetULong(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static ulong GetULong(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new SingleULong(reader, variables).ULong;
 		}
-		public static double GetDouble(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static double GetDouble(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new SingleDouble(reader, variables).Double;
 		}
-		public static List<string> GetStrings(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static List<string> GetStrings(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new StringList(reader, variables).Strings;
 		}
-		public static List<int> GetInts(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static List<int> GetInts(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new IntList(reader, variables).Ints;
 		}
-		public static List<long> GetLongs(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static List<long> GetLongs(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new LongList(reader, variables).Longs;
 		}
-		public static List<ulong> GetULongs(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static List<ulong> GetULongs(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new ULongList(reader, variables).ULongs;
 		}
-		public static List<double> GetDoubles(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static List<double> GetDoubles(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new DoubleList(reader, variables).Doubles;
 		}
 
-		public static Dictionary<string, string> GetAssignments(BufferedReader reader, Dictionary<string, string>? variables = null) {
+		public static Dictionary<string, string> GetAssignments(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			var assignments = new Dictionary<string, string>();
 			var parser = new Parser(variables);
 			parser.RegisterRegex(CommonRegexes.Catchall, (reader, assignmentName) => {
@@ -89,7 +89,7 @@ namespace commonItems {
 		}
 	}
 	public class SingleString {
-		public SingleString(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public SingleString(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			// remove equals
 			parser.GetNextTokenWithoutMatching(sr);
@@ -105,7 +105,7 @@ namespace commonItems {
 	}
 
 	public class SingleInt {
-		public SingleInt(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public SingleInt(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var intStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr, variables));
 			if (!int.TryParse(intStr, out int theInt)) {
 				Logger.Warn($"Could not convert string {intStr} to int!");
@@ -117,7 +117,7 @@ namespace commonItems {
 	}
 
 	public class SingleLong {
-		public SingleLong(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public SingleLong(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var longStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr, variables));
 			if (!long.TryParse(longStr, out long theLong)) {
 				Logger.Warn($"Could not convert string {longStr} to long!");
@@ -129,7 +129,7 @@ namespace commonItems {
 	}
 
 	public class SingleULong {
-		public SingleULong(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public SingleULong(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var ulongStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr, variables));
 			if (!ulong.TryParse(ulongStr, out ulong theULong)) {
 				Logger.Warn($"Could not convert string {ulongStr} to ulong!");
@@ -141,7 +141,7 @@ namespace commonItems {
 	}
 
 	public class SingleDouble {
-		public SingleDouble(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public SingleDouble(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var doubleStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr, variables));
 			if (!double.TryParse(doubleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
 				Logger.Warn($"Could not convert string {doubleStr} to double!");
@@ -153,15 +153,20 @@ namespace commonItems {
 	}
 
 	public class StringList {
-		public StringList(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public StringList(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			parser.RegisterKeyword("\"\"", _ => { });
 			parser.RegisterRegex(CommonRegexes.String, (_, theString) =>
 				Strings.Add(theString)
 			);
-			parser.RegisterRegex(CommonRegexes.Variable, (_, varStr) =>
-				Strings.Add(parser.ResolveVariable(varStr))
-			);
+			parser.RegisterRegex(CommonRegexes.Variable, (_, varStr) => {
+				var value = parser.ResolveVariable(varStr).ToString();
+				if (value is null) {
+					Logger.Warn($"StringList: variable {varStr} resolved to null value!");
+				} else {
+					Strings.Add(value);
+				}
+			});
 			parser.RegisterRegex(CommonRegexes.QuotedString, (_, theString) =>
 				Strings.Add(StringUtils.RemQuotes(theString))
 			);
@@ -171,7 +176,7 @@ namespace commonItems {
 	}
 
 	public class IntList {
-		public IntList(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public IntList(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			parser.RegisterRegex(CommonRegexes.Integer, (_, intString) => Ints.Add(int.Parse(intString)));
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, intString) => {
@@ -185,7 +190,7 @@ namespace commonItems {
 	}
 
 	public class LongList {
-		public LongList(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public LongList(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			parser.RegisterRegex(CommonRegexes.Integer, (_, longString) => Longs.Add(long.Parse(longString)));
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, longString) => {
@@ -199,7 +204,7 @@ namespace commonItems {
 	}
 
 	public class ULongList {
-		public ULongList(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public ULongList(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			parser.RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ULongs.Add(ulong.Parse(ulongString)));
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, ulongString) => {
@@ -213,7 +218,7 @@ namespace commonItems {
 	}
 
 	public class DoubleList {
-		public DoubleList(BufferedReader sr, Dictionary<string, string>? variables = null) {
+		public DoubleList(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			parser.RegisterRegex(CommonRegexes.Float, (_, floatString) =>
 				Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture))

@@ -12,7 +12,7 @@ namespace commonItems.UnitTests {
 				pair => {
 					var (key, value) = pair;
 					Assert.Equal("ai_aggressiveness", key);
-					Assert.Equal("70", value);
+					Assert.Equal(70d, value);
 				}
 			);
 		}

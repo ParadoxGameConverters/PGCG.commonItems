@@ -1,5 +1,6 @@
 ﻿using NCalc;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,12 +53,18 @@ namespace commonItems {
 
 		public Parser() {
 			builtinRules.Add(
-				new RegisteredRegex(CommonRegexes.Variable), new TwoArgDelegate(
-					(reader, varStr) => Variables.Add(varStr[1..], ParserHelpers.GetString(reader, Variables)))
+				new RegisteredRegex(CommonRegexes.Variable), new TwoArgDelegate((reader, varStr) => {
+						var value = ParserHelpers.GetString(reader, Variables);
+						if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
+							Variables.Add(varStr[1..], doubleValue);
+							return;
+						}
+						Variables.Add(varStr[1..], value);
+					})
 			);
 		}
 
-		public Parser(Dictionary<string, string>? variables = null): this() {
+		public Parser(Dictionary<string, object>? variables = null) : this() {
 			if (variables is not null) {
 				Variables = variables;
 			}
@@ -214,7 +221,7 @@ namespace commonItems {
 
 			var lexeme = GetNextLexeme(reader);
 			if (CommonRegexes.Variable.IsMatch(lexeme)) {
-				return ResolveVariable(lexeme);
+				return ResolveVariable(lexeme).ToString();
 			}
 			if (CommonRegexes.InterpolatedExpression.IsMatch(lexeme)) {
 				return EvaluateExpression(lexeme).ToString();
@@ -222,7 +229,7 @@ namespace commonItems {
 			return lexeme;
 		}
 
-		public string ResolveVariable(string lexeme) {
+		public object ResolveVariable(string lexeme) {
 			return Variables[lexeme[1..]];
 		}
 		public object EvaluateExpression(string lexeme) {
@@ -329,6 +336,6 @@ namespace commonItems {
 
 		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> builtinRules = new();
 
-		public Dictionary<string, string> Variables { get; } = new();
+		public Dictionary<string, object> Variables { get; } = new();
 	}
 }
