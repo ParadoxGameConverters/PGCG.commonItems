@@ -318,10 +318,10 @@ namespace commonItems.UnitTests {
 		public void ParserEvaluatesExpressions() {
 			var reader = new BufferedReader(
 				"@default_prestige = 50\n" +
-				"prestige = @[default_prestige+10]"
+				"prestige = @[default_prestige/2+10]"
 			);
 			var country = new TestCountry(reader);
-			Assert.Equal(60, country.Prestige);
+			Assert.Equal(35, country.Prestige);
 		}
 	}
 }

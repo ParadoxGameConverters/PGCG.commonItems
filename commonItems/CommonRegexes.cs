@@ -18,7 +18,7 @@ namespace commonItems {
 		public static Regex QuotedFloat => new(@"^""-?\d+(.\d+)?""$", RegexOptions.Compiled);
 
 		// strings
-		public static Regex String => new($"^[^{NonStringCharacters}]+$", RegexOptions.Compiled);
+		public static Regex String => new($"^(?!@).+[^{NonStringCharacters}]+$", RegexOptions.Compiled);
 		public static Regex QuotedString => new(@"^""[^\n^=^\{^\}^\""]+""$", RegexOptions.Compiled);
 
 		// dates

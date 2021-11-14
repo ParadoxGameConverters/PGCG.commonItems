@@ -179,6 +179,10 @@ namespace commonItems {
 		public IntList(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			parser.RegisterRegex(CommonRegexes.Integer, (_, intString) => Ints.Add(int.Parse(intString)));
+			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (_, expr) => {
+				var value = (int)parser.EvaluateExpression(expr);
+				Ints.Add(value);
+			});
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, intString) => {
 				// remove quotes
 				intString = intString[1..^1];
@@ -193,6 +197,10 @@ namespace commonItems {
 		public LongList(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			parser.RegisterRegex(CommonRegexes.Integer, (_, longString) => Longs.Add(long.Parse(longString)));
+			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (_, expr) => {
+				var value = (long)(int)parser.EvaluateExpression(expr);
+				Longs.Add(value);
+			});
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, longString) => {
 				// remove quotes
 				longString = longString[1..^1];
@@ -207,6 +215,10 @@ namespace commonItems {
 		public ULongList(BufferedReader sr, Dictionary<string, object>? variables = null) {
 			var parser = new Parser(variables);
 			parser.RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ULongs.Add(ulong.Parse(ulongString)));
+			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (_, expr) => {
+				var value = (ulong)(int)parser.EvaluateExpression(expr);
+				ULongs.Add(value);
+			});
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, ulongString) => {
 				// remove quotes
 				ulongString = ulongString[1..^1];
@@ -223,6 +235,10 @@ namespace commonItems {
 			parser.RegisterRegex(CommonRegexes.Float, (_, floatString) =>
 				Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture))
 			);
+			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (_, expr) => {
+				var value = (double)parser.EvaluateExpression(expr);
+				Doubles.Add(value);
+			});
 			parser.RegisterRegex(CommonRegexes.QuotedFloat, (_, floatString) => {
 				// remove quotes
 				floatString = floatString[1..^1];

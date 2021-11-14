@@ -55,6 +55,10 @@ namespace commonItems {
 			builtinRules.Add(
 				new RegisteredRegex(CommonRegexes.Variable), new TwoArgDelegate((reader, varStr) => {
 						var value = ParserHelpers.GetString(reader, Variables);
+						if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
+							Variables.Add(varStr[1..], intValue);
+							return;
+						}
 						if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
 							Variables.Add(varStr[1..], doubleValue);
 							return;
@@ -101,15 +105,6 @@ namespace commonItems {
 		}
 
 		private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
-			foreach (var (rule, fun) in builtinRules) {
-				if (!rule.Matches(token)) {
-					continue;
-				}
-
-				fun.Execute(reader, token);
-				return true;
-			}
-
 			foreach (var (rule, fun) in registeredRules) {
 				if (!rule.Matches(token)) {
 					continue;
@@ -128,6 +123,16 @@ namespace commonItems {
 					return true;
 				}
 			}
+
+			foreach (var (rule, fun) in builtinRules) {
+				if (!rule.Matches(token)) {
+					continue;
+				}
+
+				fun.Execute(reader, token);
+				return true;
+			}
+
 			return false;
 		}
 
