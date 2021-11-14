@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using NCalc;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,9 +53,14 @@ namespace commonItems {
 		public Parser() {
 			builtinRules.Add(
 				new RegisteredRegex(CommonRegexes.Variable), new TwoArgDelegate(
-					(reader, varStr) => Variables.Add(varStr[1..], ParserHelpers.GetString(reader))
-				)
+					(reader, varStr) => Variables.Add(varStr[1..], ParserHelpers.GetString(reader, Variables)))
 			);
+		}
+
+		public Parser(Dictionary<string, string>? variables = null): this() {
+			if (variables is not null) {
+				Variables = variables;
+			}
 		}
 
 		public static void AbsorbBOM(BufferedReader reader) {
@@ -201,12 +207,35 @@ namespace commonItems {
 			return sb.ToString();
 		}
 
-		public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
-			return reader.EndOfStream ? null : GetNextLexeme(reader);
+		public string? GetNextTokenWithoutMatching(BufferedReader reader) {
+			if (reader.EndOfStream) {
+				return null;
+			}
+
+			var lexeme = GetNextLexeme(reader);
+			if (CommonRegexes.Variable.IsMatch(lexeme)) {
+				return ResolveVariable(lexeme);
+			}
+			if (CommonRegexes.InterpolatedExpression.IsMatch(lexeme)) {
+				return EvaluateExpression(lexeme).ToString();
+			}
+			return lexeme;
+		}
+
+		public string ResolveVariable(string lexeme) {
+			return Variables[lexeme[1..]];
+		}
+		public object EvaluateExpression(string lexeme) {
+			var expression = new Expression(lexeme[2..^1]);
+			foreach (var (name, value) in Variables) {
+				expression.Parameters[name] = value;
+			}
+
+			return expression.Evaluate();
 		}
 
 		public string? GetNextToken(BufferedReader reader) {
-			var sb = new StringBuilder();
+			string? token = null;
 
 			var gotToken = false;
 			while (!gotToken) {
@@ -214,19 +243,18 @@ namespace commonItems {
 					return null;
 				}
 
-				sb.Clear();
-				sb.Append(GetNextLexeme(reader));
+				token = GetNextLexeme(reader);
 
-				var strippedToken = StringUtils.RemQuotes(sb.ToString());
-				var isTokenQuoted = strippedToken.Length < sb.Length;
+				var strippedToken = StringUtils.RemQuotes(token);
+				var isTokenQuoted = strippedToken.Length < token.Length;
 
-				var matched = TryToMatch(sb.ToString(), strippedToken, isTokenQuoted, reader);
+				var matched = TryToMatch(token, strippedToken, isTokenQuoted, reader);
 
 				if (!matched) {
 					gotToken = true;
 				}
 			}
-			return sb.Length == 0 ? null : sb.ToString();
+			return token;
 		}
 
 		public void ParseStream(BufferedReader reader) {
@@ -301,6 +329,6 @@ namespace commonItems {
 
 		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> builtinRules = new();
 
-		public Dictionary<string, string> Variables { get; }= new();
+		public Dictionary<string, string> Variables { get; } = new();
 	}
 }
