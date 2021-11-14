@@ -9,7 +9,7 @@ namespace commonItems {
 
 		// variables and interpolated expressions
 		public static Regex Variable => new($"^@[^{NonStringCharacters}]+$", RegexOptions.Compiled);
-		public static Regex InterpolatedExpression => new($@"@\[?[^{NonStringCharacters}]+\]?$", RegexOptions.Compiled);
+		public static Regex InterpolatedExpression => new($@"@([^{NonStringCharacters}]+)|(\[[^{NonStringCharacters}]+\])$", RegexOptions.Compiled);
 
 		// numbers
 		public static Regex Integer => new(@"^-?\d+$", RegexOptions.Compiled);

@@ -667,14 +667,14 @@ namespace commonItems.UnitTests {
 				// expression usage
 				"str = @str_var\n" +
 				"integer = @[negative_var+2]\n" +
-				"longInt = @[negative_var+2]\n" +
-				"ulongInt = @[positive_var-1]\n" +
-				"d = @[double_var*2]\n" +
+				"longInt = @[negative_var + 2]\n" +
+				"ulongInt = @[positive_var - 1]\n" +
+				"d = @[double_var * 2]\n" +
 				"strings = { beep @str_var }\n" +
-				"ints = { 5 @[negative_var+2] }\n" +
-				"longs = { 5 @[negative_var+2] }\n" +
-				"ulongs = { 5 @[positive_var-1] }\n" +
-				"doubles = { 5 @[double_var*2] }\n" +
+				"ints = { 5 @[negative_var + 2] }\n" +
+				"longs = { 5 @[negative_var + 2] }\n" +
+				"ulongs = { 5 @[positive_var - 1] }\n" +
+				"doubles = { 5 @[double_var * 2] }\n" +
 				"assignments = { beep = @str_var }"
 			);
 			var instance = new TypeClass(reader);
