@@ -100,7 +100,6 @@ namespace commonItems {
 			while (!reader.EndOfStream) {
 				var inputChar = (char)reader.Read();
 
-
 				if (inputChar == '\r') {
 					if (inQuotes) {
 						// Fix Paradox' mistake and don't break proper names in half.
