@@ -100,12 +100,8 @@ namespace commonItems {
 			while (!reader.EndOfStream) {
 				var inputChar = (char)reader.Read();
 
-				if (!inQuotes && inputChar == '#') {
-					reader.ReadLine();
-					if (sb.Length != 0) {
-						break;
-					}
-				} else if (inputChar == '\r') {
+
+				if (inputChar == '\r') {
 					if (inQuotes) {
 						// Fix Paradox' mistake and don't break proper names in half.
 						sb.Append(' ');
@@ -115,57 +111,66 @@ namespace commonItems {
 				} else if (inputChar == '\n') {
 					if (previousCharacter == '\r') {
 						// We're in the middle of a Windows line ending, already handled by condition for '\r'.
-					} else {
-						if (inQuotes) {
-							// Fix Paradox' mistake and don't break proper names in half.
-							sb.Append(' ');
-						} else if (sb.Length != 0) {
-							break;
-						}
+					} else if (inQuotes) {
+						// Fix Paradox' mistake and don't break proper names in half.
+						sb.Append(' ');
+					} else if (sb.Length != 0) {
+						break;
 					}
-				} else if (inputChar == '\"' && !inQuotes && sb.Length == 0) {
-					inQuotes = true;
-					sb.Append(inputChar);
-				} else if (inputChar == '\"' && !inQuotes && sb.Length == 1 && sb.ToString().Last() == 'R') {
-					inLiteralQuote = true;
-					--sb.Length;
-					sb.Append(inputChar);
 				} else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
 					continue;
 				} else if (inputChar == '\"' && inLiteralQuote && previousCharacter == ')') {
 					--sb.Length;
 					sb.Append(inputChar);
 					break;
-				} else if (inputChar == '\"' && inQuotes && previousCharacter != '\\') {
-					sb.Append(inputChar);
-					break;
-				} else if (!inQuotes && !inLiteralQuote && char.IsWhiteSpace(inputChar)) {
-					if (sb.Length != 0) {
+				} else if (!inQuotes) { // NOT IN QUOTES
+					if (inputChar == '#') {
+						reader.ReadLine();
+						if (sb.Length != 0) {
+							break;
+						}
+					} else if (inputChar == '\"' && sb.Length == 0) {
+						inQuotes = true;
+						sb.Append(inputChar);
+					} else if (inputChar == '\"' && sb.Length == 1 && sb.ToString().Last() == 'R') {
+						inLiteralQuote = true;
+						--sb.Length;
+						sb.Append(inputChar);
+					} else if (!inLiteralQuote && char.IsWhiteSpace(inputChar)) {
+						if (sb.Length != 0) {
+							break;
+						}
+					} else if (!inLiteralQuote && inputChar == '{') {
+						if (sb.Length == 0) {
+							sb.Append(inputChar);
+						} else {
+							reader.PushBack('{');
+						}
 						break;
-					}
-				} else if (!inQuotes && !inLiteralQuote && inputChar == '{') {
-					if (sb.Length == 0) {
+					} else if (!inLiteralQuote && inputChar == '}') {
+						if (sb.Length == 0) {
+							sb.Append(inputChar);
+						} else {
+							reader.PushBack('}');
+						}
+						break;
+					} else if (!inLiteralQuote && inputChar == '=') {
+						if (sb.Length == 0) {
+							sb.Append(inputChar);
+						} else {
+							reader.PushBack('=');
+						}
+						break;
+					} else { // same for inQuotes false and true
 						sb.Append(inputChar);
-					} else {
-						reader.PushBack('{');
 					}
-					break;
-				} else if (!inQuotes && !inLiteralQuote && inputChar == '}') {
-					if (sb.Length == 0) {
+				} else if (inQuotes) { // IN QUOTES
+					if (inputChar == '\"' && previousCharacter != '\\') {
 						sb.Append(inputChar);
-					} else {
-						reader.PushBack('}');
-					}
-					break;
-				} else if (!inQuotes && !inLiteralQuote && inputChar == '=') {
-					if (sb.Length == 0) {
+						break;
+					} else { // same for inQuotes false and true
 						sb.Append(inputChar);
-					} else {
-						reader.PushBack('=');
 					}
-					break;
-				} else {
-					sb.Append(inputChar);
 				}
 
 				previousCharacter = inputChar;
