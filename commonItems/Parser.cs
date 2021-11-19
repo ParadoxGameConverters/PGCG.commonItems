@@ -123,7 +123,7 @@ namespace commonItems {
 					--sb.Length;
 					sb.Append(inputChar);
 					break;
-				} else if (!inQuotes) { // NOT IN QUOTES
+				} else if (!inQuotes) {
 					if (inputChar == '#') {
 						reader.ReadLine();
 						if (sb.Length != 0) {
@@ -161,14 +161,14 @@ namespace commonItems {
 							reader.PushBack('=');
 						}
 						break;
-					} else { // same for inQuotes false and true
+					} else {
 						sb.Append(inputChar);
 					}
-				} else if (inQuotes) { // IN QUOTES
+				} else { // in quotes
 					if (inputChar == '\"' && previousCharacter != '\\') {
 						sb.Append(inputChar);
 						break;
-					} else { // same for inQuotes false and true
+					} else {
 						sb.Append(inputChar);
 					}
 				}
