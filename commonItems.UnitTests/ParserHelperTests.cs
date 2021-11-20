@@ -625,5 +625,86 @@ namespace commonItems.UnitTests {
 				 new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
 			Assert.Equal(expectedULongs, ulongs);
 		}
+
+		private class TypeClass : Parser {
+			public string? str;
+			public int integer;
+			public long longInt;
+			public ulong ulongInt;
+			public double d;
+			public List<string> strings = new();
+			public List<int> ints = new();
+			public List<long> longs = new();
+			public List<ulong> ulongs = new();
+			public List<double> doubles = new();
+			public Dictionary<string, string> assignments = new();
+
+			public TypeClass(BufferedReader reader) {
+				RegisterKeyword("str", reader=>str = ParserHelpers.GetString(reader, Variables));
+				RegisterKeyword("integer", reader => integer = ParserHelpers.GetInt(reader, Variables));
+				RegisterKeyword("longInt", reader => longInt = ParserHelpers.GetLong(reader, Variables));
+				RegisterKeyword("ulongInt", reader => ulongInt = ParserHelpers.GetULong(reader, Variables));
+				RegisterKeyword("d", reader => d = ParserHelpers.GetDouble(reader, Variables));
+				RegisterKeyword("strings", reader => strings = ParserHelpers.GetStrings(reader, Variables));
+				RegisterKeyword("ints", reader => ints = ParserHelpers.GetInts(reader, Variables));
+				RegisterKeyword("longs", reader => longs = ParserHelpers.GetLongs(reader, Variables));
+				RegisterKeyword("ulongs", reader => ulongs = ParserHelpers.GetULongs(reader, Variables));
+				RegisterKeyword("doubles", reader => doubles = ParserHelpers.GetDoubles(reader, Variables));
+				RegisterKeyword("assignments", reader => assignments = ParserHelpers.GetAssignments(reader, Variables));
+
+				ParseStream(reader);
+			}
+		}
+		[Fact]
+		public void CommonTypesWorkWithVariablesAndExpressions() {
+			var reader = new BufferedReader(
+				// variable definitions
+				"@str_var = \"peep\"\n" +
+				"@positive_var = 43\n" +
+				"@negative_var = -3\n" +
+				"@double_var = 0.35\n" +
+				"\n" +
+				// expression usage
+				"str = @str_var\n" +
+				"integer = @[negative_var+2]\n" +
+				"longInt = @[negative_var + 2]\n" +
+				"ulongInt = @[positive_var - 1]\n" +
+				"d = @[double_var * 2]\n" +
+				"strings = { beep @str_var }\n" +
+				"ints = { 5 @[negative_var + 2] }\n" +
+				"longs = { 5 @[negative_var + 2] }\n" +
+				"ulongs = { 5 @[positive_var - 1] }\n" +
+				"doubles = { 5 @[double_var * 2] }\n" +
+				"assignments = { beep = @str_var }"
+			);
+			var instance = new TypeClass(reader);
+			Assert.Equal("peep", instance.str);
+			Assert.Equal(-1, instance.integer);
+			Assert.Equal(-1, instance.longInt);
+			Assert.Equal((ulong)42, instance.ulongInt);
+			Assert.Equal(0.7d, instance.d, 8);
+			Assert.Collection(instance.strings,
+				item=>Assert.Equal("beep", item),
+				item=>Assert.Equal("peep", item));
+			Assert.Collection(instance.ints,
+				item => Assert.Equal(5, item),
+				item => Assert.Equal(-1, item));
+			Assert.Collection(instance.longs,
+				item => Assert.Equal(5, item),
+				item => Assert.Equal(-1, item));
+			Assert.Collection(instance.ulongs,
+				item => Assert.Equal((ulong)5, item),
+				item => Assert.Equal((ulong)42, item));
+			Assert.Collection(instance.doubles,
+				item => Assert.Equal(5, item),
+				item => Assert.Equal(0.7, item, 8));
+			Assert.Collection(instance.assignments,
+				item => {
+					var (key, value) = item;
+					Assert.Equal("beep", key);
+					Assert.Equal("peep", value);
+				}
+			);
+		}
 	}
 }

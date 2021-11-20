@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using NCalc;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -42,9 +44,33 @@ namespace commonItems {
 		private class RegisteredRegex : RegisteredKeywordOrRegex {
 			private readonly Regex regex;
 			public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
+			public RegisteredRegex(Regex regex) { this.regex = regex; }
 			public override bool Matches(string token) {
 				var match = regex.Match(token);
 				return match.Success && match.Length == token.Length;
+			}
+		}
+
+		public Parser() {
+			builtinRules.Add(
+				new RegisteredRegex(CommonRegexes.Variable), new TwoArgDelegate((reader, varStr) => {
+					var value = ParserHelpers.GetString(reader, Variables);
+					if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
+						Variables.Add(varStr[1..], intValue);
+						return;
+					}
+					if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
+						Variables.Add(varStr[1..], doubleValue);
+						return;
+					}
+					Variables.Add(varStr[1..], value);
+				})
+			);
+		}
+
+		public Parser(Dictionary<string, object>? variables) : this() {
+			if (variables is not null) {
+				Variables = variables;
 			}
 		}
 
@@ -67,6 +93,12 @@ namespace commonItems {
 		public void RegisterRegex(string keyword, SimpleDel del) {
 			registeredRules.Add(new RegisteredRegex(keyword), new OneArgDelegate(del));
 		}
+		public void RegisterRegex(Regex regex, Del del) {
+			registeredRules.Add(new RegisteredRegex(regex), new TwoArgDelegate(del));
+		}
+		public void RegisterRegex(Regex regex, SimpleDel del) {
+			registeredRules.Add(new RegisteredRegex(regex), new OneArgDelegate(del));
+		}
 
 		public void ClearRegisteredRules() {
 			registeredRules.Clear();
@@ -74,73 +106,38 @@ namespace commonItems {
 
 		private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
 			foreach (var (rule, fun) in registeredRules) {
-				if (rule.Matches(token)) {
+				if (!rule.Matches(token)) {
+					continue;
+				}
+
+				fun.Execute(reader, token);
+				return true;
+			}
+			if (isTokenQuoted) {
+				foreach (var (rule, fun) in registeredRules) {
+					if (!rule.Matches(strippedToken)) {
+						continue;
+					}
+
 					fun.Execute(reader, token);
 					return true;
 				}
 			}
-			if (isTokenQuoted) {
-				foreach (var (rule, fun) in registeredRules) {
-					if (rule.Matches(strippedToken)) {
-						fun.Execute(reader, token);
-						return true;
-					}
+
+			foreach (var (rule, fun) in builtinRules) {
+				if (!rule.Matches(token)) {
+					continue;
 				}
+
+				fun.Execute(reader, token);
+				return true;
 			}
+
 			return false;
 		}
 
-		public static string GetNextLexeme(BufferedReader reader) {
-			var sb = new StringBuilder();
-
-			var inQuotes = false;
-			var inLiteralQuote = false;
-			var previousCharacter = '\0';
-
-			while (!reader.EndOfStream) {
-				var inputChar = (char)reader.Read();
-
-				if (inputChar == '\r') {
-					if (inQuotes) {
-						// Fix Paradox' mistake and don't break proper names in half.
-						sb.Append(' ');
-					} else if (sb.Length != 0) {
-						break;
-					}
-				} else if (inputChar == '\n') {
-					if (previousCharacter == '\r') {
-						// We're in the middle of a Windows line ending, already handled by condition for '\r'.
-					} else if (inQuotes) {
-						// Fix Paradox' mistake and don't break proper names in half.
-						sb.Append(' ');
-					} else if (sb.Length != 0) {
-						break;
-					}
-				} else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
-					continue;
-				} else if (inputChar == '\"' && inLiteralQuote && previousCharacter == ')') {
-					--sb.Length;
-					sb.Append(inputChar);
-					break;
-				} else if (inQuotes) {
-					if (inputChar == '\"' && previousCharacter != '\\') {
-						sb.Append(inputChar);
-						break;
-					} else {
-						sb.Append(inputChar);
-					}
-				} else { // not in quotes
-					if (HandleCharOutsideQuotes(reader, sb, ref inQuotes, ref inLiteralQuote, inputChar)) {
-						break;
-					}
-				}
-
-				previousCharacter = inputChar;
-			}
-			return sb.ToString();
-		}
-
-		private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref bool inQuotes, ref bool inLiteralQuote, char inputChar) {
+		// Returned value indicates whether the lexeme-building loop should be broken
+		private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref char previousChar, ref bool inQuotes, ref bool inLiteralQuote, ref bool inInterpolatedExpresion, char inputChar) {
 			if (inputChar == '#') {
 				reader.ReadLine();
 				if (sb.Length != 0) {
@@ -153,10 +150,17 @@ namespace commonItems {
 				inLiteralQuote = true;
 				--sb.Length;
 				sb.Append(inputChar);
-			} else if (!inLiteralQuote && char.IsWhiteSpace(inputChar)) {
+			} else if (!inLiteralQuote && !inInterpolatedExpresion && char.IsWhiteSpace(inputChar)) {
 				if (sb.Length != 0) {
 					return true; // break loop
 				}
+			} else if (previousChar == '@' && inputChar == '[') { // beginning of interpolated expression
+				inInterpolatedExpresion = true;
+				sb.Append(inputChar);
+			} else if (inInterpolatedExpresion && inputChar == ']') { // end of interpolated expression
+				inInterpolatedExpresion = false;
+				sb.Append(inputChar);
+				return true; // break loop
 			} else if (!inLiteralQuote && inputChar == '{') {
 				if (sb.Length == 0) {
 					sb.Append(inputChar);
@@ -185,12 +189,95 @@ namespace commonItems {
 			return false;
 		}
 
-		public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
-			return reader.EndOfStream ? null : GetNextLexeme(reader);
+		public static string GetNextLexeme(BufferedReader reader) {
+			var sb = new StringBuilder();
+
+			var inQuotes = false;
+			var inLiteralQuote = false;
+			var inInterpolatedExpression = false;
+			var previousChar = '\0';
+
+			while (!reader.EndOfStream) {
+				var inputChar = (char)reader.Read();
+
+				if (inputChar == '\r') {
+					if (inQuotes) {
+						// Fix Paradox' mistake and don't break proper names in half.
+						sb.Append(' ');
+					} else if (sb.Length != 0) {
+						break;
+					}
+				} else if (inputChar == '\n') {
+					if (previousChar == '\r') {
+						// We're in the middle of a Windows line ending, already handled by condition for '\r'.
+					} else if (inQuotes) {
+						// Fix Paradox' mistake and don't break proper names in half.
+						sb.Append(' ');
+					} else if (sb.Length != 0) {
+						break;
+					}
+				} else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
+					continue;
+				} else if (inputChar == '\"' && inLiteralQuote && previousChar == ')') {
+					--sb.Length;
+					sb.Append(inputChar);
+					break;
+				} else if (inQuotes) {
+					if (inputChar == '\"' && previousChar != '\\') {
+						sb.Append(inputChar);
+						break;
+					} else {
+						sb.Append(inputChar);
+					}
+				} else { // not in quotes
+					if (HandleCharOutsideQuotes(reader, sb, ref previousChar, ref inQuotes, ref inLiteralQuote, ref inInterpolatedExpression, inputChar)) {
+						break;
+					}
+				}
+
+				previousChar = inputChar;
+			}
+			return sb.ToString();
 		}
 
-		public string? GetNextToken(BufferedReader reader) {
-			var sb = new StringBuilder();
+		public object ResolveVariable(string lexeme) {
+			return Variables[lexeme[1..]];
+		}
+
+		public object EvaluateExpression(string lexeme) {
+			var expression = new Expression(lexeme[2..^1]);
+			foreach (var (name, value) in Variables) {
+				expression.Parameters[name] = value;
+			}
+			return expression.Evaluate();
+		}
+
+		// WithoutMatching refers to not matching against registered rules.
+		// Here we are only matching against variable and interpolated expression regexes
+		// to resolve them before returning.
+		public string? GetNextTokenWithoutMatching(BufferedReader reader) {
+			if (reader.EndOfStream) {
+				return null;
+			}
+			var lexeme = GetNextLexeme(reader);
+			if (CommonRegexes.Variable.IsMatch(lexeme)) {
+				return GetValueString(ResolveVariable(lexeme));
+			}
+			if (CommonRegexes.InterpolatedExpression.IsMatch(lexeme)) {
+				return GetValueString(EvaluateExpression(lexeme));
+			}
+			return lexeme;
+
+			static string? GetValueString(object obj) {
+				if (obj is double d) {
+					return d.ToString(CultureInfo.InvariantCulture);
+				}
+				return obj.ToString();
+			}
+		}
+
+		private string? GetNextToken(BufferedReader reader) {
+			string? token = null;
 
 			var gotToken = false;
 			while (!gotToken) {
@@ -198,19 +285,18 @@ namespace commonItems {
 					return null;
 				}
 
-				sb.Clear();
-				sb.Append(GetNextLexeme(reader));
+				token = GetNextLexeme(reader);
 
-				var strippedToken = StringUtils.RemQuotes(sb.ToString());
-				var isTokenQuoted = (strippedToken.Length < sb.ToString().Length);
+				var strippedToken = StringUtils.RemQuotes(token);
+				var isTokenQuoted = strippedToken.Length < token.Length;
 
-				var matched = TryToMatch(sb.ToString(), strippedToken, isTokenQuoted, reader);
+				var matched = TryToMatch(token, strippedToken, isTokenQuoted, reader);
 
 				if (!matched) {
 					gotToken = true;
 				}
 			}
-			return sb.Length == 0 ? null : sb.ToString();
+			return token;
 		}
 
 		public void ParseStream(BufferedReader reader) {
@@ -282,5 +368,9 @@ namespace commonItems {
 		}
 
 		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();
+
+		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> builtinRules = new();
+
+		public Dictionary<string, object> Variables { get; } = new();
 	}
 }

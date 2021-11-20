@@ -422,9 +422,7 @@ namespace commonItems.UnitTests {
 
 		private class Foo : Parser {
 			public Foo(BufferedReader reader) {
-				RegisterKeyword("color", (BufferedReader reader) => {
-					color = new ColorFactory().GetColor(reader);
-				});
+				RegisterKeyword("color", (reader) => color = new ColorFactory().GetColor(reader));
 				ParseStream(reader);
 			}
 			public Color color = new();

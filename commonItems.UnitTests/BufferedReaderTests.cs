@@ -44,13 +44,14 @@ namespace commonItems.UnitTests {
 		[Fact]
 		public void EndOfStreamIsFalseIfThereAreCharactersInStack() {
 			var reader = new BufferedReader("token");
-			Parser.GetNextTokenWithoutMatching(reader);
+			var parser = new Parser();
+			parser.GetNextTokenWithoutMatching(reader);
 			Assert.True(reader.EndOfStream);
 			reader.PushBack('e');
 			reader.PushBack('v');
 			reader.PushBack('a');
 			Assert.False(reader.EndOfStream);
-			Assert.Equal("ave", Parser.GetNextTokenWithoutMatching(reader));
+			Assert.Equal("ave", parser.GetNextTokenWithoutMatching(reader));
 			Assert.True(reader.EndOfStream);
 		}
 

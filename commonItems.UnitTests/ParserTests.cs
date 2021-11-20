@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Xunit;
 // ReSharper disable InconsistentNaming
@@ -291,6 +292,36 @@ namespace commonItems.UnitTests {
 			Assert.Equal("key", test.key);
 			Assert.Equal("value", test.value);
 			Assert.Null(test.broken);
+		}
+
+		private class TestCountry : Parser {
+			public string Name { get; private set; } = string.Empty;
+			public double Prestige { get; private set; }
+
+			public TestCountry(BufferedReader reader) {
+				RegisterKeyword("name", reader=>Name = ParserHelpers.GetString(reader, Variables));
+				RegisterKeyword("prestige", reader => Prestige = ParserHelpers.GetDouble(reader, Variables));
+				ParseStream(reader);
+			}
+		}
+		[Fact]
+		public void ParserResolvesVariables() {
+			var reader = new BufferedReader(
+				"@best_country_on_earth_name = \"Roman Empire\"\n" +
+				"name = @best_country_on_earth_name"
+			);
+			var country = new TestCountry(reader);
+			Assert.Equal("Roman Empire", country.Name);
+		}
+
+		[Fact]
+		public void ParserEvaluatesExpressions() {
+			var reader = new BufferedReader(
+				"@default_prestige = 50\n" +
+				"prestige = @[default_prestige/2+10]"
+			);
+			var country = new TestCountry(reader);
+			Assert.Equal(35, country.Prestige);
 		}
 	}
 }
