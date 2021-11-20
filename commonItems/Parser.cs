@@ -252,7 +252,9 @@ namespace commonItems {
 			return expression.Evaluate();
 		}
 
-
+		// WithoutMatching refers to not matching against registered rules.
+		// Here we are only matching against variable and interpolated expression regexes
+		// to resolve them before returning.
 		public string? GetNextTokenWithoutMatching(BufferedReader reader) {
 			if (reader.EndOfStream) {
 				return null;
