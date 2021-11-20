@@ -627,17 +627,17 @@ namespace commonItems.UnitTests {
 		}
 
 		private class TypeClass : Parser {
-			public string str;
+			public string? str;
 			public int integer;
 			public long longInt;
 			public ulong ulongInt;
 			public double d;
-			public List<string> strings;
-			public List<int> ints;
-			public List<long> longs;
-			public List<ulong> ulongs;
-			public List<double> doubles;
-			public Dictionary<string, string> assignments;
+			public List<string> strings = new();
+			public List<int> ints = new();
+			public List<long> longs = new();
+			public List<ulong> ulongs = new();
+			public List<double> doubles = new();
+			public Dictionary<string, string> assignments = new();
 
 			public TypeClass(BufferedReader reader) {
 				RegisterKeyword("str", reader=>str = ParserHelpers.GetString(reader, Variables));
@@ -662,7 +662,7 @@ namespace commonItems.UnitTests {
 				"@str_var = \"peep\"\n" +
 				"@positive_var = 43\n" +
 				"@negative_var = -3\n" +
-				"@double_var = 0.5\n" +
+				"@double_var = 0.35\n" +
 				"\n" +
 				// expression usage
 				"str = @str_var\n" +
@@ -682,7 +682,7 @@ namespace commonItems.UnitTests {
 			Assert.Equal(-1, instance.integer);
 			Assert.Equal(-1, instance.longInt);
 			Assert.Equal((ulong)42, instance.ulongInt);
-			Assert.Equal(1, instance.d);
+			Assert.Equal(0.7d, instance.d, 8);
 			Assert.Collection(instance.strings,
 				item=>Assert.Equal("beep", item),
 				item=>Assert.Equal("peep", item));
@@ -697,13 +697,14 @@ namespace commonItems.UnitTests {
 				item => Assert.Equal((ulong)42, item));
 			Assert.Collection(instance.doubles,
 				item => Assert.Equal(5, item),
-				item => Assert.Equal(1, item));
+				item => Assert.Equal(0.7, item, 8));
 			Assert.Collection(instance.assignments,
 				item => {
 					var (key, value) = item;
 					Assert.Equal("beep", key);
 					Assert.Equal("peep", value);
-				});
+				}
+			);
 		}
 	}
 }

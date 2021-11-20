@@ -54,17 +54,17 @@ namespace commonItems {
 		public Parser() {
 			builtinRules.Add(
 				new RegisteredRegex(CommonRegexes.Variable), new TwoArgDelegate((reader, varStr) => {
-						var value = ParserHelpers.GetString(reader, Variables);
-						if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-							Variables.Add(varStr[1..], intValue);
-							return;
-						}
-						if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
-							Variables.Add(varStr[1..], doubleValue);
-							return;
-						}
-						Variables.Add(varStr[1..], value);
-					})
+					var value = ParserHelpers.GetString(reader, Variables);
+					if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
+						Variables.Add(varStr[1..], intValue);
+						return;
+					}
+					if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
+						Variables.Add(varStr[1..], doubleValue);
+						return;
+					}
+					Variables.Add(varStr[1..], value);
+				})
 			);
 		}
 
@@ -136,71 +136,8 @@ namespace commonItems {
 			return false;
 		}
 
-		public static string GetNextLexeme(BufferedReader reader) {
-			var sb = new StringBuilder();
-
-			var inQuotes = false;
-			var inLiteralQuote = false;
-			var inInterpolatedExpression = false; // TODO: ADD CONDITIONS BELOW
-			var previousCharacter = '\0';
-
-			while (!reader.EndOfStream) {
-				var inputChar = (char)reader.Read();
-
-				if (inputChar == '\r') {
-					if (inQuotes) {
-						// Fix Paradox' mistake and don't break proper names in half.
-						sb.Append(' ');
-					} else if (sb.Length != 0) {
-						break;
-					}
-				} else if (inputChar == '\n') {
-					if (previousCharacter == '\r') {
-						// We're in the middle of a Windows line ending, already handled by condition for '\r'.
-					} else if (inQuotes) {
-						// Fix Paradox' mistake and don't break proper names in half.
-						sb.Append(' ');
-					} else if (sb.Length != 0) {
-						break;
-					}
-				} else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
-					continue;
-				} else if (inputChar == '\"' && inLiteralQuote && previousCharacter == ')') {
-					--sb.Length;
-					sb.Append(inputChar);
-					break;
-				} else if (inQuotes) {
-					if (inputChar == '\"' && previousCharacter != '\\') {
-						sb.Append(inputChar);
-						break;
-					} else {
-						sb.Append(inputChar);
-					}
-				} else { // not in quotes
-					if (HandleCharOutsideQuotes(reader, sb, ref inQuotes, ref inLiteralQuote, inputChar)) {
-						break;
-					}
-				}
-
-				previousCharacter = inputChar;
-			}
-			return sb.ToString();
-		}
-
-		public object ResolveVariable(string lexeme) {
-			return Variables[lexeme[1..]];
-		}
-
-		public object EvaluateExpression(string lexeme) {
-			var expression = new Expression(lexeme[2..^1]);
-			foreach (var (name, value) in Variables) {
-				expression.Parameters[name] = value;
-			}
-
-			return expression.Evaluate();
-		}
-
-		private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref bool inQuotes, ref bool inLiteralQuote, char inputChar) {
+		// Returned value indicates whether the lexeme-building loop should be broken
+		private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref char previousChar, ref bool inQuotes, ref bool inLiteralQuote, ref bool inInterpolatedExpresion, char inputChar) {
 			if (inputChar == '#') {
 				reader.ReadLine();
 				if (sb.Length != 0) {
@@ -213,10 +150,17 @@ namespace commonItems {
 				inLiteralQuote = true;
 				--sb.Length;
 				sb.Append(inputChar);
-			} else if (!inLiteralQuote && char.IsWhiteSpace(inputChar)) {
+			} else if (!inLiteralQuote && !inInterpolatedExpresion && char.IsWhiteSpace(inputChar)) {
 				if (sb.Length != 0) {
 					return true; // break loop
 				}
+			} else if (previousChar == '@' && inputChar == '[') { // beginning of interpolated expression
+				inInterpolatedExpresion = true;
+				sb.Append(inputChar);
+			} else if (inInterpolatedExpresion && inputChar == ']') { // end of interpolated expression
+				inInterpolatedExpresion = false;
+				sb.Append(inputChar);
+				return true; // break loop
 			} else if (!inLiteralQuote && inputChar == '{') {
 				if (sb.Length == 0) {
 					sb.Append(inputChar);
@@ -245,19 +189,89 @@ namespace commonItems {
 			return false;
 		}
 
+		public static string GetNextLexeme(BufferedReader reader) {
+			var sb = new StringBuilder();
+
+			var inQuotes = false;
+			var inLiteralQuote = false;
+			var inInterpolatedExpression = false;
+			var previousChar = '\0';
+
+			while (!reader.EndOfStream) {
+				var inputChar = (char)reader.Read();
+
+				if (inputChar == '\r') {
+					if (inQuotes) {
+						// Fix Paradox' mistake and don't break proper names in half.
+						sb.Append(' ');
+					} else if (sb.Length != 0) {
+						break;
+					}
+				} else if (inputChar == '\n') {
+					if (previousChar == '\r') {
+						// We're in the middle of a Windows line ending, already handled by condition for '\r'.
+					} else if (inQuotes) {
+						// Fix Paradox' mistake and don't break proper names in half.
+						sb.Append(' ');
+					} else if (sb.Length != 0) {
+						break;
+					}
+				} else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
+					continue;
+				} else if (inputChar == '\"' && inLiteralQuote && previousChar == ')') {
+					--sb.Length;
+					sb.Append(inputChar);
+					break;
+				} else if (inQuotes) {
+					if (inputChar == '\"' && previousChar != '\\') {
+						sb.Append(inputChar);
+						break;
+					} else {
+						sb.Append(inputChar);
+					}
+				} else { // not in quotes
+					if (HandleCharOutsideQuotes(reader, sb, ref previousChar, ref inQuotes, ref inLiteralQuote, ref inInterpolatedExpression, inputChar)) {
+						break;
+					}
+				}
+
+				previousChar = inputChar;
+			}
+			return sb.ToString();
+		}
+
+		public object ResolveVariable(string lexeme) {
+			return Variables[lexeme[1..]];
+		}
+
+		public object EvaluateExpression(string lexeme) {
+			var expression = new Expression(lexeme[2..^1]);
+			foreach (var (name, value) in Variables) {
+				expression.Parameters[name] = value;
+			}
+			return expression.Evaluate();
+		}
+
+
 		public string? GetNextTokenWithoutMatching(BufferedReader reader) {
 			if (reader.EndOfStream) {
 				return null;
 			}
-
 			var lexeme = GetNextLexeme(reader);
 			if (CommonRegexes.Variable.IsMatch(lexeme)) {
-				return ResolveVariable(lexeme).ToString();
+				return GetValueString(ResolveVariable(lexeme));
 			}
 			if (CommonRegexes.InterpolatedExpression.IsMatch(lexeme)) {
-				return EvaluateExpression(lexeme).ToString();
+				return GetValueString(EvaluateExpression(lexeme));
 			}
 			return lexeme;
+
+			static string? GetValueString(object obj) {
+				if (obj is double d) {
+					return d.ToString(CultureInfo.InvariantCulture);
+				}
+				return obj.ToString();
+			}
 		}
 
 		private string? GetNextToken(BufferedReader reader) {
