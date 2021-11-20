@@ -147,12 +147,7 @@ namespace commonItems {
 			while (!reader.EndOfStream) {
 				var inputChar = (char)reader.Read();
 
-				if (!inQuotes && inputChar == '#') {
-					reader.ReadLine();
-					if (sb.Length != 0) {
-						break;
-					}
-				} else if (inputChar == '\r') {
+				if (inputChar == '\r') {
 					if (inQuotes) {
 						// Fix Paradox' mistake and don't break proper names in half.
 						sb.Append(' ');
@@ -162,62 +157,92 @@ namespace commonItems {
 				} else if (inputChar == '\n') {
 					if (previousCharacter == '\r') {
 						// We're in the middle of a Windows line ending, already handled by condition for '\r'.
-					} else {
-						if (inQuotes) {
-							// Fix Paradox' mistake and don't break proper names in half.
-							sb.Append(' ');
-						} else if (sb.Length != 0) {
-							break;
-						}
+					} else if (inQuotes) {
+						// Fix Paradox' mistake and don't break proper names in half.
+						sb.Append(' ');
+					} else if (sb.Length != 0) {
+						break;
 					}
-				} else if (inputChar == '\"' && !inQuotes && sb.Length == 0) {
-					inQuotes = true;
-					sb.Append(inputChar);
-				} else if (inputChar == '\"' && !inQuotes && sb.Length == 1 && sb.ToString().Last() == 'R') {
-					inLiteralQuote = true;
-					--sb.Length;
-					sb.Append(inputChar);
 				} else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
 					continue;
 				} else if (inputChar == '\"' && inLiteralQuote && previousCharacter == ')') {
 					--sb.Length;
 					sb.Append(inputChar);
 					break;
-				} else if (inputChar == '\"' && inQuotes && previousCharacter != '\\') {
-					sb.Append(inputChar);
-					break;
-				} else if (!inQuotes && !inLiteralQuote && char.IsWhiteSpace(inputChar)) {
-					if (sb.Length != 0) {
+				} else if (inQuotes) {
+					if (inputChar == '\"' && previousCharacter != '\\') {
+						sb.Append(inputChar);
+						break;
+					} else {
+						sb.Append(inputChar);
+					}
+				} else { // not in quotes
+					if (HandleCharOutsideQuotes(reader, sb, ref inQuotes, ref inLiteralQuote, inputChar)) {
 						break;
 					}
-				} else if (!inQuotes && !inLiteralQuote && inputChar == '{') {
-					if (sb.Length == 0) {
-						sb.Append(inputChar);
-					} else {
-						reader.PushBack('{');
-					}
-					break;
-				} else if (!inQuotes && !inLiteralQuote && inputChar == '}') {
-					if (sb.Length == 0) {
-						sb.Append(inputChar);
-					} else {
-						reader.PushBack('}');
-					}
-					break;
-				} else if (!inQuotes && !inLiteralQuote && inputChar == '=') {
-					if (sb.Length == 0) {
-						sb.Append(inputChar);
-					} else {
-						reader.PushBack('=');
-					}
-					break;
-				} else {
-					sb.Append(inputChar);
 				}
 
 				previousCharacter = inputChar;
 			}
 			return sb.ToString();
+		}
+
+		public object ResolveVariable(string lexeme) {
+			return Variables[lexeme[1..]];
+		}
+
+		public object EvaluateExpression(string lexeme) {
+			var expression = new Expression(lexeme[2..^1]);
+			foreach (var (name, value) in Variables) {
+				expression.Parameters[name] = value;
+			}
+
+			return expression.Evaluate();
+		}
+
+		private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref bool inQuotes, ref bool inLiteralQuote, char inputChar) {
+			if (inputChar == '#') {
+				reader.ReadLine();
+				if (sb.Length != 0) {
+					return true; // break loop
+				}
+			} else if (inputChar == '\"' && sb.Length == 0) {
+				inQuotes = true;
+				sb.Append(inputChar);
+			} else if (inputChar == '\"' && sb.Length == 1 && sb.ToString().Last() == 'R') {
+				inLiteralQuote = true;
+				--sb.Length;
+				sb.Append(inputChar);
+			} else if (!inLiteralQuote && char.IsWhiteSpace(inputChar)) {
+				if (sb.Length != 0) {
+					return true; // break loop
+				}
+			} else if (!inLiteralQuote && inputChar == '{') {
+				if (sb.Length == 0) {
+					sb.Append(inputChar);
+				} else {
+					reader.PushBack('{');
+				}
+				return true; // break loop
+			} else if (!inLiteralQuote && inputChar == '}') {
+				if (sb.Length == 0) {
+					sb.Append(inputChar);
+				} else {
+					reader.PushBack('}');
+				}
+				return true; // break loop
+			} else if (!inLiteralQuote && inputChar == '=') {
+				if (sb.Length == 0) {
+					sb.Append(inputChar);
+				} else {
+					reader.PushBack('=');
+				}
+				return true; // break loop
+			} else {
+				sb.Append(inputChar);
+			}
+
+			return false;
 		}
 
 		public string? GetNextTokenWithoutMatching(BufferedReader reader) {
@@ -235,19 +260,7 @@ namespace commonItems {
 			return lexeme;
 		}
 
-		public object ResolveVariable(string lexeme) {
-			return Variables[lexeme[1..]];
-		}
-		public object EvaluateExpression(string lexeme) {
-			var expression = new Expression(lexeme[2..^1]);
-			foreach (var (name, value) in Variables) {
-				expression.Parameters[name] = value;
-			}
-
-			return expression.Evaluate();
-		}
-
-		public string? GetNextToken(BufferedReader reader) {
+		private string? GetNextToken(BufferedReader reader) {
 			string? token = null;
 
 			var gotToken = false;
