@@ -141,6 +141,7 @@ namespace commonItems {
 
 			var inQuotes = false;
 			var inLiteralQuote = false;
+			var inInterpolatedExpression = false; // TODO: ADD CONDITIONS BELOW
 			var previousCharacter = '\0';
 
 			while (!reader.EndOfStream) {
