@@ -68,7 +68,7 @@ namespace commonItems {
 			);
 		}
 
-		public Parser(Dictionary<string, object>? variables = null) : this() {
+		public Parser(Dictionary<string, object>? variables) : this() {
 			if (variables is not null) {
 				Variables = variables;
 			}
