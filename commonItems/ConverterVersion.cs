@@ -4,10 +4,10 @@ using System.Text;
 
 namespace commonItems {
 	public class ConverterVersion {
-		public string Name { get; private set; } = "";
-		public string Version { get; private set; } = "";
-		public string Source { get; private set; } = "";
-		public string Target { get; private set; } = "";
+		public string? Name { get; private set; }
+		public string? Version { get; private set; }
+		public string? Source { get; private set; }
+		public string? Target { get; private set; }
 		public GameVersion MinSource { get; private set; } = new();
 		public GameVersion MaxSource { get; private set; } = new();
 		public GameVersion MinTarget { get; private set; } = new();
@@ -27,26 +27,22 @@ namespace commonItems {
 		}
 
 		private void RegisterKeys(ref Parser parser) {
-			parser.RegisterKeyword("name", sr => Name = new SingleString(sr).String);
-			parser.RegisterKeyword("version", sr => Version = new SingleString(sr).String);
-			parser.RegisterKeyword("source", sr => Source = new SingleString(sr).String);
-			parser.RegisterKeyword("target", sr => Target = new SingleString(sr).String);
-			parser.RegisterKeyword("minSource", sr => {
-				var str = new SingleString(sr).String;
-				MinSource = new GameVersion(str);
-			});
-			parser.RegisterKeyword("maxSource", sr => {
-				var str = new SingleString(sr).String;
-				MaxSource = new GameVersion(str);
-			});
-			parser.RegisterKeyword("minTarget", sr => {
-				var str = new SingleString(sr).String;
-				MinTarget = new GameVersion(str);
-			});
-			parser.RegisterKeyword("maxTarget", sr => {
-				var str = new SingleString(sr).String;
-				MaxTarget = new GameVersion(str);
-			});
+			parser.RegisterKeyword("name", reader => Name = ParserHelpers.GetString(reader));
+			parser.RegisterKeyword("version", reader => Version = ParserHelpers.GetString(reader));
+			parser.RegisterKeyword("source", reader => Source = ParserHelpers.GetString(reader));
+			parser.RegisterKeyword("target", reader => Target = ParserHelpers.GetString(reader));
+			parser.RegisterKeyword("minSource", reader =>
+				MinSource = new GameVersion(ParserHelpers.GetString(reader))
+			);
+			parser.RegisterKeyword("maxSource", reader =>
+				MaxSource = new GameVersion(ParserHelpers.GetString(reader))
+			);
+			parser.RegisterKeyword("minTarget", reader =>
+				MinTarget = new GameVersion(ParserHelpers.GetString(reader))
+			);
+			parser.RegisterKeyword("maxTarget", reader =>
+				MaxTarget = new GameVersion(ParserHelpers.GetString(reader))
+			);
 			parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreItem);
 		}
 
