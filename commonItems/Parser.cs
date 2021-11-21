@@ -296,7 +296,8 @@ namespace commonItems {
 					gotToken = true;
 				}
 			}
-			return token;
+
+			return string.IsNullOrEmpty(token) ? null : token;
 		}
 
 		public void ParseStream(BufferedReader reader) {
@@ -306,7 +307,7 @@ namespace commonItems {
 
 			while (true) {
 				var token = GetNextToken(reader);
-				if (token != null) {
+				if (token is not null) {
 					tokensSoFar.Append(token);
 					if (token == "=") {
 						// swapping to value part.
