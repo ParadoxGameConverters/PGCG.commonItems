@@ -105,6 +105,15 @@ namespace commonItems {
 		}
 
 		private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
+			foreach (var (rule, fun) in builtinRules) {
+				if (!rule.Matches(token)) {
+					continue;
+				}
+
+				fun.Execute(reader, token);
+				return true;
+			}
+
 			foreach (var (rule, fun) in registeredRules) {
 				if (!rule.Matches(token)) {
 					continue;
@@ -122,15 +131,6 @@ namespace commonItems {
 					fun.Execute(reader, token);
 					return true;
 				}
-			}
-
-			foreach (var (rule, fun) in builtinRules) {
-				if (!rule.Matches(token)) {
-					continue;
-				}
-
-				fun.Execute(reader, token);
-				return true;
 			}
 
 			return false;
