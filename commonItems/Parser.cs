@@ -1,4 +1,5 @@
 ﻿using NCalc;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -31,13 +32,25 @@ namespace commonItems {
 	}
 
 	public class Parser {
-		private abstract class RegisteredKeywordOrRegex {
+		private abstract class RegisteredKeywordOrRegex : IEquatable<RegisteredKeywordOrRegex> {
+			public abstract bool Equals(RegisteredKeywordOrRegex? other);
 			public abstract bool Matches(string token);
+			public abstract override int GetHashCode();
+
+			public override bool Equals(object? obj) {
+				return Equals(obj as RegisteredKeywordOrRegex);
+			}
 		}
 		private class RegisteredKeyword : RegisteredKeywordOrRegex {
 			private readonly string keyword;
 			public RegisteredKeyword(string keyword) {
 				this.keyword = keyword;
+			}
+			public override bool Equals(RegisteredKeywordOrRegex? other) {
+				return other is RegisteredKeyword rk && rk.keyword.Equals(keyword);
+			}
+			public override int GetHashCode() {
+				return keyword.GetHashCode();
 			}
 			public override bool Matches(string token) { return keyword == token; }
 		}
@@ -45,6 +58,12 @@ namespace commonItems {
 			private readonly Regex regex;
 			public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
 			public RegisteredRegex(Regex regex) { this.regex = regex; }
+			public override bool Equals(RegisteredKeywordOrRegex? other) {
+				return other is RegisteredRegex rr && rr.regex.ToString().Equals(regex.ToString());
+			}
+			public override int GetHashCode() {
+				return regex.ToString().GetHashCode();
+			}
 			public override bool Matches(string token) {
 				var match = regex.Match(token);
 				return match.Success && match.Length == token.Length;
@@ -52,20 +71,18 @@ namespace commonItems {
 		}
 
 		public Parser() {
-			builtinRules.Add(
-				new RegisteredRegex(CommonRegexes.Variable), new TwoArgDelegate((reader, varStr) => {
-					var value = ParserHelpers.GetString(reader, Variables);
-					if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-						Variables.Add(varStr[1..], intValue);
-						return;
-					}
-					if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
-						Variables.Add(varStr[1..], doubleValue);
-						return;
-					}
-					Variables.Add(varStr[1..], value);
-				})
-			);
+			registeredRules[new RegisteredRegex(CommonRegexes.Variable)] = new TwoArgDelegate((reader, varStr) => {
+				var value = ParserHelpers.GetString(reader, Variables);
+				if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
+					Variables.Add(varStr[1..], intValue);
+					return;
+				}
+				if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
+					Variables.Add(varStr[1..], doubleValue);
+					return;
+				}
+				Variables.Add(varStr[1..], value);
+			});
 		}
 
 		public Parser(Dictionary<string, object>? variables) : this() {
@@ -82,22 +99,22 @@ namespace commonItems {
 		}
 
 		public void RegisterKeyword(string keyword, Del del) {
-			registeredRules.Add(new RegisteredKeyword(keyword), new TwoArgDelegate(del));
+			registeredRules[new RegisteredKeyword(keyword)] = new TwoArgDelegate(del);
 		}
 		public void RegisterKeyword(string keyword, SimpleDel del) {
-			registeredRules.Add(new RegisteredKeyword(keyword), new OneArgDelegate(del));
+			registeredRules[new RegisteredKeyword(keyword)] = new OneArgDelegate(del);
 		}
 		public void RegisterRegex(string keyword, Del del) {
-			registeredRules.Add(new RegisteredRegex(keyword), new TwoArgDelegate(del));
+			registeredRules[new RegisteredRegex(keyword)] = new TwoArgDelegate(del);
 		}
 		public void RegisterRegex(string keyword, SimpleDel del) {
-			registeredRules.Add(new RegisteredRegex(keyword), new OneArgDelegate(del));
+			registeredRules[new RegisteredRegex(keyword)] = new OneArgDelegate(del);
 		}
 		public void RegisterRegex(Regex regex, Del del) {
-			registeredRules.Add(new RegisteredRegex(regex), new TwoArgDelegate(del));
+			registeredRules[new RegisteredRegex(regex)] = new TwoArgDelegate(del);
 		}
 		public void RegisterRegex(Regex regex, SimpleDel del) {
-			registeredRules.Add(new RegisteredRegex(regex), new OneArgDelegate(del));
+			registeredRules[new RegisteredRegex(regex)] = new OneArgDelegate(del);
 		}
 
 		public void ClearRegisteredRules() {
@@ -105,15 +122,6 @@ namespace commonItems {
 		}
 
 		private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
-			foreach (var (rule, fun) in builtinRules) {
-				if (!rule.Matches(token)) {
-					continue;
-				}
-
-				fun.Execute(reader, token);
-				return true;
-			}
-
 			foreach (var (rule, fun) in registeredRules) {
 				if (!rule.Matches(token)) {
 					continue;
@@ -369,8 +377,6 @@ namespace commonItems {
 		}
 
 		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();
-
-		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> builtinRules = new();
 
 		public Dictionary<string, object> Variables { get; } = new();
 	}
