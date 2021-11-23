@@ -223,8 +223,6 @@ namespace commonItems {
 			var next = GetNextLexeme(reader);
 			var sb = new StringBuilder();
 			if (next == "=") {
-				sb.Append(next);
-				sb.Append(' ');
 				next = GetNextLexeme(reader);
 			}
 			sb.Append(next);
