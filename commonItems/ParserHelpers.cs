@@ -1,4 +1,4 @@
-﻿using System;
+﻿using commonItems.Serialization;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -40,21 +40,6 @@ namespace commonItems {
 		public static void IgnoreAndLogItem(BufferedReader sr, string keyword) {
 			IgnoreItem(sr);
 			Logger.Debug($"Ignoring keyword: {keyword}");
-		}
-
-		public static Dictionary<string, string> GetAssignments(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			var assignments = new Dictionary<string, string>();
-			var parser = new Parser(variables);
-			parser.RegisterRegex(CommonRegexes.Catchall, (reader, assignmentName) => {
-				parser.GetNextTokenWithoutMatching(reader); // remove equals
-				var assignmentValue = parser.GetNextTokenWithoutMatching(reader);
-				if (assignmentValue is null) {
-					throw new FormatException($"Cannot assign null to {assignmentName}!");
-				}
-				assignments[assignmentName] = assignmentValue;
-			});
-			parser.ParseStream(reader);
-			return assignments;
 		}
 	}
 	public class SingleString {
@@ -218,14 +203,12 @@ namespace commonItems {
 		public List<double> Doubles { get; } = new();
 	}
 
-	public class StringOfItem : Parser {
+	public class StringOfItem : IPDXSerializable {
 		public StringOfItem(BufferedReader reader) {
-			var next = GetNextLexeme(reader);
+			var next = Parser.GetNextLexeme(reader);
 			var sb = new StringBuilder();
 			if (next == "=") {
-				sb.Append(next);
-				sb.Append(' ');
-				next = GetNextLexeme(reader);
+				next = Parser.GetNextLexeme(reader);
 			}
 			sb.Append(next);
 
@@ -240,15 +223,19 @@ namespace commonItems {
 					} else if (inputChar == '}') {
 						--braceDepth;
 						if (braceDepth == 0) {
-							String = sb.ToString();
+							str = sb.ToString();
 							return;
 						}
 					}
 				}
 			}
-			String = sb.ToString();
+			str = sb.ToString();
 		}
-		public string String { get; }
+
+		public string Serialize(string indent, bool withBraces) => ToString();
+		public override string ToString() => str;
+
+		private readonly string str;
 	}
 
 	public class BlobList : Parser {

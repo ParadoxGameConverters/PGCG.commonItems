@@ -265,7 +265,7 @@ namespace commonItems.UnitTests {
 				"\ttype = 46\n" +
 				"}"
 			);
-			var assignments = ParserHelpers.GetAssignments(reader);
+			var assignments = reader.GetAssignments();
 
 			var expectedAssignments = new Dictionary<string, string> { { "id", "180" }, { "type", "46" } };
 			Assert.Equal(expectedAssignments, assignments);
@@ -277,7 +277,7 @@ namespace commonItems.UnitTests {
 				"\tid = 180\n" +
 				"\ttype ="
 			);
-			var e = Assert.Throws<FormatException>(() => ParserHelpers.GetAssignments(reader));
+			var e = Assert.Throws<FormatException>(() => reader.GetAssignments());
 			Assert.StartsWith("System.FormatException: Cannot assign null to type!", e.ToString());
 		}
 
@@ -452,13 +452,13 @@ namespace commonItems.UnitTests {
 			var reader = new BufferedReader(input);
 
 			var theItem = reader.GetStringOfItem();
-			Assert.Equal(input, theItem.String);
+			Assert.Equal(input[2..], theItem.ToString());
 		}
 		[Fact]
 		public void StringOfItemGetsStringAfterEquals() {
 			var reader = new BufferedReader(" = foo");
 			var theItem = reader.GetStringOfItem();
-			Assert.Equal("= foo", theItem.String);
+			Assert.Equal("foo", theItem.ToString());
 		}
 
 		[Fact]
@@ -650,7 +650,7 @@ namespace commonItems.UnitTests {
 				RegisterKeyword("longs", reader => longs = reader.GetLongs(Variables));
 				RegisterKeyword("ulongs", reader => ulongs = reader.GetULongs(Variables));
 				RegisterKeyword("doubles", reader => doubles = reader.GetDoubles(Variables));
-				RegisterKeyword("assignments", reader => assignments = ParserHelpers.GetAssignments(reader, Variables));
+				RegisterKeyword("assignments", reader => assignments = reader.GetAssignments(Variables));
 
 				ParseStream(reader);
 			}

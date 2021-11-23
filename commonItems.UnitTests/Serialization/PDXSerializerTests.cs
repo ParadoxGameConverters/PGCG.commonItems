@@ -36,6 +36,7 @@ namespace commonItems.UnitTests.Serialization {
 			public HashSet<string> greetings = new() { "hi", "salutations", "greetings" };
 			[SerializeOnlyValue] public KeyValuePair<string, string> kvPair = new("key", "value");
 			public RulerInfo ruler_info = new() { nickname = "the_great" };
+			public StringOfItem ai_priority = new(new BufferedReader("= { add = 70 }"));
 		}
 
 		[Fact]
@@ -68,6 +69,7 @@ namespace commonItems.UnitTests.Serialization {
 				"\truler_info={" + Environment.NewLine +
 				"\t\tnickname=\"the_great\"" + Environment.NewLine +
 				"\t}" + Environment.NewLine +
+				"\tai_priority={ add = 70 }" + Environment.NewLine +
 				"}";
 			Assert.Equal(expectedString, titleString);
 		}
