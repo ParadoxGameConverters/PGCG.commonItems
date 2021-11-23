@@ -451,14 +451,14 @@ namespace commonItems.UnitTests {
                 }";
 			var reader = new BufferedReader(input);
 
-			var theItem = new StringOfItem(reader);
-			Assert.Equal(input, theItem.String);
+			var theItem = ParserHelpers.GetStringOfItem(reader);
+			Assert.Equal(input, theItem);
 		}
 		[Fact]
 		public void StringOfItemGetsStringAfterEquals() {
 			var reader = new BufferedReader(" = foo");
-			var theItem = new StringOfItem(reader);
-			Assert.Equal("= foo", theItem.String);
+			var theItem = ParserHelpers.GetStringOfItem(reader);
+			Assert.Equal("= foo", theItem);
 		}
 
 		[Fact]

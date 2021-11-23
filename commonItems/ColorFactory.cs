@@ -51,7 +51,7 @@ namespace commonItems {
 				foreach (var ch in actualToken.ToCharArray().Reverse()) {
 					reader.PushBack(ch);
 				}
-				var questionableList = new StringOfItem(reader).String;
+				var questionableList = ParserHelpers.GetStringOfItem(reader);
 				if (questionableList.IndexOf('.') != -1) {
 					// This is a double list.
 					var doubleStreamReader = new BufferedReader(questionableList);

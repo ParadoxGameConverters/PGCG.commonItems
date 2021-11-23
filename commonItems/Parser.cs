@@ -137,7 +137,7 @@ namespace commonItems {
 		}
 
 		// Returned value indicates whether the lexeme-building loop should be broken
-		private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref char previousChar, ref bool inQuotes, ref bool inLiteralQuote, ref bool inInterpolatedExpresion, char inputChar) {
+		private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref char previousChar, ref bool inQuotes, ref bool inLiteralQuote, ref bool inInterpolatedExpression, char inputChar) {
 			if (inputChar == '#') {
 				reader.ReadLine();
 				if (sb.Length != 0) {
@@ -150,15 +150,15 @@ namespace commonItems {
 				inLiteralQuote = true;
 				--sb.Length;
 				sb.Append(inputChar);
-			} else if (!inLiteralQuote && !inInterpolatedExpresion && char.IsWhiteSpace(inputChar)) {
+			} else if (!inLiteralQuote && !inInterpolatedExpression && char.IsWhiteSpace(inputChar)) {
 				if (sb.Length != 0) {
 					return true; // break loop
 				}
 			} else if (previousChar == '@' && inputChar == '[') { // beginning of interpolated expression
-				inInterpolatedExpresion = true;
+				inInterpolatedExpression = true;
 				sb.Append(inputChar);
-			} else if (inInterpolatedExpresion && inputChar == ']') { // end of interpolated expression
-				inInterpolatedExpresion = false;
+			} else if (inInterpolatedExpression && inputChar == ']') { // end of interpolated expression
+				inInterpolatedExpression = false;
 				sb.Append(inputChar);
 				return true; // break loop
 			} else if (!inLiteralQuote && inputChar == '{') {

@@ -72,6 +72,9 @@ namespace commonItems {
 		public static List<double> GetDoubles(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			return new DoubleList(reader, variables).Doubles;
 		}
+		public static string GetStringOfItem(BufferedReader reader) {
+			return new StringOfItem(reader).String;
+		}
 
 		public static Dictionary<string, string> GetAssignments(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			var assignments = new Dictionary<string, string>();
@@ -262,12 +265,7 @@ namespace commonItems {
 
 			if (next == "{") {
 				var braceDepth = 1;
-				while (true) {
-					if (reader.EndOfStream) {
-						String = sb.ToString();
-						return;
-					}
-
+				while (!reader.EndOfStream) {
 					char inputChar = (char)reader.Read();
 					sb.Append(inputChar);
 
@@ -294,34 +292,33 @@ namespace commonItems {
 			if (next == "=") {
 				next = GetNextLexeme(reader);
 			}
-			while (next == "{") {
-				var braceDepth = 0;
-				var sb = new StringBuilder();
-				while (true) {
-					if (reader.EndOfStream) {
-						return;
-					}
-					char inputChar = (char)reader.Read();
-					if (inputChar == '{') {
-						if (braceDepth > 0) {
-							sb.Append(inputChar);
-						}
-						braceDepth++;
-					} else if (inputChar == '}') {
-						braceDepth--;
-						if (braceDepth > 0) {
-							sb.Append(inputChar);
-						} else if (braceDepth == 0) {
-							Blobs.Add(sb.ToString());
-							sb.Clear();
-						} else if (braceDepth == -1) {
-							return;
-						}
-					} else if (braceDepth == 0) {
-						// Ignore this character. Only look for blobs.
-					} else {
+			if (next != "{") {
+				return;
+			}
+
+			var braceDepth = 0;
+			var sb = new StringBuilder();
+			while (!reader.EndOfStream) {
+				char inputChar = (char)reader.Read();
+				if (inputChar == '{') {
+					if (braceDepth > 0) {
 						sb.Append(inputChar);
 					}
+					++braceDepth;
+				} else if (inputChar == '}') {
+					--braceDepth;
+					if (braceDepth > 0) {
+						sb.Append(inputChar);
+					} else if (braceDepth == 0) {
+						Blobs.Add(sb.ToString());
+						sb.Clear();
+					} else if (braceDepth == -1) {
+						return;
+					}
+				} else if (braceDepth == 0) {
+					// Ignore this character. Only look for blobs.
+				} else {
+					sb.Append(inputChar);
 				}
 			}
 		}
