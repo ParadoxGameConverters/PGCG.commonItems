@@ -1,5 +1,4 @@
 ﻿using commonItems.Serialization;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -41,21 +40,6 @@ namespace commonItems {
 		public static void IgnoreAndLogItem(BufferedReader sr, string keyword) {
 			IgnoreItem(sr);
 			Logger.Debug($"Ignoring keyword: {keyword}");
-		}
-
-		public static Dictionary<string, string> GetAssignments(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			var assignments = new Dictionary<string, string>();
-			var parser = new Parser(variables);
-			parser.RegisterRegex(CommonRegexes.Catchall, (reader, assignmentName) => {
-				parser.GetNextTokenWithoutMatching(reader); // remove equals
-				var assignmentValue = parser.GetNextTokenWithoutMatching(reader);
-				if (assignmentValue is null) {
-					throw new FormatException($"Cannot assign null to {assignmentName}!");
-				}
-				assignments[assignmentName] = assignmentValue;
-			});
-			parser.ParseStream(reader);
-			return assignments;
 		}
 	}
 	public class SingleString {
