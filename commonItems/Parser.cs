@@ -72,7 +72,7 @@ namespace commonItems {
 
 		public Parser() {
 			registeredRules[new RegisteredRegex(CommonRegexes.Variable)] = new TwoArgDelegate((reader, varStr) => {
-				var value = ParserHelpers.GetString(reader, Variables);
+				var value = reader.GetString(Variables);
 				if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
 					Variables.Add(varStr[1..], intValue);
 					return;

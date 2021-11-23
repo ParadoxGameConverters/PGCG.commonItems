@@ -451,14 +451,14 @@ namespace commonItems.UnitTests {
                 }";
 			var reader = new BufferedReader(input);
 
-			var theItem = ParserHelpers.GetStringOfItem(reader);
-			Assert.Equal(input, theItem);
+			var theItem = reader.GetStringOfItem();
+			Assert.Equal(input, theItem.String);
 		}
 		[Fact]
 		public void StringOfItemGetsStringAfterEquals() {
 			var reader = new BufferedReader(" = foo");
-			var theItem = ParserHelpers.GetStringOfItem(reader);
-			Assert.Equal("= foo", theItem);
+			var theItem = reader.GetStringOfItem();
+			Assert.Equal("= foo", theItem.String);
 		}
 
 		[Fact]
@@ -640,16 +640,16 @@ namespace commonItems.UnitTests {
 			public Dictionary<string, string> assignments = new();
 
 			public TypeClass(BufferedReader reader) {
-				RegisterKeyword("str", reader => str = ParserHelpers.GetString(reader, Variables));
-				RegisterKeyword("integer", reader => integer = ParserHelpers.GetInt(reader, Variables));
-				RegisterKeyword("longInt", reader => longInt = ParserHelpers.GetLong(reader, Variables));
-				RegisterKeyword("ulongInt", reader => ulongInt = ParserHelpers.GetULong(reader, Variables));
-				RegisterKeyword("d", reader => d = ParserHelpers.GetDouble(reader, Variables));
-				RegisterKeyword("strings", reader => strings = ParserHelpers.GetStrings(reader, Variables));
-				RegisterKeyword("ints", reader => ints = ParserHelpers.GetInts(reader, Variables));
-				RegisterKeyword("longs", reader => longs = ParserHelpers.GetLongs(reader, Variables));
-				RegisterKeyword("ulongs", reader => ulongs = ParserHelpers.GetULongs(reader, Variables));
-				RegisterKeyword("doubles", reader => doubles = ParserHelpers.GetDoubles(reader, Variables));
+				RegisterKeyword("str", reader => str = reader.GetString(Variables));
+				RegisterKeyword("integer", reader => integer = reader.GetInt(Variables));
+				RegisterKeyword("longInt", reader => longInt = reader.GetLong(Variables));
+				RegisterKeyword("ulongInt", reader => ulongInt = reader.GetULong(Variables));
+				RegisterKeyword("d", reader => d = reader.GetDouble(Variables));
+				RegisterKeyword("strings", reader => strings = reader.GetStrings(Variables));
+				RegisterKeyword("ints", reader => ints = reader.GetInts(Variables));
+				RegisterKeyword("longs", reader => longs = reader.GetLongs(Variables));
+				RegisterKeyword("ulongs", reader => ulongs = reader.GetULongs(Variables));
+				RegisterKeyword("doubles", reader => doubles = reader.GetDoubles(Variables));
 				RegisterKeyword("assignments", reader => assignments = ParserHelpers.GetAssignments(reader, Variables));
 
 				ParseStream(reader);

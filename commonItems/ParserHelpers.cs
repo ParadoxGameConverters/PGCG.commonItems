@@ -42,40 +42,6 @@ namespace commonItems {
 			Logger.Debug($"Ignoring keyword: {keyword}");
 		}
 
-		public static string GetString(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new SingleString(reader, variables).String;
-		}
-		public static int GetInt(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new SingleInt(reader, variables).Int;
-		}
-		public static long GetLong(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new SingleLong(reader, variables).Long;
-		}
-		public static ulong GetULong(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new SingleULong(reader, variables).ULong;
-		}
-		public static double GetDouble(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new SingleDouble(reader, variables).Double;
-		}
-		public static List<string> GetStrings(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new StringList(reader, variables).Strings;
-		}
-		public static List<int> GetInts(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new IntList(reader, variables).Ints;
-		}
-		public static List<long> GetLongs(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new LongList(reader, variables).Longs;
-		}
-		public static List<ulong> GetULongs(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new ULongList(reader, variables).ULongs;
-		}
-		public static List<double> GetDoubles(BufferedReader reader, Dictionary<string, object>? variables = null) {
-			return new DoubleList(reader, variables).Doubles;
-		}
-		public static string GetStringOfItem(BufferedReader reader) {
-			return new StringOfItem(reader).String;
-		}
-
 		public static Dictionary<string, string> GetAssignments(BufferedReader reader, Dictionary<string, object>? variables = null) {
 			var assignments = new Dictionary<string, string>();
 			var parser = new Parser(variables);
@@ -109,7 +75,7 @@ namespace commonItems {
 
 	public class SingleInt {
 		public SingleInt(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var intStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr, variables));
+			var intStr = StringUtils.RemQuotes(sr.GetString(variables));
 			if (!int.TryParse(intStr, out int theInt)) {
 				Logger.Warn($"Could not convert string {intStr} to int!");
 				return;
@@ -121,7 +87,7 @@ namespace commonItems {
 
 	public class SingleLong {
 		public SingleLong(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var longStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr, variables));
+			var longStr = StringUtils.RemQuotes(sr.GetString(variables));
 			if (!long.TryParse(longStr, out long theLong)) {
 				Logger.Warn($"Could not convert string {longStr} to long!");
 				return;
@@ -133,7 +99,7 @@ namespace commonItems {
 
 	public class SingleULong {
 		public SingleULong(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var ulongStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr, variables));
+			var ulongStr = StringUtils.RemQuotes(sr.GetString(variables));
 			if (!ulong.TryParse(ulongStr, out ulong theULong)) {
 				Logger.Warn($"Could not convert string {ulongStr} to ulong!");
 				return;
@@ -145,7 +111,7 @@ namespace commonItems {
 
 	public class SingleDouble {
 		public SingleDouble(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var doubleStr = StringUtils.RemQuotes(ParserHelpers.GetString(sr, variables));
+			var doubleStr = StringUtils.RemQuotes(sr.GetString(variables));
 			if (!double.TryParse(doubleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
 				Logger.Warn($"Could not convert string {doubleStr} to double!");
 				return;
