@@ -218,12 +218,12 @@ namespace commonItems {
 		public List<double> Doubles { get; } = new();
 	}
 
-	public class StringOfItem : Parser {
+	public class StringOfItem {
 		public StringOfItem(BufferedReader reader) {
-			var next = GetNextLexeme(reader);
+			var next = Parser.GetNextLexeme(reader);
 			var sb = new StringBuilder();
 			if (next == "=") {
-				next = GetNextLexeme(reader);
+				next = Parser.GetNextLexeme(reader);
 			}
 			sb.Append(next);
 
@@ -238,15 +238,17 @@ namespace commonItems {
 					} else if (inputChar == '}') {
 						--braceDepth;
 						if (braceDepth == 0) {
-							String = sb.ToString();
+							str = sb.ToString();
 							return;
 						}
 					}
 				}
 			}
-			String = sb.ToString();
+			str = sb.ToString();
 		}
-		public string String { get; }
+
+		public override string ToString() => str;
+		private readonly string str;
 	}
 
 	public class BlobList : Parser {

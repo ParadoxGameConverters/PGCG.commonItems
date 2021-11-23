@@ -452,13 +452,13 @@ namespace commonItems.UnitTests {
 			var reader = new BufferedReader(input);
 
 			var theItem = reader.GetStringOfItem();
-			Assert.Equal(input[2..], theItem.String);
+			Assert.Equal(input[2..], theItem.ToString());
 		}
 		[Fact]
 		public void StringOfItemGetsStringAfterEquals() {
 			var reader = new BufferedReader(" = foo");
 			var theItem = reader.GetStringOfItem();
-			Assert.Equal("foo", theItem.String);
+			Assert.Equal("foo", theItem.ToString());
 		}
 
 		[Fact]

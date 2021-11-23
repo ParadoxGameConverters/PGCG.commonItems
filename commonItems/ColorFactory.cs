@@ -51,8 +51,8 @@ namespace commonItems {
 				foreach (var ch in actualToken.ToCharArray().Reverse()) {
 					reader.PushBack(ch);
 				}
-				var questionableList = reader.GetStringOfItem().String;
-				if (questionableList.IndexOf('.') != -1) {
+				var questionableList = reader.GetStringOfItem().ToString();
+				if (questionableList.Contains('.')) {
 					// This is a double list.
 					var doubleStreamReader = new BufferedReader(questionableList);
 					var hsv = doubleStreamReader.GetDoubles();
