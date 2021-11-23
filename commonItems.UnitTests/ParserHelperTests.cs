@@ -640,7 +640,7 @@ namespace commonItems.UnitTests {
 			public Dictionary<string, string> assignments = new();
 
 			public TypeClass(BufferedReader reader) {
-				RegisterKeyword("str", reader=>str = ParserHelpers.GetString(reader, Variables));
+				RegisterKeyword("str", reader => str = ParserHelpers.GetString(reader, Variables));
 				RegisterKeyword("integer", reader => integer = ParserHelpers.GetInt(reader, Variables));
 				RegisterKeyword("longInt", reader => longInt = ParserHelpers.GetLong(reader, Variables));
 				RegisterKeyword("ulongInt", reader => ulongInt = ParserHelpers.GetULong(reader, Variables));
@@ -684,8 +684,8 @@ namespace commonItems.UnitTests {
 			Assert.Equal((ulong)42, instance.ulongInt);
 			Assert.Equal(0.7d, instance.d, 8);
 			Assert.Collection(instance.strings,
-				item=>Assert.Equal("beep", item),
-				item=>Assert.Equal("peep", item));
+				item => Assert.Equal("beep", item),
+				item => Assert.Equal("peep", item));
 			Assert.Collection(instance.ints,
 				item => Assert.Equal(5, item),
 				item => Assert.Equal(-1, item));
