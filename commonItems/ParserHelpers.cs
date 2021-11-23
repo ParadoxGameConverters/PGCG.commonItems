@@ -1,4 +1,5 @@
-﻿using System;
+﻿using commonItems.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -218,7 +219,7 @@ namespace commonItems {
 		public List<double> Doubles { get; } = new();
 	}
 
-	public class StringOfItem {
+	public class StringOfItem : IPDXSerializable {
 		public StringOfItem(BufferedReader reader) {
 			var next = Parser.GetNextLexeme(reader);
 			var sb = new StringBuilder();
@@ -247,7 +248,9 @@ namespace commonItems {
 			str = sb.ToString();
 		}
 
+		public string Serialize(string indent, bool withBraces) => ToString();
 		public override string ToString() => str;
+
 		private readonly string str;
 	}
 
