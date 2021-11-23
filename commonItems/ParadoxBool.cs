@@ -17,7 +17,7 @@ namespace commonItems {
 				_ => throw new FormatException("Text representation of ParadoxBool should be \"yes\" or \"no\"!")
 			};
 		}
-		public ParadoxBool(BufferedReader reader) : this(ParserHelpers.GetString(reader)) { }
+		public ParadoxBool(BufferedReader reader) : this(reader.GetString()) { }
 		public static implicit operator bool(ParadoxBool m) {
 			return m.Value;
 		}

@@ -27,21 +27,21 @@ namespace commonItems {
 		}
 
 		private void RegisterKeys(ref Parser parser) {
-			parser.RegisterKeyword("name", reader => Name = ParserHelpers.GetString(reader));
-			parser.RegisterKeyword("version", reader => Version = ParserHelpers.GetString(reader));
-			parser.RegisterKeyword("source", reader => Source = ParserHelpers.GetString(reader));
-			parser.RegisterKeyword("target", reader => Target = ParserHelpers.GetString(reader));
+			parser.RegisterKeyword("name", reader => Name = reader.GetString());
+			parser.RegisterKeyword("version", reader => Version = reader.GetString());
+			parser.RegisterKeyword("source", reader => Source = reader.GetString());
+			parser.RegisterKeyword("target", reader => Target = reader.GetString());
 			parser.RegisterKeyword("minSource", reader =>
-				MinSource = new GameVersion(ParserHelpers.GetString(reader))
+				MinSource = new GameVersion(reader.GetString())
 			);
 			parser.RegisterKeyword("maxSource", reader =>
-				MaxSource = new GameVersion(ParserHelpers.GetString(reader))
+				MaxSource = new GameVersion(reader.GetString())
 			);
 			parser.RegisterKeyword("minTarget", reader =>
-				MinTarget = new GameVersion(ParserHelpers.GetString(reader))
+				MinTarget = new GameVersion(reader.GetString())
 			);
 			parser.RegisterKeyword("maxTarget", reader =>
-				MaxTarget = new GameVersion(ParserHelpers.GetString(reader))
+				MaxTarget = new GameVersion(reader.GetString())
 			);
 			parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreItem);
 		}

@@ -82,5 +82,39 @@ namespace commonItems {
 		public void PushBack(char ch) {
 			characterStack.Push(ch);
 		}
+
+		public string GetString(Dictionary<string, object>? variables = null) {
+			return new SingleString(this, variables).String;
+		}
+		public int GetInt(Dictionary<string, object>? variables = null) {
+			return new SingleInt(this, variables).Int;
+		}
+		public long GetLong(Dictionary<string, object>? variables = null) {
+			return new SingleLong(this, variables).Long;
+		}
+		public ulong GetULong(Dictionary<string, object>? variables = null) {
+			return new SingleULong(this, variables).ULong;
+		}
+		public double GetDouble(Dictionary<string, object>? variables = null) {
+			return new SingleDouble(this, variables).Double;
+		}
+		public List<string> GetStrings(Dictionary<string, object>? variables = null) {
+			return new StringList(this, variables).Strings;
+		}
+		public List<int> GetInts(Dictionary<string, object>? variables = null) {
+			return new IntList(this, variables).Ints;
+		}
+		public List<long> GetLongs(Dictionary<string, object>? variables = null) {
+			return new LongList(this, variables).Longs;
+		}
+		public List<ulong> GetULongs(Dictionary<string, object>? variables = null) {
+			return new ULongList(this, variables).ULongs;
+		}
+		public List<double> GetDoubles(Dictionary<string, object>? variables = null) {
+			return new DoubleList(this, variables).Doubles;
+		}
+		public StringOfItem GetStringOfItem() {
+			return new StringOfItem(this);
+		}
 	}
 }

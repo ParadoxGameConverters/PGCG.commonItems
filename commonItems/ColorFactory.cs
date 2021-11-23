@@ -15,13 +15,13 @@ namespace commonItems {
 			}
 			token = StringUtils.RemQuotes(token);
 			if (token == "rgb") {
-				var rgb = new IntList(reader).Ints;
+				var rgb = reader.GetInts();
 				if (rgb.Count != 3) {
 					throw new FormatException("Color has wrong number of components");
 				}
 				return new Color(rgb.ToArray());
 			} else if (token == "hex") {
-				var hex = new SingleString(reader).String;
+				var hex = reader.GetString();
 				if (hex.Length != 6) {
 					throw new FormatException("Color has wrong number of digits");
 				}
@@ -30,13 +30,13 @@ namespace commonItems {
 				var b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
 				return new Color(new[] { r, g, b });
 			} else if (token == "hsv") {
-				var hsv = new DoubleList(reader).Doubles;
+				var hsv = reader.GetDoubles();
 				if (hsv.Count != 3) {
 					throw new FormatException("Color has wrong number of components");
 				}
 				return new Color(new double[] { hsv[0], hsv[1], hsv[2] });
 			} else if (token == "hsv360") {
-				var hsv = new DoubleList(reader).Doubles;
+				var hsv = reader.GetDoubles();
 				if (hsv.Count != 3) {
 					throw new FormatException("Color has wrong number of components");
 				}
@@ -51,11 +51,11 @@ namespace commonItems {
 				foreach (var ch in actualToken.ToCharArray().Reverse()) {
 					reader.PushBack(ch);
 				}
-				var questionableList = ParserHelpers.GetStringOfItem(reader);
+				var questionableList = reader.GetStringOfItem().String;
 				if (questionableList.IndexOf('.') != -1) {
 					// This is a double list.
 					var doubleStreamReader = new BufferedReader(questionableList);
-					var hsv = new DoubleList(doubleStreamReader).Doubles;
+					var hsv = doubleStreamReader.GetDoubles();
 					if (hsv.Count != 3) {
 						throw new FormatException("Color has wrong number of components");
 					}
