@@ -3,32 +3,18 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace commonItems.Collections {
-	public class IdObjectCollection<TKey, TValue> : IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TValue : IIdentifiable<TKey> {
-		private readonly Dictionary<TKey, TValue> dict = new();
+	public class IdObjectCollection<TKey, T> : IReadOnlyCollection<T> where TKey : notnull where T : IIdentifiable<TKey> {
+		private readonly Dictionary<TKey, T> dict = new();
 
-		public TValue this[TKey key] => dict[key];
-		public IEnumerable<TKey> Keys => dict.Keys;
-		public IEnumerable<TValue> Values => dict.Values;
+		public T this[TKey key] => dict[key];
 		public int Count => dict.Count;
-		public bool ContainsKey(TKey key) {
-			return dict.ContainsKey(key);
-		}
-		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
-			return dict.GetEnumerator();
-		}
-		public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value) {
-			return dict.TryGetValue(key, out value);
-		}
-		IEnumerator IEnumerable.GetEnumerator() {
-			return dict.GetEnumerator();
-		}
+		public bool ContainsKey(TKey key) => dict.ContainsKey(key);
+		public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out T value) => dict.TryGetValue(key, out value);
 
-		public virtual void Add(TValue obj) {
-			dict.Add(obj.Id, obj);
-		}
+		public IEnumerator<T> GetEnumerator() => dict.Values.GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public virtual void Remove(TKey key) {
-			dict.Remove(key);
-		}
+		public virtual void Add(T obj) => dict.Add(obj.Id, obj);
+		public virtual void Remove(TKey key) => dict.Remove(key);
 	}
 }
