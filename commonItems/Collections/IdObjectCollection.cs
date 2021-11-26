@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace commonItems.Collections {
 	public class IdObjectCollection<TKey, T> : IReadOnlyCollection<T> where TKey : notnull where T : IIdentifiable<TKey> {
-		private readonly Dictionary<TKey, T> dict = new();
+		protected readonly Dictionary<TKey, T> dict = new();
 
 		public T this[TKey key] => dict[key];
 		public int Count => dict.Count;
