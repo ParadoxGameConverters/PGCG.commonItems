@@ -50,5 +50,14 @@ namespace commonItems.UnitTests.Collections {
 			Assert.True(characters.TryGetValue("bob", out var bob));
 			Assert.Equal("bob", bob.Id);
 		}
+
+		[Fact]
+		public void ObjectsCanBeAddedWithTryAdd() {
+			var characters = new Characters();
+			characters.Add(new Character("bob"));
+
+			Assert.False(characters.TryAdd(new Character("bob")));
+			Assert.True(characters.TryAdd(new Character("frank")));
+		}
 	}
 }
