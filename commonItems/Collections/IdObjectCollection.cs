@@ -6,11 +6,6 @@ namespace commonItems.Collections {
 	public class IdObjectCollection<TKey, T> : IReadOnlyCollection<T> where TKey : notnull where T : IIdentifiable<TKey> {
 		protected readonly Dictionary<TKey, T> dict = new();
 
-		public IdObjectCollection() { }
-		internal IdObjectCollection(Dictionary<TKey, T> dict) {
-			this.dict = dict;
-		}
-
 		public T this[TKey key] => dict[key];
 		public int Count => dict.Count;
 		public bool ContainsKey(TKey key) => dict.ContainsKey(key);
