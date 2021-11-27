@@ -1,5 +1,7 @@
-﻿namespace commonItems.Collections {
+﻿using commonItems.Serialization;
+
+namespace commonItems.Collections {
 	public interface IIdentifiable<out TKey> where TKey : notnull {
-		public TKey Id { get; }
+		[NonSerialized] public TKey Id { get; }
 	}
 }

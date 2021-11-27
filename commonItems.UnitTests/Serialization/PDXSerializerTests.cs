@@ -1,4 +1,5 @@
-﻿using commonItems.Serialization;
+﻿using commonItems.Collections;
+using commonItems.Serialization;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -129,21 +130,27 @@ namespace commonItems.UnitTests.Serialization {
 			Assert.Equal(expectedStr, PDXSerializer.Serialize(list, string.Empty, withBraces: false));
 		}
 
-		private class CK3Title : IPDXSerializable {
+		private class TitleCollection : IdObjectCollection<string, CK3Title> { }
+		private class CK3Title : IPDXSerializable, IIdentifiable<string> {
+			[commonItems.Serialization.NonSerialized] public string Id { get; }
 			public Color? color { get; set; }
-			[SerializeOnlyValue]
-			public Dictionary<string, CK3Title> DeJureVassals = new();
+			[SerializeOnlyValue] public TitleCollection DeJureVassals = new();
+
+			public CK3Title(string id, Color color) {
+				Id = id;
+				this.color = color;
+			}
 		}
 		[Fact]
 		public void RecursiveClassesAreSerializedWithCorrectIndentation() {
-			var empire = new CK3Title { color = new(new[] { 1, 1, 1 }) };
-			var kingdom1 = new CK3Title { color = new(new[] { 2, 2, 2 }) };
-			empire.DeJureVassals.Add("k_kingdom1", kingdom1);
-			var duchy1 = new CK3Title { color = new(new[] { 3, 3, 3 }) };
-			kingdom1.DeJureVassals.Add("d_duchy1", duchy1);
-			var kingdom2 = new CK3Title { color = new(new[] { 4, 4, 4 }) };
-			empire.DeJureVassals.Add("k_kingdom2", kingdom2);
-			Dictionary<string, CK3Title> topLevelTitles = new() { { "e_empire", empire } };
+			var empire = new CK3Title("e_empire", new(new[] { 1, 1, 1 }));
+			var kingdom1 = new CK3Title("k_kingdom1", new(new[] { 2, 2, 2 }));
+			empire.DeJureVassals.Add(kingdom1);
+			var duchy1 = new CK3Title("d_duchy1", new(new[] { 3, 3, 3 }));
+			kingdom1.DeJureVassals.Add(duchy1);
+			var kingdom2 = new CK3Title("k_kingdom2", new(new[] { 4, 4, 4 }));
+			empire.DeJureVassals.Add(kingdom2);
+			TitleCollection topLevelTitles = new() { empire };
 
 			var expectedStr =
 				"e_empire={" + Environment.NewLine +
