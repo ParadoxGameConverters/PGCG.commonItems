@@ -1,4 +1,5 @@
-﻿using System;
+﻿using commonItems.Collections;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,6 +22,8 @@ namespace commonItems.Serialization {
 				sb.Append('\"').Append(str).Append('\"');
 			} else if (obj is IDictionary dict) {
 				SerializeDictionary(dict, withBraces, sb, indent);
+			} else if (obj is IEnumerable<IIdentifiable> idObjEnumerable) {
+				SerializeIdObjEnumerable(idObjEnumerable, withBraces, sb, indent);
 			} else if (obj is IEnumerable enumerable) {
 				SerializeEnumerable(enumerable, withBraces, sb, indent);
 			} else if (IsKeyValuePair(obj)) {
@@ -39,6 +42,11 @@ namespace commonItems.Serialization {
 		}
 		public static string Serialize(object obj) {
 			return Serialize(obj, string.Empty);
+		}
+
+		private static void SerializeIdObjEnumerable(IEnumerable<IIdentifiable> enumerable, bool withBraces, StringBuilder sb, string indent) {
+			var dict = enumerable.ToDictionary(e => e.GetIdString(), e => e);
+			SerializeDictionary(dict, false, sb, indent);
 		}
 
 		private static void SerializeEnumerable(IEnumerable enumerable, bool withBraces, StringBuilder sb, string indent) {
