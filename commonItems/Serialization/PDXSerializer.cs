@@ -15,7 +15,9 @@ namespace commonItems.Serialization {
 		}
 		public static string Serialize(object obj, string indent, bool withBraces) {
 			var sb = new StringBuilder();
-			if (obj is string str) {
+			if (obj is IPDXSerializable serializableType) {
+				sb.Append(serializableType.Serialize(indent, withBraces));
+			} else if (obj is string str) {
 				sb.Append('\"').Append(str).Append('\"');
 			} else if (obj is IDictionary dict) {
 				SerializeDictionary(dict, withBraces, sb, indent);
@@ -25,8 +27,6 @@ namespace commonItems.Serialization {
 				SerializeKeyValuePair(obj, sb, indent);
 			} else if (obj is DictionaryEntry entry) {
 				SerializeDictionaryEntry(entry, sb, indent);
-			} else if (obj is IPDXSerializable serializableType) {
-				sb.Append(serializableType.Serialize(indent, withBraces));
 			} else if (obj is bool boolValue) {
 				sb.Append(new ParadoxBool(boolValue).YesOrNo);
 			} else if (obj.GetType().IsValueType && obj is IFormattable formattable) { // for numbers
