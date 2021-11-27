@@ -23,7 +23,7 @@ namespace commonItems.Serialization {
 			} else if (obj is IDictionary dict) {
 				SerializeDictionary(dict, withBraces, sb, indent);
 			} else if (obj is IEnumerable<IIdentifiable> idObjEnumerable) {
-				SerializeIdObjEnumerable(idObjEnumerable, withBraces, sb, indent);
+				SerializeIdObjEnumerable(idObjEnumerable, sb, indent);
 			} else if (obj is IEnumerable enumerable) {
 				SerializeEnumerable(enumerable, withBraces, sb, indent);
 			} else if (IsKeyValuePair(obj)) {
@@ -44,7 +44,7 @@ namespace commonItems.Serialization {
 			return Serialize(obj, string.Empty);
 		}
 
-		private static void SerializeIdObjEnumerable(IEnumerable<IIdentifiable> enumerable, bool withBraces, StringBuilder sb, string indent) {
+		private static void SerializeIdObjEnumerable(IEnumerable<IIdentifiable> enumerable, StringBuilder sb, string indent) {
 			var dict = enumerable.ToDictionary(e => e.GetIdString(), e => e);
 			SerializeDictionary(dict, false, sb, indent);
 		}
