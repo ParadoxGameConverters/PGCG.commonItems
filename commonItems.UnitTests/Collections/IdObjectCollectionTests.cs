@@ -53,8 +53,9 @@ namespace commonItems.UnitTests.Collections {
 
 		[Fact]
 		public void ObjectsCanBeAddedWithTryAdd() {
-			var characters = new Characters();
-			characters.Add(new Character("bob"));
+			var characters = new Characters {
+				new Character("bob")
+			};
 
 			Assert.False(characters.TryAdd(new Character("bob")));
 			Assert.True(characters.TryAdd(new Character("frank")));
