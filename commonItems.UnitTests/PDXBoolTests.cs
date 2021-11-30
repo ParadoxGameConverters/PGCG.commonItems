@@ -2,7 +2,7 @@
 using Xunit;
 
 namespace commonItems.UnitTests {
-	public class ParadoxBoolTests {
+	public class PDXBoolTests {
 		[Fact]
 		public void ParadoxBoolDefaultToTrue() {
 			Assert.True(new PDXBool());
