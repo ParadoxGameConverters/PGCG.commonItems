@@ -117,6 +117,9 @@ namespace commonItems {
 		public StringOfItem GetStringOfItem() {
 			return new StringOfItem(this);
 		}
+		public PDXBool GetPDXBool() {
+			return new PDXBool(this);
+		}
 
 		public Dictionary<string, string> GetAssignments(Dictionary<string, object>? variables = null) {
 			var assignments = new Dictionary<string, string>();

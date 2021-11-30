@@ -23,11 +23,11 @@ namespace commonItems.UnitTests {
 			Assert.Throws<FormatException>(() => new PDXBool(valStr));
 		}
 		[Fact]
-		public void ParadoxBoolCanBeConstructedFromBufferedReader() {
+		public void ParadoxBoolCanBeGottenFromBufferedReader() {
 			var reader1 = new BufferedReader("= yes");
 			var reader2 = new BufferedReader("= no");
-			Assert.True(new PDXBool(reader1));
-			Assert.False(new PDXBool(reader2));
+			Assert.True(reader1.GetPDXBool());
+			Assert.False(reader2.GetPDXBool());
 		}
 		[Fact]
 		public void CorrectTextRepresentationIsReturned() {
