@@ -2,23 +2,23 @@
 using System;
 
 namespace commonItems {
-	public class ParadoxBool : IPDXSerializable {
+	public class PDXBool : IPDXSerializable {
 		public bool Value { get; set; } = true;
 		public string YesOrNo => Value ? "yes" : "no";
-		public ParadoxBool() { }
+		public PDXBool() { }
 
-		public ParadoxBool(bool value) {
+		public PDXBool(bool value) {
 			Value = value;
 		}
-		public ParadoxBool(string valueString) {
+		public PDXBool(string valueString) {
 			Value = valueString switch {
 				"yes" => true,
 				"no" => false,
 				_ => throw new FormatException("Text representation of ParadoxBool should be \"yes\" or \"no\"!")
 			};
 		}
-		public ParadoxBool(BufferedReader reader) : this(reader.GetString()) { }
-		public static implicit operator bool(ParadoxBool m) {
+		public PDXBool(BufferedReader reader) : this(reader.GetString()) { }
+		public static implicit operator bool(PDXBool m) {
 			return m.Value;
 		}
 

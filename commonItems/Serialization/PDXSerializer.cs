@@ -31,7 +31,7 @@ namespace commonItems.Serialization {
 			} else if (obj is DictionaryEntry entry) {
 				SerializeDictionaryEntry(entry, sb, indent);
 			} else if (obj is bool boolValue) {
-				sb.Append(new ParadoxBool(boolValue).YesOrNo);
+				sb.Append(new PDXBool(boolValue).YesOrNo);
 			} else if (obj.GetType().IsValueType && obj is IFormattable formattable) { // for numbers
 				sb.Append(formattable.ToString("G", cultureInfo));
 			} else {
