@@ -19,7 +19,7 @@ jobs:
     - name: Setup Dotnet for use with actions
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '5.*'
+        dotnet-version: '6.*'
     - name: Run tests
       run: dotnet test commonItems.UnitTests/commonItems.UnitTests.csproj /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=**/Microsoft.NET.Test.Sdk.Program.cs /p:Exclude=[commonItems.UnitTests]*
     - name: Publish coverage report to coveralls.io
