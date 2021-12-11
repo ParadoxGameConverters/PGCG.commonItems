@@ -283,25 +283,25 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void ExtractVersionFromLauncherReturnsNulloptForMissingFile() {
+		public void ExtractVersionFromLauncherReturnsNullForMissingFile() {
 			var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "launcher-settings.json2");
 			Assert.Null(version);
 		}
 
 		[Fact]
-		public void ExtractVersionFromLauncherReturnsNulloptForMissingRawVersion() {
+		public void ExtractVersionFromLauncherReturnsNullForMissingRawVersion() {
 			var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "ChangeLog.txt");
 			Assert.Null(version);
 		}
 
 		[Fact]
-		public void ExtractVersionFromLauncherReturnsNulloptForBrokenRawVersion() {
+		public void ExtractVersionFromLauncherReturnsNullForBrokenRawVersion() {
 			var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "broken-settings.json");
 			Assert.Null(version);
 		}
 
 		[Fact]
-		public void ExtractVersionFromLauncherReturnsNulloptForNonsenseRawVersion() {
+		public void ExtractVersionFromLauncherReturnsNullForNonsenseRawVersion() {
 			var version = GameVersion.ExtractVersionFromLauncher(testFilesPath + "broken-settings2.json");
 			Assert.Null(version);
 		}

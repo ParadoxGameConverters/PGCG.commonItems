@@ -50,18 +50,10 @@ namespace commonItems {
 
 		public GameVersion(BufferedReader reader) {
 			var parser = new Parser();
-			parser.RegisterKeyword("first", (reader) => {
-				firstPart = new SingleInt(reader).Int;
-			});
-			parser.RegisterKeyword("second", (reader) => {
-				secondPart = new SingleInt(reader).Int;
-			});
-			parser.RegisterKeyword("third", (reader) => {
-				thirdPart = new SingleInt(reader).Int;
-			});
-			parser.RegisterKeyword("forth", (reader) => {
-				fourthPart = new SingleInt(reader).Int;
-			});
+			parser.RegisterKeyword("first", reader => firstPart = reader.GetInt());
+			parser.RegisterKeyword("second", reader => secondPart = reader.GetInt());
+			parser.RegisterKeyword("third", reader => thirdPart = reader.GetInt());
+			parser.RegisterKeyword("forth", reader => fourthPart = reader.GetInt());
 			parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
 			parser.ParseStream(reader);
 			parser.ClearRegisteredRules();
@@ -371,7 +363,7 @@ namespace commonItems {
 				testDigit = rhs.firstPart.Value;
 			}
 
-			if (firstPart is not null && testDigit > firstPart) {
+			if (testDigit > firstPart) {
 				return false;
 			}
 
@@ -380,7 +372,7 @@ namespace commonItems {
 				testDigit = rhs.secondPart.Value;
 			}
 
-			if (secondPart is not null && testDigit > secondPart) {
+			if (testDigit > secondPart) {
 				return false;
 			}
 
@@ -389,7 +381,7 @@ namespace commonItems {
 				testDigit = rhs.thirdPart.Value;
 			}
 
-			if (thirdPart is not null && testDigit > thirdPart) {
+			if (testDigit > thirdPart) {
 				return false;
 			}
 
@@ -398,7 +390,7 @@ namespace commonItems {
 				testDigit = rhs.fourthPart.Value;
 			}
 
-			if (fourthPart is not null && testDigit > fourthPart) {
+			if (testDigit > fourthPart) {
 				return false;
 			}
 
@@ -415,7 +407,7 @@ namespace commonItems {
 
 			var result = ExtractVersionByStringFromLauncher("rawVersion", filePath);
 			if (result is null) {
-				// imperator rome?
+				// Imperator: Rome?
 				result = ExtractVersionByStringFromLauncher("version", filePath);
 			}
 			if (result is null) {
@@ -439,7 +431,7 @@ namespace commonItems {
 						return null;
 					}
 
-					line = line.Substring(pos + 1);
+					line = line[(pos + 1)..];
 					pos = line.IndexOf('\"');
 					if (pos == -1) {
 						sr.Close();
