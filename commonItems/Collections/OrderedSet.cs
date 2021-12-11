@@ -9,9 +9,7 @@ public class OrderedSet<T> : ICollection<T> where T : notnull {
 	private readonly IDictionary<T, LinkedListNode<T>> dictionary;
 	private readonly LinkedList<T> linkedList;
 
-	public OrderedSet()
-		: this(EqualityComparer<T>.Default) {
-	}
+	public OrderedSet() : this(EqualityComparer<T>.Default) { }
 
 	public OrderedSet(IEqualityComparer<T> comparer) {
 		dictionary = new Dictionary<T, LinkedListNode<T>>(comparer);
@@ -22,9 +20,7 @@ public class OrderedSet<T> : ICollection<T> where T : notnull {
 
 	public virtual bool IsReadOnly => dictionary.IsReadOnly;
 
-	void ICollection<T>.Add(T item) {
-		Add(item);
-	}
+	void ICollection<T>.Add(T item) => Add(item);
 
 	public bool Add(T item) {
 		if (dictionary.ContainsKey(item)) return false;
@@ -46,19 +42,10 @@ public class OrderedSet<T> : ICollection<T> where T : notnull {
 		return true;
 	}
 
-	public IEnumerator<T> GetEnumerator() {
-		return linkedList.GetEnumerator();
-	}
+	public IEnumerator<T> GetEnumerator() => linkedList.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	IEnumerator IEnumerable.GetEnumerator() {
-		return GetEnumerator();
-	}
+	public bool Contains(T item) => dictionary.ContainsKey(item);
 
-	public bool Contains(T item) {
-		return dictionary.ContainsKey(item);
-	}
-
-	public void CopyTo(T[] array, int arrayIndex) {
-		linkedList.CopyTo(array, arrayIndex);
-	}
+	public void CopyTo(T[] array, int arrayIndex) => linkedList.CopyTo(array, arrayIndex);
 }
