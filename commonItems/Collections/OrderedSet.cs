@@ -23,7 +23,9 @@ public class OrderedSet<T> : ICollection<T> where T : notnull {
 	void ICollection<T>.Add(T item) => Add(item);
 
 	public bool Add(T item) {
-		if (dictionary.ContainsKey(item)) return false;
+		if (dictionary.ContainsKey(item)) {
+			return false;
+		}
 		var node = linkedList.AddLast(item);
 		dictionary.Add(item, node);
 		return true;
@@ -36,7 +38,9 @@ public class OrderedSet<T> : ICollection<T> where T : notnull {
 
 	public bool Remove(T item) {
 		var found = dictionary.TryGetValue(item, out var node);
-		if (!found) return false;
+		if (!found) {
+			return false;
+		}
 		dictionary.Remove(item);
 		linkedList.Remove(node!);
 		return true;
