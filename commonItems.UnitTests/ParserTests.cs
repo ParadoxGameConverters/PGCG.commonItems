@@ -299,7 +299,7 @@ namespace commonItems.UnitTests {
 			public double Prestige { get; private set; }
 
 			public TestCountry(BufferedReader reader) {
-				RegisterKeyword("name", reader=>Name = reader.GetString(Variables));
+				RegisterKeyword("name", reader => Name = reader.GetString(Variables));
 				RegisterKeyword("prestige", reader => Prestige = reader.GetDouble(Variables));
 				ParseStream(reader);
 			}
@@ -322,6 +322,42 @@ namespace commonItems.UnitTests {
 			);
 			var country = new TestCountry(reader);
 			Assert.Equal(35, country.Prestige);
+		}
+
+		[Fact]
+		public void ParserParsesGameFolderInVanillaAndMods() {
+			var gamePath = "TestFiles/CK3";
+			var mods = new List<Mod> { new("cool_mod", "TestFiles/mod/themod") };
+
+			var foundGovs = new List<string>();
+			var parser = new Parser();
+			parser.RegisterRegex(CommonRegexes.String, (reader, govName) => {
+				foundGovs.Add(govName);
+				ParserHelpers.IgnoreItem(reader);
+			});
+			parser.ParseGameFolder("common/governments", gamePath, mods, recursive: false);
+			Assert.Collection(foundGovs,
+				gov1 => Assert.Equal("tribal_federation", gov1),
+				gov2 => Assert.Equal("tribal_shithole", gov2));
+		}
+
+		[Fact]
+		public void ParserRecursivelyParsesGameFolderInVanillaAndMods() {
+			var gamePath = "TestFiles/CK3";
+			var mods = new List<Mod> { new("cool_mod", "TestFiles/mod/themod") };
+
+			var foundGovs = new List<string>();
+			var parser = new Parser();
+			parser.RegisterRegex(CommonRegexes.String, (reader, govName) => {
+				foundGovs.Add(govName);
+				ParserHelpers.IgnoreItem(reader);
+			});
+			parser.ParseGameFolder("common/governments", gamePath, mods, recursive: true);
+			Assert.Collection(foundGovs,
+				gov1 => Assert.Equal("aristocratic_republic", gov1),
+				gov2 => Assert.Equal("tribal_federation", gov2),
+				gov3 => Assert.Equal("tribal_shithole", gov3),
+				gov4 => Assert.Equal("constitutional_monarchy", gov4));
 		}
 	}
 }

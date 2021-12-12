@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Mods = System.Collections.Generic.List<commonItems.Mod>;
 
 namespace commonItems {
 	public delegate void Del(BufferedReader sr, string keyword);
@@ -32,6 +33,8 @@ namespace commonItems {
 	}
 
 	public class Parser {
+		public Dictionary<string, object> Variables { get; } = new();
+
 		private abstract class RegisteredKeywordOrRegex : IEquatable<RegisteredKeywordOrRegex> {
 			public abstract bool Equals(RegisteredKeywordOrRegex? other);
 			public abstract bool Matches(string token);
@@ -366,6 +369,10 @@ namespace commonItems {
 			}
 		}
 
+		/// <summary>
+		///  Parses a file, absorbs UTF8-BOM if detected.
+		/// </summary>
+		/// <param name="filename"></param>
 		public void ParseFile(string filename) {
 			if (!File.Exists(filename)) {
 				Logger.Error($"Could not open {filename} for parsing");
@@ -376,8 +383,33 @@ namespace commonItems {
 			ParseStream(reader);
 		}
 
-		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();
+		/// <summary>
+		/// Parses a game folder in both vanilla game and mods directory.
+		/// Designed for Jomini-based games.
+		/// For example:
+		///		relativePath may be "common/governments"
+		///		gamePath may be "C:\SteamLibrary\Imperator"
+		/// </summary>
+		public void ParseGameFolder(string relativePath, string gamePath, Mods mods, bool recursive) {
+			var vanillaPath = Path.Combine(gamePath, "game", relativePath);
+			SortedSet<string> files = recursive ?
+				SystemUtils.GetAllFilesInFolderRecursive(vanillaPath) : SystemUtils.GetAllFilesInFolder(vanillaPath);
+			foreach (var fileName in files) {
+				var filePath = Path.Combine(vanillaPath, fileName);
+				ParseFile(filePath);
+			}
 
-		public Dictionary<string, object> Variables { get; } = new();
+			foreach (var mod in mods) {
+				var modPath = Path.Combine(mod.Path, relativePath);
+				files = recursive ?
+					SystemUtils.GetAllFilesInFolderRecursive(modPath) : SystemUtils.GetAllFilesInFolder(modPath);
+				foreach (var fileName in files) {
+					var filePath = Path.Combine(modPath, fileName);
+					ParseFile(filePath);
+				}
+			}
+		}
+
+		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();
 	}
 }
