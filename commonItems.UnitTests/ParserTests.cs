@@ -338,7 +338,7 @@ namespace commonItems.UnitTests {
 			parser.ParseGameFolder("common/governments", gamePath, mods, recursive: false);
 			Assert.Collection(foundGovs,
 				gov1 => Assert.Equal("tribal_federation", gov1),
-				gov2 => Assert.Equal("tribal_shithole", gov2));
+				gov2 => Assert.Equal("tribal_modded", gov2));
 		}
 
 		[Fact]
@@ -356,7 +356,7 @@ namespace commonItems.UnitTests {
 			Assert.Collection(foundGovs,
 				gov1 => Assert.Equal("aristocratic_republic", gov1),
 				gov2 => Assert.Equal("tribal_federation", gov2),
-				gov3 => Assert.Equal("tribal_shithole", gov3),
+				gov3 => Assert.Equal("tribal_modded", gov3),
 				gov4 => Assert.Equal("constitutional_monarchy", gov4));
 		}
 	}
