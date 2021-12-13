@@ -19,7 +19,7 @@ namespace commonItems.UnitTests {
 			var mods = modLoader.UsableMods;
 
 			Assert.Collection(mods,
-				item => Assert.Equal(new Mod("The Mod", System.IO.Path.Combine(testFilesPath, "mod", "themod")), item));
+				item => Assert.Equal(new Mod("The Mod", Path.Combine(testFilesPath, "mod", "themod")), item));
 			Assert.Collection(mods[0].Dependencies,
 				item => Assert.Equal("Missing Mod", item),
 				item => Assert.Equal("Packed Mod", item)
@@ -39,7 +39,7 @@ namespace commonItems.UnitTests {
 			var mods = modLoader.UsableMods;
 
 			Assert.Collection(mods,
-				item => Assert.Equal(new Mod("The Mod", System.IO.Path.Combine(testFilesPath, "mod", "themod")), item));
+				item => Assert.Equal(new Mod("The Mod", Path.Combine(testFilesPath, "mod", "themod")), item));
 		}
 		[Fact]
 		public void CompressedModsCanBeUnpacked() {
@@ -52,8 +52,8 @@ namespace commonItems.UnitTests {
 			var mods = modLoader.UsableMods;
 
 			Assert.Collection(mods,
-				item => Assert.Equal(new Mod("Packed Mod", System.IO.Path.Combine("mods", "packedmod")), item));
-			Assert.True(Directory.Exists(System.IO.Path.Combine("mods", "packedmod")));
+				item => Assert.Equal(new Mod("Packed Mod", Path.Combine("mods", "packedmod")), item));
+			Assert.True(Directory.Exists(Path.Combine("mods", "packedmod")));
 		}
 		[Fact]
 		public void BrokenCompressedModsAreSkipped() {
@@ -69,7 +69,7 @@ namespace commonItems.UnitTests {
 			var usableMods = modLoader.UsableMods;
 
 			Assert.Empty(usableMods);
-			Assert.False(Directory.Exists(System.IO.Path.Combine("mods", "brokenpacked")));
+			Assert.False(Directory.Exists(Path.Combine("mods", "brokenpacked")));
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace commonItems {
 			}
 		}
 		private void LoadModDirectory(string gameDocumentsPath, Mods incomingMods) {
-			var modsPath = System.IO.Path.Combine(gameDocumentsPath, "mod");
+			var modsPath = Path.Combine(gameDocumentsPath, "mod");
 			if (!Directory.Exists(modsPath)) {
 				throw new DirectoryNotFoundException("Mods directory path is invalid! Is it at: " + modsPath + " ?");
 			}
@@ -74,7 +74,7 @@ namespace commonItems {
 
 				// Attempt parsing the .mod file
 				var theMod = new ModParser();
-				var modFilePath = System.IO.Path.Combine(modsPath, trimmedModFileName);
+				var modFilePath = Path.Combine(modsPath, trimmedModFileName);
 				try {
 					theMod.ParseMod(modFilePath);
 				} catch (Exception e) {
@@ -87,14 +87,14 @@ namespace commonItems {
 		}
 
 		private void ProcessLoadedMod(ModParser theMod, string modName, string modFileName, string modPath, string modsPath, string gameDocumentsPath) {
-			var modFilePath = System.IO.Path.Combine(modsPath, modFileName);
+			var modFilePath = Path.Combine(modsPath, modFileName);
 			if (!theMod.IsValid()) {
 				Logger.Warn("\t\tMod at " + modFilePath + " does not look valid.");
 				return;
 			}
 
 			// Fix potential pathing issues.
-			var modPathAtDocuments = System.IO.Path.Combine(gameDocumentsPath, theMod.Path);
+			var modPathAtDocuments = Path.Combine(gameDocumentsPath, theMod.Path);
 			if (!theMod.IsCompressed() && !Directory.Exists(theMod.Path)) {
 				// Maybe we have a relative path
 				if (Directory.Exists(modPathAtDocuments)) {
@@ -151,17 +151,17 @@ namespace commonItems {
 				if (compressedMod.Name != modName) {
 					continue;
 				}
-				string uncompressedName = System.IO.Path.GetFileNameWithoutExtension(compressedMod.Path);
+				string uncompressedName = Path.GetFileNameWithoutExtension(compressedMod.Path);
 
 				SystemUtils.TryCreateFolder("mods");
 
-				var uncompressedPath = System.IO.Path.Combine("mods", uncompressedName);
+				var uncompressedPath = Path.Combine("mods", uncompressedName);
 				if (!Directory.Exists(uncompressedPath)) {
-					Logger.Info("\t\tUncompressing: " + compressedMod.Path);
+					Logger.Info($"\t\tUncompressing: {compressedMod.Path}");
 					if (!ExtractZip(compressedMod.Path, uncompressedPath)) {
 						Logger.Warn("We're having trouble automatically uncompressing your mod.");
-						Logger.Warn("Please, manually uncompress: " + compressedMod.Path);
-						Logger.Warn("Into converter's folder, mods/" + uncompressedName + " subfolder.");
+						Logger.Warn($"Please, manually uncompress: {compressedMod.Path}");
+						Logger.Warn($"Into converter's folder, mods/{uncompressedName} subfolder.");
 						Logger.Warn("Then run the converter again. Thank you and good luck.");
 						return null;
 					}
