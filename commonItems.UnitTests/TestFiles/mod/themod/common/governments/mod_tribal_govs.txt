@@ -1,1 +1,1 @@
-tribal_shithole={}
+tribal_modded={}
