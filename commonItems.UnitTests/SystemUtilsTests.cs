@@ -26,9 +26,9 @@ namespace commonItems.UnitTests {
 			var files = SystemUtils.GetAllFilesInFolderRecursive(testFilesPath);
 			var expected = new SortedSet<string>{
 				"keyValuePair.txt",
-				"subfolder\\subfolder_file.txt",
-				"subfolder\\subfolder_file2.txt",
-				"subfolder2\\subfolder2_file.txt"
+				Path.Combine("subfolder", "subfolder_file.txt"),
+				Path.Combine("subfolder", "subfolder_file2.txt"),
+				Path.Combine("subfolder2", "subfolder2_file.txt"),
 			};
 			Assert.Equal(expected, files);
 		}

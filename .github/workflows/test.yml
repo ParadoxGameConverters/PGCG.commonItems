@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  test_and_check_coverage:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -27,3 +27,22 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: commonItems.UnitTests/TestResults/coverage.info
+
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: "Init submodules"
+      run: |
+       git submodule update --init --recursive
+
+    # install dependencies, build, and test
+    - name: Setup Dotnet for use with actions
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.*'
+    - name: Run tests
+      run: dotnet test commonItems.UnitTests/commonItems.UnitTests.csproj
