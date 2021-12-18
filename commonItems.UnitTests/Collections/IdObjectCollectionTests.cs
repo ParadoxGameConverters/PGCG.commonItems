@@ -5,6 +5,7 @@ namespace commonItems.UnitTests.Collections {
 	public class IdObjectCollectionTests {
 		private class Character : IIdentifiable<string> {
 			public string Id { get; }
+			public string Culture { get; set; } = "roman";
 
 			public Character(string id) {
 				Id = id;
@@ -59,6 +60,19 @@ namespace commonItems.UnitTests.Collections {
 
 			Assert.False(characters.TryAdd(new Character("bob")));
 			Assert.True(characters.TryAdd(new Character("frank")));
+		}
+
+		[Fact]
+		public void ObjectsCanBeReplacedWithAddOrReplace() {
+			var characters = new Characters();
+
+			var initialChar = new Character("1");
+			characters.AddOrReplace(initialChar);
+			Assert.Equal("roman", characters["1"].Culture);
+
+			var charWithSameId = new Character("1") { Culture = "greek" };
+			characters.AddOrReplace(charWithSameId);
+			Assert.Equal("greek", characters["1"].Culture);
 		}
 	}
 }

@@ -16,6 +16,7 @@ namespace commonItems.Collections {
 
 		public virtual bool TryAdd(T obj) => dict.TryAdd(obj.Id, obj);
 		public virtual void Add(T obj) => dict.Add(obj.Id, obj);
+		public virtual void AddOrReplace(T obj) => dict[obj.Id] = obj;
 		public virtual void Remove(TKey key) => dict.Remove(key);
 	}
 }
