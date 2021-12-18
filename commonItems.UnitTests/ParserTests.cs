@@ -326,38 +326,59 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void ParserParsesGameFolderInVanillaAndMods() {
-			var gamePath = "TestFiles/CK3";
+			const string gamePath = "TestFiles/CK3";
 			var mods = new List<Mod> { new("cool_mod", "TestFiles/mod/themod") };
 
-			var foundGovs = new List<string>();
+			var foundGovernments = new List<string>();
 			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.String, (reader, govName) => {
-				foundGovs.Add(govName);
+				foundGovernments.Add(govName);
 				ParserHelpers.IgnoreItem(reader);
 			});
 			parser.ParseGameFolder("common/governments", gamePath, mods, recursive: false);
-			Assert.Collection(foundGovs,
+			Assert.Collection(foundGovernments,
 				gov1 => Assert.Equal("tribal_federation", gov1),
 				gov2 => Assert.Equal("tribal_modded", gov2));
 		}
 
 		[Fact]
 		public void ParserRecursivelyParsesGameFolderInVanillaAndMods() {
-			var gamePath = "TestFiles/CK3";
+			const string gamePath = "TestFiles/CK3";
 			var mods = new List<Mod> { new("cool_mod", "TestFiles/mod/themod") };
 
-			var foundGovs = new List<string>();
+			var foundGovernments = new List<string>();
 			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.String, (reader, govName) => {
-				foundGovs.Add(govName);
+				foundGovernments.Add(govName);
 				ParserHelpers.IgnoreItem(reader);
 			});
 			parser.ParseGameFolder("common/governments", gamePath, mods, recursive: true);
-			Assert.Collection(foundGovs,
+			Assert.Collection(foundGovernments,
 				gov1 => Assert.Equal("aristocratic_republic", gov1),
 				gov2 => Assert.Equal("tribal_federation", gov2),
 				gov3 => Assert.Equal("tribal_modded", gov3),
 				gov4 => Assert.Equal("constitutional_monarchy", gov4));
+		}
+
+		[Fact]
+		public void ParserParsesGameFileInVanillaAndMods() {
+			const string gamePath = "TestFiles/CK3";
+			var mods = new List<Mod> {
+				new("mod1", "TestFiles/mod/themod"),
+				new("mod2", "TestFiles/mod/mod2")
+			};
+
+			var foundAreas = new List<string>();
+			var parser = new Parser();
+			parser.RegisterRegex(CommonRegexes.String, (reader, areaName) => {
+				foundAreas.Add(areaName);
+				ParserHelpers.IgnoreItem(reader);
+			});
+			parser.ParseGameFile("map_data/areas.txt", gamePath, mods);
+
+			Assert.Collection(foundAreas,
+				area1 => Assert.Equal("vanilla1_area", area1),
+				area2 => Assert.Equal("themod_area", area2));
 		}
 	}
 }
