@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Mods = System.Collections.Generic.List<commonItems.Mod>;
 
 namespace commonItems {
 	public delegate void Del(BufferedReader sr, string keyword);
@@ -311,6 +310,9 @@ namespace commonItems {
 			return string.IsNullOrEmpty(token) ? null : token;
 		}
 
+		/// <summary>
+		///  Parses a stream in a buffered reader, does not absorb UTF8-BOM.
+		/// </summary>
 		public void ParseStream(BufferedReader reader) {
 			var braceDepth = 0;
 			var value = false; // tracker to indicate whether we reached the value part of key=value pair
@@ -390,7 +392,7 @@ namespace commonItems {
 		///		relativePath may be "common/governments"
 		///		gamePath may be "C:\SteamLibrary\Imperator"
 		/// </summary>
-		public void ParseGameFolder(string relativePath, string gamePath, Mods mods, bool recursive) {
+		public void ParseGameFolder(string relativePath, string gamePath, IEnumerable<Mod> mods, bool recursive) {
 			var vanillaPath = Path.Combine(gamePath, "game", relativePath);
 			SortedSet<string> files = recursive ?
 				SystemUtils.GetAllFilesInFolderRecursive(vanillaPath) : SystemUtils.GetAllFilesInFolder(vanillaPath);
@@ -406,6 +408,27 @@ namespace commonItems {
 				foreach (var fileName in files) {
 					var filePath = Path.Combine(modPath, fileName);
 					ParseFile(filePath);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Parses a game file in both vanilla game and mods directory.
+		/// Designed for Jomini-based games.
+		/// For example:
+		///		relativePath may be "map_data/areas.txt"
+		///		gamePath may be "C:\SteamLibrary\Imperator"
+		/// </summary>
+		public void ParseGameFile(string relativePath, string gamePath, IEnumerable<Mod> mods) {
+			var vanillaFilePath = Path.Combine(gamePath, "game", relativePath);
+			if (File.Exists(vanillaFilePath)) {
+				ParseFile(vanillaFilePath);
+			}
+
+			foreach (var mod in mods) {
+				var modFilePath = Path.Combine(mod.Path, relativePath);
+				if (File.Exists(modFilePath)) {
+					ParseFile(modFilePath);
 				}
 			}
 		}
