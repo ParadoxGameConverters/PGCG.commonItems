@@ -27,7 +27,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         path-to-lcov: commonItems.UnitTests/TestResults/coverage.info
-        
+
   test:
     strategy:
       matrix:
