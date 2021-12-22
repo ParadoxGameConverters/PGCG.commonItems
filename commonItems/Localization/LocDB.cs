@@ -17,12 +17,12 @@ namespace commonItems.Localization {
 		public void ScrapeLocalizations(string sourceGamePath, IEnumerable<Mod> mods) {
 			Logger.Info("Reading Localization");
 			var scrapingPath = Path.Combine(sourceGamePath, "game", "localization");
-			ScrapeLanguage("english", scrapingPath);
-			ScrapeLanguage("french", scrapingPath);
-			ScrapeLanguage("german", scrapingPath);
-			ScrapeLanguage("russian", scrapingPath);
-			ScrapeLanguage("simp_chinese", scrapingPath);
-			ScrapeLanguage("spanish", scrapingPath);
+
+			ScrapeLanguage(baseLanguage, scrapingPath);
+			foreach (var language in otherLanguages) {
+				ScrapeLanguage(language, scrapingPath);
+			}
+
 			var vanillaLineCount = locBlocks.Count;
 			Logger.Info($"{vanillaLineCount} vanilla localization lines read.");
 
@@ -30,18 +30,10 @@ namespace commonItems.Localization {
 				var modLocPath = Path.Combine(mod.Path, "localization");
 				if (Directory.Exists(modLocPath)) {
 					Logger.Info($"Found some localization in [{mod.Name}]");
-					ScrapeLanguage("english", Path.Combine(mod.Path, "localization"));
-					ScrapeLanguage("french", Path.Combine(mod.Path, "localization"));
-					ScrapeLanguage("german", Path.Combine(mod.Path, "localization"));
-					ScrapeLanguage("russian", Path.Combine(mod.Path, "localization"));
-					ScrapeLanguage("simp_chinese", Path.Combine(mod.Path, "localization"));
-					ScrapeLanguage("spanish", Path.Combine(mod.Path, "localization"));
-					ScrapeLanguage("english", Path.Combine(mod.Path, "localization", "replace"));
-					ScrapeLanguage("french", Path.Combine(mod.Path, "localization", "replace"));
-					ScrapeLanguage("german", Path.Combine(mod.Path, "localization", "replace"));
-					ScrapeLanguage("russian", Path.Combine(mod.Path, "localization", "replace"));
-					ScrapeLanguage("simp_chinese", Path.Combine(mod.Path, "localization", "replace"));
-					ScrapeLanguage("spanish", Path.Combine(mod.Path, "localization", "replace"));
+					ScrapeLanguage(baseLanguage, modLocPath);
+					foreach (var language in otherLanguages) {
+						ScrapeLanguage(language, modLocPath);
+					}
 				}
 			}
 			Logger.Info($"{locBlocks.Count - vanillaLineCount} mod localization lines read.");
@@ -104,9 +96,10 @@ namespace commonItems.Localization {
 			}
 
 			if (locBlock.HasMissingSecondaryLanguageLoc()) {
-				locBlock.FillMissingLocsWithBaseLanguageLoc();
+				locBlock.FillMissingLocWithBaseLanguageLoc();
 				return locBlock;
 			}
+
 			// Either all is well, or we're missing english. Can't do anything about the latter.
 			return locBlock;
 		}

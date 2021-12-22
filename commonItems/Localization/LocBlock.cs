@@ -52,7 +52,7 @@ namespace commonItems.Localization {
 				locs[language] = locs[baseLanguage];
 			}
 		}
-		public void FillMissingLocsWithBaseLanguageLoc() {
+		public void FillMissingLocWithBaseLanguageLoc() {
 			foreach (string language in otherLanguages) {
 				FillMissingLocWithBaseLanguageLoc(language);
 			}
