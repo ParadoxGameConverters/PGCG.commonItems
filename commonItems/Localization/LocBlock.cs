@@ -4,7 +4,7 @@ using System.Linq;
 namespace commonItems.Localization {
 	public class LocBlock {
 		private readonly string baseLanguage;
-		private string[] otherLanguages;
+		private readonly string[] otherLanguages;
 		private readonly Dictionary<string, string> locs;
 
 		public LocBlock(string baseLanguage, params string[] otherLanguages) {
@@ -24,6 +24,7 @@ namespace commonItems.Localization {
 
 		public LocBlock(LocBlock otherBlock) {
 			baseLanguage = otherBlock.baseLanguage;
+			otherLanguages = otherBlock.otherLanguages;
 			locs = new(otherBlock.locs);
 		}
 
@@ -46,22 +47,22 @@ namespace commonItems.Localization {
 				locs[language] = modifyingFunction(locs[language], otherBlock[language]);
 			}
 		}
-		private void FillEmptyLocWithBaseLanguageLoc(string language) {
-			if (string.IsNullOrEmpty(language)) {
+		private void FillMissingLocWithBaseLanguageLoc(string language) {
+			if (string.IsNullOrEmpty(locs[language])) {
 				locs[language] = locs[baseLanguage];
 			}
 		}
-		public void FillEmptyLocsWithBaseLanguageLoc() {
-			foreach (string language in locs.Keys.Where(language => language != baseLanguage)) {
-				FillEmptyLocWithBaseLanguageLoc(language);
+		public void FillMissingLocsWithBaseLanguageLoc() {
+			foreach (string language in otherLanguages) {
+				FillMissingLocWithBaseLanguageLoc(language);
 			}
 		}
 
-		public bool HasOnlyBaseLanguageLoc() {
+		public bool HasMissingSecondaryLanguageLoc() {
 			bool hasBaseLanguageLoc = !string.IsNullOrEmpty(locs[baseLanguage]);
-			bool hasOtherLanguageLoc = otherLanguages.Any(language => !string.IsNullOrEmpty(locs[language]));
+			bool hasMissingSecondaryLanguageLoc = otherLanguages.Any(language => string.IsNullOrEmpty(locs[language]));
 
-			return hasBaseLanguageLoc && !hasOtherLanguageLoc;
+			return hasBaseLanguageLoc && hasMissingSecondaryLanguageLoc;
 		}
 	}
 }

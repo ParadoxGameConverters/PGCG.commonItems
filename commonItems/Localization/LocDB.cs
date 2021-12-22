@@ -103,9 +103,8 @@ namespace commonItems.Localization {
 				return null;
 			}
 
-			if (locBlock.HasOnlyBaseLanguageLoc())
-			) {
-				locBlock.FillEmptyLocsWithBaseLanguageLoc();
+			if (locBlock.HasMissingSecondaryLanguageLoc()) {
+				locBlock.FillMissingLocsWithBaseLanguageLoc();
 				return locBlock;
 			}
 			// Either all is well, or we're missing english. Can't do anything about the latter.

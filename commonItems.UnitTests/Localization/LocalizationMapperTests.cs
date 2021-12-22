@@ -25,10 +25,10 @@ namespace commonItems.UnitTests.Localization {
 			locDB.ScrapeStream(reader2, "french");
 			locDB.ScrapeStream(reader3, "english");
 
-			Assert.Equal("replaced value 1", locDB.GetLocBlockForKey("key1")["english"]);
-			Assert.Equal("value \"subquoted\" 2", locDB.GetLocBlockForKey("key2")["english"]);
-			Assert.Equal("valuee 1", locDB.GetLocBlockForKey("key1")["french"]);
-			Assert.Equal("valuee \"subquoted\" 2", locDB.GetLocBlockForKey("key2")["french"]);
+			Assert.Equal("replaced value 1", locDB.GetLocBlockForKey("key1")!["english"]);
+			Assert.Equal("value \"subquoted\" 2", locDB.GetLocBlockForKey("key2")!["english"]);
+			Assert.Equal("valuee 1", locDB.GetLocBlockForKey("key1")!["french"]);
+			Assert.Equal("valuee \"subquoted\" 2", locDB.GetLocBlockForKey("key2")!["french"]);
 		}
 
 		[Fact]
@@ -65,14 +65,14 @@ namespace commonItems.UnitTests.Localization {
 		}
 
 		[Fact]
-		public void LocalizationMapperReturnNullForMissingKey() {
+		public void LocDBReturnNullForMissingKey() {
 			var locDB = new LocDB("english");
 			Assert.Null(locDB.GetLocBlockForKey("key1"));
 		}
 
 		[Fact]
-		public void LocalizationMapperReturnsEnglishForMissingLanguage() {
-			var locDB = new LocDB("english");
+		public void LocDBReturnsEnglishForMissingLanguage() {
+			var locDB = new LocDB("english", "french");
 			var reader = new BufferedReader(
 				"l_english:\n" +
 				" key1:1 \"value 1\" # comment\n"
@@ -147,17 +147,6 @@ namespace commonItems.UnitTests.Localization {
 			Assert.Equal("d", copyLocBlock["russian"]);
 			Assert.Equal("e", copyLocBlock["simp_chinese"]);
 			Assert.Equal("f", copyLocBlock["spanish"]);
-		}
-
-		[Fact]
-		public void LocBlockCanBeConstructedWithOnlyEnglishLoc() {
-			var block = new LocBlock("Rule Britannia");
-			const string expectedLoc = "Rule Britannia";
-			Assert.Equal(expectedLoc, block["english"]);
-			Assert.Equal(expectedLoc, block["german"]);
-			Assert.Equal(expectedLoc, block["russian"]);
-			Assert.Equal(expectedLoc, block["simp_chinese"]);
-			Assert.Equal(expectedLoc, block["spanish"]);
 		}
 	}
 }
