@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace commonItems.Localization {
 	public delegate string LocDelegate(string baseLoc, string modifyingLoc);
@@ -15,80 +16,108 @@ namespace commonItems.Localization {
 		}
 
 		public void ScrapeLocalizations(string sourceGamePath, IEnumerable<Mod> mods) {
-			Logger.Info("Reading Localization");
+			Logger.Info("Reading Localization...");
+
 			var scrapingPath = Path.Combine(sourceGamePath, "game", "localization");
+			Logger.Info($"{ScrapePath(scrapingPath)} vanilla localization lines read.");
 
-			ScrapeLanguage(baseLanguage, scrapingPath);
-			foreach (var language in otherLanguages) {
-				ScrapeLanguage(language, scrapingPath);
-			}
-
-			var vanillaLineCount = locBlocks.Count;
-			Logger.Info($"{vanillaLineCount} vanilla localization lines read.");
-
+			var modLocLinesRead = 0;
 			foreach (var mod in mods) {
 				var modLocPath = Path.Combine(mod.Path, "localization");
-				if (Directory.Exists(modLocPath)) {
-					Logger.Info($"Found some localization in [{mod.Name}]");
-					ScrapeLanguage(baseLanguage, modLocPath);
-					foreach (var language in otherLanguages) {
-						ScrapeLanguage(language, modLocPath);
-					}
+				if (!Directory.Exists(modLocPath)) {
+					continue;
 				}
+
+				Logger.Info($"Found some localization in [{mod.Name}].");
+				modLocLinesRead += ScrapePath(modLocPath);
 			}
-			Logger.Info($"{locBlocks.Count - vanillaLineCount} mod localization lines read.");
+			Logger.Info($"{modLocLinesRead} mod localization lines read.");
 		}
-		private void ScrapeLanguage(string language, string path) {
-			var languagePath = Path.Combine(path, language);
-			if (!Directory.Exists(languagePath)) {
-				return;
+
+		private int ScrapePath(string path) {
+			if (!Directory.Exists(path)) {
+				return 0;
 			}
-			var fileNames = SystemUtils.GetAllFilesInFolderRecursive(languagePath);
-			foreach (var fileName in fileNames) {
-				var filePath = Path.Combine(languagePath, fileName);
-				try {
-					var stream = File.OpenText(filePath);
-					var reader = new BufferedReader(stream);
-					ScrapeStream(reader, language);
-					stream.Close();
-				} catch (Exception e) {
-					Logger.Warn($"Could not parse localization file {filePath}: {e}");
-				}
+
+			return SystemUtils.GetAllFilesInFolderRecursive(path)
+				.Sum(fileName => ScrapeFile(Path.Combine(path, fileName)));
+		}
+		private int ScrapeFile(string filePath) {
+			try {
+				using var stream = File.OpenText(filePath);
+				var reader = new BufferedReader(stream);
+				return ScrapeStream(reader);
+			} catch (Exception e) {
+				Logger.Warn($"Could not parse localization file {filePath}: {e}");
+				return 0;
 			}
 		}
-		public void ScrapeStream(BufferedReader reader, string language) {
+		public int ScrapeStream(BufferedReader reader) {
+			var linesRead = 0;
+			string? currentLanguage = null;
+
 			while (!reader.EndOfStream) {
-				var (key, loc) = DetermineKeyLocalizationPair(reader.ReadLine());
+				var (key, loc) = DetermineKeyLocalizationPair(reader.ReadLine(), ref currentLanguage);
+				if (currentLanguage is null) {
+					continue;
+				}
 				if (key is null || loc is null) {
 					continue;
 				}
 
 				if (locBlocks.TryGetValue(key, out var locBlock)) {
-					locBlock[language] = loc;
+					locBlock[currentLanguage] = loc;
 				} else {
-					var newBlock = new LocBlock(baseLanguage, otherLanguages);
-					newBlock[language] = loc;
+					var newBlock = new LocBlock(baseLanguage, otherLanguages) { [currentLanguage] = loc };
 					locBlocks.Add(key, newBlock);
 				}
+				++linesRead;
 			}
+
+			return linesRead;
 		}
-		private static KeyValuePair<string?, string?> DetermineKeyLocalizationPair(string? line) {
-			if (line == null || line.Length < 4 || line[0] == '#' || line[1] == '#') {
-				return new KeyValuePair<string?, string?>();
+		private KeyValuePair<string?, string?> DetermineKeyLocalizationPair(string? line, ref string? currentLanguage) {
+			if (line == null || line.Length < 4 || line.TrimStart().StartsWith('#')) {
+				return new(null, null);
 			}
+
+			line = line.TrimEnd();
+
 			var sepLoc = line.IndexOf(':');
 			if (sepLoc == -1) {
-				return new KeyValuePair<string?, string?>();
+				return new(null, null);
 			}
+
+			if (line.StartsWith("l_")) {
+				if (line == $"l_{baseLanguage}:") {
+					currentLanguage = baseLanguage;
+					return new(null, null);
+				}
+				foreach (var language in otherLanguages) {
+					if (line != $"l_{language}:") {
+						continue;
+					}
+
+					currentLanguage = language;
+					return new(null, null);
+				}
+			}
+
+			if (currentLanguage is null) {
+				Logger.Warn($"Scraping loc line {line} without language specified!");
+				return new(null, null);
+			}
+
 			var key = line.Substring(1, sepLoc - 1);
 			var newLine = line.Substring(sepLoc + 1);
-			var quoteLoc = newLine.IndexOf('\"');
-			var quote2Loc = newLine.LastIndexOf('\"');
-			if (quoteLoc == -1 || quote2Loc == -1 || quote2Loc - quoteLoc == 0) {
-				return new KeyValuePair<string?, string?>(key, null);
+			var quoteIndex = newLine.IndexOf('\"');
+			var quote2Index = newLine.LastIndexOf('\"');
+			if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) {
+				return new(key, null);
 			}
-			var value = newLine.Substring(quoteLoc + 1, quote2Loc - quoteLoc - 1);
-			return new KeyValuePair<string?, string?>(key, value);
+
+			var value = newLine.Substring(quoteIndex + 1, quote2Index - quoteIndex - 1);
+			return new(key, value);
 		}
 		public LocBlock? GetLocBlockForKey(string key) {
 			if (!locBlocks.TryGetValue(key, out var locBlock)) {

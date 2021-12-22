@@ -1,4 +1,5 @@
 ﻿using commonItems.Localization;
+using System.Collections.Generic;
 using Xunit;
 
 namespace commonItems.UnitTests.Localization {
@@ -21,9 +22,9 @@ namespace commonItems.UnitTests.Localization {
 			);
 
 			var locDB = new LocDB("english", "french");
-			locDB.ScrapeStream(reader1, "english");
-			locDB.ScrapeStream(reader2, "french");
-			locDB.ScrapeStream(reader3, "english");
+			locDB.ScrapeStream(reader1);
+			locDB.ScrapeStream(reader2);
+			locDB.ScrapeStream(reader3);
 
 			Assert.Equal("replaced value 1", locDB.GetLocBlockForKey("key1")!["english"]);
 			Assert.Equal("value \"subquoted\" 2", locDB.GetLocBlockForKey("key2")!["english"]);
@@ -38,7 +39,7 @@ namespace commonItems.UnitTests.Localization {
 				" key1:0 unquotedValue"
 			);
 			var locDB = new LocDB("english");
-			locDB.ScrapeStream(reader, "english");
+			locDB.ScrapeStream(reader);
 			Assert.Null(locDB.GetLocBlockForKey("key1"));
 		}
 
@@ -49,7 +50,7 @@ namespace commonItems.UnitTests.Localization {
 				" key1 \"loc\""
 			);
 			var locDB = new LocDB("english");
-			locDB.ScrapeStream(reader, "english");
+			locDB.ScrapeStream(reader);
 			Assert.Null(locDB.GetLocBlockForKey("key1"));
 		}
 
@@ -60,7 +61,7 @@ namespace commonItems.UnitTests.Localization {
 				"#key1: \"loc\""
 			);
 			var locDB = new LocDB("english");
-			locDB.ScrapeStream(reader, "english");
+			locDB.ScrapeStream(reader);
 			Assert.Null(locDB.GetLocBlockForKey("key1"));
 		}
 
@@ -77,7 +78,7 @@ namespace commonItems.UnitTests.Localization {
 				"l_english:\n" +
 				" key1:1 \"value 1\" # comment\n"
 			);
-			locDB.ScrapeStream(reader, "english");
+			locDB.ScrapeStream(reader);
 
 			Assert.Equal("value 1", locDB.GetLocBlockForKey("key1")!["french"]);
 		}
@@ -147,6 +148,17 @@ namespace commonItems.UnitTests.Localization {
 			Assert.Equal("d", copyLocBlock["russian"]);
 			Assert.Equal("e", copyLocBlock["simp_chinese"]);
 			Assert.Equal("f", copyLocBlock["spanish"]);
+		}
+
+		[Fact]
+		public void VanillaAndMocLocIsScraped() {
+			var locDB = new LocDB("english", "french");
+			var mods = new List<Mod> { new Mod("themod", "TestFiles/mod/themod") };
+			locDB.ScrapeLocalizations("TestFiles/CK3", mods);
+
+			Assert.Equal("value1 modded", locDB.GetLocBlockForKey("KEY1")!["english"]);
+			Assert.Equal("value2", locDB.GetLocBlockForKey("KEY2")!["english"]);
+			Assert.Equal("mod loc", locDB.GetLocBlockForKey("MOD_KEY1")!["english"]);
 		}
 	}
 }
