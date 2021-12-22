@@ -103,12 +103,7 @@ namespace commonItems.Localization {
 				return null;
 			}
 
-			if (!string.IsNullOrEmpty(locBlock.english) &&
-				(string.IsNullOrEmpty(locBlock.french) ||
-				string.IsNullOrEmpty(locBlock.german) ||
-				string.IsNullOrEmpty(locBlock.russian) ||
-				string.IsNullOrEmpty(locBlock.simp_chinese) ||
-				string.IsNullOrEmpty(locBlock.spanish))
+			if (locBlock.HasOnlyBaseLanguageLoc())
 			) {
 				locBlock.FillEmptyLocsWithBaseLanguageLoc();
 				return locBlock;

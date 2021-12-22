@@ -4,11 +4,13 @@ using System.Linq;
 namespace commonItems.Localization {
 	public class LocBlock {
 		private readonly string baseLanguage;
+		private string[] otherLanguages;
 		private readonly Dictionary<string, string> locs;
 
 		public LocBlock(string baseLanguage, params string[] otherLanguages) {
-			locs[baseLanguage] = string.Empty;
 			this.baseLanguage = baseLanguage;
+			this.otherLanguages = otherLanguages;
+			locs = new() { [this.baseLanguage] = string.Empty };
 
 			foreach (var language in otherLanguages) {
 				locs[language] = string.Empty;
@@ -53,6 +55,13 @@ namespace commonItems.Localization {
 			foreach (string language in locs.Keys.Where(language => language != baseLanguage)) {
 				FillEmptyLocWithBaseLanguageLoc(language);
 			}
+		}
+
+		public bool HasOnlyBaseLanguageLoc() {
+			bool hasBaseLanguageLoc = !string.IsNullOrEmpty(locs[baseLanguage]);
+			bool hasOtherLanguageLoc = otherLanguages.Any(language => !string.IsNullOrEmpty(locs[language]));
+
+			return hasBaseLanguageLoc && !hasOtherLanguageLoc;
 		}
 	}
 }
