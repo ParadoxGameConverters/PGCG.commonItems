@@ -91,20 +91,19 @@ namespace commonItems.Localization {
 			if (line.StartsWith("l_")) {
 				if (line == $"l_{baseLanguage}:") {
 					currentLanguage = baseLanguage;
-					return new(null, null);
 				}
 				foreach (var language in otherLanguages) {
 					if (line != $"l_{language}:") {
 						continue;
 					}
-
 					currentLanguage = language;
-					return new(null, null);
 				}
+
+				return new(null, null);
 			}
 
 			if (currentLanguage is null) {
-				Logger.Warn($"Scraping loc line {line} without language specified!");
+				Logger.Warn($"Scraping loc line [{line}] without language specified!");
 				return new(null, null);
 			}
 

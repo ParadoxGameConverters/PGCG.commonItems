@@ -1,5 +1,7 @@
 ﻿using commonItems.Localization;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using Xunit;
 
 namespace commonItems.UnitTests.Localization {
@@ -152,13 +154,21 @@ namespace commonItems.UnitTests.Localization {
 
 		[Fact]
 		public void VanillaAndMocLocIsScraped() {
-			var locDB = new LocDB("english", "french");
+			var output = new StringWriter();
+			Console.SetOut(output);
+
+			var locDB = new LocDB("english", "french", "spanish");
 			var mods = new List<Mod> { new Mod("themod", "TestFiles/mod/themod") };
 			locDB.ScrapeLocalizations("TestFiles/CK3", mods);
 
 			Assert.Equal("value1 modded", locDB.GetLocBlockForKey("KEY1")!["english"]);
+			Assert.Equal("valeur1", locDB.GetLocBlockForKey("KEY1")!["french"]);
 			Assert.Equal("value2", locDB.GetLocBlockForKey("KEY2")!["english"]);
+			Assert.Equal("valeur2", locDB.GetLocBlockForKey("KEY2")!["french"]);
 			Assert.Equal("mod loc", locDB.GetLocBlockForKey("MOD_KEY1")!["english"]);
+
+			Assert.Contains("Scraping loc line [ NO_LANGUAGE_KEY1:0 \"loc w/o language\"] without language specified!", output.ToString());
+			Assert.Equal("valor", locDB.GetLocBlockForKey("KEY1")!["spanish"]);
 		}
 	}
 }
