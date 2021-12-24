@@ -18,15 +18,21 @@ public class LocBlock {
 		}
 	}
 
-	public string this[string language] {
-		get => localizations[language];
-		set => localizations[language] = value;
-	}
-
 	public LocBlock(LocBlock otherBlock) {
 		baseLanguage = otherBlock.baseLanguage;
 		otherLanguages = otherBlock.otherLanguages;
 		localizations = new(otherBlock.localizations);
+	}
+
+	public void CopyFrom(LocBlock otherBlock) {
+		foreach (var language in localizations.Keys) {
+			localizations[language] = otherBlock[language];
+		}
+	}
+
+	public string this[string language] {
+		get => localizations[language];
+		set => localizations[language] = value;
 	}
 
 	// ModifyForEveryLanguage helps remove boilerplate by applying modifyingMethod to every language in the struct
