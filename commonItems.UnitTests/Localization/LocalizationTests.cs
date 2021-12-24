@@ -153,6 +153,28 @@ namespace commonItems.UnitTests.Localization {
 		}
 
 		[Fact]
+		public void LocBlockCanCopyFromOtherBlock() {
+			var origLocBlock = new LocBlock("english", "french", "german", "russian", "simp_chinese", "spanish") {
+				["english"] = "a",
+				["french"] = "b",
+				["german"] = "c",
+				["russian"] = "d",
+				["simp_chinese"] = "e",
+				["spanish"] = "f"
+			};
+
+			var copyingLocBlock = new LocBlock("english", "french", "german", "russian", "simp_chinese", "spanish");
+			copyingLocBlock.CopyFrom(origLocBlock);
+
+			Assert.Equal("a", copyingLocBlock["english"]);
+			Assert.Equal("b", copyingLocBlock["french"]);
+			Assert.Equal("c", copyingLocBlock["german"]);
+			Assert.Equal("d", copyingLocBlock["russian"]);
+			Assert.Equal("e", copyingLocBlock["simp_chinese"]);
+			Assert.Equal("f", copyingLocBlock["spanish"]);
+		}
+
+		[Fact]
 		public void VanillaAndMocLocIsScraped() {
 			var output = new StringWriter();
 			Console.SetOut(output);
