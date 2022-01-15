@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using SU = commonItems.SystemUtils;
+
 namespace commonItems {
 	public delegate void Del(BufferedReader sr, string keyword);
 	public delegate void SimpleDel(BufferedReader sr);
@@ -391,22 +393,23 @@ namespace commonItems {
 		/// For example:
 		///		relativePath may be "common/governments"
 		///		gamePath may be "C:\SteamLibrary\Imperator"
+		///		extensions may be "txt;text" (a list separated by semicolon)
 		/// </summary>
-		public void ParseGameFolder(string relativePath, string gamePath, IEnumerable<Mod> mods, bool recursive) {
+		public void ParseGameFolder(string relativePath, string gamePath, string extensions, IEnumerable<Mod> mods, bool recursive) {
+			var extensionSet = extensions.Split(';');
+
 			var vanillaPath = Path.Combine(gamePath, "game", relativePath);
-			SortedSet<string> files = recursive ?
-				SystemUtils.GetAllFilesInFolderRecursive(vanillaPath) : SystemUtils.GetAllFilesInFolder(vanillaPath);
-			foreach (var fileName in files) {
-				var filePath = Path.Combine(vanillaPath, fileName);
+			SortedSet<string> files = recursive ? SU.GetAllFilesInFolderRecursive(vanillaPath) : SU.GetAllFilesInFolder(vanillaPath);
+			files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
+			foreach (string filePath in files.Select(fileName => Path.Combine(vanillaPath, fileName))) {
 				ParseFile(filePath);
 			}
 
 			foreach (var mod in mods) {
 				var modPath = Path.Combine(mod.Path, relativePath);
-				files = recursive ?
-					SystemUtils.GetAllFilesInFolderRecursive(modPath) : SystemUtils.GetAllFilesInFolder(modPath);
-				foreach (var fileName in files) {
-					var filePath = Path.Combine(modPath, fileName);
+				files = recursive ? SU.GetAllFilesInFolderRecursive(modPath) : SU.GetAllFilesInFolder(modPath);
+				files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
+				foreach (string filePath in files.Select(fileName => Path.Combine(modPath, fileName))) {
 					ParseFile(filePath);
 				}
 			}

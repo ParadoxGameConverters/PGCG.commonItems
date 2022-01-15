@@ -335,7 +335,7 @@ namespace commonItems.UnitTests {
 				foundGovernments.Add(govName);
 				ParserHelpers.IgnoreItem(reader);
 			});
-			parser.ParseGameFolder("common/governments", gamePath, mods, recursive: false);
+			parser.ParseGameFolder(Path.Combine("common", "governments"), gamePath, "txt", mods, recursive: false);
 			Assert.Collection(foundGovernments,
 				gov1 => Assert.Equal("tribal_federation", gov1),
 				gov2 => Assert.Equal("tribal_modded", gov2));
@@ -352,7 +352,7 @@ namespace commonItems.UnitTests {
 				foundGovernments.Add(govName);
 				ParserHelpers.IgnoreItem(reader);
 			});
-			parser.ParseGameFolder("common/governments", gamePath, mods, recursive: true);
+			parser.ParseGameFolder("common/governments", gamePath, "txt", mods, recursive: true);
 			Assert.Collection(foundGovernments,
 				gov1 => Assert.Equal("aristocratic_republic", gov1),
 				gov2 => Assert.Equal("tribal_federation", gov2),
