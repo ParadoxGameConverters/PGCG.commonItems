@@ -363,8 +363,13 @@ namespace commonItems {
 				testDigit = rhs.firstPart.Value;
 			}
 
-			if (testDigit > firstPart) {
-				return false;
+			if (firstPart is not null) {
+				if (testDigit > firstPart.Value) {
+					return false;
+				}
+				if (testDigit < firstPart.Value) {
+					return true;
+				}
 			}
 
 			testDigit = 0;
@@ -372,8 +377,13 @@ namespace commonItems {
 				testDigit = rhs.secondPart.Value;
 			}
 
-			if (testDigit > secondPart) {
-				return false;
+			if (secondPart is not null) {
+				if (testDigit > secondPart.Value) {
+					return false;
+				}
+				if (testDigit < secondPart.Value) {
+					return true;
+				}
 			}
 
 			testDigit = 0;
@@ -381,8 +391,13 @@ namespace commonItems {
 				testDigit = rhs.thirdPart.Value;
 			}
 
-			if (testDigit > thirdPart) {
-				return false;
+			if (thirdPart is not null) {
+				if (testDigit > thirdPart.Value) {
+					return false;
+				}
+				if (testDigit < thirdPart.Value) {
+					return true;
+				}
 			}
 
 			testDigit = 0;
@@ -390,7 +405,7 @@ namespace commonItems {
 				testDigit = rhs.fourthPart.Value;
 			}
 
-			if (testDigit > fourthPart) {
+			if (fourthPart is not null && testDigit > fourthPart.Value) {
 				return false;
 			}
 

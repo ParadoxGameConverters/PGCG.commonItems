@@ -2,7 +2,8 @@
 
 namespace commonItems.UnitTests {
 	public class GameVersionTests {
-		private readonly string testFilesPath = "TestFiles/";
+		private const string testFilesPath = "TestFiles/";
+
 		[Fact]
 		public void GameVersionDefaultsToZeroZeroZeroZero() {
 			var version = new GameVersion();
@@ -221,6 +222,17 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
+		public void LargerishFalseForLargerWithUndefineds() {
+			var requiredVersion = new GameVersion("2.1.1");
+			Assert.False(requiredVersion.IsLargerishThan(new GameVersion("2.1.2")));
+			Assert.False(requiredVersion.IsLargerishThan(new GameVersion("2.1.2.9")));
+			Assert.False(requiredVersion.IsLargerishThan(new GameVersion("2.2")));
+			Assert.False(requiredVersion.IsLargerishThan(new GameVersion("2.2.2")));
+			Assert.False(requiredVersion.IsLargerishThan(new GameVersion("2.2.2.2")));
+			Assert.False(requiredVersion.IsLargerishThan(new GameVersion("3")));
+		}
+
+		[Fact]
 		public void LargerishTrueForSmaller() {
 			var requiredVersion = new GameVersion("2.1.1.1");
 			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("2.0.0.0")));
@@ -232,8 +244,28 @@ namespace commonItems.UnitTests {
 			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("2.1")));
 			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("1")));
 
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("1.5")));
+
 			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("0.0.0.0")));
 		}
+
+		[Fact]
+		public void LargerishTrueForSmallerWithUndefineds() {
+			var requiredVersion = new GameVersion("2.1");
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("2.0")));
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("2.1")));
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("2.1.1")));
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("1")));
+
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("2.1.0")));
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("2.1")));
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("1")));
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("1.5")));
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("1.5.9")));
+
+			Assert.True(requiredVersion.IsLargerishThan(new GameVersion("0.0.0.0")));
+		}
+
 		[Fact]
 		public void LargerishTrueForOvershootingSmallerish() {
 			// This is the main meat.
