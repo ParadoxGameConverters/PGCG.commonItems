@@ -8,7 +8,7 @@ namespace commonItems.UnitTests {
 			var reader = new BufferedReader("@ai_aggressiveness = 70");
 			var instance = new TestParser();
 			instance.ParseStream(reader);
-			Assert.Collection(instance.Variables,
+			Assert.Collection(reader.Variables,
 				pair => {
 					var (key, value) = pair;
 					Assert.Equal("ai_aggressiveness", key);
@@ -21,7 +21,7 @@ namespace commonItems.UnitTests {
 			var reader = new BufferedReader("@[100-ai_aggressiveness] = 70");
 			var instance = new TestParser();
 			instance.ParseStream(reader);
-			Assert.Empty(instance.Variables);
+			Assert.Empty(reader.Variables);
 		}
 
 		[Fact]

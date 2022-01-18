@@ -44,11 +44,10 @@ namespace commonItems {
 	}
 	public class SingleString {
 		public SingleString(BufferedReader sr) {
-			var parser = new Parser();
 			// remove equals
-			parser.GetNextTokenWithoutMatching(sr);
+			Parser.GetNextTokenWithoutMatching(sr);
 
-			var token = parser.GetNextTokenWithoutMatching(sr);
+			var token = Parser.GetNextTokenWithoutMatching(sr);
 			if (token is null) {
 				Logger.Error("SingleString: next token not found!");
 			} else {
@@ -116,6 +115,17 @@ namespace commonItems {
 			parser.RegisterRegex(CommonRegexes.QuotedString, (_, theString) =>
 				Strings.Add(StringUtils.RemQuotes(theString))
 			);
+			if (sr.Variables.Count > 0) {
+				parser.RegisterRegex(CommonRegexes.Variable, (reader, varStr) => {
+					var value = reader.ResolveVariable(varStr).ToString();
+					if (value is null) {
+						Logger.Warn($"StringList: variable {varStr} resolved to null value!");
+					} else {
+						Strings.Add(value);
+					}
+				});
+			}
+
 			parser.ParseStream(sr);
 		}
 		public List<string> Strings { get; } = new();
@@ -130,6 +140,13 @@ namespace commonItems {
 				intString = intString[1..^1];
 				Ints.Add(int.Parse(intString));
 			});
+			if (sr.Variables.Count > 0) {
+				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
+					var value = (int)reader.EvaluateExpression(expr);
+					Ints.Add(value);
+				});
+			}
+
 			parser.ParseStream(sr);
 		}
 		public List<int> Ints { get; } = new();
@@ -144,6 +161,13 @@ namespace commonItems {
 				longString = longString[1..^1];
 				Longs.Add(long.Parse(longString));
 			});
+			if (sr.Variables.Count > 0) {
+				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
+					var value = (long)(int)reader.EvaluateExpression(expr);
+					Longs.Add(value);
+				});
+			}
+
 			parser.ParseStream(sr);
 		}
 		public List<long> Longs { get; } = new();
@@ -158,6 +182,13 @@ namespace commonItems {
 				ulongString = ulongString[1..^1];
 				ULongs.Add(ulong.Parse(ulongString));
 			});
+			if (sr.Variables.Count > 0) {
+				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
+					var value = (ulong)(int)reader.EvaluateExpression(expr);
+					ULongs.Add(value);
+				});
+			}
+
 			parser.ParseStream(sr);
 		}
 		public List<ulong> ULongs { get; } = new();
@@ -174,6 +205,13 @@ namespace commonItems {
 				floatString = floatString[1..^1];
 				Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
 			});
+			if (sr.Variables.Count > 0) {
+				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
+					var value = (double)reader.EvaluateExpression(expr);
+					Doubles.Add(value);
+				});
+			}
+
 			parser.ParseStream(sr);
 		}
 		public List<double> Doubles { get; } = new();

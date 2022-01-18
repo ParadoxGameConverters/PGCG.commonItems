@@ -6,10 +6,9 @@ namespace commonItems {
 	public class ColorFactory {
 		public Dictionary<string, Color> NamedColors { get; } = new();
 		public Color GetColor(BufferedReader reader) {
-			var parser = new Parser();
-			parser.GetNextTokenWithoutMatching(reader); // equals sign
+			Parser.GetNextTokenWithoutMatching(reader); // equals sign
 
-			var token = parser.GetNextTokenWithoutMatching(reader);
+			var token = Parser.GetNextTokenWithoutMatching(reader);
 			if (token is null) {
 				throw new FormatException("Cannot get color without token");
 			}

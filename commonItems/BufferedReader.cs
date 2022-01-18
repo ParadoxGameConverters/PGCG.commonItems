@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NCalc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -123,8 +124,8 @@ namespace commonItems {
 			var assignments = new Dictionary<string, string>();
 			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.Catchall, (reader, assignmentName) => {
-				parser.GetNextTokenWithoutMatching(reader); // remove equals
-				var assignmentValue = parser.GetNextTokenWithoutMatching(reader);
+				Parser.GetNextTokenWithoutMatching(reader); // remove equals
+				var assignmentValue = Parser.GetNextTokenWithoutMatching(reader);
 				if (assignmentValue is null) {
 					throw new FormatException($"Cannot assign null to {assignmentName}!");
 				}
@@ -132,6 +133,20 @@ namespace commonItems {
 			});
 			parser.ParseStream(this);
 			return assignments;
+		}
+
+		public Dictionary<string, object> Variables { get; } = new();
+
+		public object ResolveVariable(string lexeme) {
+			return Variables[lexeme[1..]];
+		}
+
+		public object EvaluateExpression(string lexeme) {
+			var expression = new Expression(lexeme[2..^1]);
+			foreach (var (name, value) in Variables) {
+				expression.Parameters[name] = value;
+			}
+			return expression.Evaluate();
 		}
 	}
 }
