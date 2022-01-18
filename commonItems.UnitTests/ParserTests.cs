@@ -299,8 +299,8 @@ namespace commonItems.UnitTests {
 			public double Prestige { get; private set; }
 
 			public TestCountry(BufferedReader reader) {
-				RegisterKeyword("name", reader => Name = reader.GetString(Variables));
-				RegisterKeyword("prestige", reader => Prestige = reader.GetDouble(Variables));
+				RegisterKeyword("name", reader => Name = reader.GetString());
+				RegisterKeyword("prestige", reader => Prestige = reader.GetDouble());
 				ParseStream(reader);
 			}
 		}

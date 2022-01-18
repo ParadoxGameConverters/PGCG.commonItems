@@ -640,17 +640,17 @@ namespace commonItems.UnitTests {
 			public Dictionary<string, string> assignments = new();
 
 			public TypeClass(BufferedReader reader) {
-				RegisterKeyword("str", reader => str = reader.GetString(Variables));
-				RegisterKeyword("integer", reader => integer = reader.GetInt(Variables));
-				RegisterKeyword("longInt", reader => longInt = reader.GetLong(Variables));
-				RegisterKeyword("ulongInt", reader => ulongInt = reader.GetULong(Variables));
-				RegisterKeyword("d", reader => d = reader.GetDouble(Variables));
-				RegisterKeyword("strings", reader => strings = reader.GetStrings(Variables));
-				RegisterKeyword("ints", reader => ints = reader.GetInts(Variables));
-				RegisterKeyword("longs", reader => longs = reader.GetLongs(Variables));
-				RegisterKeyword("ulongs", reader => ulongs = reader.GetULongs(Variables));
-				RegisterKeyword("doubles", reader => doubles = reader.GetDoubles(Variables));
-				RegisterKeyword("assignments", reader => assignments = reader.GetAssignments(Variables));
+				RegisterKeyword("str", reader => str = reader.GetString());
+				RegisterKeyword("integer", reader => integer = reader.GetInt());
+				RegisterKeyword("longInt", reader => longInt = reader.GetLong());
+				RegisterKeyword("ulongInt", reader => ulongInt = reader.GetULong());
+				RegisterKeyword("d", reader => d = reader.GetDouble());
+				RegisterKeyword("strings", reader => strings = reader.GetStrings());
+				RegisterKeyword("ints", reader => ints = reader.GetInts());
+				RegisterKeyword("longs", reader => longs = reader.GetLongs());
+				RegisterKeyword("ulongs", reader => ulongs = reader.GetULongs());
+				RegisterKeyword("doubles", reader => doubles = reader.GetDoubles());
+				RegisterKeyword("assignments", reader => assignments = reader.GetAssignments());
 
 				ParseStream(reader);
 			}

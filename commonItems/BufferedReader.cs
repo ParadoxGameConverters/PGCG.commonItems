@@ -26,13 +26,11 @@ namespace commonItems {
 		private readonly Stack<int> characterStack = new();
 
 		public int Read() {
-			int ch;
 			if (characterStack.TryPop(out int character)) {
-				ch = character;
+				return character;
 			} else {
-				ch = streamReader.Read();  // could be -1 
+				return streamReader.Read();  // could be -1 
 			}
-			return ch;
 		}
 
 		public string Read(uint numberOfChars) {
@@ -84,35 +82,35 @@ namespace commonItems {
 			characterStack.Push(ch);
 		}
 
-		public string GetString(Dictionary<string, object>? variables = null) {
-			return new SingleString(this, variables).String;
+		public string GetString() {
+			return new SingleString(this).String;
 		}
-		public int GetInt(Dictionary<string, object>? variables = null) {
-			return new SingleInt(this, variables).Int;
+		public int GetInt() {
+			return new SingleInt(this).Int;
 		}
-		public long GetLong(Dictionary<string, object>? variables = null) {
-			return new SingleLong(this, variables).Long;
+		public long GetLong() {
+			return new SingleLong(this).Long;
 		}
-		public ulong GetULong(Dictionary<string, object>? variables = null) {
-			return new SingleULong(this, variables).ULong;
+		public ulong GetULong() {
+			return new SingleULong(this).ULong;
 		}
-		public double GetDouble(Dictionary<string, object>? variables = null) {
-			return new SingleDouble(this, variables).Double;
+		public double GetDouble() {
+			return new SingleDouble(this).Double;
 		}
-		public List<string> GetStrings(Dictionary<string, object>? variables = null) {
-			return new StringList(this, variables).Strings;
+		public List<string> GetStrings() {
+			return new StringList(this).Strings;
 		}
-		public List<int> GetInts(Dictionary<string, object>? variables = null) {
-			return new IntList(this, variables).Ints;
+		public List<int> GetInts() {
+			return new IntList(this).Ints;
 		}
-		public List<long> GetLongs(Dictionary<string, object>? variables = null) {
-			return new LongList(this, variables).Longs;
+		public List<long> GetLongs() {
+			return new LongList(this).Longs;
 		}
-		public List<ulong> GetULongs(Dictionary<string, object>? variables = null) {
-			return new ULongList(this, variables).ULongs;
+		public List<ulong> GetULongs() {
+			return new ULongList(this).ULongs;
 		}
-		public List<double> GetDoubles(Dictionary<string, object>? variables = null) {
-			return new DoubleList(this, variables).Doubles;
+		public List<double> GetDoubles() {
+			return new DoubleList(this).Doubles;
 		}
 		public StringOfItem GetStringOfItem() {
 			return new StringOfItem(this);
@@ -121,9 +119,9 @@ namespace commonItems {
 			return new PDXBool(this);
 		}
 
-		public Dictionary<string, string> GetAssignments(Dictionary<string, object>? variables = null) {
+		public Dictionary<string, string> GetAssignments() {
 			var assignments = new Dictionary<string, string>();
-			var parser = new Parser(variables);
+			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.Catchall, (reader, assignmentName) => {
 				parser.GetNextTokenWithoutMatching(reader); // remove equals
 				var assignmentValue = parser.GetNextTokenWithoutMatching(reader);

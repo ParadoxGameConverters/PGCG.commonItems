@@ -76,23 +76,18 @@ namespace commonItems {
 
 		public Parser() {
 			registeredRules[new RegisteredRegex(CommonRegexes.Variable)] = new TwoArgDelegate((reader, varStr) => {
-				var value = reader.GetString(Variables);
+				var value = reader.GetString();
+				var variableName = varStr[1..];
 				if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-					Variables.Add(varStr[1..], intValue);
+					Variables.Add(variableName, intValue);
 					return;
 				}
 				if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
-					Variables.Add(varStr[1..], doubleValue);
+					Variables.Add(variableName, doubleValue);
 					return;
 				}
-				Variables.Add(varStr[1..], value);
+				Variables.Add(variableName, value);
 			});
-		}
-
-		public Parser(Dictionary<string, object>? variables) : this() {
-			if (variables is not null) {
-				Variables = variables;
-			}
 		}
 
 		public static void AbsorbBOM(BufferedReader reader) {

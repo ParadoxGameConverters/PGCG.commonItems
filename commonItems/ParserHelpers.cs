@@ -43,8 +43,8 @@ namespace commonItems {
 		}
 	}
 	public class SingleString {
-		public SingleString(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var parser = new Parser(variables);
+		public SingleString(BufferedReader sr) {
+			var parser = new Parser();
 			// remove equals
 			parser.GetNextTokenWithoutMatching(sr);
 
@@ -59,8 +59,8 @@ namespace commonItems {
 	}
 
 	public class SingleInt {
-		public SingleInt(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var intStr = StringUtils.RemQuotes(sr.GetString(variables));
+		public SingleInt(BufferedReader sr) {
+			var intStr = StringUtils.RemQuotes(sr.GetString());
 			if (!int.TryParse(intStr, out int theInt)) {
 				Logger.Warn($"Could not convert string {intStr} to int!");
 				return;
@@ -71,8 +71,8 @@ namespace commonItems {
 	}
 
 	public class SingleLong {
-		public SingleLong(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var longStr = StringUtils.RemQuotes(sr.GetString(variables));
+		public SingleLong(BufferedReader sr) {
+			var longStr = StringUtils.RemQuotes(sr.GetString());
 			if (!long.TryParse(longStr, out long theLong)) {
 				Logger.Warn($"Could not convert string {longStr} to long!");
 				return;
@@ -83,8 +83,8 @@ namespace commonItems {
 	}
 
 	public class SingleULong {
-		public SingleULong(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var ulongStr = StringUtils.RemQuotes(sr.GetString(variables));
+		public SingleULong(BufferedReader sr) {
+			var ulongStr = StringUtils.RemQuotes(sr.GetString());
 			if (!ulong.TryParse(ulongStr, out ulong theULong)) {
 				Logger.Warn($"Could not convert string {ulongStr} to ulong!");
 				return;
@@ -95,8 +95,8 @@ namespace commonItems {
 	}
 
 	public class SingleDouble {
-		public SingleDouble(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var doubleStr = StringUtils.RemQuotes(sr.GetString(variables));
+		public SingleDouble(BufferedReader sr) {
+			var doubleStr = StringUtils.RemQuotes(sr.GetString());
 			if (!double.TryParse(doubleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
 				Logger.Warn($"Could not convert string {doubleStr} to double!");
 				return;
@@ -107,20 +107,12 @@ namespace commonItems {
 	}
 
 	public class StringList {
-		public StringList(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var parser = new Parser(variables);
+		public StringList(BufferedReader sr) {
+			var parser = new Parser();
 			parser.RegisterKeyword("\"\"", _ => { });
 			parser.RegisterRegex(CommonRegexes.String, (_, theString) =>
 				Strings.Add(theString)
 			);
-			parser.RegisterRegex(CommonRegexes.Variable, (_, varStr) => {
-				var value = parser.ResolveVariable(varStr).ToString();
-				if (value is null) {
-					Logger.Warn($"StringList: variable {varStr} resolved to null value!");
-				} else {
-					Strings.Add(value);
-				}
-			});
 			parser.RegisterRegex(CommonRegexes.QuotedString, (_, theString) =>
 				Strings.Add(StringUtils.RemQuotes(theString))
 			);
@@ -130,13 +122,9 @@ namespace commonItems {
 	}
 
 	public class IntList {
-		public IntList(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var parser = new Parser(variables);
+		public IntList(BufferedReader sr) {
+			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.Integer, (_, intString) => Ints.Add(int.Parse(intString)));
-			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (_, expr) => {
-				var value = (int)parser.EvaluateExpression(expr);
-				Ints.Add(value);
-			});
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, intString) => {
 				// remove quotes
 				intString = intString[1..^1];
@@ -148,13 +136,9 @@ namespace commonItems {
 	}
 
 	public class LongList {
-		public LongList(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var parser = new Parser(variables);
+		public LongList(BufferedReader sr) {
+			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.Integer, (_, longString) => Longs.Add(long.Parse(longString)));
-			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (_, expr) => {
-				var value = (long)(int)parser.EvaluateExpression(expr);
-				Longs.Add(value);
-			});
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, longString) => {
 				// remove quotes
 				longString = longString[1..^1];
@@ -166,13 +150,9 @@ namespace commonItems {
 	}
 
 	public class ULongList {
-		public ULongList(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var parser = new Parser(variables);
+		public ULongList(BufferedReader sr) {
+			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ULongs.Add(ulong.Parse(ulongString)));
-			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (_, expr) => {
-				var value = (ulong)(int)parser.EvaluateExpression(expr);
-				ULongs.Add(value);
-			});
 			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, ulongString) => {
 				// remove quotes
 				ulongString = ulongString[1..^1];
@@ -184,15 +164,11 @@ namespace commonItems {
 	}
 
 	public class DoubleList {
-		public DoubleList(BufferedReader sr, Dictionary<string, object>? variables = null) {
-			var parser = new Parser(variables);
+		public DoubleList(BufferedReader sr) {
+			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.Float, (_, floatString) =>
 				Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture))
 			);
-			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (_, expr) => {
-				var value = (double)parser.EvaluateExpression(expr);
-				Doubles.Add(value);
-			});
 			parser.RegisterRegex(CommonRegexes.QuotedFloat, (_, floatString) => {
 				// remove quotes
 				floatString = floatString[1..^1];
