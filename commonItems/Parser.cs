@@ -1,5 +1,4 @@
-﻿using NCalc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -34,8 +33,6 @@ namespace commonItems {
 	}
 
 	public class Parser {
-		public Dictionary<string, object> Variables { get; } = new();
-
 		private abstract class RegisteredKeywordOrRegex : IEquatable<RegisteredKeywordOrRegex> {
 			public abstract bool Equals(RegisteredKeywordOrRegex? other);
 			public abstract bool Matches(string token);
@@ -76,23 +73,18 @@ namespace commonItems {
 
 		public Parser() {
 			registeredRules[new RegisteredRegex(CommonRegexes.Variable)] = new TwoArgDelegate((reader, varStr) => {
-				var value = reader.GetString(Variables);
+				var value = reader.GetString();
+				var variableName = varStr[1..];
 				if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-					Variables.Add(varStr[1..], intValue);
+					reader.Variables.Add(variableName, intValue);
 					return;
 				}
 				if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
-					Variables.Add(varStr[1..], doubleValue);
+					reader.Variables.Add(variableName, doubleValue);
 					return;
 				}
-				Variables.Add(varStr[1..], value);
+				reader.Variables.Add(variableName, value);
 			});
-		}
-
-		public Parser(Dictionary<string, object>? variables) : this() {
-			if (variables is not null) {
-				Variables = variables;
-			}
 		}
 
 		public static void AbsorbBOM(BufferedReader reader) {
@@ -252,31 +244,19 @@ namespace commonItems {
 			return sb.ToString();
 		}
 
-		public object ResolveVariable(string lexeme) {
-			return Variables[lexeme[1..]];
-		}
-
-		public object EvaluateExpression(string lexeme) {
-			var expression = new Expression(lexeme[2..^1]);
-			foreach (var (name, value) in Variables) {
-				expression.Parameters[name] = value;
-			}
-			return expression.Evaluate();
-		}
-
 		// WithoutMatching refers to not matching against registered rules.
 		// Here we are only matching against variable and interpolated expression regexes
 		// to resolve them before returning.
-		public string? GetNextTokenWithoutMatching(BufferedReader reader) {
+		public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
 			if (reader.EndOfStream) {
 				return null;
 			}
 			var lexeme = GetNextLexeme(reader);
 			if (CommonRegexes.Variable.IsMatch(lexeme)) {
-				return GetValueString(ResolveVariable(lexeme));
+				return GetValueString(reader.ResolveVariable(lexeme));
 			}
 			if (CommonRegexes.InterpolatedExpression.IsMatch(lexeme)) {
-				return GetValueString(EvaluateExpression(lexeme));
+				return GetValueString(reader.EvaluateExpression(lexeme));
 			}
 			return lexeme;
 
