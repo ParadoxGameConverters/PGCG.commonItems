@@ -355,16 +355,19 @@ namespace commonItems {
 
 		/// <summary>
 		///  Parses a file, absorbs UTF8-BOM if detected.
+		///  Returns a BufferedReader that was used for parsing the file, otherwise returns null.
 		/// </summary>
 		/// <param name="filename"></param>
-		public void ParseFile(string filename) {
+		public BufferedReader? ParseFile(string filename) {
 			if (!File.Exists(filename)) {
 				Logger.Error($"Could not open {filename} for parsing");
-				return;
+				return null;
 			}
 			var reader = new BufferedReader(File.OpenText(filename));
 			AbsorbBOM(reader);
 			ParseStream(reader);
+
+			return reader;
 		}
 
 		/// <summary>
