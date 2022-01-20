@@ -120,13 +120,13 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void SingleIntGetsQuotedIntAfterEquals() {
+		public void GetIntGetsQuotedIntAfterEquals() {
 			var reader = new BufferedReader(" = \"-1\"");
 			Assert.Equal(-1, reader.GetInt());
 		}
 
 		[Fact]
-		public void SingleIntLogsInvalidInput() {
+		public void GetIntLogsInvalidInput() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 
