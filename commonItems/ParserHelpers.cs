@@ -57,54 +57,6 @@ namespace commonItems {
 		public string String { get; } = "";
 	}
 
-	public class SingleInt {
-		public SingleInt(BufferedReader sr) {
-			var intStr = StringUtils.RemQuotes(sr.GetString());
-			if (!int.TryParse(intStr, out int theInt)) {
-				Logger.Warn($"Could not convert string {intStr} to int!");
-				return;
-			}
-			Int = theInt;
-		}
-		public int Int { get; }
-	}
-
-	public class SingleLong {
-		public SingleLong(BufferedReader sr) {
-			var longStr = StringUtils.RemQuotes(sr.GetString());
-			if (!long.TryParse(longStr, out long theLong)) {
-				Logger.Warn($"Could not convert string {longStr} to long!");
-				return;
-			}
-			Long = theLong;
-		}
-		public long Long { get; }
-	}
-
-	public class SingleULong {
-		public SingleULong(BufferedReader sr) {
-			var ulongStr = StringUtils.RemQuotes(sr.GetString());
-			if (!ulong.TryParse(ulongStr, out ulong theULong)) {
-				Logger.Warn($"Could not convert string {ulongStr} to ulong!");
-				return;
-			}
-			ULong = theULong;
-		}
-		public ulong ULong { get; }
-	}
-
-	public class SingleDouble {
-		public SingleDouble(BufferedReader sr) {
-			var doubleStr = StringUtils.RemQuotes(sr.GetString());
-			if (!double.TryParse(doubleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
-				Logger.Warn($"Could not convert string {doubleStr} to double!");
-				return;
-			}
-			Double = theDouble;
-		}
-		public double Double { get; }
-	}
-
 	public class StringList {
 		public StringList(BufferedReader sr) {
 			var parser = new Parser();

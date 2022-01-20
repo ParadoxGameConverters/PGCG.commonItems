@@ -108,24 +108,21 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void SingleIntGetsIntAfterEquals() {
-			var input = new BufferedReader(" = 1");
-			var theInteger = new SingleInt(input);
-			Assert.Equal(1, theInteger.Int);
+		public void GetIntGetsIntAfterEquals() {
+			var reader = new BufferedReader(" = 1");
+			Assert.Equal(1, reader.GetInt());
 		}
 
 		[Fact]
-		public void SingleIntGetsNegativeIntAfterEquals() {
-			var input = new BufferedReader(" = -1");
-			var theInteger = new SingleInt(input);
-			Assert.Equal(-1, theInteger.Int);
+		public void GetIntGetsNegativeIntAfterEquals() {
+			var reader = new BufferedReader(" = -1");
+			Assert.Equal(-1, reader.GetInt());
 		}
 
 		[Fact]
 		public void SingleIntGetsQuotedIntAfterEquals() {
-			var input = new BufferedReader(" = \"-1\"");
-			var theInteger = new SingleInt(input);
-			Assert.Equal(-1, theInteger.Int);
+			var reader = new BufferedReader(" = \"-1\"");
+			Assert.Equal(-1, reader.GetInt());
 		}
 
 		[Fact]
@@ -133,10 +130,10 @@ namespace commonItems.UnitTests {
 			var output = new StringWriter();
 			Console.SetOut(output);
 
-			var input = new BufferedReader("= foo");
-			var theInteger = new SingleInt(input);
+			var reader = new BufferedReader("= foo");
+			var theInteger = reader.GetInt();
 			Assert.Equal("[WARN] Could not convert string foo to int!", output.ToString().TrimEnd());
-			Assert.Equal(0, theInteger.Int);
+			Assert.Equal(0, theInteger);
 		}
 
 		[Fact]
@@ -182,28 +179,26 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void SingleDoubleGetsDoubleAfterEquals() {
-			var input = new BufferedReader(" = 1.25");
-			var theDouble = new SingleDouble(input);
-			Assert.Equal(1.25, theDouble.Double);
+		public void GetDoubleGetsDoubleAfterEquals() {
+			var reader = new BufferedReader(" = 1.25");
+			Assert.Equal(1.25, reader.GetDouble());
 		}
 
 		[Fact]
-		public void SingleDoubleGetsQuotedDoubleAfterEquals() {
-			var input = new BufferedReader(" = \"1.25\"");
-			var theDouble = new SingleDouble(input);
-			Assert.Equal(1.25, theDouble.Double);
+		public void GetDoubleGetsQuotedDoubleAfterEquals() {
+			var reader = new BufferedReader(" = \"1.25\"");
+			Assert.Equal(1.25, reader.GetDouble());
 		}
 
 		[Fact]
-		public void SingleDoubleLogsNotMatchingInput() {
+		public void GetDoubleLogsNotMatchingInput() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 
-			var input = new BufferedReader("= \"345.345 foo\"");
-			var theDouble = new SingleDouble(input);
+			var reader = new BufferedReader("= \"345.345 foo\"");
+			var theDouble = reader.GetDouble();
 			Assert.Equal("[WARN] Could not convert string 345.345 foo to double!", output.ToString().TrimEnd());
-			Assert.Equal(0, theDouble.Double);
+			Assert.Equal(0, theDouble);
 		}
 
 		[Fact]
@@ -462,73 +457,67 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void SingleLongGetsLongAfterEquals() {
+		public void GetLongGetsLongAfterEquals() {
 			var reader = new BufferedReader(" = 123456789012345");
-			var theLong = new SingleLong(reader).Long;
 
-			Assert.Equal(123456789012345, theLong);
+			Assert.Equal(123456789012345, reader.GetLong());
 		}
 
 		[Fact]
-		public void SingleLongGetsNegativeLongAfterEquals() {
+		public void GetLongGetsNegativeLongAfterEquals() {
 			var reader = new BufferedReader(" = -123456789012345");
-			var theLong = new SingleLong(reader).Long;
 
-			Assert.Equal(-123456789012345, theLong);
+			Assert.Equal(-123456789012345, reader.GetLong());
 		}
 
 		[Fact]
-		public void SingleULongGetsULongAfterEquals() {
+		public void GetULongGetsULongAfterEquals() {
 			var reader = new BufferedReader(" = 299792458000000000");
-			var theULong = new SingleULong(reader).ULong;
 
-			Assert.Equal((ulong)299792458000000000, theULong);
+			Assert.Equal((ulong)299792458000000000, reader.GetULong());
 		}
 
 		[Fact]
-		public void SingleLongGetsQuotedLongAfterEquals() {
+		public void GetLongGetsQuotedLongAfterEquals() {
 			var reader = new BufferedReader(@"= ""123456789012345""");
-			var theLong = new SingleLong(reader).Long;
 
-			Assert.Equal(123456789012345, theLong);
+			Assert.Equal(123456789012345, reader.GetLong());
 		}
 
 		[Fact]
-		public void SingleLongGetsQuotedNegativeLongAfterEquals() {
+		public void GetLongGetsQuotedNegativeLongAfterEquals() {
 			var reader = new BufferedReader(@"= ""-123456789012345""");
-			var theLong = new SingleLong(reader).Long;
 
-			Assert.Equal(-123456789012345, theLong);
+			Assert.Equal(-123456789012345, reader.GetLong());
 		}
 
 		[Fact]
-		public void SingleULongGetsQuotedUlongAfterEquals() {
+		public void GetULongGetsQuotedUlongAfterEquals() {
 			var reader = new BufferedReader(@"= ""123456789012345""");
-			var theULong = new SingleULong(reader).ULong;
 
-			Assert.Equal((ulong)123456789012345, theULong);
+			Assert.Equal((ulong)123456789012345, reader.GetULong());
 		}
 
 		[Fact]
-		public void SingleLongLogsInvalidInput() {
+		public void GetLongLogsInvalidInput() {
 			var reader = new BufferedReader("= foo");
 
 			var output = new StringWriter();
 			Console.SetOut(output);
-			var theLong = new SingleLong(reader).Long;
+			var theLong = reader.GetLong();
 
 			Assert.Contains("Could not convert string foo to long!", output.ToString());
 			Assert.Equal(0, theLong);
 		}
 
 		[Fact]
-		public void SingleULongLogsInvalidInput() {
+		public void GetULongLogsInvalidInput() {
 			var reader = new BufferedReader("= foo");
 
 			var output = new StringWriter();
 			Console.SetOut(output);
 
-			var theULong = new SingleULong(reader).ULong;
+			var theULong = reader.GetULong();
 
 			Assert.Contains("Could not convert string foo to ulong!", output.ToString());
 			Assert.Equal((ulong)0, theULong);
