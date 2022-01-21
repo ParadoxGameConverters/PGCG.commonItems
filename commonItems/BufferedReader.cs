@@ -1,6 +1,7 @@
 ﻿using NCalc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -72,8 +73,7 @@ namespace commonItems {
 			}
 		}
 
-		public void Skip(uint numberOfBytes) // not present in StreamReader
-		{
+		public void Skip(uint numberOfBytes) { // not present in StreamReader
 			for (uint i = 0; i < numberOfBytes; ++i) {
 				Read();
 			}
@@ -87,16 +87,40 @@ namespace commonItems {
 			return new SingleString(this).String;
 		}
 		public int GetInt() {
-			return new SingleInt(this).Int;
+			var intStr = StringUtils.RemQuotes(GetString());
+			if (int.TryParse(intStr, out int theInt)) {
+				return theInt;
+			}
+
+			Logger.Warn($"Could not convert string {intStr} to int!");
+			return 0;
 		}
 		public long GetLong() {
-			return new SingleLong(this).Long;
+			var longStr = StringUtils.RemQuotes(GetString());
+			if (long.TryParse(longStr, out long theLong)) {
+				return theLong;
+			}
+
+			Logger.Warn($"Could not convert string {longStr} to long!");
+			return 0;
 		}
 		public ulong GetULong() {
-			return new SingleULong(this).ULong;
+			var ulongStr = StringUtils.RemQuotes(GetString());
+			if (ulong.TryParse(ulongStr, out ulong theULong)) {
+				return theULong;
+			}
+
+			Logger.Warn($"Could not convert string {ulongStr} to ulong!");
+			return 0;
 		}
 		public double GetDouble() {
-			return new SingleDouble(this).Double;
+			var doubleStr = StringUtils.RemQuotes(GetString());
+			if (double.TryParse(doubleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
+				return theDouble;
+			}
+
+			Logger.Warn($"Could not convert string {doubleStr} to double!");
+			return 0;
 		}
 		public List<string> GetStrings() {
 			return new StringList(this).Strings;
