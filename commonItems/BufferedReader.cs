@@ -172,5 +172,12 @@ namespace commonItems {
 			}
 			return expression.Evaluate();
 		}
+
+		public void CopyVariables(BufferedReader otherReader) {
+			var variablesToCopy = new Dictionary<string, object>(otherReader.Variables);
+			foreach (var (key, value) in variablesToCopy) {
+				Variables[key] = value;
+			}
+		}
 	}
 }
