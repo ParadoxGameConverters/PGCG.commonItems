@@ -59,5 +59,44 @@ namespace commonItems.UnitTests {
 			var reader = new BufferedReader();
 			Assert.Equal(string.Empty, reader.ReadToEnd());
 		}
+
+		[Fact]
+		public void VariablesCanBeCopiedFromOtherReader() {
+			var a = new BufferedReader("@x=1 @y=2 @c=3");
+			var b = new BufferedReader("@a=3 @b=4 @c=5");
+
+			var parser = new Parser();
+			parser.ParseStream(a);
+			parser.ParseStream(b);
+			b.CopyVariables(a);
+
+			Assert.Collection(b.Variables,
+				variable => {
+					(string? key, object? value) = variable;
+					Assert.Equal("a", key);
+					Assert.Equal(3, value);
+				},
+				variable => {
+					(string? key, object? value) = variable;
+					Assert.Equal("b", key);
+					Assert.Equal(4, value);
+				},
+				variable => {
+					(string? key, object? value) = variable;
+					Assert.Equal("c", key);
+					Assert.Equal(3, value);
+				},
+				variable => {
+					(string? key, object? value) = variable;
+					Assert.Equal("x", key);
+					Assert.Equal(1, value);
+				},
+				variable => {
+					(string? key, object? value) = variable;
+					Assert.Equal("y", key);
+					Assert.Equal(2, value);
+				}
+			);
+		}
 	}
 }
