@@ -75,23 +75,28 @@ namespace commonItems.UnitTests {
 					(string? key, object? value) = variable;
 					Assert.Equal("a", key);
 					Assert.Equal(3, value);
-				}, variable => {
+				},
+				variable => {
 					(string? key, object? value) = variable;
 					Assert.Equal("b", key);
 					Assert.Equal(4, value);
-				}, variable => {
+				},
+				variable => {
 					(string? key, object? value) = variable;
 					Assert.Equal("c", key);
 					Assert.Equal(3, value);
-				}, variable => {
+				},
+				variable => {
 					(string? key, object? value) = variable;
 					Assert.Equal("x", key);
 					Assert.Equal(1, value);
-				}, variable => {
+				},
+				variable => {
 					(string? key, object? value) = variable;
 					Assert.Equal("y", key);
 					Assert.Equal(2, value);
-				});
+				}
+			);
 		}
 	}
 }
