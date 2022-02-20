@@ -175,13 +175,63 @@ namespace commonItems {
 			return ints;
 		}
 		public List<long> GetLongs() {
-			return new LongList(this).Longs;
+			var longs = new List<long>();
+			var parser = new Parser();
+			parser.RegisterRegex(CommonRegexes.Integer, (_, longString) => longs.Add(long.Parse(longString)));
+			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, longString) => {
+				// remove quotes
+				longString = longString[1..^1];
+				longs.Add(long.Parse(longString));
+			});
+			if (Variables.Count > 0) {
+				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
+					var value = (long)(int)reader.EvaluateExpression(expr);
+					longs.Add(value);
+				});
+			}
+
+			parser.ParseStream(this);
+			return longs;
 		}
 		public List<ulong> GetULongs() {
-			return new ULongList(this).ULongs;
+			var ulongs = new List<ulong>();
+			var parser = new Parser();
+			parser.RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ulongs.Add(ulong.Parse(ulongString)));
+			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, ulongString) => {
+				// remove quotes
+				ulongString = ulongString[1..^1];
+				ulongs.Add(ulong.Parse(ulongString));
+			});
+			if (Variables.Count > 0) {
+				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
+					var value = (ulong)(int)reader.EvaluateExpression(expr);
+					ulongs.Add(value);
+				});
+			}
+
+			parser.ParseStream(this);
+			return ulongs;
 		}
 		public List<double> GetDoubles() {
-			return new DoubleList(this).Doubles;
+			var doubles = new List<double>();
+			var parser = new Parser();
+			parser.RegisterRegex(CommonRegexes.Float, (_, floatString) =>
+				doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture))
+			);
+			parser.RegisterRegex(CommonRegexes.QuotedFloat, (_, floatString) => {
+				// remove quotes
+				floatString = floatString[1..^1];
+				doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
+			});
+			if (Variables.Count > 0) {
+				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
+					var value = (double)reader.EvaluateExpression(expr);
+					doubles.Add(value);
+				});
+			}
+
+			parser.ParseStream(this);
+			return doubles;
 		}
 		public StringOfItem GetStringOfItem() {
 			return new StringOfItem(this);

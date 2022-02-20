@@ -1,6 +1,5 @@
 ﻿using commonItems.Serialization;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 
 namespace commonItems {
@@ -41,71 +40,6 @@ namespace commonItems {
 			IgnoreItem(sr);
 			Logger.Debug($"Ignoring keyword: {keyword}");
 		}
-	}
-
-	public class LongList {
-		public LongList(BufferedReader sr) {
-			var parser = new Parser();
-			parser.RegisterRegex(CommonRegexes.Integer, (_, longString) => Longs.Add(long.Parse(longString)));
-			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, longString) => {
-				// remove quotes
-				longString = longString[1..^1];
-				Longs.Add(long.Parse(longString));
-			});
-			if (sr.Variables.Count > 0) {
-				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
-					var value = (long)(int)reader.EvaluateExpression(expr);
-					Longs.Add(value);
-				});
-			}
-
-			parser.ParseStream(sr);
-		}
-		public List<long> Longs { get; } = new();
-	}
-
-	public class ULongList {
-		public ULongList(BufferedReader sr) {
-			var parser = new Parser();
-			parser.RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ULongs.Add(ulong.Parse(ulongString)));
-			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, ulongString) => {
-				// remove quotes
-				ulongString = ulongString[1..^1];
-				ULongs.Add(ulong.Parse(ulongString));
-			});
-			if (sr.Variables.Count > 0) {
-				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
-					var value = (ulong)(int)reader.EvaluateExpression(expr);
-					ULongs.Add(value);
-				});
-			}
-
-			parser.ParseStream(sr);
-		}
-		public List<ulong> ULongs { get; } = new();
-	}
-
-	public class DoubleList {
-		public DoubleList(BufferedReader sr) {
-			var parser = new Parser();
-			parser.RegisterRegex(CommonRegexes.Float, (_, floatString) =>
-				Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture))
-			);
-			parser.RegisterRegex(CommonRegexes.QuotedFloat, (_, floatString) => {
-				// remove quotes
-				floatString = floatString[1..^1];
-				Doubles.Add(double.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
-			});
-			if (sr.Variables.Count > 0) {
-				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
-					var value = (double)reader.EvaluateExpression(expr);
-					Doubles.Add(value);
-				});
-			}
-
-			parser.ParseStream(sr);
-		}
-		public List<double> Doubles { get; } = new();
 	}
 
 	public class StringOfItem : IPDXSerializable {
