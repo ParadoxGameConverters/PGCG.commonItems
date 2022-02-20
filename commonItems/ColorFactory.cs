@@ -62,7 +62,7 @@ namespace commonItems {
 				} else {
 					// integer list
 					var integerStreamReader = new BufferedReader(questionableList);
-					var rgb = new IntList(integerStreamReader).Ints;
+					var rgb = integerStreamReader.GetInts();
 					if (rgb.Count != 3) {
 						throw new FormatException("Color has wrong number of components");
 					}

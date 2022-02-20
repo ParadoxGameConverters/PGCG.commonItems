@@ -46,8 +46,8 @@ namespace commonItems.UnitTests {
 			public string? value1;
 			public string? value2;
 			public Test1(BufferedReader bufferedReader) {
-				RegisterKeyword("key1", sr => value1 = new SingleString(sr).String);
-				RegisterKeyword("key2", sr => value2 = new SingleString(sr).String);
+				RegisterKeyword("key1", reader => value1 = reader.GetString());
+				RegisterKeyword("key2", reader => value2 = reader.GetString());
 				RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
 				ParseStream(bufferedReader);
 			}
@@ -66,45 +66,39 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void IntListDefaultsToEmpty() {
-			var input = new BufferedReader(string.Empty);
-			var theIntegers = new IntList(input);
-			Assert.Empty(theIntegers.Ints);
+		public void GetIntsDefaultsToEmpty() {
+			var reader = new BufferedReader(string.Empty);
+			Assert.Empty(reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsInts() {
-			var input = new BufferedReader("1 2 3");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { 1, 2, 3 }, theIntegers.Ints);
+		public void GetIntsAddsInts() {
+			var reader = new BufferedReader("1 2 3");
+			Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsNegativeInts() {
-			var input = new BufferedReader("-1 -2 -3");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { -1, -2, -3 }, theIntegers.Ints);
+		public void GetIntsAddsNegativeInts() {
+			var reader = new BufferedReader("-1 -2 -3");
+			Assert.Equal(new List<int> { -1, -2, -3 }, reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsQuotedInts() {
-			var input = new BufferedReader("\"1\" \"2\" \"3\"");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { 1, 2, 3 }, theIntegers.Ints);
+		public void GetIntsAddsQuotedInts() {
+			var reader = new BufferedReader("\"1\" \"2\" \"3\"");
+			Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsQuotedNegativeInts() {
-			var input = new BufferedReader("\"-1\" \"-2\" \"-3\"");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { -1, -2, -3 }, theIntegers.Ints);
+		public void GetIntsAddsQuotedNegativeInts() {
+			var reader = new BufferedReader("\"-1\" \"-2\" \"-3\"");
+			Assert.Equal(new List<int> { -1, -2, -3 }, reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsIntsFromBracedBlock() {
-			var input = new BufferedReader(" = {1 2 3} 4");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { 1, 2, 3 }, theIntegers.Ints);
+		public void GetIntsAddsIntsFromBracedBlock() {
+			var reader = new BufferedReader(" = {1 2 3} 4");
+			Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
 		}
 
 		[Fact]
@@ -202,53 +196,47 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void StringListDefaultsToEmpty() {
-			var input = new BufferedReader(string.Empty);
-			var theStrings = new StringList(input);
-			Assert.Empty(theStrings.Strings);
+		public void GetStringsDefaultsToEmptyList() {
+			var reader = new BufferedReader(string.Empty);
+			Assert.Empty(reader.GetStrings());
 		}
 
 		[Fact]
-		public void StringListAddsStrings() {
-			var input = new BufferedReader("foo bar baz");
-			var theStrings = new StringList(input);
-			Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
+		public void GetStringsAddsStrings() {
+			var reader = new BufferedReader("foo bar baz");
+			Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
 		}
 
 		[Fact]
-		public void StringListAddsQuotedStrings() {
-			var input = new BufferedReader("\"foo\" \"bar\" \"baz\"");
-			var theStrings = new StringList(input);
-			Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
+		public void GetStringsAddsQuotedStrings() {
+			var reader = new BufferedReader("\"foo\" \"bar\" \"baz\"");
+			Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
 		}
 
 		[Fact]
-		public void StringListAddsStringsFromBracedBlock() {
-			var input = new BufferedReader(" = { foo bar baz } qux");
-			var theStrings = new StringList(input);
-			Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
+		public void GetStringsAddsStringsFromBracedBlock() {
+			var reader = new BufferedReader(" = { foo bar baz } qux");
+			Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
 		}
 
 		[Fact]
-		public void SingleStringGetsStringAfterEquals() {
-			var input = new BufferedReader(" = foo");
-			var theString = new SingleString(input);
-			Assert.Equal("foo", theString.String);
+		public void GetStringGetsStringAfterEquals() {
+			var reader = new BufferedReader(" = foo");
+			Assert.Equal("foo", reader.GetString());
 		}
 
 		[Fact]
-		public void SingleStringGetsQuotedStringAfterEquals() {
-			var input = new BufferedReader(" = \"foo\"");
-			var theString = new SingleString(input);
-			Assert.Equal("foo", theString.String);
+		public void GetStringGetsQuotedStringAfterEquals() {
+			var reader = new BufferedReader(" = \"foo\"");
+			Assert.Equal("foo", reader.GetString());
 		}
 
 		[Fact]
-		public void SingleStringLogsErrorOnTokenNotFound() {
+		public void GetStringLogsErrorOnTokenNotFound() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			var reader = new BufferedReader(" =");
-			_ = new SingleString(reader).String;
+			_ = reader.GetString();
 			Assert.Equal("[ERROR] SingleString: next token not found!", output.ToString().TrimEnd());
 		}
 
@@ -279,10 +267,7 @@ namespace commonItems.UnitTests {
 		private class WrapperClass : Parser {
 			private class TestClass : Parser {
 				public TestClass(BufferedReader reader) {
-					RegisterKeyword("test", reader => {
-						var testStr = new SingleString(reader);
-						test = testStr.String.Equals("yes");
-					});
+					RegisterKeyword("test", reader => test = reader.GetString().Equals("yes"));
 					ParseStream(reader);
 				}
 				public bool test = false;
