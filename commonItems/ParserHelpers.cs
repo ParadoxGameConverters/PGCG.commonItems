@@ -43,53 +43,6 @@ namespace commonItems {
 		}
 	}
 
-	public class StringList {
-		public StringList(BufferedReader sr) {
-			var parser = new Parser();
-			parser.RegisterKeyword("\"\"", _ => { });
-			parser.RegisterRegex(CommonRegexes.String, (_, theString) =>
-				Strings.Add(theString)
-			);
-			parser.RegisterRegex(CommonRegexes.QuotedString, (_, theString) =>
-				Strings.Add(StringUtils.RemQuotes(theString))
-			);
-			if (sr.Variables.Count > 0) {
-				parser.RegisterRegex(CommonRegexes.Variable, (reader, varStr) => {
-					var value = reader.ResolveVariable(varStr).ToString();
-					if (value is null) {
-						Logger.Warn($"StringList: variable {varStr} resolved to null value!");
-					} else {
-						Strings.Add(value);
-					}
-				});
-			}
-
-			parser.ParseStream(sr);
-		}
-		public List<string> Strings { get; } = new();
-	}
-
-	public class IntList {
-		public IntList(BufferedReader sr) {
-			var parser = new Parser();
-			parser.RegisterRegex(CommonRegexes.Integer, (_, intString) => Ints.Add(int.Parse(intString)));
-			parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, intString) => {
-				// remove quotes
-				intString = intString[1..^1];
-				Ints.Add(int.Parse(intString));
-			});
-			if (sr.Variables.Count > 0) {
-				parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
-					var value = (int)reader.EvaluateExpression(expr);
-					Ints.Add(value);
-				});
-			}
-
-			parser.ParseStream(sr);
-		}
-		public List<int> Ints { get; } = new();
-	}
-
 	public class LongList {
 		public LongList(BufferedReader sr) {
 			var parser = new Parser();

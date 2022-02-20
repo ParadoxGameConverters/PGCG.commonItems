@@ -66,45 +66,39 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void IntListDefaultsToEmpty() {
-			var input = new BufferedReader(string.Empty);
-			var theIntegers = new IntList(input);
-			Assert.Empty(theIntegers.Ints);
+		public void GetIntsDefaultsToEmpty() {
+			var reader = new BufferedReader(string.Empty);
+			Assert.Empty(reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsInts() {
-			var input = new BufferedReader("1 2 3");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { 1, 2, 3 }, theIntegers.Ints);
+		public void GetIntsAddsInts() {
+			var reader = new BufferedReader("1 2 3");
+			Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsNegativeInts() {
-			var input = new BufferedReader("-1 -2 -3");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { -1, -2, -3 }, theIntegers.Ints);
+		public void GetIntsAddsNegativeInts() {
+			var reader = new BufferedReader("-1 -2 -3");
+			Assert.Equal(new List<int> { -1, -2, -3 }, reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsQuotedInts() {
-			var input = new BufferedReader("\"1\" \"2\" \"3\"");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { 1, 2, 3 }, theIntegers.Ints);
+		public void GetIntsAddsQuotedInts() {
+			var reader = new BufferedReader("\"1\" \"2\" \"3\"");
+			Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsQuotedNegativeInts() {
-			var input = new BufferedReader("\"-1\" \"-2\" \"-3\"");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { -1, -2, -3 }, theIntegers.Ints);
+		public void GetIntsAddsQuotedNegativeInts() {
+			var reader = new BufferedReader("\"-1\" \"-2\" \"-3\"");
+			Assert.Equal(new List<int> { -1, -2, -3 }, reader.GetInts());
 		}
 
 		[Fact]
-		public void IntListAddsIntsFromBracedBlock() {
-			var input = new BufferedReader(" = {1 2 3} 4");
-			var theIntegers = new IntList(input);
-			Assert.Equal(new List<int> { 1, 2, 3 }, theIntegers.Ints);
+		public void GetIntsAddsIntsFromBracedBlock() {
+			var reader = new BufferedReader(" = {1 2 3} 4");
+			Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
 		}
 
 		[Fact]
@@ -202,31 +196,27 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void StringListDefaultsToEmpty() {
-			var input = new BufferedReader(string.Empty);
-			var theStrings = new StringList(input);
-			Assert.Empty(theStrings.Strings);
+		public void GetStringsDefaultsToEmptyList() {
+			var reader = new BufferedReader(string.Empty);
+			Assert.Empty(reader.GetStrings());
 		}
 
 		[Fact]
-		public void StringListAddsStrings() {
-			var input = new BufferedReader("foo bar baz");
-			var theStrings = new StringList(input);
-			Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
+		public void GetStringsAddsStrings() {
+			var reader = new BufferedReader("foo bar baz");
+			Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
 		}
 
 		[Fact]
-		public void StringListAddsQuotedStrings() {
-			var input = new BufferedReader("\"foo\" \"bar\" \"baz\"");
-			var theStrings = new StringList(input);
-			Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
+		public void GetStringsAddsQuotedStrings() {
+			var reader = new BufferedReader("\"foo\" \"bar\" \"baz\"");
+			Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
 		}
 
 		[Fact]
-		public void StringListAddsStringsFromBracedBlock() {
-			var input = new BufferedReader(" = { foo bar baz } qux");
-			var theStrings = new StringList(input);
-			Assert.Equal(new List<string> { "foo", "bar", "baz" }, theStrings.Strings);
+		public void GetStringsAddsStringsFromBracedBlock() {
+			var reader = new BufferedReader(" = { foo bar baz } qux");
+			Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
 		}
 
 		[Fact]
