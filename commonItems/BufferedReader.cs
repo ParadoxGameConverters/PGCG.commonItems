@@ -84,7 +84,16 @@ namespace commonItems {
 		}
 
 		public string GetString() {
-			return new SingleString(this).String;
+			// remove equals
+			Parser.GetNextTokenWithoutMatching(this);
+
+			var token = Parser.GetNextTokenWithoutMatching(this);
+			if (token is not null) {
+				return StringUtils.RemQuotes(token);
+			}
+
+			Logger.Error("SingleString: next token not found!");
+			return string.Empty;
 		}
 		public int GetInt() {
 			var intStr = StringUtils.RemQuotes(GetString());

@@ -26,9 +26,9 @@ namespace commonItems.UnitTests {
 			public string? key;
 			public string? value;
 			public Test(BufferedReader bufferedReader) {
-				RegisterKeyword("key", (sr, k) => {
+				RegisterKeyword("key", (reader, k) => {
 					key = k;
-					value = new SingleString(sr).String;
+					value = reader.GetString();
 				});
 				ParseStream(bufferedReader);
 			}
@@ -62,9 +62,9 @@ namespace commonItems.UnitTests {
 			public string key = "";
 			public string? value;
 			public Test2(BufferedReader bufferedReader) {
-				RegisterKeyword("\"key\"", (sr, k) => {
+				RegisterKeyword("\"key\"", (reader, k) => {
 					key = k;
-					value = new SingleString(sr).String;
+					value = reader.GetString();
 				});
 				ParseStream(bufferedReader);
 			}
@@ -114,9 +114,9 @@ namespace commonItems.UnitTests {
 			public string key = "";
 			public string? value;
 			public Test3(BufferedReader bufferedReader) {
-				RegisterRegex("[key]+", (sr, k) => {
+				RegisterRegex("[key]+", (reader, k) => {
 					key = k;
-					value = new SingleString(sr).String;
+					value = reader.GetString();
 				});
 				ParseStream(bufferedReader);
 			}
@@ -134,9 +134,9 @@ namespace commonItems.UnitTests {
 			public string key = "";
 			public string? value;
 			public Test4(BufferedReader bufferedReader) {
-				RegisterRegex("[k\"ey]+", (sr, k) => {
+				RegisterRegex("[k\"ey]+", (reader, k) => {
 					key = k;
-					value = new SingleString(sr).String;
+					value = reader.GetString();
 				});
 				ParseStream(bufferedReader);
 			}
@@ -154,9 +154,9 @@ namespace commonItems.UnitTests {
 			public string key = "";
 			public string? value;
 			public Test5(BufferedReader bufferedReader) {
-				RegisterRegex(CommonRegexes.Catchall, (sr, k) => {
+				RegisterRegex(CommonRegexes.Catchall, (reader, k) => {
 					key = k;
-					value = new SingleString(sr).String;
+					value = reader.GetString();
 				});
 				ParseStream(bufferedReader);
 			}
@@ -245,7 +245,7 @@ namespace commonItems.UnitTests {
 		private class FileTest : Parser {
 			public string? value;
 			public FileTest(string filename) {
-				RegisterKeyword("key1", (sr) => value = new SingleString(sr).String);
+				RegisterKeyword("key1", reader => value = reader.GetString());
 				ParseFile(filename);
 			}
 		}
@@ -276,9 +276,9 @@ namespace commonItems.UnitTests {
 			public string? value;
 			public string? broken;
 			public Test7(BufferedReader bufferedReader) {
-				RegisterKeyword("key", (sr, k) => {
+				RegisterKeyword("key", (reader, k) => {
 					key = k;
-					value = new SingleString(sr).String;
+					value = reader.GetString();
 				});
 				RegisterKeyword("broken", (_, k) => broken = k);
 				ParseStream(bufferedReader);

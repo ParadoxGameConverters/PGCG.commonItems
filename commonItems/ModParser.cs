@@ -34,15 +34,9 @@ namespace commonItems {
 		}
 
 		private void RegisterKeys() {
-			RegisterKeyword("name", (sr) => {
-				Name = new SingleString(sr).String;
-			});
-			RegisterRegex("path|archive", (sr) => {
-				Path = new SingleString(sr).String;
-			});
-			RegisterKeyword("dependencies", (sr) => {
-				Dependencies.UnionWith(new StringList(sr).Strings);
-			});
+			RegisterKeyword("name", reader => Name = reader.GetString());
+			RegisterRegex("path|archive", reader => Path = reader.GetString());
+			RegisterKeyword("dependencies", reader => Dependencies.UnionWith(reader.GetStrings()));
 			RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreItem);
 		}
 	}

@@ -42,20 +42,6 @@ namespace commonItems {
 			Logger.Debug($"Ignoring keyword: {keyword}");
 		}
 	}
-	public class SingleString {
-		public SingleString(BufferedReader sr) {
-			// remove equals
-			Parser.GetNextTokenWithoutMatching(sr);
-
-			var token = Parser.GetNextTokenWithoutMatching(sr);
-			if (token is null) {
-				Logger.Error("SingleString: next token not found!");
-			} else {
-				String = StringUtils.RemQuotes(token);
-			}
-		}
-		public string String { get; } = "";
-	}
 
 	public class StringList {
 		public StringList(BufferedReader sr) {

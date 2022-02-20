@@ -46,8 +46,8 @@ namespace commonItems.UnitTests {
 			public string? value1;
 			public string? value2;
 			public Test1(BufferedReader bufferedReader) {
-				RegisterKeyword("key1", sr => value1 = new SingleString(sr).String);
-				RegisterKeyword("key2", sr => value2 = new SingleString(sr).String);
+				RegisterKeyword("key1", reader => value1 = reader.GetString());
+				RegisterKeyword("key2", reader => value2 = reader.GetString());
 				RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
 				ParseStream(bufferedReader);
 			}
@@ -230,25 +230,23 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void SingleStringGetsStringAfterEquals() {
-			var input = new BufferedReader(" = foo");
-			var theString = new SingleString(input);
-			Assert.Equal("foo", theString.String);
+		public void GetStringGetsStringAfterEquals() {
+			var reader = new BufferedReader(" = foo");
+			Assert.Equal("foo", reader.GetString());
 		}
 
 		[Fact]
-		public void SingleStringGetsQuotedStringAfterEquals() {
-			var input = new BufferedReader(" = \"foo\"");
-			var theString = new SingleString(input);
-			Assert.Equal("foo", theString.String);
+		public void GetStringGetsQuotedStringAfterEquals() {
+			var reader = new BufferedReader(" = \"foo\"");
+			Assert.Equal("foo", reader.GetString());
 		}
 
 		[Fact]
-		public void SingleStringLogsErrorOnTokenNotFound() {
+		public void GetStringLogsErrorOnTokenNotFound() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			var reader = new BufferedReader(" =");
-			_ = new SingleString(reader).String;
+			_ = reader.GetString();
 			Assert.Equal("[ERROR] SingleString: next token not found!", output.ToString().TrimEnd());
 		}
 
@@ -279,10 +277,7 @@ namespace commonItems.UnitTests {
 		private class WrapperClass : Parser {
 			private class TestClass : Parser {
 				public TestClass(BufferedReader reader) {
-					RegisterKeyword("test", reader => {
-						var testStr = new SingleString(reader);
-						test = testStr.String.Equals("yes");
-					});
+					RegisterKeyword("test", reader => test = reader.GetString().Equals("yes"));
 					ParseStream(reader);
 				}
 				public bool test = false;
