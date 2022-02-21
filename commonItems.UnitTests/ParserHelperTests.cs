@@ -131,45 +131,39 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void DoubleListDefaultsToEmpty() {
-			var input = new BufferedReader(string.Empty);
-			var theDoubles = new DoubleList(input);
-			Assert.Empty(theDoubles.Doubles);
+		public void GetDoublesDefaultsToEmpty() {
+			var reader = new BufferedReader(string.Empty);
+			Assert.Empty(reader.GetDoubles());
 		}
 
 		[Fact]
-		public void DoubleListAddsDoubles() {
-			var input = new BufferedReader("1.25 2.5 3.75");
-			var theDoubles = new DoubleList(input);
-			Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, theDoubles.Doubles);
+		public void GetDoublesAddsDoubles() {
+			var reader = new BufferedReader("1.25 2.5 3.75");
+			Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, reader.GetDoubles());
 		}
 
 		[Fact]
-		public void DoubleListAddsNegativeDoubles() {
-			var input = new BufferedReader("1.25 -2.5 -3.75");
-			var theDoubles = new DoubleList(input);
-			Assert.Equal(new List<double> { 1.25, -2.5, -3.75 }, theDoubles.Doubles);
+		public void GetDoublesAddsNegativeDoubles() {
+			var reader = new BufferedReader("1.25 -2.5 -3.75");
+			Assert.Equal(new List<double> { 1.25, -2.5, -3.75 }, reader.GetDoubles());
 		}
 
 		[Fact]
-		public void DoubleListAddsQuotedDoubles() {
-			var input = new BufferedReader("\"1.25\" \"2.5\" \"3.75\"");
-			var theDoubles = new DoubleList(input);
-			Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, theDoubles.Doubles);
+		public void GetDoublesAddsQuotedDoubles() {
+			var reader = new BufferedReader("\"1.25\" \"2.5\" \"3.75\"");
+			Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, reader.GetDoubles());
 		}
 
 		[Fact]
-		public void DoubleListAddsQuotedNegativeDoubles() {
-			var input = new BufferedReader("\"1.25\" \"-2.5\" \"-3.75\"");
-			var theDoubles = new DoubleList(input);
-			Assert.Equal(new List<double> { 1.25, -2.5, -3.75 }, theDoubles.Doubles);
+		public void GetDoublesAddsQuotedNegativeDoubles() {
+			var reader = new BufferedReader("\"1.25\" \"-2.5\" \"-3.75\"");
+			Assert.Equal(new List<double> { 1.25, -2.5, -3.75 }, reader.GetDoubles());
 		}
 
 		[Fact]
-		public void DoubleListAddsDoublesFromBracedBlock() {
-			var input = new BufferedReader(" = {1.25 2.5 3.75} 4.5");
-			var theDoubles = new DoubleList(input);
-			Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, theDoubles.Doubles);
+		public void GetDoublesAddsDoublesFromBracedBlock() {
+			var reader = new BufferedReader(" = {1.25 2.5 3.75} 4.5");
+			Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, reader.GetDoubles());
 		}
 
 		[Fact]
@@ -509,95 +503,79 @@ namespace commonItems.UnitTests {
 		}
 
 		[Fact]
-		public void LongListDefaultsToEmpty() {
+		public void GetLongsDefaultsToEmpty() {
 			var reader = new BufferedReader("");
-			var longs = new LongList(reader).Longs;
-			Assert.Empty(longs);
+			Assert.Empty(reader.GetLongs());
 		}
 
 		[Fact]
-		public void ULongListDefaultsToEmpty() {
+		public void GetULongsDefaultsToEmpty() {
 			var reader = new BufferedReader("");
-			var ulongs = new ULongList(reader).ULongs;
-			Assert.Empty(ulongs);
+			Assert.Empty(reader.GetULongs());
 		}
 
 		[Fact]
-		public void LongListAddsLongs() {
+		public void GetLongsAddsLongs() {
 			var reader = new BufferedReader("123456789012345 234567890123456 345678901234567");
-			var theLongs = new LongList(reader).Longs;
 
-			var expectedLlongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
-			Assert.Equal(expectedLlongs, theLongs);
+			var expectedLongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
+			Assert.Equal(expectedLongs, reader.GetLongs());
 		}
 
 		[Fact]
-		public void LongListAddsNegativeLongs() {
+		public void GetLongsAddsNegativeLongs() {
 			var reader = new BufferedReader("-123456789012345 -234567890123456 -345678901234567");
-			var theLongs = new LongList(reader).Longs;
 
 			var expectedLongs = new List<long> { -123456789012345, -234567890123456, -345678901234567 };
-			Assert.Equal(expectedLongs, theLongs);
+			Assert.Equal(expectedLongs, reader.GetLongs());
 		}
 
 		[Fact]
-		public void ULongListAddsLongs() {
+		public void GetULongsAddsLongs() {
 			var reader = new BufferedReader("299792458000000000 299792458000000304 256792458000000304");
 
-			var ulongs = new ULongList(reader).ULongs;
-
-			var expectedULongs =
-				 new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
-			Assert.Equal(expectedULongs, ulongs);
+			var expectedULongs = new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+			Assert.Equal(expectedULongs, reader.GetULongs());
 		}
 
 		[Fact]
-		public void LongListAddsQuotedLongs() {
+		public void GetLongsAddsQuotedLongs() {
 			var reader = new BufferedReader(@"""123456789012345"" ""234567890123456"" ""345678901234567""");
-			var theLongs = new LongList(reader).Longs;
 
 			var expectedLongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
-			Assert.Equal(expectedLongs, theLongs);
+			Assert.Equal(expectedLongs, reader.GetLongs());
 		}
 
 		[Fact]
-		public void LongListAddsQuotedNegativeLongs() {
+		public void GetLongsAddsQuotedNegativeLongs() {
 			var reader = new BufferedReader(@"""-123456789012345"" ""-234567890123456"" ""-345678901234567""");
-			var theLongs = new LongList(reader).Longs;
 
 			var expectedLongs = new List<long> { -123456789012345, -234567890123456, -345678901234567 };
-			Assert.Equal(expectedLongs, theLongs);
+			Assert.Equal(expectedLongs, reader.GetLongs());
 		}
 
 		[Fact]
-		public void ULongListAddsQuotedLongs() {
+		public void GetULongsAddsQuotedLongs() {
 			var reader = new BufferedReader(@"""299792458000000000"" ""299792458000000304"" ""256792458000000304""");
 
-			var ulongs = new ULongList(reader).ULongs;
-
-			var expectedULongs =
-				 new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
-			Assert.Equal(expectedULongs, ulongs);
+			var expectedULongs = new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+			Assert.Equal(expectedULongs, reader.GetULongs());
 		}
 
 		[Fact]
-		public void LongListAddsLongsFromBracedBlock() {
+		public void GetLongsAddsLongsFromBracedBlock() {
 			var reader = new BufferedReader(" = {123456789012345 234567890123456 345678901234567} 456789012345678");
-			var theLongs = new LongList(reader).Longs;
 
 			var expectedLongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
-			Assert.Equal(expectedLongs, theLongs);
+			Assert.Equal(expectedLongs, reader.GetLongs());
 		}
 
 		[Fact]
-		public void ULongListAddsULongsFromBracedBlock() {
+		public void GetULongsAddsULongsFromBracedBlock() {
 			var reader = new BufferedReader(" = {299792458000000000 299792458000000304 256792458000000304} 256796558000000304");
 
-			var ulongs = new ULongList(reader).ULongs;
-
-			var expectedULongs =
-				 new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
-			Assert.Equal(expectedULongs, ulongs);
+			var expectedULongs = new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+			Assert.Equal(expectedULongs, reader.GetULongs());
 		}
 
 		private class TypeClass : Parser {
