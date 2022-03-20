@@ -4,6 +4,14 @@ using System.IO;
 
 namespace commonItems {
 	public static class Logger {
+		public enum LogLevel {
+			Debug,
+			Info,
+			Warn,
+			Error,
+			Notice,
+			Progress
+		}
 		private static readonly ILog log = LogManager.GetLogger("mainLogger");
 		static Logger() {
 			// add custom "PROGRESS" level
@@ -48,6 +56,18 @@ namespace commonItems {
 		}
 		public static void ProgressFormat(string message, params object[] args) {
 			log.ProgressFormat(message, args);
+		}
+
+		public static void Log(LogLevel level, string message) {
+			switch (level) {
+				case LogLevel.Debug: log.Debug(message); break;
+				case LogLevel.Info: log.Info(message); break;
+				case LogLevel.Warn: log.Warn(message); break;
+				case LogLevel.Error: log.Error(message); break;
+				case LogLevel.Notice: log.Notice(message); break;
+				case LogLevel.Progress: log.Progress(message); break;
+				default: log.Debug(message); break;
+			}
 		}
 	}
 }
