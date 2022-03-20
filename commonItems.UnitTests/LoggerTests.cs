@@ -95,5 +95,25 @@ namespace commonItems.UnitTests {
 			Logger.ProgressFormat("Progress {0}", "message");
 			Assert.Equal("[PROGRESS] Progress message", output.ToString().TrimEnd());
 		}
+		
+		[Fact]
+		public void LevelCanBePassedAsArgument() {
+			var output = new StringWriter();
+			Console.SetOut(output);
+			Logger.Log(Logger.LogLevel.Debug, "1");
+			Logger.Log(Logger.LogLevel.Info, "2");
+			Logger.Log(Logger.LogLevel.Warn, "3");
+			Logger.Log(Logger.LogLevel.Error, "4");
+			Logger.Log(Logger.LogLevel.Notice, "5");
+			Logger.Log(Logger.LogLevel.Progress, "6");
+
+			var outStr = output.ToString();
+			Assert.Contains("[DEBUG] 1", outStr);
+			Assert.Contains("[INFO] 2", outStr);
+			Assert.Contains("[WARN] 3", outStr);
+			Assert.Contains("[ERROR] 4", outStr);
+			Assert.Contains("[NOTICE] 5", outStr);
+			Assert.Contains("[PROGRESS] 6", outStr);
+		}
 	}
 }
