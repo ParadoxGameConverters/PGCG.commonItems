@@ -66,6 +66,7 @@ namespace commonItems {
 				case LogLevel.Error: log.Error(message); break;
 				case LogLevel.Notice: log.Notice(message); break;
 				case LogLevel.Progress: log.Progress(message); break;
+				default: log.Debug(message); break;
 			}
 		}
 	}
