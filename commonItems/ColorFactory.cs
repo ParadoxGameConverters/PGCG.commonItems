@@ -18,7 +18,7 @@ namespace commonItems {
 				if (rgb.Count != 3) {
 					throw new FormatException("Color has wrong number of components");
 				}
-				return new Color(rgb.ToArray());
+				return new Color(rgb[0], rgb[1], rgb[2]);
 			} else if (token == "hex") {
 				var hex = reader.GetString();
 				if (hex.Length != 6) {
@@ -27,19 +27,19 @@ namespace commonItems {
 				var r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
 				var g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
 				var b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-				return new Color(new[] { r, g, b });
+				return new Color(r, g, b);
 			} else if (token == "hsv") {
 				var hsv = reader.GetDoubles();
 				if (hsv.Count != 3) {
 					throw new FormatException("Color has wrong number of components");
 				}
-				return new Color(new double[] { hsv[0], hsv[1], hsv[2] });
+				return new Color(hsv[0], hsv[1], hsv[2]);
 			} else if (token == "hsv360") {
 				var hsv = reader.GetDoubles();
 				if (hsv.Count != 3) {
 					throw new FormatException("Color has wrong number of components");
 				}
-				return new Color(new double[] { hsv[0] / 360, hsv[1] / 100, hsv[2] / 100 });
+				return new Color(hsv[0]/360, hsv[1]/100, hsv[2]/100);
 			} else if (CommonRegexes.Catchall.IsMatch(token)) {
 				if (NamedColors.TryGetValue(token, out var value)) {
 					return value;
@@ -58,7 +58,7 @@ namespace commonItems {
 					if (hsv.Count != 3) {
 						throw new FormatException("Color has wrong number of components");
 					}
-					return new Color(new[] { (int)Math.Round(hsv[0] * 255), (int)Math.Round(hsv[1] * 255), (int)Math.Round(hsv[2] * 255) });
+					return new Color((int)Math.Round(hsv[0] * 255), (int)Math.Round(hsv[1] * 255), (int)Math.Round(hsv[2] * 255));
 				} else {
 					// integer list
 					var integerStreamReader = new BufferedReader(questionableList);
@@ -66,7 +66,7 @@ namespace commonItems {
 					if (rgb.Count != 3) {
 						throw new FormatException("Color has wrong number of components");
 					}
-					return new Color(rgb.ToArray());
+					return new Color(rgb[0], rgb[1], rgb[2]);
 				}
 			}
 		}
