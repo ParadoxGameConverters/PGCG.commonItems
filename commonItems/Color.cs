@@ -1,17 +1,22 @@
 ﻿using commonItems.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace commonItems {
 	public class Color : IPDXSerializable {
 		public Color() { }
-		public Color(int[] rgbComponents) {
-			RgbComponents = rgbComponents;
+		public Color(int r, int g, int b) {
+			RgbComponents[0] = r;
+			RgbComponents[1] = g;
+			RgbComponents[2] = b;
 			DeriveHsvFromRgb();
 		}
-		public Color(double[] hsvComponents) {
-			HsvComponents = hsvComponents;
+		public Color(double h, double s, double v) {
+			HsvComponents[0] = h;
+			HsvComponents[1] = s;
+			HsvComponents[2] = v;
 			DeriveRgbFromHsv();
 		}
 
@@ -178,10 +183,12 @@ namespace commonItems {
 			g *= 255;
 			b *= 255;
 
-			RgbComponents = new[] { (int)r, (int)g, (int)b };
+			RgbComponents[0] = (int)r;
+			RgbComponents[1] = (int)g;
+			RgbComponents[2] = (int)b;
 		}
 
-		public int[] RgbComponents { get; private set; } = {
+		public int[] RgbComponents { get; } = {
 			0, 0, 0
 		};
 

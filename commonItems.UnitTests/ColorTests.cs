@@ -22,7 +22,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void ColorCanBeInitializedWithRgbComponents() {
-			var testColor = new Color(new[] { 64, 128, 128 });
+			var testColor = new Color(64, 128, 128);
 
 			Assert.Equal(64, testColor.R);
 			Assert.Equal(128, testColor.G);
@@ -35,7 +35,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void ColorCanBeInitializedWithHsvComponents() {
-			var testColor = new Color(new double[] { 0.5f, 0.5f, 0.5f });
+			var testColor = new Color(0.5f, 0.5f, 0.5f);
 
 			Assert.Equal(63, testColor.R);
 			Assert.Equal(127, testColor.G);
@@ -48,79 +48,79 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void HsvConversion_GreyHasZeroHue() {
-			var testColor = new Color(new[] { 128, 128, 128 });
+			var testColor = new Color(128, 128, 128);
 			Assert.Equal(0, testColor.H);
 		}
 
 		[Fact]
 		public void HsvConversion_RedHasHueOfZero() {
-			var testColor = new Color(new[] { 128, 0, 0 });
+			var testColor = new Color(128, 0, 0);
 			Assert.Equal(0, testColor.H);
 		}
 
 		[Fact]
 		public void HsvConversion_YellowHasHueOfOneSixth() {
-			var testColor = new Color(new[] { 128, 128, 64 });
+			var testColor = new Color(128, 128, 64);
 			Assert.Equal(0.167, testColor.H, decimalPlaces);
 		}
 
 		[Fact]
 		public void HsvConversion_GreenHasHueOfOneThird() {
-			var testColor = new Color(new[] { 0, 128, 0 });
+			var testColor = new Color(0, 128, 0);
 			Assert.Equal(0.333, testColor.H, decimalPlaces);
 		}
 
 		[Fact]
 		public void HsvConversion_CyanHasHueOfOneHalf() {
-			var testColor = new Color(new[] { 64, 128, 128 });
+			var testColor = new Color(64, 128, 128);
 			Assert.Equal(0.5, testColor.H, decimalPlaces);
 		}
 
 		[Fact]
 		public void HsvConversion_BlueHasHueOfTwoThirds() {
-			var testColor = new Color(new[] { 0, 0, 128 });
+			var testColor = new Color(0, 0, 128);
 			Assert.Equal(0.667, testColor.H, decimalPlaces);
 		}
 
 		[Fact]
 		public void HsvConversion_MagentaHasHueOfFiveSixths() {
-			var testColor = new Color(new[] { 128, 64, 128 });
+			var testColor = new Color(128, 64, 128);
 			Assert.Equal(0.833, testColor.H, decimalPlaces);
 		}
 
 		[Fact]
 		public void HsvConversion_BlackHasZeroSaturation() {
-			var testColor = new Color(new[] { 0, 0, 0 });
+			var testColor = new Color(0, 0, 0);
 			Assert.Equal(0, testColor.S);
 		}
 
 		[Fact]
 		public void HsvConversion_GreyHasZeroSaturation() {
-			var testColor = new Color(new[] { 128, 128, 128 });
+			var testColor = new Color(128, 128, 128);
 			Assert.Equal(0, testColor.S);
 		}
 
 		[Fact]
 		public void HsvConversion_ColorHasSaturation() {
-			var testColor = new Color(new[] { 128, 128, 64 });
+			var testColor = new Color(128, 128, 64);
 			Assert.Equal(0.5, testColor.S, decimalPlaces);
 		}
 
 		[Fact]
 		public void HsvConversion_BlackHasZeroValue() {
-			var testColor = new Color(new[] { 0, 0, 0 });
+			var testColor = new Color(0, 0, 0);
 			Assert.Equal(0, testColor.V);
 		}
 
 		[Fact]
 		public void HsvConversion_ColorHasValue() {
-			var testColor = new Color(new[] { 128, 64, 64 });
+			var testColor = new Color(128, 64, 64);
 			Assert.Equal(0.5, testColor.V, decimalPlaces);
 		}
 
 		[Fact]
 		public void RgbConversion_ZeroHueGivesRed() {
-			var testColor = new Color(new double[] { 0, 1, 1 });
+			var testColor = new Color(0f, 1f, 1f);
 			Assert.InRange(testColor.R, 255 - 1, 255 + 1);
 			Assert.InRange(testColor.G, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.B, 0 - 1, 0 + 1);
@@ -128,7 +128,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_OneSixthHueGivesYellow() {
-			var testColor = new Color(new double[] { 0.167, 1, 1 });
+			var testColor = new Color(0.167, 1, 1);
 			Assert.InRange(testColor.R, 254 - 1, 254 + 1);
 			Assert.InRange(testColor.G, 254 - 1, 254 + 1);
 			Assert.InRange(testColor.B, 0 - 1, 0 + 1);
@@ -136,7 +136,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_OneThirdHueGivesGreen() {
-			var testColor = new Color(new double[] { 0.333, 1, 1 });
+			var testColor = new Color(0.333, 1, 1);
 			Assert.InRange(testColor.R, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.G, 255 - 1, 255 + 1);
 			Assert.InRange(testColor.B, 0 - 1, 0 + 1);
@@ -144,7 +144,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_OneHalfHueGivesCyan() {
-			var testColor = new Color(new double[] { 0.5, 1, 1 });
+			var testColor = new Color(0.5, 1, 1);
 			Assert.InRange(testColor.R, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.G, 255 - 1, 255 + 1);
 			Assert.InRange(testColor.B, 255 - 1, 255 + 1);
@@ -152,7 +152,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_TwoThirdHueGivesBlue() {
-			var testColor = new Color(new double[] { 0.667, 1, 1 });
+			var testColor = new Color(0.667, 1, 1);
 			Assert.InRange(testColor.R, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.G, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.B, 255 - 1, 255 + 1);
@@ -160,7 +160,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_FiveSixthsHueGivesMagenta() {
-			var testColor = new Color(new double[] { 0.833, 1, 1 });
+			var testColor = new Color(0.833, 1, 1);
 			Assert.InRange(testColor.R, 254 - 1, 254 + 1);
 			Assert.InRange(testColor.G, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.B, 254 - 1, 254 + 1);
@@ -168,15 +168,15 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_ZeroSaturationIsGreyscale() {
-			var testColor = new Color(new double[] { 0, 0, 0.5 });
+			var testColor = new Color(0, 0, 0.5);
 			Assert.InRange(testColor.R, 127 - 1, 127 + 1);
 			Assert.InRange(testColor.G, 127 - 1, 127 + 1);
 			Assert.InRange(testColor.B, 127 - 1, 127 + 1);
 		}
 
 		[Fact]
-		public void RgbConversion_FullSaturationisPureColor() {
-			var testColor = new Color(new double[] { 0, 1, 1 });
+		public void RgbConversion_FullSaturationIsPureColor() {
+			var testColor = new Color(0f, 1f, 1f);
 			Assert.InRange(testColor.R, 255 - 1, 255 + 1);
 			Assert.InRange(testColor.G, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.B, 0 - 1, 0 + 1);
@@ -184,7 +184,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_SaturationWhitensColor() {
-			var testColor = new Color(new double[] { 0, 0.5, 1 });
+			var testColor = new Color(0, 0.5, 1);
 			Assert.InRange(testColor.R, 255 - 1, 255 + 1);
 			Assert.InRange(testColor.G, 127 - 1, 127 + 1);
 			Assert.InRange(testColor.B, 127 - 1, 127 + 1);
@@ -192,7 +192,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_ZeroValueIsBlack() {
-			var testColor = new Color(new double[] { 0, 1, 0 });
+			var testColor = new Color(0, 1, 0);
 			Assert.InRange(testColor.R, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.G, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.B, 0 - 1, 0 + 1);
@@ -200,7 +200,7 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_ValueDarkensColor() {
-			var testColor = new Color(new double[] { 0, 1, 0.5 });
+			var testColor = new Color(0, 1, 0.5);
 			Assert.InRange(testColor.R, 127 - 1, 127 + 1);
 			Assert.InRange(testColor.G, 0 - 1, 0 + 1);
 			Assert.InRange(testColor.B, 0 - 1, 0 + 1);
@@ -208,8 +208,8 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void RgbConversion_ExcessiveHueIsDiscarded() {
-			var testColor1 = new Color(new double[] { 1, 1, 1 });
-			var testColor2 = new Color(new[] { 1.1, 1.0, 1.0 });
+			var testColor1 = new Color(1f, 1f, 1f);
+			var testColor2 = new Color(1.1, 1.0, 1.0);
 			Assert.InRange(testColor1.R, 255 - 1, 255 + 1);
 			Assert.InRange(testColor1.G, 0 - 1, 0 + 1);
 			Assert.InRange(testColor1.B, 0 - 1, 0 + 1);
@@ -348,7 +348,7 @@ namespace commonItems.UnitTests {
 		[Fact]
 		public void ColorCanBeInitializedFromStreamWithName() {
 			var colorFactory = new ColorFactory();
-			colorFactory.AddNamedColor("dark_moderate_cyan", new Color(new[] { 64, 128, 128 }));
+			colorFactory.AddNamedColor("dark_moderate_cyan", new Color(64, 128, 128));
 
 			var reader = new BufferedReader("= dark_moderate_cyan");
 			var color = colorFactory.GetColor(reader);
@@ -365,7 +365,7 @@ namespace commonItems.UnitTests {
 		[Fact]
 		public void ColorCanBeInitializedFromQuotedStreamWithName() {
 			var colorFactory = new ColorFactory();
-			colorFactory.AddNamedColor("dark_moderate_cyan", new Color(new int[] { 64, 128, 128 }));
+			colorFactory.AddNamedColor("dark_moderate_cyan", new Color(64, 128, 128));
 
 			var reader = new BufferedReader("= \"dark_moderate_cyan\"");
 			var color = colorFactory.GetColor(reader);
@@ -407,7 +407,7 @@ namespace commonItems.UnitTests {
 		[Fact]
 		public void ColorCanBeInitializedWithName() {
 			var colorFactory = new ColorFactory();
-			colorFactory.AddNamedColor("dark_moderate_cyan", new Color(new int[] { 64, 128, 128 }));
+			colorFactory.AddNamedColor("dark_moderate_cyan", new Color(64, 128, 128));
 
 			var color = colorFactory.GetColor("dark_moderate_cyan");
 
@@ -477,66 +477,66 @@ namespace commonItems.UnitTests {
 
 		[Fact]
 		public void ColorCanBeOutputInUnspecifiedColorSpace() {
-			var color = new Color(new[] { 64, 128, 128 });
+			var color = new Color(64, 128, 128);
 			Assert.Equal("{ 64 128 128 }", color.Output());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInRgbColorSpace() {
-			var color = new Color(new[] { 64, 128, 128 });
+			var color = new Color(64, 128, 128);
 			Assert.Equal("rgb { 64 128 128 }", color.OutputRgb());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInHexColorSpace() {
-			var color = new Color(new[] { 64, 128, 128 });
+			var color = new Color(64, 128, 128);
 			Assert.Equal("hex { 408080 }", color.OutputHex());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInHexColorSpacePreservingZeroes() {
-			var color = new Color(new[] { 0, 0, 0 });
+			var color = new Color(0, 0, 0);
 			Assert.Equal("hex { 000000 }", color.OutputHex());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInHsvColorSpace() {
-			var color = new Color(new[] { 64, 128, 128 });
+			var color = new Color(64, 128, 128);
 			Assert.Equal("hsv { 0.5 0.5 0.5 }", color.OutputHsv());
 		}
 
 		[Fact]
 		public void ColorCanBeOutputInHsv360ColorSpace() {
-			var color = new Color(new[] { 64, 128, 128 });
+			var color = new Color(64, 128, 128);
 			Assert.Equal("hsv360 { 180 50 50 }", color.OutputHsv360());
 		}
 
 		[Fact]
 		public void UnequalFromDifferentRgb() {
-			var color1 = new Color(new[] { 2, 4, 8 });
-			var color2 = new Color(new[] { 3, 4, 8 });
+			var color1 = new Color(2, 4, 8);
+			var color2 = new Color(3, 4, 8);
 			Assert.NotEqual(color1, color2);
 		}
 
 		[Fact]
 		public void UnequalFromDifferentHsv() {
-			var color1 = new Color(new[] { 0.333, 0.50, 0.50 });
-			var color2 = new Color(new[] { 0.333, 0.75, 0.75 });
+			var color1 = new Color(0.333, 0.50, 0.50);
+			var color2 = new Color(0.333, 0.75, 0.75);
 			Assert.NotEqual(color1, color2);
 		}
 
 		[Fact]
 		public void Equality() {
-			var color1 = new Color(new[] { 2, 4, 8 });
-			var color2 = new Color(new[] { 2, 4, 8 });
+			var color1 = new Color(2, 4, 8);
+			var color2 = new Color(2, 4, 8);
 			Assert.Equal(color1, color2);
 		}
 
 		[Fact]
 		public void ColorPaletteCanBeInitializedByDict() {
 			var dict = new Dictionary<string, Color> {
-				{"white", new Color(new[] {255, 255, 255})},
-				{"gray", new Color(new[] {50, 50, 50})}
+				{"white", new Color(255, 255, 255)},
+				{"gray", new Color(50, 50, 50)}
 			};
 			var colorFactory = new ColorFactory();
 			colorFactory.AddNamedColorDict(dict);
@@ -586,8 +586,8 @@ namespace commonItems.UnitTests {
 		[Fact]
 		public void ColorPaletteCanBeAlteredDirectly() {
 			var colorFactory = new ColorFactory();
-			colorFactory.AddNamedColor("gold", new Color(new[] { 255, 0, 0 }));
-			colorFactory.AddNamedColor("gold", new Color(new[] { 255, 215, 0 }));
+			colorFactory.AddNamedColor("gold", new Color(255, 0, 0));
+			colorFactory.AddNamedColor("gold", new Color(255, 215, 0));
 
 			var gold = colorFactory.GetColor("gold");
 
@@ -603,16 +603,16 @@ namespace commonItems.UnitTests {
 		[Fact]
 		public void ColorPaletteCanBeAlteredByDict() {
 			var wrongDict = new Dictionary<string, Color> {
-				{"white", new Color(new[] {0, 0, 0})},
-				{"red", new Color(new[] {255, 255, 19})}
+				{"white", new Color(0, 0, 0)},
+				{"red", new Color(255, 255, 19)}
 			};
 
 			var colorFactory = new ColorFactory();
 			colorFactory.AddNamedColorDict(wrongDict);
 
 			var correctDict = new Dictionary<string, Color> {
-				{"white", new Color(new[] {255, 255, 255})},
-				{"red", new Color(new[] {255, 0, 0})}
+				{"white", new Color(255, 255, 255)},
+				{"red", new Color(255, 0, 0)}
 			};
 			colorFactory.AddNamedColorDict(correctDict);
 
@@ -641,8 +641,8 @@ namespace commonItems.UnitTests {
 		[Fact]
 		public void ColorPaletteCanBeCleared() {
 			var colorDict = new Dictionary<string, Color> {
-				{"white", new Color(new[] {0, 0, 0})},
-				{"red", new Color(new[] {255, 255, 19})}
+				{"white", new Color(0, 0, 0)},
+				{"red", new Color(255, 255, 19)}
 			};
 
 			var colorFactory = new ColorFactory();

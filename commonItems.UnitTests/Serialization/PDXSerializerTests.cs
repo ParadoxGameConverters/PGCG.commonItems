@@ -20,7 +20,7 @@ namespace commonItems.UnitTests.Serialization {
 			public string name { get; set; } = "Papal States";
 			public List<string> pope_names_list { get; set; } = new() { "Peter", "John", "Hadrian" };
 			public List<short> empty_list { get; set; } = new();
-			public Color color1 { get; set; } = new(new[] { 2, 4, 6 });
+			public Color color1 { get; set; } = new(2, 4, 6);
 			public bool definite_form { get; private set; }
 
 			// public fields
@@ -143,12 +143,12 @@ namespace commonItems.UnitTests.Serialization {
 		}
 		[Fact]
 		public void RecursiveClassesAreSerializedWithCorrectIndentation() {
-			var empire = new CK3Title("e_empire", new(new[] { 1, 1, 1 }));
-			var kingdom1 = new CK3Title("k_kingdom1", new(new[] { 2, 2, 2 }));
+			var empire = new CK3Title("e_empire", new(1, 1, 1));
+			var kingdom1 = new CK3Title("k_kingdom1", new(2, 2, 2));
 			empire.DeJureVassals.Add(kingdom1);
-			var duchy1 = new CK3Title("d_duchy1", new(new[] { 3, 3, 3 }));
+			var duchy1 = new CK3Title("d_duchy1", new(3, 3, 3));
 			kingdom1.DeJureVassals.Add(duchy1);
-			var kingdom2 = new CK3Title("k_kingdom2", new(new[] { 4, 4, 4 }));
+			var kingdom2 = new CK3Title("k_kingdom2", new(4, 4, 4));
 			empire.DeJureVassals.Add(kingdom2);
 			TitleCollection topLevelTitles = new() { empire };
 
