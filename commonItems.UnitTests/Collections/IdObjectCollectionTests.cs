@@ -74,5 +74,14 @@ namespace commonItems.UnitTests.Collections {
 			characters.AddOrReplace(charWithSameId);
 			Assert.Equal("greek", characters["1"].Culture);
 		}
+
+		[Fact]
+		public void CollectionCanBeCleared() {
+			var characters = new Characters {new Character("bob"), new Character("frank")};
+			Assert.Equal(2, characters.Count);
+
+			characters.Clear();
+			Assert.Empty(characters);
+		}
 	}
 }
