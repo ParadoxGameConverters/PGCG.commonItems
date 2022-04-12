@@ -10,6 +10,7 @@ namespace commonItems.Collections {
 		public int Count => dict.Count;
 		public bool ContainsKey(TKey key) => dict.ContainsKey(key);
 		public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out T value) => dict.TryGetValue(key, out value);
+		public void Clear() => dict.Clear();
 
 		public IEnumerator<T> GetEnumerator() => dict.Values.GetEnumerator();
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
