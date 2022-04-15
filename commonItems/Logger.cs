@@ -3,6 +3,7 @@ using log4net.Config;
 using System.IO;
 
 namespace commonItems;
+
 public enum LogLevel {
 	Debug,
 	Info,
