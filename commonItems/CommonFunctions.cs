@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Text;
 
 namespace commonItems {
@@ -81,7 +82,7 @@ namespace commonItems {
 			return toReturn;
 		}
 
-		// from C++ version's OSCommonLayer
+		// from C++ commonItems version's OSCommonLayer
 		public static string NormalizeUTF8Path(string utf8Path) {
 			string asciiPath = EncodingConversions.ConvertUTF8ToASCII(utf8Path);
 			asciiPath = asciiPath.Replace('/', '_');
@@ -96,6 +97,42 @@ namespace commonItems {
 			asciiPath = asciiPath.Replace("\t", string.Empty);
 
 			return asciiPath;
+		}
+
+		/// <summary>
+		///  Given a Steam AppId, returns the install path for the corresponding game.
+		/// </summary>
+		/// <returns>Install path for the corresponding game, or null</returns>
+		public static string? GetSteamInstallPath(string steamId) {
+			if (string.IsNullOrEmpty(steamId)) {
+				return null;
+			}
+
+			if (!OperatingSystem.IsWindows()) {
+				return null;
+			}
+
+			var registryPath = $@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steamId}";
+			const string installPath = "InstallLocation";
+
+			using (var key = Registry.LocalMachine.OpenSubKey(registryPath)) {
+				var regValue = key?.GetValue(installPath, null);
+
+				if (regValue is string { Length: > 2 } result) {
+					return result;
+				}
+			}
+
+			registryPath = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steamId}";
+			using (var key = Registry.LocalMachine.OpenSubKey(registryPath)) {
+				var regValue = key?.GetValue(installPath, null);
+
+				if (regValue is string { Length: > 2 } result) {
+					return result;
+				}
+			}
+
+			return null;
 		}
 	}
 }
