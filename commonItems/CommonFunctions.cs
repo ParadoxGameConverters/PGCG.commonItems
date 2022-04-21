@@ -107,31 +107,39 @@ namespace commonItems {
 		public static string? GetSteamInstallPath(int steamId) {
 			// try to find the game without specifying Steam path (may work on Linux)
 			var handler = new SteamHandler();
-
-			// if not found, construct handler with Steam path from registry 
-			if (!OperatingSystem.IsWindows()) {
-				return null;
+			handler.FindAllGames();
+			if (handler.TryGetByID(steamId, out var foundGame)) {
+				return foundGame?.Path;
 			}
 
-			const string steamPath32Bit = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam";
-			var steamInstallPath = Registry.GetValue(steamPath32Bit, "InstallPath", null);
-			if (steamInstallPath is string steam32BitPath) {
-				handler = new SteamHandler(steam32BitPath);
-				if (handler.TryGetByID(steamId, out var foundGameFrom32Bit)) {
-					return foundGameFrom32Bit?.Path;
+			// if not found, construct SteamHandler with Steam path from registry (Windows only)
+
+			const string steamRegistryPath32Bit = "SOFTWARE\\Valve\\Steam";
+			var gamePath = GetGamePathFromRegistry(steamRegistryPath32Bit);
+			if (gamePath is not null) {
+				return gamePath;
+			}
+
+			const string steamRegistryPath64Bit = "SOFTWARE\\WOW6432Node\\Valve\\Steam";
+			return GetGamePathFromRegistry(steamRegistryPath64Bit);
+
+			string? GetGamePathFromRegistry(string steamRegistryPath) {
+				if (!OperatingSystem.IsWindows()) {
+					return null;
 				}
-			}
 
-			const string steamPath64Bit = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Valve\\Steam";
-			steamInstallPath = Registry.GetValue(steamPath64Bit, "InstallPath", null);
-			if (steamInstallPath is string steam64BitPath) {
-				handler = new SteamHandler(steam64BitPath);
-				if (handler.TryGetByID(steamId, out var foundGameFrom64Bit)) {
-					return foundGameFrom64Bit?.Path;
+				using var key = Registry.LocalMachine.OpenSubKey(steamRegistryPath);
+
+				const string registryValueName = "InstallPath";
+				var regValue = key?.GetValue(registryValueName, null);
+				if (regValue is not string steamPath) {
+					return null;
 				}
-			}
 
-			return null;
+				handler = new SteamHandler(steamPath);
+				handler.FindAllGames();
+				return handler.TryGetByID(steamId, out foundGame) ? foundGame?.Path : null;
+			}
 		}
 	}
 }
