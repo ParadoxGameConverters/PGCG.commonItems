@@ -1,6 +1,7 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Text;
+using GameFinder.StoreHandlers.Steam;
+using Microsoft.Win32;
 
 namespace commonItems {
 	public static class CommonFunctions {
@@ -103,32 +104,30 @@ namespace commonItems {
 		///  Given a Steam AppId, returns the install path for the corresponding game.
 		/// </summary>
 		/// <returns>Install path for the corresponding game, or null</returns>
-		public static string? GetSteamInstallPath(string steamId) {
-			if (string.IsNullOrEmpty(steamId)) {
-				return null;
-			}
+		public static string? GetSteamInstallPath(int steamId) {
+			// try to find the game without specifying Steam path (may work on Linux)
+			var handler = new SteamHandler();
 
+			// if not found, construct handler with Steam path from registry 
 			if (!OperatingSystem.IsWindows()) {
 				return null;
 			}
 
-			var registryPath = $@"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steamId}";
-			const string installPath = "InstallLocation";
-
-			using (var key = Registry.LocalMachine.OpenSubKey(registryPath)) {
-				var regValue = key?.GetValue(installPath, null);
-
-				if (regValue is string { Length: > 2 } result) {
-					return result;
+			const string steamPath32Bit = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam";
+			var steamInstallPath = Registry.GetValue(steamPath32Bit, "InstallPath", null);
+			if (steamInstallPath is string steam32BitPath) {
+				handler = new SteamHandler(steam32BitPath);
+				if (handler.TryGetByID(steamId, out var foundGameFrom32Bit)) {
+					return foundGameFrom32Bit?.Path;
 				}
 			}
 
-			registryPath = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App {steamId}";
-			using (var key = Registry.LocalMachine.OpenSubKey(registryPath)) {
-				var regValue = key?.GetValue(installPath, null);
-
-				if (regValue is string { Length: > 2 } result) {
-					return result;
+			const string steamPath64Bit = "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Valve\\Steam";
+			steamInstallPath = Registry.GetValue(steamPath64Bit, "InstallPath", null);
+			if (steamInstallPath is string steam64BitPath) {
+				handler = new SteamHandler(steam64BitPath);
+				if (handler.TryGetByID(steamId, out var foundGameFrom64Bit)) {
+					return foundGameFrom64Bit?.Path;
 				}
 			}
 
