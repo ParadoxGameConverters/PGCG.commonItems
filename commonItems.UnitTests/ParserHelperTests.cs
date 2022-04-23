@@ -62,7 +62,7 @@ namespace commonItems.UnitTests {
 			var test = new Test1(input);
 			Assert.Equal("val1", test.value1);
 			Assert.Equal("val2", test.value2);
-			Assert.Equal("[DEBUG] Ignoring keyword: key3", output.ToString().TrimEnd());
+			Assert.Contains("[DEBUG] Ignoring keyword: key3", output.ToString());
 		}
 
 		[Fact]
@@ -126,7 +126,7 @@ namespace commonItems.UnitTests {
 
 			var reader = new BufferedReader("= foo");
 			var theInteger = reader.GetInt();
-			Assert.Equal("[WARN] Could not convert string foo to int!", output.ToString().TrimEnd());
+			Assert.Contains("[WARN] Could not convert string foo to int!", output.ToString());
 			Assert.Equal(0, theInteger);
 		}
 
@@ -185,7 +185,7 @@ namespace commonItems.UnitTests {
 
 			var reader = new BufferedReader("= \"345.345 foo\"");
 			var theDouble = reader.GetDouble();
-			Assert.Equal("[WARN] Could not convert string 345.345 foo to double!", output.ToString().TrimEnd());
+			Assert.Contains("[WARN] Could not convert string 345.345 foo to double!", output.ToString());
 			Assert.Equal(0, theDouble);
 		}
 
@@ -231,7 +231,7 @@ namespace commonItems.UnitTests {
 			Console.SetOut(output);
 			var reader = new BufferedReader(" =");
 			_ = reader.GetString();
-			Assert.Equal("[ERROR] SingleString: next token not found!", output.ToString().TrimEnd());
+			Assert.Contains("[ERROR] SingleString: next token not found!", output.ToString());
 		}
 
 		[Fact]

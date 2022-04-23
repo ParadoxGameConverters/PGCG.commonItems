@@ -239,7 +239,7 @@ namespace commonItems.UnitTests {
 			Console.SetOut(output);
 
 			new Parser().ParseFile("missingFile.txt");
-			Assert.Equal("[ERROR] Could not open missingFile.txt for parsing", output.ToString().TrimEnd());
+			Assert.Contains("[ERROR] Could not open missingFile.txt for parsing", output.ToString());
 		}
 
 		private class FileTest : Parser {

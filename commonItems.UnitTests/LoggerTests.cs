@@ -11,14 +11,14 @@ namespace commonItems.UnitTests {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.Error("Error message");
-			Assert.Equal("[ERROR] Error message", output.ToString().TrimEnd());
+			Assert.Contains("[ERROR] Error message", output.ToString().TrimEnd());
 		}
 		[Fact]
 		public void ErrorMessagesFormatLogged() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.ErrorFormat("Error {0}", "message");
-			Assert.Equal("[ERROR] Error message", output.ToString().TrimEnd());
+			Assert.Contains("[ERROR] Error message", output.ToString().TrimEnd());
 		}
 
 		[Fact]
@@ -26,14 +26,14 @@ namespace commonItems.UnitTests {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.Warn("Warning message");
-			Assert.Equal("[WARN] Warning message", output.ToString().TrimEnd());
+			Assert.Contains("[WARN] Warning message", output.ToString());
 		}
 		[Fact]
 		public void WarningMessagesFormatLogged() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.WarnFormat("Warning {0}", "message");
-			Assert.Equal("[WARN] Warning message", output.ToString().TrimEnd());
+			Assert.Contains("[WARN] Warning message", output.ToString());
 		}
 
 		[Fact]
@@ -41,14 +41,14 @@ namespace commonItems.UnitTests {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.Info("Info message");
-			Assert.Equal("[INFO] Info message", output.ToString().TrimEnd());
+			Assert.Contains("[INFO] Info message", output.ToString().TrimEnd());
 		}
 		[Fact]
 		public void InfoMessagesFormatLogged() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.InfoFormat("Info {0}", "message");
-			Assert.Equal("[INFO] Info message", output.ToString().TrimEnd());
+			Assert.Contains("[INFO] Info message", output.ToString().TrimEnd());
 		}
 
 		[Fact]
@@ -56,14 +56,14 @@ namespace commonItems.UnitTests {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.Notice("Notice message");
-			Assert.Equal("[NOTICE] Notice message", output.ToString().TrimEnd());
+			Assert.Contains("[NOTICE] Notice message", output.ToString());
 		}
 		[Fact]
 		public void NoticeMessagesFormatLogged() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.NoticeFormat("Notice {0}", "message");
-			Assert.Equal("[NOTICE] Notice message", output.ToString().TrimEnd());
+			Assert.Contains("[NOTICE] Notice message", output.ToString());
 		}
 
 		[Fact]
@@ -71,14 +71,14 @@ namespace commonItems.UnitTests {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.Debug("Debug message");
-			Assert.Equal("[DEBUG] Debug message", output.ToString().TrimEnd());
+			Assert.Contains("[DEBUG] Debug message", output.ToString());
 		}
 		[Fact]
 		public void DebugMessagesFormatLogged() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.DebugFormat("Debug {0}", "message");
-			Assert.Equal("[DEBUG] Debug message", output.ToString().TrimEnd());
+			Assert.Contains("[DEBUG] Debug message", output.ToString());
 		}
 
 		[Fact]
@@ -86,14 +86,14 @@ namespace commonItems.UnitTests {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.Progress("Progress message");
-			Assert.Equal("[PROGRESS] Progress message", output.ToString().TrimEnd());
+			Assert.Contains("[PROGRESS] Progress message", output.ToString());
 		}
 		[Fact]
 		public void ProgressMessagesFormatLogged() {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			Logger.ProgressFormat("Progress {0}", "message");
-			Assert.Equal("[PROGRESS] Progress message", output.ToString().TrimEnd());
+			Assert.Contains("[PROGRESS] Progress message", output.ToString());
 		}
 		[Fact]
 		public void LevelCanBePassedAsArgument() {

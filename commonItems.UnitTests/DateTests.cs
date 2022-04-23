@@ -41,7 +41,7 @@ namespace commonItems.UnitTests {
 			var output = new StringWriter();
 			Console.SetOut(output);
 			_ = new Date("2020.4");
-			Assert.StartsWith("[WARN] Problem inputting date: System.ArgumentOutOfRangeException", output.ToString());
+			Assert.Contains("[WARN] Problem inputting date: System.ArgumentOutOfRangeException", output.ToString());
 		}
 
 		[Fact]

@@ -23,6 +23,7 @@ public static class Logger {
 		var logConfiguration = new FileInfo("log4net.config");
 		XmlConfigurator.Configure(logConfiguration);
 	}
+
 	public static void Error(string message) {
 		log.Error(message);
 	}
