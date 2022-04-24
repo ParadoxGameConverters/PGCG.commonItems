@@ -4,7 +4,7 @@ using log4net.Core;
 namespace commonItems; 
 
 public static class LogExtensions {
-	public static Level ProgressLevel { get; } = new(35000, "PROGRESS");
+	public static readonly Level ProgressLevel = new(35000, "PROGRESS");
 
 	public static void Progress(this ILog log, string message) {
 		var currentMethod = System.Reflection.MethodBase.GetCurrentMethod();
