@@ -1,6 +1,7 @@
-﻿using log4net;
+using log4net;
 using log4net.Config;
 using log4net.Core;
+using System;
 using System.IO;
 
 namespace commonItems;
@@ -8,8 +9,17 @@ namespace commonItems;
 public static class Logger {
 	private static readonly ILog log = LogManager.GetLogger("mainLogger");
 	static Logger() {
+		Configure();
+	}
+
+	public static void Configure() {
+		var repository = LogManager.GetRepository();
+		if (repository.Configured) {
+			return;
+		}
+
 		// add custom "PROGRESS" level
-		LogManager.GetRepository().LevelMap.Add(LogExtensions.ProgressLevel);
+		repository.LevelMap.Add(LogExtensions.ProgressLevel);
 
 		// configure log4net
 		var logConfiguration = new FileInfo("log4net.config");
