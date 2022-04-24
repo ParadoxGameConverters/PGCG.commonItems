@@ -1,18 +1,18 @@
 using log4net;
 using log4net.Config;
 using log4net.Core;
-using System;
 using System.IO;
+// ReSharper disable InconsistentNaming
 
 namespace commonItems;
 
 public static class Logger {
 	private static readonly ILog log = LogManager.GetLogger("mainLogger");
 	static Logger() {
-		Configure();
+		Configure("log4net.config");
 	}
 
-	public static void Configure() {
+	public static void Configure(string log4netConfigPath) {
 		var repository = LogManager.GetRepository();
 		if (repository.Configured) {
 			return;
@@ -22,7 +22,7 @@ public static class Logger {
 		repository.LevelMap.Add(LogExtensions.ProgressLevel);
 
 		// configure log4net
-		var logConfiguration = new FileInfo("log4net.config");
+		var logConfiguration = new FileInfo(log4netConfigPath);
 		XmlConfigurator.Configure(logConfiguration);
 	}
 
