@@ -25,8 +25,9 @@ jobs:
     - name: "Update version in project"
       uses: jacobtomlinson/gha-find-replace@v2
       with:
-        find: ^<Version>(.*)<\/Version>$
-        replace: <Version>${{ steps.get_new_version.outputs.new_tag }}<\/Version>
+        include: commonItems/commonItems.csproj
+        find: <Version>(.*)<\/Version>
+        replace: <Version>${{ steps.get_new_version.outputs.new_tag }}</Version>
         regex: true
 
     - name: "Push changes"
