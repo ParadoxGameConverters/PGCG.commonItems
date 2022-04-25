@@ -1,8 +1,7 @@
-﻿using commonItems.Serialization;
-using System;
+﻿using System;
 using System.Reflection;
 
-namespace ExtensionMethods; 
+namespace commonItems.Serialization; 
 
 public static class MemberInfoExtensions {
 	public static bool IsNonSerialized(this MemberInfo? mi) {
