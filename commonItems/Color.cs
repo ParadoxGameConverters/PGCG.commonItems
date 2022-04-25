@@ -98,7 +98,7 @@ public class Color : IPDXSerializable {
 		var g = (double)RgbComponents[1] / 255;
 		var b = (double)RgbComponents[2] / 255;
 		var xMax = new[] { r, g, b }.Max();
-		var xMin = new[] { r, g, b, }.Min();
+		var xMin = new[] { r, g, b }.Min();
 		var chroma = xMax - xMin;
 
 		double h = 0;

@@ -37,22 +37,22 @@ public class ModLoader {
 			// This invocation will unpack any compressed mods into our converter's folder, and skip already unpacked ones.
 			var possibleModPath = UncompressAndReturnNewPath(mod.Name);
 			if (possibleModPath == null) {
-				Logger.Warn("\t\tFailure unpacking " + mod.Name + ", skipping this mod at your risk.");
+				Logger.Warn($"\t\tFailure unpacking {mod.Name}, skipping this mod at your risk.");
 				continue;
 			}
 
 			// All verified mods go into usableMods
-			Logger.Info("\t\t->> Found potentially useful [" + mod.Name + "]: " + possibleModPath + "/");
+			Logger.Info($"\t\t->> Found potentially useful [{mod.Name}]: {possibleModPath}/");
 			UsableMods.Add(new Mod(mod.Name, possibleModPath, mod.Dependencies));
 		}
 	}
 	private void LoadModDirectory(string gameDocumentsPath, Mods incomingMods) {
 		var modsPath = Path.Combine(gameDocumentsPath, "mod");
 		if (!Directory.Exists(modsPath)) {
-			throw new DirectoryNotFoundException("Mods directory path is invalid! Is it at: " + modsPath + " ?");
+			throw new DirectoryNotFoundException($"Mods directory path is invalid! Is it at: {modsPath} ?");
 		}
 
-		Logger.Info("\tMods directory is " + modsPath);
+		Logger.Info($"\tMods directory is {modsPath}");
 
 		var diskModNames = SystemUtils.GetAllFilesInFolder(modsPath);
 		foreach (var mod in incomingMods) {
@@ -60,11 +60,11 @@ public class ModLoader {
 
 			if (!diskModNames.Contains(trimmedModFileName)) {
 				if (string.IsNullOrEmpty(mod.Name)) {
-					Logger.Warn("\t\tSavegame uses mod at " + mod.Path +
-					            ", which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
+					Logger.Warn(
+						$"\t\tSavegame uses mod at {mod.Path}, which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
 				} else {
-					Logger.Warn("\t\tSavegame uses [" + mod.Name + "] at " + mod.Path +
-					            ", which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
+					Logger.Warn(
+						$"\t\tSavegame uses [{mod.Name}] at {mod.Path}, which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
 				}
 				continue;
 			}
@@ -79,8 +79,8 @@ public class ModLoader {
 			try {
 				theMod.ParseMod(modFilePath);
 			} catch (Exception e) {
-				Logger.Warn("\t\tError while reading " + modFilePath +
-				            "! Mod will not be useable for conversions. Exception: " + e);
+				Logger.Warn(
+					$"\t\tError while reading {modFilePath}! Mod will not be usable for conversions. Exception: {e}");
 				continue;
 			}
 			ProcessLoadedMod(theMod, mod.Name, trimmedModFileName, mod.Path, modsPath, gameDocumentsPath);
@@ -90,7 +90,7 @@ public class ModLoader {
 	private void ProcessLoadedMod(ModParser theMod, string modName, string modFileName, string modPath, string modsPath, string gameDocumentsPath) {
 		var modFilePath = Path.Combine(modsPath, modFileName);
 		if (!theMod.IsValid()) {
-			Logger.Warn("\t\tMod at " + modFilePath + " does not look valid.");
+			Logger.Warn($"\t\tMod at {modFilePath} does not look valid.");
 			return;
 		}
 
@@ -122,22 +122,23 @@ public class ModLoader {
 
 	private static void WarnForInvalidPath(ModParser theMod, string name, string path) {
 		if (string.IsNullOrEmpty(name)) {
-			Logger.Warn("\t\tMod at " + path + " points to " + theMod.Path +
-			            " which does not exist! Skipping at your risk, but this can greatly affect conversion.");
+			Logger.Warn(
+				$"\t\tMod at {path} points to {theMod.Path} which does not exist! Skipping at your risk, but this can greatly affect conversion.");
 		} else {
-			Logger.Warn("\t\tMod [" + name + "] at " + path + " points to " + theMod.Path + " which does not exist! Skipping at your risk, but this can greatly affect conversion.");
+			Logger.Warn(
+				$"\t\tMod [{name}] at {path} points to {theMod.Path} which does not exist! Skipping at your risk, but this can greatly affect conversion.");
 		}
 	}
 
 	private void FileUnderCategory(ModParser theMod, string path) {
 		if (!theMod.IsCompressed()) {
 			possibleUncompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies));
-			Logger.Info("\t\tFound a potential mod [" + theMod.Name + "] with a mod file at " + path
-			            + " and itself at " + theMod.Path);
+			Logger.Info(
+				$"\t\tFound a potential mod [{theMod.Name}] with a mod file at {path} and itself at {theMod.Path}");
 		} else {
 			possibleCompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies));
-			Logger.Info("\t\tFound a compressed mod [" + theMod.Name + "] with a mod file at " + path
-			            + " and itself at " + theMod.Path);
+			Logger.Info(
+				$"\t\tFound a compressed mod [{theMod.Name}] with a mod file at {path} and itself at {theMod.Path}");
 		}
 	}
 
@@ -181,7 +182,7 @@ public class ModLoader {
 		try {
 			new FastZip().ExtractZip(archive, path, ".*");
 		} catch (Exception e) {
-			Logger.Error("Extracting zip failed: " + e);
+			Logger.Error($"Extracting zip failed: {e}");
 			return false;
 		}
 
