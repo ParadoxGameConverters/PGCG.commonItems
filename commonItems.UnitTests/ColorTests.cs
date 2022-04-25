@@ -423,7 +423,7 @@ public class ColorTests {
 
 	private class Foo : Parser {
 		public Foo(BufferedReader reader) {
-			RegisterKeyword("color", (reader) => color = new ColorFactory().GetColor(reader));
+			RegisterKeyword("color", colorReader => color = new ColorFactory().GetColor(colorReader));
 			ParseStream(reader);
 		}
 		public Color color = new();
