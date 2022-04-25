@@ -6,15 +6,16 @@ namespace commonItems;
 
 public static class SystemUtils {
 	public static SortedSet<string> GetAllFilesInFolder(string path) {
-		if (Directory.Exists(path)) {
-			var paths = new SortedSet<string>(Directory.GetFiles(path));
-			var files = new SortedSet<string>();
-			foreach (var filePath in paths) {
-				files.Add(Path.GetRelativePath(path, filePath));
-			}
-			return files;
+		if (!Directory.Exists(path)) {
+			return new SortedSet<string>();
 		}
-		return new SortedSet<string>();
+
+		var paths = new SortedSet<string>(Directory.GetFiles(path));
+		var files = new SortedSet<string>();
+		foreach (var filePath in paths) {
+			files.Add(Path.GetRelativePath(path, filePath));
+		}
+		return files;
 	}
 	public static SortedSet<string> GetAllFilesInFolderRecursive(string path) {
 		if (Directory.Exists(path)) {
@@ -29,15 +30,16 @@ public static class SystemUtils {
 	}
 
 	public static SortedSet<string> GetAllSubfolders(string path) {
-		if (Directory.Exists(path)) {
-			var paths = new SortedSet<string>(Directory.GetDirectories(path));
-			var subfolders = new SortedSet<string>();
-			foreach (var filePath in paths) {
-				subfolders.Add(Path.GetRelativePath(path, filePath));
-			}
-			return subfolders;
+		if (!Directory.Exists(path)) {
+			return new SortedSet<string>();
 		}
-		return new SortedSet<string>();
+
+		var paths = new SortedSet<string>(Directory.GetDirectories(path));
+		var subfolders = new SortedSet<string>();
+		foreach (var filePath in paths) {
+			subfolders.Add(Path.GetRelativePath(path, filePath));
+		}
+		return subfolders;
 	}
 
 	public static bool TryCreateFolder(string path) {

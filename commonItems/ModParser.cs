@@ -22,10 +22,12 @@ public class ModParser : Parser {
 		CheckIfCompressed();
 	}
 	private void CheckIfCompressed() {
-		if (!string.IsNullOrEmpty(Path)) {
-			var ending = CommonFunctions.GetExtension(Path);
-			compressed = ending == "zip" || ending == "bin";
+		if (string.IsNullOrEmpty(Path)) {
+			return;
 		}
+
+		var ending = CommonFunctions.GetExtension(Path);
+		compressed = ending is "zip" or "bin";
 	}
 	public bool IsValid() {
 		return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Path);
