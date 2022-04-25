@@ -8,7 +8,8 @@ namespace commonItems.UnitTests;
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public class SystemUtilsTests {
-	private readonly string testFilesPath = "TestFiles/SystemUtilsTestFiles";
+	private const string testFilesPath = "TestFiles/SystemUtilsTestFiles";
+
 	[Fact]
 	public void GetAllFilesInFolderDoesntWorkRecursively() {
 		var files = SystemUtils.GetAllFilesInFolder(testFilesPath);
@@ -29,7 +30,7 @@ public class SystemUtilsTests {
 			"keyValuePair.txt",
 			Path.Combine("subfolder", "subfolder_file.txt"),
 			Path.Combine("subfolder", "subfolder_file2.txt"),
-			Path.Combine("subfolder2", "subfolder2_file.txt"),
+			Path.Combine("subfolder2", "subfolder2_file.txt")
 		};
 		Assert.Equal(expected, files);
 	}

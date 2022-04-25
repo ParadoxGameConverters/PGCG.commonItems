@@ -30,9 +30,11 @@ jobs:
         replace: <Version>${{ steps.get_new_version.outputs.new_tag }}</Version>
         regex: false
 
-    - name: "Print project file"
+    - name: "Commit version change"
       run: |
-        cat commonItems/commonItems.csproj
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git commit -m "Bump version" -a
 
     - name: "Push changes"
       uses: ad-m/github-push-action@v0.6.0

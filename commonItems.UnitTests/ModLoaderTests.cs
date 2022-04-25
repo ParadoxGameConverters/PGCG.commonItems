@@ -8,7 +8,8 @@ namespace commonItems.UnitTests;
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public class ModLoaderTests {
-	private readonly string testFilesPath = "TestFiles";
+	private const string testFilesPath = "TestFiles";
+
 	[Fact]
 	public void ModsCanBeLocatedUnpackedAndUpdated() {
 		var incomingMods = new Mods {

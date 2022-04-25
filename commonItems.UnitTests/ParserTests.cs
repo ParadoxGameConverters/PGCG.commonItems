@@ -33,7 +33,7 @@ public class ParserTests {
 			});
 			ParseStream(bufferedReader);
 		}
-	};
+	}
 
 	[Fact]
 	public void KeywordsAreMatched() {
@@ -69,7 +69,7 @@ public class ParserTests {
 			});
 			ParseStream(bufferedReader);
 		}
-	};
+	}
 
 	[Fact]
 	public void QuotedKeywordsAreQuotedlyMatched() {
@@ -121,7 +121,7 @@ public class ParserTests {
 			});
 			ParseStream(bufferedReader);
 		}
-	};
+	}
 
 	[Fact]
 	public void QuotedRegexesAreMatched() {
@@ -141,7 +141,7 @@ public class ParserTests {
 			});
 			ParseStream(bufferedReader);
 		}
-	};
+	}
 
 	[Fact]
 	public void QuotedRegexesAreQuotedlyMatched() {
@@ -161,7 +161,7 @@ public class ParserTests {
 			});
 			ParseStream(bufferedReader);
 		}
-	};
+	}
 
 	[Fact]
 	public void CatchAllCatchesQuotedKeys() {
@@ -196,7 +196,7 @@ public class ParserTests {
 			});
 			ParseStream(bufferedReader);
 		}
-	};
+	}
 
 	[Fact]
 	public void SimpleDelegateRegexCanBeRegistered() {
@@ -284,7 +284,7 @@ public class ParserTests {
 			RegisterKeyword("broken", (_, k) => broken = k);
 			ParseStream(bufferedReader);
 		}
-	};
+	}
 
 	[Fact]
 	public void FastForwardTo0DepthWorksWithOpeningBrackets() {
