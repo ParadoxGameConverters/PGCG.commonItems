@@ -35,20 +35,23 @@ public class LocBlock {
 		set => localizations[language] = value;
 	}
 
-	// ModifyForEveryLanguage helps remove boilerplate by applying modifyingMethod to every language in the struct
-	//
-	// For example:
-	// nameLocBlock["english"] = nameLocBlock["english"].Replace("$ADJ$", baseAdjLocBlock["english"]);
-	// nameLocBlock["french"] = nameLocBlock["french"].Replace("$ADJ$", baseAdjLocBlock["french"]);
-	// nameLocBlock["german"] = nameLocBlock["german"].Replace("$ADJ$", baseAdjLocBlock["german"]);
-	// nameLocBlock["russian"] = nameLocBlock["russian"].Replace("$ADJ$", baseAdjLocBlock["russian"]);
-	// nameLocBlock["simp_chinese"] = nameLocBlock["simp_chinese"].Replace("$ADJ$", baseAdjLocBlock["simp_chinese"]);
-	// nameLocBlock["spanish"] = nameLocBlock["spanish"].Replace("$ADJ$", baseAdjLocBlock["spanish"]);
-	//
-	// Can be replaced by:
-	// nameLocBlock.ModifyForEveryLanguage(baseAdjLocBlock, (string baseLoc, string modifyingLoc) => {
-	//     return baseLoc.Replace("$ADJ$", modifyingLoc);
-	// });
+	/// <summary>
+	/// ModifyForEveryLanguage helps remove boilerplate by applying modifyingMethod to every language in the struct
+	/// For example:
+	/// nameLocBlock["english"] = nameLocBlock["english"].Replace("$ADJ$", baseAdjLocBlock["english"]);
+	/// nameLocBlock["french"] = nameLocBlock["french"].Replace("$ADJ$", baseAdjLocBlock["french"]);
+	/// nameLocBlock["german"] = nameLocBlock["german"].Replace("$ADJ$", baseAdjLocBlock["german"]);
+	/// nameLocBlock["russian"] = nameLocBlock["russian"].Replace("$ADJ$", baseAdjLocBlock["russian"]);
+	/// nameLocBlock["simp_chinese"] = nameLocBlock["simp_chinese"].Replace("$ADJ$", baseAdjLocBlock["simp_chinese"]);
+	/// nameLocBlock["spanish"] = nameLocBlock["spanish"].Replace("$ADJ$", baseAdjLocBlock["spanish"]);
+	///
+	/// Can be replaced by:
+	/// nameLocBlock.ModifyForEveryLanguage(baseAdjLocBlock, (string baseLoc, string modifyingLoc) => {
+	/// 	return baseLoc.Replace("$ADJ$", modifyingLoc);
+	/// });
+	/// </summary>
+	/// <param name="otherBlock"></param>
+	/// <param name="modifyingFunction"></param>
 	public void ModifyForEveryLanguage(LocBlock otherBlock, LocDelegate modifyingFunction) {
 		foreach (var language in localizations.Keys) {
 			localizations[language] = modifyingFunction(localizations[language], otherBlock[language]);
