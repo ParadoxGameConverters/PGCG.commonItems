@@ -1,18 +1,36 @@
-name: Bump version
+name: Bump package version
 on:
   push:
     branches:
-      - main
+    - 'main'
+
 jobs:
-  bump_tag:
+  bump_package_version:
+    name: "Bump package version"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
-    - name: "Bump version and push tag"
+
+    - name: "Get new version"
+      id: get_new_version
       uses: anothrNick/github-tag-action@master
       env:
-        GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         DEFAULT_BUMP: none
         WITH_V: false
+        DRY_RUN: true
+
+    - name: "Update version in project"
+      uses: jacobtomlinson/gha-find-replace@v2
+      with:
+        find: ^<Version>(.*)<\/Version>$
+        replace: <Version>${{ steps.get_new_version.outputs.new_tag }}<\/Version>
+        regex: true
+
+    - name: "Push changes"
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.API_TOKEN_GITHUB }}
+        branch: ${{ github.ref }}
