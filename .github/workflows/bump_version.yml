@@ -27,7 +27,7 @@ jobs:
       uses: jacobtomlinson/gha-find-replace@v2
       with:
         include: commonItems/commonItems.csproj
-        find: <Version>0.1.3</Version>
+        find: <Version>${{ steps.get_new_version.outputs.tag }}</Version>
         replace: <Version>${{ steps.get_new_version.outputs.new_tag }}</Version>
         regex: false
 
