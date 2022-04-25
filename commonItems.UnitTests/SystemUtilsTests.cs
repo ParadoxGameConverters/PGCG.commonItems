@@ -76,8 +76,8 @@ public class SystemUtilsTests {
 
 	[Fact]
 	public void TryCopyFileCopiesFile() {
-		var sourcePath = testFilesPath + "/subfolder2/subfolder2_file.txt";
-		var destPath = testFilesPath + "/subfolder/subfolder2_file.txt";
+		const string sourcePath = testFilesPath + "/subfolder2/subfolder2_file.txt";
+		const string destPath = testFilesPath + "/subfolder/subfolder2_file.txt";
 		var success = SystemUtils.TryCopyFile(sourcePath, destPath);
 		Assert.True(success);
 		Assert.True(File.Exists(destPath));
@@ -88,8 +88,8 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		var sourcePath = testFilesPath + "/subfolder/missingFile.txt";
-		var destPath = testFilesPath + "/newFolder/file.txt";
+		const string sourcePath = testFilesPath + "/subfolder/missingFile.txt";
+		const string destPath = testFilesPath + "/newFolder/file.txt";
 		var success = SystemUtils.TryCopyFile(sourcePath, destPath);
 		Assert.False(success);
 		Assert.False(File.Exists(destPath));
@@ -99,8 +99,8 @@ public class SystemUtilsTests {
 
 	[Fact]
 	public void CopyFolderCopiesFolder() {
-		var sourcePath = testFilesPath + "/subfolder2";
-		var destPath = testFilesPath + "/subfolder3";
+		const string sourcePath = testFilesPath + "/subfolder2";
+		const string destPath = testFilesPath + "/subfolder3";
 		Assert.False(Directory.Exists(destPath));
 		var success = SystemUtils.TryCopyFolder(sourcePath, destPath);
 		Assert.True(success);
@@ -112,8 +112,8 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		var sourcePath = testFilesPath + "/missingFolder";
-		var destPath = testFilesPath + "/newFolder";
+		const string sourcePath = testFilesPath + "/missingFolder";
+		const string destPath = testFilesPath + "/newFolder";
 		var success = SystemUtils.TryCopyFolder(sourcePath, destPath);
 		Assert.False(success);
 		Assert.False(Directory.Exists(destPath));
@@ -124,8 +124,8 @@ public class SystemUtilsTests {
 
 	[Fact]
 	public void RenameFolderRenamesFolder() {
-		var path = testFilesPath + "/subfolder2";
-		var newPath = testFilesPath + "/subfolderRenamed";
+		const string path = testFilesPath + "/subfolder2";
+		const string newPath = testFilesPath + "/subfolderRenamed";
 		Assert.True(Directory.Exists(path));
 		Assert.False(Directory.Exists(newPath));
 		var success = SystemUtils.TryRenameFolder(path, newPath);
@@ -139,8 +139,8 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		var sourcePath = testFilesPath + "/missingFolder";
-		var destPath = testFilesPath + "/newFolder";
+		const string sourcePath = testFilesPath + "/missingFolder";
+		const string destPath = testFilesPath + "/newFolder";
 		var success = SystemUtils.TryRenameFolder(sourcePath, destPath);
 		Assert.False(success);
 		Assert.False(Directory.Exists(destPath));
@@ -150,7 +150,7 @@ public class SystemUtilsTests {
 
 	[Fact]
 	public void DeleteFolderDeletesFolder() {
-		var path = testFilesPath + "/tempFolder";
+		const string path = testFilesPath + "/tempFolder";
 		SystemUtils.TryCreateFolder(path);
 		Assert.True(Directory.Exists(path));
 		var success = SystemUtils.TryDeleteFolder(path);
@@ -162,7 +162,7 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		var path = testFilesPath + "/missingFolder";
+		const string path = testFilesPath + "/missingFolder";
 		var success = SystemUtils.TryDeleteFolder(path);
 		Assert.False(success);
 		Assert.Contains($"[ERROR] Could not delete folder: {path} : " +

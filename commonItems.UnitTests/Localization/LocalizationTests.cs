@@ -126,6 +126,7 @@ public class LocalizationTests {
 		newLocBlock["french"] = "Romain";
 
 		var locBlock = locDB.GetLocBlockForKey("key1");
+		Assert.NotNull(locBlock);
 		Assert.Equal("Roman", locBlock["english"]);
 		Assert.Equal("Romain", locBlock["french"]);
 		Assert.Equal("Roman", locBlock["german"]);
