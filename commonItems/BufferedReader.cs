@@ -40,8 +40,9 @@ public class BufferedReader {
 		var sb = new StringBuilder();
 		for (uint i = 0; i < numberOfChars; ++i) {
 			var ch = Read();
-			if (ch == -1)
+			if (ch == -1) {
 				break;
+			}
 			sb.Append((char)ch);
 		}
 
