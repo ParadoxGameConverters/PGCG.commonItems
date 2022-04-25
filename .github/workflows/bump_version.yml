@@ -26,9 +26,13 @@ jobs:
       uses: jacobtomlinson/gha-find-replace@v2
       with:
         include: commonItems/commonItems.csproj
-        find: <Version>${{ steps.get_new_version.outputs.tag }}</Version>
+        find: <Version>0.1.0</Version>
         replace: <Version>${{ steps.get_new_version.outputs.new_tag }}</Version>
         regex: false
+
+    - name: "Print project file"
+      run: |
+        cat commonItems/commonItems.csproj
 
     - name: "Push changes"
       uses: ad-m/github-push-action@v0.6.0
