@@ -6,7 +6,7 @@ using Xunit;
 
 namespace commonItems.UnitTests.Localization; 
 
-public class LocalizationTests {
+public class LocDBTests {
 	[Fact]
 	public void LocalizationCanBeLoadedAndMatched() {
 		var reader1 = new BufferedReader(
@@ -69,7 +69,7 @@ public class LocalizationTests {
 	}
 
 	[Fact]
-	public void LocDBReturnNullForMissingKey() {
+	public void LocDBReturnsNullForMissingKey() {
 		var locDB = new LocDB("english");
 		Assert.Null(locDB.GetLocBlockForKey("key1"));
 	}
@@ -87,37 +87,6 @@ public class LocalizationTests {
 	}
 
 	[Fact]
-	public void LocCanBeModifiedByMethodForEveryLanguage() {
-		var nameLocBlock = new LocBlock("english", "french", "german", "russian", "simp_chinese", "spanish") {
-			["english"] = "$ADJ$ Revolt",
-			["french"] = "$ADJ$ révolte",
-			["german"] = "$ADJ$ Revolte",
-			["russian"] = "$ADJ$ бунт",
-			["simp_chinese"] = "$ADJ$ 反叛",
-			["spanish"] = "$ADJ$ revuelta"
-		};
-
-		var adjLocBlock = new LocBlock("english", "french", "german", "russian", "simp_chinese", "spanish") {
-			["english"] = "Roman",
-			["french"] = "Romain",
-			["german"] = "römisch",
-			["russian"] = "Роман",
-			["simp_chinese"] = "罗马",
-			["spanish"] = "Romana"
-		};
-
-		nameLocBlock.ModifyForEveryLanguage(adjLocBlock, (baseLoc, modifyingLoc) =>
-			baseLoc.Replace("$ADJ$", modifyingLoc)
-		);
-		Assert.Equal("Roman Revolt", nameLocBlock["english"]);
-		Assert.Equal("Romain révolte", nameLocBlock["french"]);
-		Assert.Equal("römisch Revolte", nameLocBlock["german"]);
-		Assert.Equal("Роман бунт", nameLocBlock["russian"]);
-		Assert.Equal("罗马 反叛", nameLocBlock["simp_chinese"]);
-		Assert.Equal("Romana revuelta", nameLocBlock["spanish"]);
-	}
-
-	[Fact]
 	public void LocalizationCanBeAddedForKey() {
 		var locDB = new LocDB("english", "french", "german", "russian", "simp_chinese", "spanish");
 		Assert.Null(locDB.GetLocBlockForKey("key1"));
@@ -129,55 +98,10 @@ public class LocalizationTests {
 		Assert.NotNull(locBlock);
 		Assert.Equal("Roman", locBlock["english"]);
 		Assert.Equal("Romain", locBlock["french"]);
-		Assert.Equal("Roman", locBlock["german"]);
-		Assert.Equal("Roman", locBlock["russian"]);
-		Assert.Equal("Roman", locBlock["simp_chinese"]);
-		Assert.Equal("Roman", locBlock["spanish"]);
 	}
 
 	[Fact]
-	public void LocBlockCanBeCopyConstructed() {
-		var origLocBlock = new LocBlock("english", "french", "german", "russian", "simp_chinese", "spanish");
-		origLocBlock["english"] = "a";
-		origLocBlock["french"] = "b";
-		origLocBlock["german"] = "c";
-		origLocBlock["russian"] = "d";
-		origLocBlock["simp_chinese"] = "e";
-		origLocBlock["spanish"] = "f";
-
-		var copyLocBlock = new LocBlock(origLocBlock);
-		Assert.Equal("a", copyLocBlock["english"]);
-		Assert.Equal("b", copyLocBlock["french"]);
-		Assert.Equal("c", copyLocBlock["german"]);
-		Assert.Equal("d", copyLocBlock["russian"]);
-		Assert.Equal("e", copyLocBlock["simp_chinese"]);
-		Assert.Equal("f", copyLocBlock["spanish"]);
-	}
-
-	[Fact]
-	public void LocBlockCanCopyFromOtherBlock() {
-		var origLocBlock = new LocBlock("english", "french", "german", "russian", "simp_chinese", "spanish") {
-			["english"] = "a",
-			["french"] = "b",
-			["german"] = "c",
-			["russian"] = "d",
-			["simp_chinese"] = "e",
-			["spanish"] = "f"
-		};
-
-		var copyingLocBlock = new LocBlock("english", "french", "german", "russian", "simp_chinese", "spanish");
-		copyingLocBlock.CopyFrom(origLocBlock);
-
-		Assert.Equal("a", copyingLocBlock["english"]);
-		Assert.Equal("b", copyingLocBlock["french"]);
-		Assert.Equal("c", copyingLocBlock["german"]);
-		Assert.Equal("d", copyingLocBlock["russian"]);
-		Assert.Equal("e", copyingLocBlock["simp_chinese"]);
-		Assert.Equal("f", copyingLocBlock["spanish"]);
-	}
-
-	[Fact]
-	public void VanillaAndMocLocIsScraped() {
+	public void VanillaAndModLocIsScraped() {
 		var output = new StringWriter();
 		Console.SetOut(output);
 

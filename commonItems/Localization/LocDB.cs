@@ -70,7 +70,7 @@ public class LocDB : IReadOnlyDictionary<string, LocBlock> {
 			if (locBlocks.TryGetValue(key, out var locBlock)) {
 				locBlock[currentLanguage] = loc;
 			} else {
-				var newBlock = new LocBlock(baseLanguage, otherLanguages) { [currentLanguage] = loc };
+				var newBlock = new LocBlock(baseLanguage) { [currentLanguage] = loc };
 				locBlocks.Add(key, newBlock);
 			}
 			++linesRead;
@@ -121,20 +121,10 @@ public class LocDB : IReadOnlyDictionary<string, LocBlock> {
 		return new(key, value);
 	}
 	public LocBlock? GetLocBlockForKey(string key) {
-		if (!locBlocks.TryGetValue(key, out var locBlock)) {
-			return null;
-		}
-
-		if (locBlock.HasMissingSecondaryLanguageLoc()) {
-			locBlock.FillMissingLocWithBaseLanguageLoc();
-			return locBlock;
-		}
-
-		// Either all is well, or we're missing english. Can't do anything about the latter.
-		return locBlock;
+		return locBlocks.TryGetValue(key, out var locBlock) ? locBlock : null;
 	}
 	public LocBlock AddLocBlock(string key) {
-		locBlocks[key] = new(baseLanguage, otherLanguages);
+		locBlocks[key] = new LocBlock(baseLanguage);
 		return locBlocks[key];
 	}
 
