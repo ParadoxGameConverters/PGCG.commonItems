@@ -5,38 +5,38 @@ namespace commonItems.Localization;
 
 public class LocBlock {
 	private readonly string baseLanguage;
-	private readonly string[] otherLanguages;
-	private readonly Dictionary<string, string> localizations;
+	private readonly Dictionary<string, string?> localizations;
 
-	public LocBlock(string baseLanguage, params string[] otherLanguages) {
+	public LocBlock(string baseLanguage) {
 		this.baseLanguage = baseLanguage;
-		this.otherLanguages = otherLanguages;
-		localizations = new() { [this.baseLanguage] = string.Empty };
-
-		foreach (var language in otherLanguages) {
-			localizations[language] = string.Empty;
-		}
+		localizations = new Dictionary<string, string?>();
 	}
 
 	public LocBlock(LocBlock otherBlock) {
 		baseLanguage = otherBlock.baseLanguage;
-		otherLanguages = otherBlock.otherLanguages;
 		localizations = new(otherBlock.localizations);
 	}
 
 	public void CopyFrom(LocBlock otherBlock) {
-		foreach (var language in localizations.Keys) {
-			localizations[language] = otherBlock[language];
+		foreach (var (language, loc) in otherBlock.localizations) {
+			localizations[language] = loc;
 		}
 	}
 
-	public string this[string language] {
-		get => localizations[language];
+	public string? this[string language] {
+		get {
+			var toReturn = localizations.GetValueOrDefault(language, null);
+			if (toReturn is null && language != baseLanguage) {
+				toReturn = localizations.GetValueOrDefault(baseLanguage, null);
+			}
+
+			return toReturn;
+		}
 		set => localizations[language] = value;
 	}
 
 	/// <summary>
-	/// ModifyForEveryLanguage helps remove boilerplate by applying modifyingMethod to every language in the struct
+	/// <see cref="ModifyForEveryLanguage"/> helps remove boilerplate by applying modifyingMethod to every language in the struct
 	/// For example:
 	/// nameLocBlock["english"] = nameLocBlock["english"].Replace("$ADJ$", baseAdjLocBlock["english"]);
 	/// nameLocBlock["french"] = nameLocBlock["french"].Replace("$ADJ$", baseAdjLocBlock["french"]);
@@ -56,22 +56,5 @@ public class LocBlock {
 		foreach (var language in localizations.Keys) {
 			localizations[language] = modifyingFunction(localizations[language], otherBlock[language]);
 		}
-	}
-	private void FillMissingLocWithBaseLanguageLoc(string language) {
-		if (string.IsNullOrEmpty(localizations[language])) {
-			localizations[language] = localizations[baseLanguage];
-		}
-	}
-	public void FillMissingLocWithBaseLanguageLoc() {
-		foreach (string language in otherLanguages) {
-			FillMissingLocWithBaseLanguageLoc(language);
-		}
-	}
-
-	public bool HasMissingSecondaryLanguageLoc() {
-		bool hasBaseLanguageLoc = !string.IsNullOrEmpty(localizations[baseLanguage]);
-		bool hasMissingSecondaryLanguageLoc = otherLanguages.Any(language => string.IsNullOrEmpty(localizations[language]));
-
-		return hasBaseLanguageLoc && hasMissingSecondaryLanguageLoc;
 	}
 }
