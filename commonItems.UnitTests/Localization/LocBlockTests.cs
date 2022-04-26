@@ -6,7 +6,7 @@ namespace commonItems.UnitTests.Localization;
 public class LocBlockTests {
 	[Fact]
 	public void LocCanBeModifiedByMethodForEveryLanguage() {
-		var nameLocBlock = new LocBlock("english") {
+		var nameLocBlock = new LocBlock("key1", "english") {
 			["english"] = "$ADJ$ Revolt",
 			["french"] = "$ADJ$ révolte",
 			["german"] = "$ADJ$ Revolte",
@@ -15,7 +15,7 @@ public class LocBlockTests {
 			["spanish"] = "$ADJ$ revuelta"
 		};
 
-		var adjLocBlock = new LocBlock("english") {
+		var adjLocBlock = new LocBlock("key2", "english") {
 			["english"] = "Roman",
 			["french"] = "Romain",
 			["german"] = "römisch",
@@ -37,15 +37,16 @@ public class LocBlockTests {
 
 	[Fact]
 	public void LocBlockCanBeCopyConstructed() {
-		var origLocBlock = new LocBlock("english");
-		origLocBlock["english"] = "a";
-		origLocBlock["french"] = "b";
-		origLocBlock["german"] = "c";
-		origLocBlock["russian"] = "d";
-		origLocBlock["simp_chinese"] = "e";
-		origLocBlock["spanish"] = "f";
+		var origLocBlock = new LocBlock("key1", "english") {
+			["english"] = "a",
+			["french"] = "b",
+			["german"] = "c",
+			["russian"] = "d",
+			["simp_chinese"] = "e",
+			["spanish"] = "f"
+		};
 
-		var copyLocBlock = new LocBlock(origLocBlock);
+		var copyLocBlock = new LocBlock("key2", origLocBlock);
 		Assert.Equal("a", copyLocBlock["english"]);
 		Assert.Equal("b", copyLocBlock["french"]);
 		Assert.Equal("c", copyLocBlock["german"]);
@@ -56,7 +57,7 @@ public class LocBlockTests {
 
 	[Fact]
 	public void LocBlockCanCopyFromOtherBlock() {
-		var origLocBlock = new LocBlock("english") {
+		var origLocBlock = new LocBlock("key1", "english") {
 			["english"] = "a",
 			["french"] = "b",
 			["german"] = "c",
@@ -65,7 +66,7 @@ public class LocBlockTests {
 			["spanish"] = "f"
 		};
 
-		var copyingLocBlock = new LocBlock("english");
+		var copyingLocBlock = new LocBlock("key2", "english");
 		copyingLocBlock.CopyFrom(origLocBlock);
 
 		Assert.Equal("a", copyingLocBlock["english"]);
@@ -77,8 +78,8 @@ public class LocBlockTests {
 	}
 
 	[Fact]
-	public void LocForMissingLanguageDefaultsToNull() {
-		var locBlock = new LocBlock("english");
-		Assert.Null(locBlock["italian"]);
+	public void LocForMissingLanguageDefaultsToLocKey() {
+		var locBlock = new LocBlock("key1", "english");
+		Assert.Equal("key1", locBlock["italian"]);
 	}
 }

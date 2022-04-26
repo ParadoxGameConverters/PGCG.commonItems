@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using commonItems.Collections;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
 namespace commonItems.Localization;
 
-public class LocDB : IReadOnlyDictionary<string, LocBlock> {
-	private readonly Dictionary<string, LocBlock> locBlocks = new();
+public class LocDB : IdObjectCollection<string, LocBlock> {
 	private readonly string baseLanguage;
 	private readonly string[] otherLanguages;
 
@@ -67,11 +65,11 @@ public class LocDB : IReadOnlyDictionary<string, LocBlock> {
 				continue;
 			}
 
-			if (locBlocks.TryGetValue(key, out var locBlock)) {
+			if (dict.TryGetValue(key, out var locBlock)) {
 				locBlock[currentLanguage] = loc;
 			} else {
-				var newBlock = new LocBlock(baseLanguage) { [currentLanguage] = loc };
-				locBlocks.Add(key, newBlock);
+				var newBlock = new LocBlock(key, baseLanguage) { [currentLanguage] = loc };
+				dict.Add(key, newBlock);
 			}
 			++linesRead;
 		}
@@ -121,19 +119,10 @@ public class LocDB : IReadOnlyDictionary<string, LocBlock> {
 		return new(key, value);
 	}
 	public LocBlock? GetLocBlockForKey(string key) {
-		return locBlocks.TryGetValue(key, out var locBlock) ? locBlock : null;
+		return dict.TryGetValue(key, out var locBlock) ? locBlock : null;
 	}
 	public LocBlock AddLocBlock(string key) {
-		locBlocks[key] = new LocBlock(baseLanguage);
-		return locBlocks[key];
+		dict[key] = new LocBlock(key, baseLanguage);
+		return dict[key];
 	}
-
-	public IEnumerable<string> Keys => locBlocks.Keys;
-	public IEnumerable<LocBlock> Values => locBlocks.Values;
-	public int Count => locBlocks.Count;
-	public LocBlock this[string key] => locBlocks[key];
-	public bool ContainsKey(string key) => locBlocks.ContainsKey(key);
-	public bool TryGetValue(string key, [MaybeNullWhen(false)] out LocBlock value) => locBlocks.TryGetValue(key, out value);
-	public IEnumerator<KeyValuePair<string, LocBlock>> GetEnumerator() => locBlocks.GetEnumerator();
-	IEnumerator IEnumerable.GetEnumerator() => locBlocks.GetEnumerator();
 }

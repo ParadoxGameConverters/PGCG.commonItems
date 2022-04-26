@@ -1,18 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using commonItems.Collections;
+using System.Collections.Generic;
 
 namespace commonItems.Localization;
 
-public class LocBlock {
+public class LocBlock : IIdentifiable<string> {
 	private readonly string baseLanguage;
 	private readonly Dictionary<string, string?> localizations;
-
-	public LocBlock(string baseLanguage) {
+	
+	public string Id { get; }
+	
+	public LocBlock(string locKey, string baseLanguage) {
+		Id = locKey;
 		this.baseLanguage = baseLanguage;
 		localizations = new Dictionary<string, string?>();
 	}
 
-	public LocBlock(LocBlock otherBlock) {
+	public LocBlock(string locKey, LocBlock otherBlock) {
+		Id = locKey;
 		baseLanguage = otherBlock.baseLanguage;
 		localizations = new(otherBlock.localizations);
 	}
@@ -26,11 +30,14 @@ public class LocBlock {
 	public string? this[string language] {
 		get {
 			var toReturn = localizations.GetValueOrDefault(language, null);
-			if (toReturn is null && language != baseLanguage) {
+			if (toReturn is not null) {
+				return toReturn;
+			}
+			
+			if (language != baseLanguage) {
 				toReturn = localizations.GetValueOrDefault(baseLanguage, null);
 			}
-
-			return toReturn;
+			return toReturn ?? Id;
 		}
 		set => localizations[language] = value;
 	}
