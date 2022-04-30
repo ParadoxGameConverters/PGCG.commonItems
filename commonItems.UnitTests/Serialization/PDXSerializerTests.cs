@@ -171,4 +171,13 @@ public class PDXSerializerTests {
 			PDXSerializer.Serialize(topLevelTitles, indent: string.Empty, withBraces: false)
 		);
 	}
+
+	[Fact]
+	public void QuotedStringsAreNotSerializedWithAdditionalQuotes() {
+		const string unquotedString = "unquoted";
+		const string quotedString = "\"quoted\"";
+		
+		Assert.Equal("\"unquoted\"", PDXSerializer.Serialize(unquotedString));
+		Assert.Equal("\"quoted\"", PDXSerializer.Serialize(quotedString));
+	}
 }

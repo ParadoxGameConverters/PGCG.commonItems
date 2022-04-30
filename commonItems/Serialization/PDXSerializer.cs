@@ -20,7 +20,7 @@ public static class PDXSerializer {
 		if (obj is IPDXSerializable serializableType) {
 			sb.Append(serializableType.Serialize(indent, withBraces));
 		} else if (obj is string str) {
-			sb.Append('\"').Append(str).Append('\"');
+			SerializeString(str, sb);
 		} else if (obj is IDictionary dict) {
 			SerializeDictionary(dict, withBraces, sb, indent);
 		} else if (obj is IEnumerable<IIdentifiable> idObjEnumerable) {
@@ -45,6 +45,17 @@ public static class PDXSerializer {
 		return Serialize(obj, string.Empty);
 	}
 
+	private static bool StringIsQuoted(string str) {
+		return str.StartsWith('"') && str.EndsWith('"');
+	}
+	private static void SerializeString(string str, StringBuilder sb) {
+		if (StringIsQuoted(str)) {
+			sb.Append(str);
+		} else {
+			sb.Append('\"').Append(str).Append('\"');
+		}
+	}
+	
 	private static void SerializeIdObjEnumerable(IEnumerable<IIdentifiable> enumerable, StringBuilder sb, string indent) {
 		var dict = enumerable.ToDictionary(e => e.GetIdString(), e => e);
 		SerializeDictionary(dict, false, sb, indent);
