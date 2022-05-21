@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.7.0" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="1.7.3" />
     <PackageReference Include="log4net" Version="2.0.14" />
     <PackageReference Include="NCalcSync" Version="3.0.0" />

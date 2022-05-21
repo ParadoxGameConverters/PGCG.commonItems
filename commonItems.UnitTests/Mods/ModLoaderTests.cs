@@ -1,7 +1,8 @@
-﻿using System;
+﻿using commonItems.Mods;
+using System;
 using System.IO;
 using Xunit;
-using Mods = System.Collections.Generic.List<commonItems.Mod>;
+using ModList = System.Collections.Generic.List<commonItems.Mods.Mod>;
 
 namespace commonItems.UnitTests; 
 
@@ -12,7 +13,7 @@ public class ModLoaderTests {
 
 	[Fact]
 	public void ModsCanBeLocatedUnpackedAndUpdated() {
-		var incomingMods = new Mods {
+		var incomingMods = new ModList {
 			new("Some mod", "mod/themod.mod") // mod's in fact named "The Mod" in the file
 		};
 
@@ -29,7 +30,7 @@ public class ModLoaderTests {
 	}
 	[Fact]
 	public void BrokenMissingAndNonexistentModsAreDiscarded() {
-		var incomingMods = new Mods {
+		var incomingMods = new ModList {
 			new("", "mod/themod.mod"), // no name given
 			new("Broken mod", "mod/brokenmod.mod"), // no path
 			new("Missing mod", "mod/missingmod.mod"), // missing directory
@@ -45,7 +46,7 @@ public class ModLoaderTests {
 	}
 	[Fact]
 	public void CompressedModsCanBeUnpacked() {
-		var incomingMods = new Mods {
+		var incomingMods = new ModList {
 			new("some packed mod", "mod/packedmod.mod")
 		};
 
@@ -62,7 +63,7 @@ public class ModLoaderTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		var incomingMods = new Mods {
+		var incomingMods = new ModList {
 			new("broken packed mod", "mod/brokenpacked.mod")
 		};
 
