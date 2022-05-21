@@ -6,25 +6,20 @@ namespace commonItems.Mods;
 
 public class ModFilesystem {
 	private static bool PathIsReplaced(string path, IEnumerable<string> replacedPaths) {
-		Logger.Debug($"Checking if path \"{path}\" is replaced...");
-		
 		var splitPath = CommonFunctions.SplitPath(path);
 
 		return replacedPaths.Any(replacedPath => {
 			var splitReplacedPath = CommonFunctions.SplitPath(replacedPath);
 			for (int i = 0; i < splitReplacedPath.Length; ++i) {
 				if (i >= splitPath.Length) {
-					Logger.Info("NOT replaced: reached end of splitPath");
 					return false;
 				}
 
 				if (splitPath[i] != splitReplacedPath[i]) {
-					Logger.Info($"NOT replaced: {splitPath[i]} != {splitReplacedPath[i]}");
 					return false;
 				}
 			}
 
-			Logger.Info("REPLACED");
 			return true;
 		});
 	}
