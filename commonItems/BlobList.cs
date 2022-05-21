@@ -3,12 +3,12 @@ using System.Text;
 
 namespace commonItems;
 
-public class BlobList : Parser {
+public class BlobList {
 	public List<string> Blobs { get; } = new();
 	public BlobList(BufferedReader reader) {
-		var next = GetNextLexeme(reader);
+		var next = Parser.GetNextLexeme(reader);
 		if (next == "=") {
-			next = GetNextLexeme(reader);
+			next = Parser.GetNextLexeme(reader);
 		}
 		if (next != "{") {
 			return;
