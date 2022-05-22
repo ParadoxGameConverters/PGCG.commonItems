@@ -436,6 +436,27 @@ public class ParserHelperTests {
 		Assert.Equal("foo", theItem.ToString());
 	}
 
+	[Theory]
+	[InlineData("string")]
+	[InlineData("2")]
+	[InlineData("4.56")]
+	[InlineData("\"{ quoted object }\"")]
+	[Fact]
+	public void IsArrayOrObjectReturnsFalseForSimpleValues(string str) {
+		var stringItem = new StringOfItem(str);
+		Assert.False(stringItem.IsArrayOrObject());
+	}
+	
+	[Theory]
+	[InlineData("{ field1=1 field2=2 }")]
+	[InlineData("{ 1 2 3 }")]
+	[InlineData("rgb { 40 70 50 }")]
+	[Fact]
+	public void IsArrayOrObjectReturnsTrueForArraysAndObjects(string str) {
+		var stringItem = new StringOfItem(str);
+		Assert.True(stringItem.IsArrayOrObject());
+	}
+
 	[Fact]
 	public void GetLongGetsLongAfterEquals() {
 		var reader = new BufferedReader(" = 123456789012345");

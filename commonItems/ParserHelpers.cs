@@ -72,6 +72,11 @@ public class StringOfItem : IPDXSerializable {
 		str = sb.ToString();
 	}
 
+	public bool IsArrayOrObject() {
+		var indexOfBracket = str.IndexOf('{');
+		return indexOfBracket != -1 && (!str.Contains('"') || str.IndexOf('"') > indexOfBracket);
+	}
+
 	public string Serialize(string indent, bool withBraces) => ToString();
 	public override string ToString() => str;
 
