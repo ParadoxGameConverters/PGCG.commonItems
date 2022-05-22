@@ -45,9 +45,9 @@ public class OrderedSetTests {
 	}
 
 	[Fact]
-	public void OrderedSetCanBeConstructedFromEnumerableWhilePreservingOrder() {
-		var list = new List<int>{1, 5, 2, 4, 5, 3, 3};
-		var set = new OrderedSet<int>(list);
+	public void OrderedSetCanBeConstructedFromIEnumerableWhilePreservingOrder() {
+		IEnumerable<int> collection = new List<int>{1, 5, 2, 4, 5, 3, 3};
+		var set = new OrderedSet<int>(collection);
 
 		set.Should().Equal(1, 5, 2, 4, 3);
 	}
