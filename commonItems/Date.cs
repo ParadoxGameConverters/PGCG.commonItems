@@ -5,9 +5,9 @@ using System.Text;
 namespace commonItems; 
 
 public class Date : IComparable<Date>, IPDXSerializable {
-	public int Year { get; private set; } = 1;
-	public int Month { get; private set; } = 1;
-	public int Day { get; private set; } = 1;
+	public int Year { get; } = 1;
+	public int Month { get; } = 1;
+	public int Day { get; } = 1;
 
 	public Date() { }
 	public Date(Date otherDate) {
@@ -49,75 +49,93 @@ public class Date : IComparable<Date>, IPDXSerializable {
 			return 31;
 		}
 
-		return daysByMonth[month] - daysByMonth[month - 1];
+		return DaysByMonth[month] - DaysByMonth[month - 1];
 	}
 
-	public void ChangeByDays(int days) {
+	public Date ChangeByDays(int days) {
+		int newYear = Year;
+		int newMonth = Month;
+		int newDay = Day;
+
 		if (days > 0) {
 			do {
-				var currentMonthIndex = Month - 1;
+				var currentMonthIndex = newMonth - 1;
 				bool doesMonthChange;
-				var currentDayInYear = daysByMonth[currentMonthIndex] + Day + days;
-				if (Month < 12) {
-					var nextMonthIndex = Month;
-					doesMonthChange = currentDayInYear > daysByMonth[nextMonthIndex];
+				var currentDayInYear = DaysByMonth[currentMonthIndex] + newDay + days;
+				if (newMonth < 12) {
+					var nextMonthIndex = newMonth;
+					doesMonthChange = currentDayInYear > DaysByMonth[nextMonthIndex];
 				} else {
 					doesMonthChange = currentDayInYear > 365;
 				}
 
 				if (doesMonthChange) {
-					var daysInMonth = DaysInMonth(Month);
-					ChangeByMonths(1);
+					var daysInMonth = DaysInMonth(newMonth);
+					var tempDate = new Date(newYear, newMonth, newDay).ChangeByMonths(1);
+					newYear = tempDate.Year;
+					newMonth = tempDate.Month;
+					newDay = tempDate.Day;
 
-					var daysForward = daysInMonth - Day + 1;
-					Day = 1;
+					var daysForward = daysInMonth - newDay + 1;
+					newDay = 1;
 					days -= daysForward;
 				} else {
-					Day += days;
+					newDay += days;
 					days = 0;
 				}
 			}
 			while (days > 0);
 		} else if (days < 0) {
 			do {
-				var currentMonthIndex = Month - 1;
+				var currentMonthIndex = newMonth - 1;
 				bool doesMonthChange;
-				var currentDayInYear = daysByMonth[currentMonthIndex] + Day + days;
-				if (Month > 1) {
-					doesMonthChange = currentDayInYear <= daysByMonth[currentMonthIndex];
+				var currentDayInYear = DaysByMonth[currentMonthIndex] + newDay + days;
+				if (newMonth > 1) {
+					doesMonthChange = currentDayInYear <= DaysByMonth[currentMonthIndex];
 				} else {
 					doesMonthChange = currentDayInYear <= 0;
 				}
 
 				if (doesMonthChange) {
-					ChangeByMonths(-1);
-					var daysInMonth = DaysInMonth(Month);
-					var daysBackward = Day;
-					Day = daysInMonth;
+					var tempDate = new Date(newYear, newMonth, newDay).ChangeByMonths(-1);
+					newYear = tempDate.Year;
+					newMonth = tempDate.Month;
+					newDay = tempDate.Day;
+					
+					var daysInMonth = DaysInMonth(newMonth);
+					var daysBackward = newDay;
+					newDay = daysInMonth;
 					days += daysBackward;
 				} else {
-					Day += days;
+					newDay += days;
 					days = 0;
 				}
 			}
 			while (days < 0);
 		}
+
+		return new Date(newYear, newMonth, newDay);
 	}
 
-	public void ChangeByMonths(int months) {
-		Year += months / 12;
-		Month += months % 12;
-		if (Month > 12) {
-			++Year;
-			Month -= 12;
-		} else if (Month < 1) {
-			--Year;
-			Month += 12;
+	public Date ChangeByMonths(int months) {
+		int newYear = Year;
+		int newMonth = Month;
+		
+		newYear += months / 12;
+		newMonth += months % 12;
+		if (newMonth > 12) {
+			++newYear;
+			newMonth -= 12;
+		} else if (newMonth < 1) {
+			--newYear;
+			newMonth += 12;
 		}
+		
+		return new Date(newYear, newMonth, Day);
 	}
 
-	public void ChangeByYears(int years) {
-		Year += years;
+	public Date ChangeByYears(int years) {
+		return new Date(Year + years, Month, Day);
 	}
 
 	private static int ConvertAUCToAD(int yearAUC) {
@@ -153,7 +171,7 @@ public class Date : IComparable<Date>, IPDXSerializable {
 		return ToString();
 	}
 
-	private static readonly int[] daysByMonth = {
+	private static readonly int[] DaysByMonth = {
 		0,	// January
 		31,	// February
 		59,	// March
@@ -170,11 +188,11 @@ public class Date : IComparable<Date>, IPDXSerializable {
 
 	private int CalculateDayInYear() {
 		if (Month is >= 1 and <= 12) {
-			return Day + daysByMonth[Month - 1];
+			return Day + DaysByMonth[Month - 1];
 		}
 		return Day;
 	}
-
+	
 	public override bool Equals(object? obj) {
 		return obj is Date date &&
 		       Year == date.Year &&
@@ -216,6 +234,7 @@ public class Date : IComparable<Date>, IPDXSerializable {
 		}
 		return Day.CompareTo(obj.Day);
 	}
+	
 	public static bool operator ==(Date? left, Date? right) {
 		if (left is null) {
 			return right is null;
