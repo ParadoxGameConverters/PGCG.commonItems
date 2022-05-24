@@ -1,16 +1,16 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using Mods = System.Collections.Generic.List<commonItems.Mod>;
 
-namespace commonItems; 
+namespace commonItems.Mods; 
 
 public class ModLoader {
-	private readonly Mods possibleUncompressedMods = new(); // name, absolute path to mod directory
-	private readonly Mods possibleCompressedMods = new(); // name, absolute path to zip file
-	public Mods UsableMods { get; } = new(); // name, absolute path for directories, relative for unpacked
+	private readonly List<Mod> possibleUncompressedMods = new(); // name, absolute path to mod directory
+	private readonly List<Mod> possibleCompressedMods = new(); // name, absolute path to zip file
+	public List<Mod> UsableMods { get; } = new(); // name, absolute path for directories, relative for unpacked
 
-	public void LoadMods(string gameDocumentsPath, Mods incomingMods) {
+	public void LoadMods(string gameDocumentsPath, List<Mod> incomingMods) {
 		if (incomingMods.Count == 0) {
 			// We shouldn't even be here if the save didn't have mods! Why were Mods called?
 			Logger.Info("No mods were detected in savegame. Skipping mod processing.");
@@ -28,7 +28,7 @@ public class ModLoader {
 
 		// Now we merge all detected .mod files together.
 		Logger.Info("\tDetermining mod usability");
-		var allMods = new Mods();
+		var allMods = new List<Mod>();
 		allMods.AddRange(possibleUncompressedMods);
 		allMods.AddRange(possibleCompressedMods);
 
@@ -43,10 +43,10 @@ public class ModLoader {
 
 			// All verified mods go into usableMods
 			Logger.Info($"\t\t->> Found potentially useful [{mod.Name}]: {possibleModPath}/");
-			UsableMods.Add(new Mod(mod.Name, possibleModPath, mod.Dependencies));
+			UsableMods.Add(new Mod(mod.Name, possibleModPath, mod.Dependencies, mod.ReplacedFolders));
 		}
 	}
-	private void LoadModDirectory(string gameDocumentsPath, Mods incomingMods) {
+	private void LoadModDirectory(string gameDocumentsPath, List<Mod> incomingMods) {
 		var modsPath = Path.Combine(gameDocumentsPath, "mod");
 		if (!Directory.Exists(modsPath)) {
 			throw new DirectoryNotFoundException($"Mods directory path is invalid! Is it at: {modsPath} ?");
@@ -132,11 +132,11 @@ public class ModLoader {
 
 	private void FileUnderCategory(ModParser theMod, string path) {
 		if (!theMod.IsCompressed()) {
-			possibleUncompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies));
+			possibleUncompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies, theMod.ReplacedPaths));
 			Logger.Info(
 				$"\t\tFound a potential mod [{theMod.Name}] with a mod file at {path} and itself at {theMod.Path}");
 		} else {
-			possibleCompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies));
+			possibleCompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies, theMod.ReplacedPaths));
 			Logger.Info(
 				$"\t\tFound a compressed mod [{theMod.Name}] with a mod file at {path} and itself at {theMod.Path}");
 		}

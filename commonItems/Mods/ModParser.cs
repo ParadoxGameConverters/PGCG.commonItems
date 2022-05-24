@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace commonItems;
+namespace commonItems.Mods;
 
 public class ModParser : Parser {
 	public string Name { get; private set; } = "";
@@ -8,6 +8,7 @@ public class ModParser : Parser {
 
 	private bool compressed = false;
 	public SortedSet<string> Dependencies { get; } = new();
+	public SortedSet<string> ReplacedPaths { get; } = new();
 
 	public void ParseMod(BufferedReader reader) {
 		RegisterKeys();
@@ -40,6 +41,7 @@ public class ModParser : Parser {
 		RegisterKeyword("name", reader => Name = reader.GetString());
 		RegisterRegex("path|archive", reader => Path = reader.GetString());
 		RegisterKeyword("dependencies", reader => Dependencies.UnionWith(reader.GetStrings()));
+		RegisterKeyword("replace_path", reader => ReplacedPaths.Add(reader.GetString()));
 		RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreItem);
 	}
 }
