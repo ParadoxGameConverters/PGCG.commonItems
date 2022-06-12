@@ -44,6 +44,9 @@ public class Date : IComparable<Date>, IPDXSerializable {
 			Day = 1;
 		}
 	}
+	
+	public static implicit operator Date(string dateString) => new Date(dateString);
+	
 	private static int DaysInMonth(int month) {
 		if (month == 12) {
 			return 31;

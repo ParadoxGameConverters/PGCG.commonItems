@@ -294,4 +294,12 @@ public class DateTests {
 			item => Assert.Equal(new Date(4, 1, 1), item)
 		);
 	}
+
+	[Fact]
+	public void StringCanBeImplicitlyConvertedToDate() {
+		Date date = "800.4.5";
+		Assert.Equal(800, date.Year);
+		Assert.Equal(4, date.Month);
+		Assert.Equal(5, date.Day);
+	}
 }
