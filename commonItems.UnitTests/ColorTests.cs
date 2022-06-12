@@ -326,6 +326,27 @@ public class ColorTests {
 		var reader = new BufferedReader("= hsv { 0.333 0.5 }");
 		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
 	}
+	
+	[Fact]
+	public void ColorCanBeInitializedFromStreamInCapitalHsv() {
+		var reader = new BufferedReader("= HSV { 0.5 0.5 0.5 }");
+		var testColor = new ColorFactory().GetColor(reader);
+
+		Assert.Equal(63, testColor.R);
+		Assert.Equal(127, testColor.G);
+		Assert.Equal(127, testColor.B);
+
+		Assert.Equal(0.5f, testColor.H, decimalPlaces);
+		Assert.Equal(0.5f, testColor.S, decimalPlaces);
+		Assert.Equal(0.5f, testColor.V, decimalPlaces);
+	}
+
+	[Fact]
+	public void ColorInitializationRequiresThreeComponentsWhenCapitalHsv() {
+		var reader = new BufferedReader("= HSV { 0.333 0.5 }");
+
+		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
+	}
 
 	[Fact]
 	public void ColorCanBeInitializedFromStreamInHsv360() {
