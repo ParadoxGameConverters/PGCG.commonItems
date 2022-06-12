@@ -32,7 +32,7 @@ public class ColorFactory {
 				var b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
 				return new Color(r, g, b);
 			}
-			case "hsv": {
+			case "hsv" or "HSV": {
 				var hsv = reader.GetDoubles();
 				if (hsv.Count != 3) {
 					throw new FormatException("Color has wrong number of components");

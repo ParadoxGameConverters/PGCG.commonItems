@@ -241,18 +241,15 @@ public class DateTests {
 		Assert.Equal("500.12.29", date.ToString());
 	}
 
-	[Fact]
-	public void AUCCanBeConvertedToAD() {
-		var testDate = new Date(450, 10, 1, true);
-		var testDate2 = new Date(1306, 3, 1, true);
-		var testDate3 = new Date("450.10.1", true);
-		var testDate4 = new Date("1306.3.1", true);
-
-		Assert.Equal("-304.10.1", testDate.ToString());
-		Assert.Equal("553.3.1", testDate2.ToString());
-		Assert.Equal("-304.10.1", testDate3.ToString());
-		Assert.Equal("553.3.1", testDate4.ToString());
+	[Theory]
+	[InlineData("450.10.1", "-304.10.1")] // Imperator start date
+	[InlineData("954.3.1", "201.3.1")]
+	[InlineData("1306.3.1", "553.3.1")]
+	public void AUCCanBeConvertedToAD(string aucDateString, string expectedADDate) {
+		var date = new Date(aucDateString, true);
+		Assert.Equal(expectedADDate, date.ToString());
 	}
+	
 	[Fact]
 	public void SeparateComponentsCanBeGotten() {
 		var testDate = new Date("450.10.7");
