@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
@@ -334,7 +334,7 @@ public class ParserHelperTests {
 		Assert.Equal(" next_parameter = 69 More text", reader1.ReadToEnd());
 		Assert.Equal(" next_parameter = 420 More text", reader2.ReadToEnd());
 	}
-	
+
 	[Fact]
 	public void GetLongGetsLongAfterEquals() {
 		var reader = new BufferedReader(" = 123456789012345");
