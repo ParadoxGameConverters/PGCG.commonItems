@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
@@ -333,128 +333,6 @@ public class ParserHelperTests {
 
 		Assert.Equal(" next_parameter = 69 More text", reader1.ReadToEnd());
 		Assert.Equal(" next_parameter = 420 More text", reader2.ReadToEnd());
-	}
-
-	[Fact]
-	public void BlobListDefaultsToEmpty() {
-		var reader = new BufferedReader(string.Empty);
-		var theBlobs = new BlobList(reader);
-
-		Assert.Empty(theBlobs.Blobs);
-	}
-
-	[Fact]
-	public void BlobListAddsBlobs() {
-		var reader = new BufferedReader("= { {foo} {bar} {baz} }");
-		var theBlobs = new BlobList(reader);
-
-		var expectedBlobs = new List<string> { "foo", "bar", "baz" };
-		Assert.Equal(expectedBlobs, theBlobs.Blobs);
-	}
-
-	[Fact]
-	public void BlobListAddsComplicatedBlobs() {
-		var reader = new BufferedReader("= { {foo=bar bar=baz} {bar=baz baz=foo} {baz=foo foo=bar} }");
-		var theBlobs = new BlobList(reader);
-
-		var expectedBlobs = new List<string> { "foo=bar bar=baz", "bar=baz baz=foo", "baz=foo foo=bar" };
-		Assert.Equal(expectedBlobs, theBlobs.Blobs);
-	}
-
-	[Fact]
-	public void BlobListPreservesEverythingWithinBlobs() {
-		var reader = new BufferedReader(
-			"= { {foo\t=\nbar\n \n{bar\t=\tbaz\n\n}} {BROKEN\t\t\tbar\n=\nbaz\n \t\tbaz\t=\nfoo\t} {\t\nbaz\n\t=\t\n\tfoo\n " +
-			"{} \n\tfoo\t=\tbar\t} }"
-		);
-
-		var theBlobs = new BlobList(reader);
-
-		var expectedBlobs = new List<string> {
-			"foo\t=\nbar\n \n{bar\t=\tbaz\n\n}",
-			"BROKEN\t\t\tbar\n=\nbaz\n \t\tbaz\t=\nfoo\t",
-			"\t\nbaz\n\t=\t\n\tfoo\n {} \n\tfoo\t=\tbar\t"
-		};
-		Assert.Equal(expectedBlobs, theBlobs.Blobs);
-	}
-
-	[Fact]
-	public void BlobListIgnoresEverythingOutsideBlobs() {
-		var reader = new BufferedReader(
-			"= {\n\n\t\t{foo}\nkey=value\n\t {bar}\t\nsome=value\t\n{baz}\t\n  randomLooseText   }"
-		);
-
-		var theBlobs = new BlobList(reader);
-
-		var expectedBlobs = new List<string> { "foo", "bar", "baz" };
-		Assert.Equal(expectedBlobs, theBlobs.Blobs);
-	}
-
-	[Fact]
-	public void BlobListIsEmptyOnTrivialWrongUsage() {
-		var reader = new BufferedReader("= value\n");
-		var theBlobs = new BlobList(reader);
-
-		Assert.Empty(theBlobs.Blobs);
-	}
-
-	[Fact]
-	public void BlobListIsEmptyOnSimpleWrongUsage() {
-		var reader = new BufferedReader("= { key=value\n key2=value2 }");
-		var theBlobs = new BlobList(reader);
-
-		Assert.Empty(theBlobs.Blobs);
-	}
-
-	[Fact]
-	public void BlobListIsNotAtFaultYouAreOnComplexWrongUsage() {
-		var reader = new BufferedReader("= { key=value\n key2={ key3 = value2 }}");
-		var theBlobs = new BlobList(reader);
-
-		var expectedBlobs = new List<string> { " key3 = value2 " };
-		Assert.Equal(expectedBlobs, theBlobs.Blobs);
-	}
-
-	[Fact]
-	public void StringOfItemConvertsBracedObjectsToStrings() {
-		const string input =
-			@"= {\n
-                \t{\n
-                \t\tid = 180\n
-                \t\ttype = 46\n
-                \t}\n
-                }";
-		var reader = new BufferedReader(input);
-
-		var theItem = reader.GetStringOfItem();
-		Assert.Equal(input[2..], theItem.ToString());
-	}
-	[Fact]
-	public void StringOfItemGetsStringAfterEquals() {
-		var reader = new BufferedReader(" = foo");
-		var theItem = reader.GetStringOfItem();
-		Assert.Equal("foo", theItem.ToString());
-	}
-
-	[Theory]
-	[InlineData("string")]
-	[InlineData("2")]
-	[InlineData("4.56")]
-	[InlineData("\"{ quoted object }\"")]
-	[Fact]
-	public void IsArrayOrObjectReturnsFalseForSimpleValues(string str) {
-		var stringItem = new StringOfItem(str);
-		Assert.False(stringItem.IsArrayOrObject());
-	}
-	
-	[Theory]
-	[InlineData("{ field1=1 field2=2 }")]
-	[InlineData("{ 1 2 3 }")]
-	[InlineData("rgb { 40 70 50 }")]
-	[Fact]
-	public void IsArrayOrObjectReturnsTrueForArraysAndObjects(string str) {
-		var stringItem = new StringOfItem(str);
-		Assert.True(stringItem.IsArrayOrObject());
 	}
 
 	[Fact]

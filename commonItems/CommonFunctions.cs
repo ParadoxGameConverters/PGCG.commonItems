@@ -1,11 +1,17 @@
 ﻿using GameFinder.StoreHandlers.Steam;
 using Microsoft.Win32;
 using System;
+using System.IO;
 using System.Text;
 
 namespace commonItems;
 
 public static class CommonFunctions {
+	public static string[] SplitPath(string path) {
+		return path.Split(new[]{Path.AltDirectorySeparatorChar,
+			Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries);
+	}
+	
 	public static string TrimPath(string fileName) {
 		string trimmedFileName = fileName;
 		var lastSlash = trimmedFileName.LastIndexOf('\\');

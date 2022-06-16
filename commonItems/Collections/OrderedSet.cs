@@ -11,6 +11,12 @@ public class OrderedSet<T> : ICollection<T> where T : notnull {
 
 	public OrderedSet() : this(EqualityComparer<T>.Default) { }
 
+	public OrderedSet(IEnumerable<T> collection) : this() {
+		foreach (var item in collection) {
+			Add(item);
+		}
+	}
+	
 	public OrderedSet(IEqualityComparer<T> comparer) {
 		dictionary = new Dictionary<T, LinkedListNode<T>>(comparer);
 		linkedList = new();
