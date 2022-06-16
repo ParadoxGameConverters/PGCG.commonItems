@@ -1,7 +1,7 @@
 ﻿using commonItems.Mods;
 using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests.Mods;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
