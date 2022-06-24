@@ -375,10 +375,8 @@ public class Parser {
 
 	/// <summary>
 	/// Parses a game folder in both vanilla game and mods directory.
-	/// Designed for Jomini-based games.
 	/// For example:
 	///		relativePath may be "common/governments"
-	///		gamePath may be "C:\SteamLibrary\Imperator"
 	///		extensions may be "txt;text" (a list separated by semicolon)
 	/// </summary>
 	public void ParseGameFolder(string relativePath, ModFilesystem modFS, string extensions, bool recursive) {
@@ -391,29 +389,21 @@ public class Parser {
 			files = new OrderedSet<string>(modFS.GetAllFilesInFolder(relativePath));
 		}
 		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
-		foreach (var file in files.Reverse()) {
+		foreach (var file in files) {
 			ParseFile(file);
 		}
 	}
 
 	/// <summary>
-	/// Parses a game file in both vanilla game and mods directory.
-	/// Designed for Jomini-based games.
+	/// Parses a game file in either vanilla game or mods directory.
 	/// For example:
 	///		relativePath may be "map_data/areas.txt"
-	///		gamePath may be "C:\SteamLibrary\Imperator"
 	/// </summary>
-	public void ParseGameFile(string relativePath, string gamePath, IEnumerable<Mod> mods) {
-		var vanillaFilePath = Path.Combine(gamePath, "game", relativePath);
-		if (File.Exists(vanillaFilePath)) {
-			ParseFile(vanillaFilePath);
-		}
-
-		foreach (var mod in mods) {
-			var modFilePath = Path.Combine(mod.Path, relativePath);
-			if (File.Exists(modFilePath)) {
-				ParseFile(modFilePath);
-			}
+	public void ParseGameFile(string relativePath, ModFilesystem modFS) {
+		var filePath = modFS.GetActualFileLocation(relativePath);
+		
+		if (File.Exists(filePath)) {
+			ParseFile(filePath);
 		}
 	}
 

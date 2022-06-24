@@ -1,5 +1,6 @@
-﻿using commonItems.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 
@@ -75,7 +76,7 @@ public class ModFilesystem {
 		return Directory.Exists(pathInGameRoot) ? pathInGameRoot : null;
 	}
 
-	public OrderedSet<string> GetAllFilesInFolder(string path) {
+	public IReadOnlyCollection<string> GetAllFilesInFolder(string path) {
 		var foundFiles = new SortedDictionary<string, string>(); // <relative path, full path>
 
 		foreach (var mod in Enumerable.Reverse(mods)) {
@@ -90,7 +91,7 @@ public class ModFilesystem {
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return new OrderedSet<string>(foundFiles.Values);
+				return foundFiles.Values.ToImmutableList();
 			}
 		}
 
@@ -104,10 +105,10 @@ public class ModFilesystem {
 			foundFiles.Add(newFile, fullPath);
 		}
 
-		return new OrderedSet<string>(foundFiles.Values);
+		return foundFiles.Values.ToImmutableList();
 	}
 	
-	public OrderedSet<string> GetAllSubfolders(string path) {
+	public IReadOnlyCollection<string> GetAllSubfolders(string path) {
 		var foundFolders = new SortedDictionary<string, string>(); // <relative path, full path>
 
 		foreach (var mod in Enumerable.Reverse(mods)) {
@@ -122,7 +123,7 @@ public class ModFilesystem {
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return new OrderedSet<string>(foundFolders.Values);
+				return foundFolders.Values.ToImmutableList();
 			}
 		}
 
@@ -136,40 +137,65 @@ public class ModFilesystem {
 			foundFolders.Add(newFolder, fullPath);
 		}
 
-		return new OrderedSet<string>(foundFolders.Values);
+		return foundFolders.Values.ToImmutableList();
 	}
-	
-	public OrderedSet<string> GetAllFilesInFolderRecursive(string path) {
-		var fullFiles = new OrderedSet<string>();
-		var foundFiles = new OrderedSet<string>();
 
-		var pathInGameRoot = Path.Combine(gameRoot, path).Replace('\\', '/');
-		foreach (var newFile in SystemUtils.GetAllFilesInFolderRecursive(pathInGameRoot)) {
-			if (foundFiles.Contains(newFile)) {
-				continue;
+	private class FilePrecedenceComparer : IComparer<string> {
+		public int Compare(String? x, String? y) {
+			if (x is null && y is null) {
+				return 0;
+			}
+			if (x is null) {
+				return -1;
+			}
+			if (y is null) {
+				return 1;
 			}
 
-			foundFiles.Add(newFile);
-			fullFiles.Add(Path.Combine(pathInGameRoot, newFile).Replace('\\', '/'));
+			var xSlashCount = x.Count(c => c is '/' or '\\');
+			var ySlashCount = y.Count(c => c is '/' or '\\');
+			if (xSlashCount < ySlashCount) {
+				return -1;
+			}
+			if (xSlashCount > ySlashCount) {
+				return 1;
+			}
+			return string.Compare(x, y, StringComparison.Ordinal);
 		}
+	}
 
-		foreach (var mod in mods) {
+	private static readonly FilePrecedenceComparer PrecedenceComparer = new();
+
+	public IReadOnlyCollection<string> GetAllFilesInFolderRecursive(string path) {
+		var foundFiles = new SortedDictionary<string, string>(PrecedenceComparer); // <relative path, full path>
+
+		foreach (var mod in Enumerable.Reverse(mods)) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			foreach (var newFile in SystemUtils.GetAllFilesInFolderRecursive(pathInMod)) {
-				if (foundFiles.Contains(newFile)) {
+				if (foundFiles.ContainsKey(newFile)) {
 					continue;
 				}
 
-				foundFiles.Add(newFile);
-				fullFiles.Add(Path.Combine(pathInMod, newFile).Replace('\\', '/'));
+				var fullPath = Path.Combine(pathInMod, newFile).Replace('\\', '/');
+				foundFiles.Add(newFile, fullPath);
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return fullFiles;
+				return foundFiles.Values.ToImmutableList();
 			}
 		}
 
-		return fullFiles;
+		var pathInGameRoot = Path.Combine(gameRoot, path).Replace('\\', '/');
+		foreach (var newFile in SystemUtils.GetAllFilesInFolderRecursive(pathInGameRoot)) {
+			if (foundFiles.ContainsKey(newFile)) {
+				continue;
+			}
+
+			var fullPath = Path.Combine(pathInGameRoot, newFile).Replace('\\', '/');
+			foundFiles.Add(newFile, fullPath);
+		}
+
+		return foundFiles.Values.ToImmutableList();
 	}
 	#endregion
 }
