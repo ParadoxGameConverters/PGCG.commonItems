@@ -1,4 +1,5 @@
-﻿using commonItems.Mods;
+﻿using commonItems.Collections;
+using commonItems.Mods;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -380,23 +381,18 @@ public class Parser {
 	///		gamePath may be "C:\SteamLibrary\Imperator"
 	///		extensions may be "txt;text" (a list separated by semicolon)
 	/// </summary>
-	public void ParseGameFolder(string relativePath, string gamePath, string extensions, IEnumerable<Mod> mods, bool recursive) {
+	public void ParseGameFolder(string relativePath, ModFilesystem modFS, string extensions, bool recursive) {
 		var extensionSet = extensions.Split(';');
 
-		var vanillaPath = Path.Combine(gamePath, "game", relativePath);
-		SortedSet<string> files = recursive ? SU.GetAllFilesInFolderRecursive(vanillaPath) : SU.GetAllFilesInFolder(vanillaPath);
-		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
-		foreach (string filePath in files.Select(fileName => Path.Combine(vanillaPath, fileName))) {
-			ParseFile(filePath);
+		OrderedSet<string> files;
+		if (recursive) {
+			files = new OrderedSet<string>(modFS.GetAllFilesInFolderRecursive(relativePath));
+		} else {
+			files = new OrderedSet<string>(modFS.GetAllFilesInFolder(relativePath));
 		}
-
-		foreach (var mod in mods) {
-			var modPath = Path.Combine(mod.Path, relativePath);
-			files = recursive ? SU.GetAllFilesInFolderRecursive(modPath) : SU.GetAllFilesInFolder(modPath);
-			files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
-			foreach (string filePath in files.Select(fileName => Path.Combine(modPath, fileName))) {
-				ParseFile(filePath);
-			}
+		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
+		foreach (var file in files.Reverse()) {
+			ParseFile(file);
 		}
 	}
 

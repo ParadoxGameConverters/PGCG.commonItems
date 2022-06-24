@@ -1,5 +1,6 @@
 ﻿using commonItems.Mods;
 using FluentAssertions;
+using System;
 using System.Collections.Generic;
 
 namespace commonItems.UnitTests.Mods;
@@ -168,9 +169,9 @@ public class ModFilesystemTests {
 		var modFileSystem =
 			new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
 
-		modFileSystem.GetAllFilesInFolder("test_folder").Should().BeEquivalentTo(
-			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/test_file.txt",
-			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt");
+		modFileSystem.GetAllFilesInFolder("test_folder").Should().Equal(
+			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt",
+			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/test_file.txt");
 	}
 
 	[Fact]
@@ -179,10 +180,10 @@ public class ModFilesystemTests {
 		var modFileSystem =
 			new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new[] {modOne});
 
-		modFileSystem.GetAllFilesInFolder("test_folder").Should().BeEquivalentTo(
-			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/test_file.txt",
+		modFileSystem.GetAllFilesInFolder("test_folder").Should().Equal(
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt",
-			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt");
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/test_file.txt");
 	}
 	
 	[Fact]
@@ -192,11 +193,11 @@ public class ModFilesystemTests {
 		var modFileSystem = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
 
-		modFileSystem.GetAllFilesInFolder("test_folder").Should().BeEquivalentTo(
-			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt",
-			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt",
+		modFileSystem.GetAllFilesInFolder("test_folder").Should().Equal(
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt",
-			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt");
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt",
+			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt",
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
 	}
 	
 	[Fact]
@@ -207,9 +208,9 @@ public class ModFilesystemTests {
 		var modFileSystem = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
 
-		modFileSystem.GetAllFilesInFolder("test_folder").Should().BeEquivalentTo(
-			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt",
-			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt");
+		modFileSystem.GetAllFilesInFolder("test_folder").Should().Equal(
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt",
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
 	}
 	
 	[Fact]
@@ -225,7 +226,7 @@ public class ModFilesystemTests {
 		var modFileSystem =
 			new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
 
-		modFileSystem.GetAllSubfolders("test_folder").Should().BeEquivalentTo(
+		modFileSystem.GetAllSubfolders("test_folder").Should().Equal(
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/deeper_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder");
 	}
@@ -236,7 +237,7 @@ public class ModFilesystemTests {
 		var modFileSystem =
 			new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new[] {modOne});
 
-		modFileSystem.GetAllSubfolders("test_folder").Should().BeEquivalentTo(
+		modFileSystem.GetAllSubfolders("test_folder").Should().Equal(
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/deeper_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder");
@@ -249,7 +250,7 @@ public class ModFilesystemTests {
 		var modFileSystem = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
 
-		modFileSystem.GetAllSubfolders("test_folder").Should().BeEquivalentTo(
+		modFileSystem.GetAllSubfolders("test_folder").Should().Equal(
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder",
@@ -264,7 +265,7 @@ public class ModFilesystemTests {
 		var modFileSystem = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
 
-		modFileSystem.GetAllSubfolders("test_folder").Should().BeEquivalentTo(
+		modFileSystem.GetAllSubfolders("test_folder").Should().Equal(
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder");
 	}
@@ -282,6 +283,8 @@ public class ModFilesystemTests {
 		var modFileSystem =
 			new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
 
+		// TODO: CHECK IN WHAT ORDER THEY SHOULD BE
+		throw new NotImplementedException();
 		modFileSystem.GetAllFilesInFolderRecursive("test_folder").Should().BeEquivalentTo(
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/deeper_folder/dummy.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt",
@@ -295,6 +298,8 @@ public class ModFilesystemTests {
 		var modFileSystem =
 			new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new[] {modOne});
 
+		// TODO: CHECK IN WHAT ORDER THEY SHOULD BE
+		throw new NotImplementedException();
 		modFileSystem.GetAllFilesInFolderRecursive("test_folder").Should().BeEquivalentTo(
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/deeper_folder/dummy.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt",
@@ -311,6 +316,8 @@ public class ModFilesystemTests {
 		var modFileSystem = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
 
+		// TODO: CHECK IN WHAT ORDER THEY SHOULD BE
+		throw new NotImplementedException();
 		modFileSystem.GetAllFilesInFolderRecursive("test_folder").Should().BeEquivalentTo(
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt",
@@ -330,6 +337,8 @@ public class ModFilesystemTests {
 		var modFileSystem = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
 
+		// TODO: CHECK IN WHAT ORDER THEY SHOULD BE
+		throw new NotImplementedException();
 		modFileSystem.GetAllFilesInFolderRecursive("test_folder").Should().BeEquivalentTo(
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt",

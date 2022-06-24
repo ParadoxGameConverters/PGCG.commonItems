@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -108,6 +109,12 @@ public class OrderedSet<T> : ISet<T> where T : notnull {
 		dictionary.Remove(item);
 		linkedList.Remove(node!);
 		return true;
+	}
+	
+	public void RemoveWhere(Func<T, bool> predicate) {
+		foreach (T item in this.ToList().Where(predicate)) {
+			Remove(item);
+		}
 	}
 
 	public IEnumerator<T> GetEnumerator() => linkedList.GetEnumerator();

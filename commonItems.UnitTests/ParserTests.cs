@@ -330,6 +330,7 @@ public class ParserTests {
 	public void ParserParsesGameFolderInVanillaAndMods() {
 		const string gamePath = "TestFiles/CK3";
 		var mods = new List<Mod> { new("cool_mod", "TestFiles/mod/themod") };
+		var modFS = new ModFilesystem(gamePath, mods);
 
 		var foundGovernments = new List<string>();
 		var parser = new Parser();
@@ -337,7 +338,8 @@ public class ParserTests {
 			foundGovernments.Add(govName);
 			ParserHelpers.IgnoreItem(reader);
 		});
-		parser.ParseGameFolder(Path.Combine("common", "governments"), gamePath, "txt", mods, recursive: false);
+
+		parser.ParseGameFolder("common/governments", modFS, "txt", recursive: false);
 		Assert.Collection(foundGovernments,
 			gov1 => Assert.Equal("tribal_federation", gov1),
 			gov2 => Assert.Equal("tribal_modded", gov2));
@@ -347,6 +349,7 @@ public class ParserTests {
 	public void ParserRecursivelyParsesGameFolderInVanillaAndMods() {
 		const string gamePath = "TestFiles/CK3";
 		var mods = new List<Mod> { new("cool_mod", "TestFiles/mod/themod") };
+		var modFS = new ModFilesystem(gamePath, mods);
 
 		var foundGovernments = new List<string>();
 		var parser = new Parser();
@@ -354,7 +357,8 @@ public class ParserTests {
 			foundGovernments.Add(govName);
 			ParserHelpers.IgnoreItem(reader);
 		});
-		parser.ParseGameFolder("common/governments", gamePath, "txt", mods, recursive: true);
+
+		parser.ParseGameFolder("common/governments", modFS, "txt", recursive: true);
 		Assert.Collection(foundGovernments,
 			gov1 => Assert.Equal("aristocratic_republic", gov1),
 			gov2 => Assert.Equal("tribal_federation", gov2),
