@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 
 namespace commonItems.Collections;
 
-// A set that preserves insertion order
-// https://stackoverflow.com/a/17853085/10249243
-public class OrderedSet<T> : ICollection<T> where T : notnull {
+/// <summary>
+/// A set that preserves insertion order
+/// https://stackoverflow.com/a/17853085/10249243
+/// </summary>
+public class OrderedSet<T> : ISet<T> where T : notnull {
 	private readonly IDictionary<T, LinkedListNode<T>> dictionary;
 	private readonly LinkedList<T> linkedList;
 
@@ -27,6 +31,60 @@ public class OrderedSet<T> : ICollection<T> where T : notnull {
 	public virtual bool IsReadOnly => dictionary.IsReadOnly;
 
 	void ICollection<T>.Add(T item) => Add(item);
+	public void ExceptWith(IEnumerable<T> other) {
+		foreach (var item in other) {
+			Remove(item);
+		}
+	}
+
+	public void IntersectWith(IEnumerable<T> other) {
+		IEnumerable<T> otherArray = other as T[] ?? other.ToArray();
+		foreach (T item in this.ToList().Where(item => !otherArray.Contains(item))) {
+			Remove(item);
+		}
+	}
+
+	public bool IsProperSubsetOf(IEnumerable<T> other) {
+		return this.ToHashSet().IsProperSubsetOf(other);
+	}
+
+	public bool IsProperSupersetOf(IEnumerable<T> other) {
+		return this.ToHashSet().IsProperSupersetOf(other);
+	}
+
+	public bool IsSubsetOf(IEnumerable<T> other) {
+		return this.ToHashSet().IsSubsetOf(other);
+	}
+
+	public bool IsSupersetOf(IEnumerable<T> other) {
+		return this.ToHashSet().IsSupersetOf(other);
+	}
+
+	public bool Overlaps(IEnumerable<T> other) {
+		return this.ToHashSet().Overlaps(other);
+	}
+
+	public bool SetEquals(IEnumerable<T> other) {
+		return this.ToHashSet().SetEquals(other);
+	}
+
+	public void SymmetricExceptWith(IEnumerable<T> other) {
+		var thisList = this.ToImmutableList();
+		var otherSet = new OrderedSet<T>(other);
+		foreach (var item in otherSet) {
+			if (thisList.Contains(item)) {
+				Remove(item);
+			} else {
+				Add(item);
+			}
+		}
+	}
+
+	public void UnionWith(IEnumerable<T> other) {
+		foreach (var item in other) {
+			Add(item);
+		}
+	}
 
 	public bool Add(T item) {
 		if (dictionary.ContainsKey(item)) {

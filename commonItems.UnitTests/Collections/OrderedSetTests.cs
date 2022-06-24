@@ -1,6 +1,7 @@
 ﻿using commonItems.Collections;
 using FluentAssertions;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace commonItems.UnitTests.Collections; 
@@ -50,5 +51,101 @@ public class OrderedSetTests {
 		var set = new OrderedSet<int>(collection);
 
 		set.Should().Equal(1, 5, 2, 4, 3);
+	}
+
+	[Fact]
+	public void ExceptWithRemovesAllElementsInSpecifiedCollectionFromCurrentOrderedSet() {
+		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
+		var otherCollection = new List<int> {1, 3, 4, 1};
+		set.ExceptWith(otherCollection);
+
+		set.Should().Equal(2, 5);
+	}
+
+	[Fact]
+	public void IntersectWithModifiesSetToOnlyContainElementsPresentInOtherCollection() {
+		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
+		var otherCollection = new List<int> {1, 3, 4, 1};
+		set.IntersectWith(otherCollection);
+
+		set.Should().Equal(1, 3, 4);
+	}
+
+	[Fact]
+	public void IsProperSubsetOfReturnsCorrectValue() {
+		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
+		var superset = new OrderedSet<int> {1, 2, 3, 4, 5, 6};
+		
+		Assert.True(set.IsProperSubsetOf(superset));
+		Assert.False(set.IsProperSubsetOf(set));
+	}
+
+	[Fact]
+	public void IsProperSupersetOfReturnsCorrectValue() {
+		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
+		var subset = new OrderedSet<int> {1, 2, 3};
+		
+		Assert.True(set.IsProperSupersetOf(subset));
+		Assert.False(set.IsProperSupersetOf(set));
+	}
+
+	[Fact]
+	public void IsSubsetOfReturnsCorrectValue() {
+		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
+		var superset = new OrderedSet<int> {1, 2, 3, 4, 5, 6};
+		var otherSet = new HashSet<int> {4, 5, 6};
+		
+		Assert.True(set.IsSubsetOf(superset));
+		Assert.True(set.IsSubsetOf(set));
+		Assert.False(set.IsSubsetOf(otherSet));
+	}
+
+	[Fact]
+	public void IsSupersetOfReturnsCorrectValue() {
+		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
+		var subset = new OrderedSet<int> {1, 2, 3};
+		var otherSet = new HashSet<int> {4, 5, 6};
+		
+		Assert.True(set.IsSupersetOf(subset));
+		Assert.True(set.IsSupersetOf(set));
+		Assert.False(set.IsSubsetOf(otherSet));
+	}
+
+	[Fact]
+	public void OverlapsReturnsCorrectValue() {
+		var set = new OrderedSet<int> {1, 2, 3};
+		var overlappingSet = new OrderedSet<int> {1, 2, 4};
+		var nonOverlappingSet = new OrderedSet<int> {4, 5, 6};
+		
+		Assert.True(set.Overlaps(overlappingSet));
+		Assert.False(set.Overlaps(nonOverlappingSet));
+	}
+
+	[Fact]
+	public void SetEqualsReturnsCorrectValue() {
+		var set = new OrderedSet<int> {1, 2, 3};
+		var equalArray = new[] {1, 2, 3};
+		var unequalList = new List<int> {1, 2, 3, 4};
+		
+		Assert.True(set.SetEquals(equalArray));
+		Assert.False(set.SetEquals(unequalList));
+	}
+
+	[Fact]
+	public void SymmetricExceptWithModifiesTheCurrentSetSoThatItContainsOnlyElementsThatArePresentEitherInTheCurrentSetOrInTheSpecifiedCollectionButNotBoth() {
+		var set = new OrderedSet<int> {1, 2, 3, 4};
+		var list = new List<int> {3, 4, 5, 6};
+		set.SymmetricExceptWith(list);
+
+		set.Should().Equal(1, 2, 5, 6);
+	}
+
+	[Fact]
+	public void UnionWithCreatesUnionInCurrentSet() {
+		var set = new OrderedSet<int> {1, 2, 3, 4};
+		var list = new List<int> {3, 3, 4, 4, 5, 6};
+		set.UnionWith(list);
+
+		set.Should().Equal(1, 2, 3, 4, 5, 6);
 	}
 }
