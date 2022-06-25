@@ -1,4 +1,5 @@
-﻿using System;
+﻿using commonItems.Collections;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -25,6 +26,31 @@ public class ModFilesystem {
 			return true;
 		});
 	}
+	
+	private class DefaultFilePrecedenceComparer : IComparer<string> {
+		public int Compare(String? x, String? y) {
+			if (x is null && y is null) {
+				return 0;
+			}
+			if (x is null) {
+				return -1;
+			}
+			if (y is null) {
+				return 1;
+			}
+
+			var xSlashCount = x.Count(c => c is '/' or '\\');
+			var ySlashCount = y.Count(c => c is '/' or '\\');
+			if (xSlashCount < ySlashCount) {
+				return -1;
+			}
+			if (xSlashCount > ySlashCount) {
+				return 1;
+			}
+			return string.Compare(x, y, StringComparison.Ordinal);
+		}
+	}
+	private static readonly DefaultFilePrecedenceComparer PrecedenceComparer = new();
 
 	private readonly string gameRoot;
 	private readonly List<Mod> mods;
@@ -76,8 +102,8 @@ public class ModFilesystem {
 		return Directory.Exists(pathInGameRoot) ? pathInGameRoot : null;
 	}
 
-	public IReadOnlyCollection<string> GetAllFilesInFolder(string path) {
-		var foundFiles = new SortedDictionary<string, string>(); // <relative path, full path>
+	public OrderedSet<string> GetAllFilesInFolder(string path, IComparer<string> filePrecedenceComparer) {
+		var foundFiles = new SortedDictionary<string, string>(filePrecedenceComparer); // <relative path, full path>
 
 		foreach (var mod in Enumerable.Reverse(mods)) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
@@ -91,7 +117,7 @@ public class ModFilesystem {
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return foundFiles.Values.ToImmutableList();
+				return foundFiles.Values.ToOrderedSet();
 			}
 		}
 
@@ -105,11 +131,14 @@ public class ModFilesystem {
 			foundFiles.Add(newFile, fullPath);
 		}
 
-		return foundFiles.Values.ToImmutableList();
+		return foundFiles.Values.ToOrderedSet();
+	}
+	public OrderedSet<string> GetAllFilesInFolder(string path) {
+		return GetAllFilesInFolder(path, PrecedenceComparer);
 	}
 	
-	public IReadOnlyCollection<string> GetAllSubfolders(string path) {
-		var foundFolders = new SortedDictionary<string, string>(); // <relative path, full path>
+	public OrderedSet<string> GetAllSubfolders(string path, IComparer<string> folderPrecedenceComparer) {
+		var foundFolders = new SortedDictionary<string, string>(folderPrecedenceComparer); // <relative path, full path>
 
 		foreach (var mod in Enumerable.Reverse(mods)) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
@@ -123,7 +152,7 @@ public class ModFilesystem {
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return foundFolders.Values.ToImmutableList();
+				return foundFolders.Values.ToOrderedSet();
 			}
 		}
 
@@ -137,37 +166,15 @@ public class ModFilesystem {
 			foundFolders.Add(newFolder, fullPath);
 		}
 
-		return foundFolders.Values.ToImmutableList();
+		return foundFolders.Values.ToOrderedSet();
 	}
 
-	private class FilePrecedenceComparer : IComparer<string> {
-		public int Compare(String? x, String? y) {
-			if (x is null && y is null) {
-				return 0;
-			}
-			if (x is null) {
-				return -1;
-			}
-			if (y is null) {
-				return 1;
-			}
-
-			var xSlashCount = x.Count(c => c is '/' or '\\');
-			var ySlashCount = y.Count(c => c is '/' or '\\');
-			if (xSlashCount < ySlashCount) {
-				return -1;
-			}
-			if (xSlashCount > ySlashCount) {
-				return 1;
-			}
-			return string.Compare(x, y, StringComparison.Ordinal);
-		}
+	public OrderedSet<string> GetAllSubfolders(string path) {
+		return GetAllSubfolders(path, PrecedenceComparer);
 	}
 
-	private static readonly FilePrecedenceComparer PrecedenceComparer = new();
-
-	public IReadOnlyCollection<string> GetAllFilesInFolderRecursive(string path) {
-		var foundFiles = new SortedDictionary<string, string>(PrecedenceComparer); // <relative path, full path>
+	public OrderedSet<string> GetAllFilesInFolderRecursive(string path, IComparer<string> filePrecedenceComparer) {
+		var foundFiles = new SortedDictionary<string, string>(filePrecedenceComparer); // <relative path, full path>
 
 		foreach (var mod in Enumerable.Reverse(mods)) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
@@ -181,7 +188,7 @@ public class ModFilesystem {
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return foundFiles.Values.ToImmutableList();
+				return foundFiles.Values.ToOrderedSet();
 			}
 		}
 
@@ -195,7 +202,11 @@ public class ModFilesystem {
 			foundFiles.Add(newFile, fullPath);
 		}
 
-		return foundFiles.Values.ToImmutableList();
+		return foundFiles.Values.ToOrderedSet();
+	}
+
+	public OrderedSet<string> GetAllFilesInFolderRecursive(string path) {
+		return GetAllFilesInFolderRecursive(path, PrecedenceComparer);
 	}
 	#endregion
 }

@@ -110,12 +110,6 @@ public class OrderedSet<T> : ISet<T> where T : notnull {
 		linkedList.Remove(node!);
 		return true;
 	}
-	
-	public void RemoveWhere(Func<T, bool> predicate) {
-		foreach (T item in this.ToList().Where(predicate)) {
-			Remove(item);
-		}
-	}
 
 	public IEnumerator<T> GetEnumerator() => linkedList.GetEnumerator();
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

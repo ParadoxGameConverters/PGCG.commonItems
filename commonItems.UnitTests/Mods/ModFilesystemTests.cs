@@ -1,5 +1,6 @@
 ﻿using commonItems.Mods;
 using FluentAssertions;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -203,6 +204,31 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
 	}
+
+	private class CustomPrecedenceComparer : IComparer<string> {
+		// longest path first
+		public int Compare(String? x, String? y) {
+			var xLength = x!.Length;
+			var yLength = y!.Length;
+			if (xLength > yLength) {
+				return -1;
+			}
+			return xLength == yLength ? 0 : 1;
+		}
+	}
+
+	[Fact]
+	public void GetAllFilesInFolderCanBeCalledWithCustomFilePrecedenceComparer() {
+		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+			new HashSet<string>() {"test_folder"});
+		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
+			new[] {modOne, modTwo});
+
+		modFS.GetAllFilesInFolder("test_folder", new CustomPrecedenceComparer()).Should().Equal(
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt",
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
+	}
 	
 	[Fact]
 	public void NoFoldersInMissingDirectory() {
@@ -257,6 +283,19 @@ public class ModFilesystemTests {
 		modFS.GetAllSubfolders("test_folder").Should().Equal(
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder");
+	}
+
+	[Fact]
+	public void GetAllSubfoldersCanBeCalledWithCustomFolderPrecedenceComparer() {
+		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+			new HashSet<string> {"test_folder"});
+		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
+			new[] {modOne, modTwo});
+
+		modFS.GetAllSubfolders("test_folder", new CustomPrecedenceComparer()).Should().Equal(
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder",
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder");
 	}
 	
 	[Fact]
@@ -322,5 +361,20 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt");
+	}
+
+	[Fact]
+	public void GetAllFilesInFolderRecursiveCanBeCalledWithCustomFilePrecedenceComparer() {
+		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+			new HashSet<string> {"test_folder"});
+		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
+			new[] {modOne, modTwo});
+
+		modFS.GetAllFilesInFolderRecursive("test_folder", new CustomPrecedenceComparer()).Should().Equal(
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt",
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt",
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt",
+			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
 	}
 }

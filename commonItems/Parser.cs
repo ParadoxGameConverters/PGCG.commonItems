@@ -384,9 +384,9 @@ public class Parser {
 
 		OrderedSet<string> files;
 		if (recursive) {
-			files = new OrderedSet<string>(modFS.GetAllFilesInFolderRecursive(relativePath));
+			files = modFS.GetAllFilesInFolderRecursive(relativePath);
 		} else {
-			files = new OrderedSet<string>(modFS.GetAllFilesInFolder(relativePath));
+			files = modFS.GetAllFilesInFolder(relativePath);
 		}
 		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
 		foreach (var file in files) {
