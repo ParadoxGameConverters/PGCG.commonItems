@@ -1,4 +1,5 @@
 using commonItems.Mods;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -328,8 +329,9 @@ public class ParserTests {
 
 	[Fact]
 	public void ParserParsesGameFolderInVanillaAndMods() {
-		const string gamePath = "TestFiles/CK3";
+		const string gameRoot = "TestFiles/CK3/game";
 		var mods = new List<Mod> { new("cool_mod", "TestFiles/mod/themod") };
+		var modFS = new ModFilesystem(gameRoot, mods);
 
 		var foundGovernments = new List<string>();
 		var parser = new Parser();
@@ -337,16 +339,19 @@ public class ParserTests {
 			foundGovernments.Add(govName);
 			ParserHelpers.IgnoreItem(reader);
 		});
-		parser.ParseGameFolder(Path.Combine("common", "governments"), gamePath, "txt", mods, recursive: false);
-		Assert.Collection(foundGovernments,
-			gov1 => Assert.Equal("tribal_federation", gov1),
-			gov2 => Assert.Equal("tribal_modded", gov2));
+
+		parser.ParseGameFolder("common/governments", modFS, "txt", recursive: false);
+		foundGovernments.Should().Equal(
+			"tribal_modded", // mod_tribal_govs.txt in mod
+			"tribal_federation" // vanilla_governments.txt in game
+		);
 	}
 
 	[Fact]
 	public void ParserRecursivelyParsesGameFolderInVanillaAndMods() {
-		const string gamePath = "TestFiles/CK3";
+		const string gameRoot = "TestFiles/CK3/game";
 		var mods = new List<Mod> { new("cool_mod", "TestFiles/mod/themod") };
+		var modFS = new ModFilesystem(gameRoot, mods);
 
 		var foundGovernments = new List<string>();
 		var parser = new Parser();
@@ -354,21 +359,25 @@ public class ParserTests {
 			foundGovernments.Add(govName);
 			ParserHelpers.IgnoreItem(reader);
 		});
-		parser.ParseGameFolder("common/governments", gamePath, "txt", mods, recursive: true);
-		Assert.Collection(foundGovernments,
-			gov1 => Assert.Equal("aristocratic_republic", gov1),
-			gov2 => Assert.Equal("tribal_federation", gov2),
-			gov3 => Assert.Equal("tribal_modded", gov3),
-			gov4 => Assert.Equal("constitutional_monarchy", gov4));
+
+		parser.ParseGameFolder("common/governments", modFS, "txt", recursive: true);
+
+		foundGovernments.Should().Equal(
+			"tribal_modded", // mod_tribal_govs.txt in mod
+			"tribal_federation", // vanilla_governments.txt in game
+			"constitutional_monarchy", // monarchy/mod_monarchy_govs.txt in mod
+			"aristocratic_republic" // republic/republic_governments.txt in game
+		);
 	}
 
 	[Fact]
 	public void ParserParsesGameFileInVanillaAndMods() {
-		const string gamePath = "TestFiles/CK3";
+		const string gameRoot = "TestFiles/CK3/game";
 		var mods = new List<Mod> {
 			new("mod1", "TestFiles/mod/themod"),
 			new("mod2", "TestFiles/mod/mod2")
 		};
+		var modFS = new ModFilesystem(gameRoot, mods);
 
 		var foundAreas = new List<string>();
 		var parser = new Parser();
@@ -376,10 +385,14 @@ public class ParserTests {
 			foundAreas.Add(areaName);
 			ParserHelpers.IgnoreItem(reader);
 		});
-		parser.ParseGameFile("map_data/areas.txt", gamePath, mods);
-
-		Assert.Collection(foundAreas,
-			area1 => Assert.Equal("vanilla1_area", area1),
-			area2 => Assert.Equal("themod_area", area2));
+		
+		parser.ParseGameFile("map_data/areas.txt", modFS);
+		// File exists in game and mod1. Mod's version takes precedence.
+		foundAreas.Should().Equal("themod_area");
+		
+		foundAreas.Clear();
+		parser.ParseGameFile("map_data/areas2.txt", modFS);
+		// File exists only in game.
+		foundAreas.Should().Equal("vanilla1_area2");
 	}
 }

@@ -108,7 +108,7 @@ public class OrderedSetTests {
 		
 		Assert.True(set.IsSupersetOf(subset));
 		Assert.True(set.IsSupersetOf(set));
-		Assert.False(set.IsSubsetOf(otherSet));
+		Assert.False(set.IsSupersetOf(otherSet));
 	}
 
 	[Fact]
@@ -147,5 +147,13 @@ public class OrderedSetTests {
 		set.UnionWith(list);
 
 		set.Should().Equal(1, 2, 3, 4, 5, 6);
+	}
+
+	[Fact]
+	public void RemoveWhereRemovesElementsMatchingPredicate() {
+		var set = new OrderedSet<int> {1, 2, 3, 4, 5, 6, 7, 8, 9};
+		set.RemoveWhere(i=>i%3==1);
+
+		set.Should().Equal(2, 3, 5, 6, 8, 9);
 	}
 }

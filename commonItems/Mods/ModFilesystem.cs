@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using commonItems.Collections;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -23,6 +25,31 @@ public class ModFilesystem {
 			return true;
 		});
 	}
+	
+	private class DefaultFilePrecedenceComparer : IComparer<string> {
+		public int Compare(String? x, String? y) {
+			if (x is null && y is null) {
+				return 0;
+			}
+			if (x is null) {
+				return -1;
+			}
+			if (y is null) {
+				return 1;
+			}
+
+			var xSlashCount = x.Count(c => c is '/' or '\\');
+			var ySlashCount = y.Count(c => c is '/' or '\\');
+			if (xSlashCount < ySlashCount) {
+				return -1;
+			}
+			if (xSlashCount > ySlashCount) {
+				return 1;
+			}
+			return string.Compare(x, y, StringComparison.Ordinal);
+		}
+	}
+	private static readonly DefaultFilePrecedenceComparer PrecedenceComparer = new();
 
 	private readonly string gameRoot;
 	private readonly List<Mod> mods;
@@ -33,19 +60,15 @@ public class ModFilesystem {
 	/// </summary>
 	/// <param name="gameRoot">Points at the game's root folder, and all paths in the lookup functions will be based on that root.</param>
 	/// <param name="mods">A list of the mods applied, in increasing order of precedence. Later mods will override files in the game root or earlier mods, and their
-	/// replace_paths will block earlier mods and the game It is the caller's responsibility to sort the mods appropriately</param>
+	/// replace_paths will block earlier mods and the game.
+	/// It is the caller's responsibility to sort the mods appropriately
+	/// </param>
 	public ModFilesystem(string gameRoot, IEnumerable<Mod> mods) {
 		this.gameRoot = gameRoot;
 		this.mods = mods.ToList();
 	}
 
-	// lookup functions
-	//[[nodiscard]] std::optional<std::string> GetActualFileLocation(const std::string& path) const;
-	//[[nodiscard]] std::optional<std::string> GetActualFolderLocation(const std::string& path) const;
-	//[[nodiscard]] std::set<std::string> GetAllFilesInFolder(const std::string& path) const;
-	//[[nodiscard]] std::set<std::string> GetAllSubfolders(const std::string& path) const;
-	//[[nodiscard]] std::set<std::string> GetAllFilesInFolderRecursive(const std::string& path) const;
-
+	#region lookup functions
 	public string? GetActualFileLocation(string path) {
 		foreach (var mod in Enumerable.Reverse(mods)) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
@@ -78,102 +101,111 @@ public class ModFilesystem {
 		return Directory.Exists(pathInGameRoot) ? pathInGameRoot : null;
 	}
 
-	public ISet<string> GetAllFilesInFolder(string path) {
-		var fullFiles = new HashSet<string>();
-		var foundFiles = new HashSet<string>();
+	public OrderedSet<string> GetAllFilesInFolder(string path, IComparer<string> filePrecedenceComparer) {
+		var foundFiles = new SortedDictionary<string, string>(filePrecedenceComparer); // <relative path, full path>
 
 		foreach (var mod in Enumerable.Reverse(mods)) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			foreach (var newFile in SystemUtils.GetAllFilesInFolder(pathInMod)) {
-				if (foundFiles.Contains(newFile)) {
+				if (foundFiles.ContainsKey(newFile)) {
 					continue;
 				}
 
-				foundFiles.Add(newFile);
-				fullFiles.Add( Path.Combine(pathInMod, newFile).Replace('\\', '/'));
+				var fullPath = Path.Combine(pathInMod, newFile).Replace('\\', '/');
+				foundFiles.Add(newFile, fullPath);
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return fullFiles;
+				return foundFiles.Values.ToOrderedSet();
 			}
 		}
 
 		var pathInGameRoot = Path.Combine(gameRoot, path).Replace('\\', '/');
 		foreach (var newFile in SystemUtils.GetAllFilesInFolder(pathInGameRoot)) {
-			if (foundFiles.Contains(newFile)) {
+			if (foundFiles.ContainsKey(newFile)) {
 				continue;
 			}
 
-			foundFiles.Add(newFile);
-			fullFiles.Add(Path.Combine(pathInGameRoot, newFile).Replace('\\', '/'));
+			var fullPath = Path.Combine(pathInGameRoot, newFile).Replace('\\', '/');
+			foundFiles.Add(newFile, fullPath);
 		}
 
-		return fullFiles;
+		return foundFiles.Values.ToOrderedSet();
+	}
+	public OrderedSet<string> GetAllFilesInFolder(string path) {
+		return GetAllFilesInFolder(path, PrecedenceComparer);
 	}
 	
-	public ISet<string> GetAllSubfolders(string path) {
-		var fullFolders = new HashSet<string>();
-		var foundFolders = new HashSet<string>();
+	public OrderedSet<string> GetAllSubfolders(string path, IComparer<string> folderPrecedenceComparer) {
+		var foundFolders = new SortedDictionary<string, string>(folderPrecedenceComparer); // <relative path, full path>
 
 		foreach (var mod in Enumerable.Reverse(mods)) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			foreach (var newFolder in SystemUtils.GetAllSubfolders(pathInMod)) {
-				if (foundFolders.Contains(newFolder)) {
+				if (foundFolders.ContainsKey(newFolder)) {
 					continue;
 				}
 
-				foundFolders.Add(newFolder);
-				fullFolders.Add(Path.Combine(pathInMod, newFolder).Replace('\\', '/'));
+				var fullPath = Path.Combine(pathInMod, newFolder).Replace('\\', '/');
+				foundFolders.Add(newFolder, fullPath);
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return fullFolders;
+				return foundFolders.Values.ToOrderedSet();
 			}
 		}
 
 		var pathInGameRoot = Path.Combine(gameRoot, path).Replace('\\', '/');
 		foreach (var newFolder in SystemUtils.GetAllSubfolders(pathInGameRoot)) {
-			if (foundFolders.Contains(newFolder)) {
+			if (foundFolders.ContainsKey(newFolder)) {
 				continue;
 			}
 
-			foundFolders.Add(newFolder);
-			fullFolders.Add(Path.Combine(pathInGameRoot, newFolder).Replace('\\', '/'));
+			var fullPath = Path.Combine(pathInGameRoot, newFolder).Replace('\\', '/');
+			foundFolders.Add(newFolder, fullPath);
 		}
 
-		return fullFolders;
+		return foundFolders.Values.ToOrderedSet();
 	}
-	
-	public ISet<string> GetAllFilesInFolderRecursive(string path) {
-		var fullFiles = new HashSet<string>();
-		var foundFiles = new HashSet<string>();
+
+	public OrderedSet<string> GetAllSubfolders(string path) {
+		return GetAllSubfolders(path, PrecedenceComparer);
+	}
+
+	public OrderedSet<string> GetAllFilesInFolderRecursive(string path, IComparer<string> filePrecedenceComparer) {
+		var foundFiles = new SortedDictionary<string, string>(filePrecedenceComparer); // <relative path, full path>
 
 		foreach (var mod in Enumerable.Reverse(mods)) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			foreach (var newFile in SystemUtils.GetAllFilesInFolderRecursive(pathInMod)) {
-				if (foundFiles.Contains(newFile)) {
+				if (foundFiles.ContainsKey(newFile)) {
 					continue;
 				}
 
-				foundFiles.Add(newFile);
-				fullFiles.Add(Path.Combine(pathInMod, newFile).Replace('\\', '/'));
+				var fullPath = Path.Combine(pathInMod, newFile).Replace('\\', '/');
+				foundFiles.Add(newFile, fullPath);
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return fullFiles;
+				return foundFiles.Values.ToOrderedSet();
 			}
 		}
 
 		var pathInGameRoot = Path.Combine(gameRoot, path).Replace('\\', '/');
 		foreach (var newFile in SystemUtils.GetAllFilesInFolderRecursive(pathInGameRoot)) {
-			if (foundFiles.Contains(newFile)) {
+			if (foundFiles.ContainsKey(newFile)) {
 				continue;
 			}
 
-			foundFiles.Add(newFile);
-			fullFiles.Add(Path.Combine(pathInGameRoot, newFile).Replace('\\', '/'));
+			var fullPath = Path.Combine(pathInGameRoot, newFile).Replace('\\', '/');
+			foundFiles.Add(newFile, fullPath);
 		}
 
-		return fullFiles;
-	} 
+		return foundFiles.Values.ToOrderedSet();
+	}
+
+	public OrderedSet<string> GetAllFilesInFolderRecursive(string path) {
+		return GetAllFilesInFolderRecursive(path, PrecedenceComparer);
+	}
+	#endregion
 }
