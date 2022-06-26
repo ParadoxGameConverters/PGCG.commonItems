@@ -108,7 +108,8 @@ public class LocDBTests {
 
 		var locDB = new LocDB("english", "french", "spanish");
 		var mods = new List<Mod> { new Mod("themod", "TestFiles/mod/themod") };
-		locDB.ScrapeLocalizations("TestFiles/CK3", mods);
+		var modFS = new ModFilesystem("TestFiles/CK3/game", mods);
+		locDB.ScrapeLocalizations(modFS);
 
 		Assert.Equal("value1 modded", locDB.GetLocBlockForKey("KEY1")!["english"]);
 		Assert.Equal("valeur1", locDB.GetLocBlockForKey("KEY1")!["french"]);
