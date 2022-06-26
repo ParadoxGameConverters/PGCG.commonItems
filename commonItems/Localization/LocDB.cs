@@ -16,33 +16,20 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		this.otherLanguages = otherLanguages;
 	}
 
-	public void ScrapeLocalizations(string sourceGamePath, IEnumerable<Mod> mods) {
+	public void ScrapeLocalizations(ModFilesystem modFS) {
 		Logger.Info("Reading Localization...");
 
-		var scrapingPath = Path.Combine(sourceGamePath, "game", "localization");
-		Logger.Info($"{ScrapePath(scrapingPath)} vanilla localization lines read.");
-
-		var modLocLinesRead = 0;
-		foreach (var mod in mods) {
-			var modLocPath = Path.Combine(mod.Path, "localization");
-			if (!Directory.Exists(modLocPath)) {
-				continue;
-			}
-
-			Logger.Info($"Found some localization in [{mod.Name}].");
-			modLocLinesRead += ScrapePath(modLocPath);
-		}
-		Logger.Info($"{modLocLinesRead} mod localization lines read.");
+		var locFiles = modFS.GetAllFilesInFolderRecursive("localization");
+		var locLinesCount = locFiles.Sum(ScrapeFile);
+		
+		Logger.Info($"{locLinesCount} localization lines read.");
 	}
-
-	private int ScrapePath(string path) {
-		if (!Directory.Exists(path)) {
-			return 0;
-		}
-
-		return SystemUtils.GetAllFilesInFolderRecursive(path)
-			.Sum(fileName => ScrapeFile(Path.Combine(path, fileName)));
-	}
+	
+	/// <summary>
+	/// Scrapes file for localization lines, returns count of loc lines read.
+	/// </summary>
+	/// <param name="filePath"></param>
+	/// <returns></returns>
 	private int ScrapeFile(string filePath) {
 		try {
 			using var stream = File.OpenText(filePath);
