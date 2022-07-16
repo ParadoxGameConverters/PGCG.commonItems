@@ -1,7 +1,7 @@
 ﻿namespace commonItems;
 
 public static class StringUtils {
-	public static string RemQuotes(string str) {
+	public static string RemQuotes(this string str) {
 		var length = str.Length;
 		if (length < 2) {
 			return str;
@@ -12,7 +12,7 @@ public static class StringUtils {
 		return str.Substring(1, length - 2);
 	}
 
-	public static string AddQuotes(string str) {
+	public static string AddQuotes(this string str) {
 		if (str.Length > 2 && str.StartsWith('"') && str.EndsWith('"')) {
 			return str;
 		}
