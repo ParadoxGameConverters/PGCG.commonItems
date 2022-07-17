@@ -115,6 +115,12 @@ public class Parser {
 	public void RegisterRegex(Regex regex, SimpleDel del) {
 		registeredRules[new RegisteredRegex(regex)] = new OneArgDelegate(del);
 	}
+	public void IgnoreUnregisteredItems() {
+		registeredRules[new RegisteredRegex(CommonRegexes.Catchall)] = new TwoArgDelegate(ParserHelpers.IgnoreAndLogItem);
+	}
+	public void IgnoreAndLogUnregisteredItems() {
+		registeredRules[new RegisteredRegex(CommonRegexes.Catchall)] = new TwoArgDelegate(ParserHelpers.IgnoreAndLogItem);
+	}
 
 	public void ClearRegisteredRules() {
 		registeredRules.Clear();
