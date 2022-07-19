@@ -6,7 +6,7 @@ namespace commonItems.UnitTests;
 
 public class NamedColorCollectionTests {
 	private const string GameRoot = "TestFiles/CK3/game";
-	private static List<Mod> mods = new() { new("Cool Mod", "TestFiles/mod/themod") };
+	private static readonly List<Mod> mods = new() { new("Cool Mod", "TestFiles/mod/themod") };
 	private readonly ModFilesystem modFS = new(GameRoot, mods);
 	private readonly ColorFactory referenceColorFactory = new();
 	

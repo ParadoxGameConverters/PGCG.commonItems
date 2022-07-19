@@ -13,7 +13,7 @@ public class ColorFactory {
 		if (token is null) {
 			throw new FormatException("Cannot get color without token");
 		}
-		token = StringUtils.RemQuotes(token);
+		token = token.RemQuotes();
 		switch (token) {
 			case "rgb": {
 				var rgb = reader.GetInts();
