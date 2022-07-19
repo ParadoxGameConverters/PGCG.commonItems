@@ -93,7 +93,7 @@ public class ColorFactory {
 		NamedColors[name] = GetColor(reader);
 	}
 
-	public void AddNamedColorDict(Dictionary<string, Color> colorMap) {
+	public void AddNamedColorDict(IDictionary<string, Color> colorMap) {
 		foreach (var (key, value) in colorMap) {
 			NamedColors[key] = value;
 		}
