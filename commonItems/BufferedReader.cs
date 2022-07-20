@@ -91,14 +91,14 @@ public class BufferedReader {
 
 		var token = Parser.GetNextTokenWithoutMatching(this);
 		if (token is not null) {
-			return StringUtils.RemQuotes(token);
+			return token.RemQuotes();
 		}
 
 		Logger.Error("SingleString: next token not found!");
 		return string.Empty;
 	}
 	public int GetInt() {
-		var intStr = StringUtils.RemQuotes(GetString());
+		var intStr = GetString().RemQuotes();
 		if (int.TryParse(intStr, out int theInt)) {
 			return theInt;
 		}
@@ -107,7 +107,7 @@ public class BufferedReader {
 		return 0;
 	}
 	public long GetLong() {
-		var longStr = StringUtils.RemQuotes(GetString());
+		var longStr = GetString().RemQuotes();
 		if (long.TryParse(longStr, out long theLong)) {
 			return theLong;
 		}
@@ -116,7 +116,7 @@ public class BufferedReader {
 		return 0;
 	}
 	public ulong GetULong() {
-		var ulongStr = StringUtils.RemQuotes(GetString());
+		var ulongStr = GetString().RemQuotes();
 		if (ulong.TryParse(ulongStr, out ulong theULong)) {
 			return theULong;
 		}
@@ -125,7 +125,7 @@ public class BufferedReader {
 		return 0;
 	}
 	public double GetDouble() {
-		var doubleStr = StringUtils.RemQuotes(GetString());
+		var doubleStr = GetString().RemQuotes();
 		if (double.TryParse(doubleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
 			return theDouble;
 		}
@@ -141,7 +141,7 @@ public class BufferedReader {
 			strings.Add(theString)
 		);
 		parser.RegisterRegex(CommonRegexes.QuotedString, (_, theString) =>
-			strings.Add(StringUtils.RemQuotes(theString))
+			strings.Add(theString.RemQuotes())
 		);
 		if (Variables.Count > 0) {
 			parser.RegisterRegex(CommonRegexes.Variable, (reader, varStr) => {
