@@ -195,4 +195,6 @@ public class Color : IPDXSerializable {
 	public double[] HsvComponents { get; } = {
 		0, 0, 0
 	};
+
+	public override string ToString() => OutputRgb();
 }

@@ -54,7 +54,7 @@ public class GameVersion {
 		parser.RegisterKeyword("second", reader => secondPart = reader.GetInt());
 		parser.RegisterKeyword("third", reader => thirdPart = reader.GetInt());
 		parser.RegisterKeyword("forth", reader => fourthPart = reader.GetInt());
-		parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
+		parser.IgnoreAndLogUnregisteredItems();
 		parser.ParseStream(gameVersionReader);
 		
 		FirstPart = firstPart;

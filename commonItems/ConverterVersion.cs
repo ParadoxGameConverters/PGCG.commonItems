@@ -44,7 +44,7 @@ public class ConverterVersion {
 		parser.RegisterKeyword("maxTarget", reader =>
 			MaxTarget = new GameVersion(reader.GetString())
 		);
-		parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreItem);
+		parser.IgnoreUnregisteredItems();
 	}
 
 	public string GetDescription() {
