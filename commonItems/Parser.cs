@@ -288,7 +288,7 @@ public class Parser {
 
 			token = GetNextLexeme(reader);
 
-			var strippedToken = StringUtils.RemQuotes(token);
+			var strippedToken = token.RemQuotes();
 			var isTokenQuoted = strippedToken.Length < token.Length;
 
 			var matched = TryToMatch(token, strippedToken, isTokenQuoted, reader);

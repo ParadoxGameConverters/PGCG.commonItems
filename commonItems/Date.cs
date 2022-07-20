@@ -26,7 +26,7 @@ public class Date : IComparable<Date>, IPDXSerializable {
 		if (init.Length < 1) {
 			return;
 		}
-		init = StringUtils.RemQuotes(init);
+		init = init.RemQuotes();
 
 		var firstDot = init.IndexOf('.');
 		var lastDot = init.LastIndexOf('.');
