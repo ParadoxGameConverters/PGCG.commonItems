@@ -477,6 +477,21 @@ public class ParserHelperTests {
 		var expectedULongs = new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
 		Assert.Equal(expectedULongs, reader.GetULongs());
 	}
+	
+	[Theory]
+	[InlineData("= yes", true)]
+	[InlineData("= no", false)]
+	public void GetBoolReturnsCorrectValue(string textToParse, bool expectedValue) {
+		var reader = new BufferedReader(textToParse);
+		Assert.Equal(expectedValue, reader.GetBool());
+	}
+
+	[Fact]
+	public void GetBoolThrowsExceptionWhenValueFormatIsInvalid() {
+		var reader = new BufferedReader("= something");
+		var e = Assert.Throws<FormatException>(() => reader.GetBool());
+		Assert.Contains($"Text representation of bool should be \"yes\" or \"no\", not \"something\"!", e.ToString());
+	}
 
 	private class TypeClass : Parser {
 		public string? str;

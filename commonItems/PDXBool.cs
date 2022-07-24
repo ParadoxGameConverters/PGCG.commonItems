@@ -3,6 +3,7 @@ using System;
 
 namespace commonItems;
 
+[Obsolete("Use BufferedReader.GetBool instead.")]
 public class PDXBool : IPDXSerializable {
 	public bool Value { get; set; } = true;
 	public string YesOrNo => Value ? "yes" : "no";
