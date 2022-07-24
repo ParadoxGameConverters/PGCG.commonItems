@@ -238,8 +238,17 @@ public class BufferedReader {
 	public StringOfItem GetStringOfItem() {
 		return new StringOfItem(this);
 	}
+	[Obsolete("Use GetBool instead.")]
 	public PDXBool GetPDXBool() {
 		return new PDXBool(this);
+	}
+	public bool GetBool() {
+		var valueString = GetString();
+		return valueString switch {
+			"yes" => true,
+			"no" => false,
+			_ => throw new FormatException($"Text representation of bool should be \"yes\" or \"no\", not \"{valueString}\"!")
+		};
 	}
 
 	public Dictionary<string, string> GetAssignments() {

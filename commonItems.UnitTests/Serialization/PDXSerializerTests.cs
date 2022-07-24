@@ -25,7 +25,7 @@ public class PDXSerializerTests {
 		public bool definite_form { get; private set; }
 
 		// public fields
-		public PDXBool landless = new(true);
+		public bool landless = true;
 		public Date creation_date = new(600, 4, 5);
 		public Dictionary<string, string> textures = new() {
 			{ "diffuse", "gfx/models/diffuse.dds" },
