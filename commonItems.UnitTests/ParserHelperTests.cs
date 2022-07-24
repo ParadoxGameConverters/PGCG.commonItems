@@ -49,7 +49,7 @@ public class ParserHelperTests {
 		public Test1(BufferedReader bufferedReader) {
 			RegisterKeyword("key1", reader => value1 = reader.GetString());
 			RegisterKeyword("key2", reader => value2 = reader.GetString());
-			IgnoreAndLogUnregisteredItems();
+			this.IgnoreAndLogUnregisteredItems();
 			ParseStream(bufferedReader);
 		}
 	}

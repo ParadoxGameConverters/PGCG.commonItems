@@ -42,6 +42,6 @@ public class ModParser : Parser {
 		RegisterRegex("path|archive", reader => Path = reader.GetString());
 		RegisterKeyword("dependencies", reader => Dependencies.UnionWith(reader.GetStrings()));
 		RegisterKeyword("replace_path", reader => ReplacedPaths.Add(reader.GetString()));
-		IgnoreUnregisteredItems();
+		this.IgnoreUnregisteredItems();
 	}
 }
