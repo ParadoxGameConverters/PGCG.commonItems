@@ -65,12 +65,12 @@ public class LocBlock : IIdentifiable<string> {
 	/// <param name="modifyingFunction"></param>
 	public void ModifyForEveryLanguage(LocBlock otherBlock, TwoArgLocDelegate modifyingFunction) {
 		foreach (var language in localizations.Keys) {
-			localizations[language] = modifyingFunction(localizations[language], otherBlock[language]);
+			localizations[language] = modifyingFunction(localizations[language], otherBlock[language], language);
 		}
 	}
 	public void ModifyForEveryLanguage(LocDelegate modifyingFunction) {
 		foreach (var language in localizations.Keys) {
-			localizations[language] = modifyingFunction(localizations[language]);
+			localizations[language] = modifyingFunction(localizations[language], language);
 		}
 	}
 }

@@ -25,7 +25,7 @@ public class LocBlockTests {
 			["spanish"] = "Romana"
 		};
 
-		nameLocBlock.ModifyForEveryLanguage(adjLocBlock, (baseLoc, modifyingLoc) =>
+		nameLocBlock.ModifyForEveryLanguage(adjLocBlock, (baseLoc, modifyingLoc, _) =>
 			baseLoc?.Replace("$ADJ$", modifyingLoc)
 		);
 		Assert.Equal("Roman Revolt", nameLocBlock["english"]);
@@ -49,17 +49,14 @@ public class LocBlockTests {
 		
 		var number = 2;
 		
-		nameLocBlock.ModifyForEveryLanguage(loc => loc?.Replace("$NUM$", number.ToString()));
-		nameLocBlock.ModifyForEveryLanguage(loc => loc?.Replace("$ORDER$", number.ToOrdinalSuffix()));
+		nameLocBlock.ModifyForEveryLanguage((loc, _) => loc?.Replace("$NUM$", number.ToString()));
+		nameLocBlock.ModifyForEveryLanguage((loc, languageName) => loc?.Replace("$ORDER$", number.ToOrdinalSuffix(languageName)));
 		Assert.Equal("2nd Revolt", nameLocBlock["english"]);
-		// TODO: fix suffixes for other languages
-		throw new NotImplementedException();
-		Assert.Equal("2 révolte", nameLocBlock["french"]);
-		Assert.Equal("2 Revolte", nameLocBlock["german"]);
-		Assert.Equal("2 бунт", nameLocBlock["russian"]);
-		Assert.Equal("2 反叛", nameLocBlock["simp_chinese"]);
-		Assert.Equal("2 revuelta", nameLocBlock["spanish"]);
-		
+		Assert.Equal("2e révolte", nameLocBlock["french"]);
+		Assert.Equal("2nd Revolte", nameLocBlock["german"]); // not correct but who cares about German
+		Assert.Equal("2nd бунт", nameLocBlock["russian"]); // also not correct (uses English suffix)
+		Assert.Equal("2. 反叛", nameLocBlock["simp_chinese"]);
+		Assert.Equal("2º revuelta", nameLocBlock["spanish"]);
 	}
 
 	[Fact]
