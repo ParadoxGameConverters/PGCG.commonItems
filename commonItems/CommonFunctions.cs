@@ -1,6 +1,8 @@
 ﻿using GameFinder.StoreHandlers.Steam;
+using IcgSoftware.IntToOrdinalNumber;
 using Microsoft.Win32;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -53,20 +55,33 @@ public static class CommonFunctions {
 	public static string ReplaceCharacter(string fileName, char character) {
 		return fileName.Replace(character, '_');
 	}
-	public static string CardinalToOrdinal(int cardinal) {
-		var hundredRemainder = cardinal % 100;
-		var tenRemainder = cardinal % 10;
-		if (hundredRemainder - tenRemainder == 10) {
-			return "th";
-		}
 
-		return tenRemainder switch {
-			1 => "st",
-			2 => "nd",
-			3 => "rd",
-			_ => "th",
+	public static string LanguageNameToIetfTag(string languageName) {
+		return languageName switch {
+			"catalan" => "ca",
+			"chinese" => "za",
+			"dutch" => "nl",
+			"english" => "en",
+			"french" => "fr",
+			"italian" => "it",
+			"japanese" => "ja",
+			"portuguese" => "pt",
+			"simp_chinese" => "za",
+			"spanish" => "es",
+			_ => "en"
 		};
 	}
+	
+	public static string ToOrdinalSuffix(this int number) {
+		return number.ToOrdinalSuffix("english");
+	}
+	public static string ToOrdinalSuffix(this int number, string languageName) {
+		var languageTag = LanguageNameToIetfTag(languageName);
+		var cultureInfo = CultureInfo.GetCultureInfo(languageTag);
+		
+		return number.ToOrdinalNumber(cultureInfo).Replace(number.ToString(), "");
+	}
+	
 	public static string CardinalToRoman(int number) {
 		var num = new[] { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
 		var sym = new[] { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };

@@ -1,11 +1,12 @@
 ﻿using commonItems.Localization;
+using System;
 using Xunit;
 
 namespace commonItems.UnitTests.Localization; 
 
 public class LocBlockTests {
 	[Fact]
-	public void LocCanBeModifiedByMethodForEveryLanguage() {
+	public void LocBlockCanBeModifiedWithOtherLocBlockForEveryLanguage() {
 		var nameLocBlock = new LocBlock("key1", "english") {
 			["english"] = "$ADJ$ Revolt",
 			["french"] = "$ADJ$ révolte",
@@ -33,6 +34,32 @@ public class LocBlockTests {
 		Assert.Equal("Роман бунт", nameLocBlock["russian"]);
 		Assert.Equal("罗马 反叛", nameLocBlock["simp_chinese"]);
 		Assert.Equal("Romana revuelta", nameLocBlock["spanish"]);
+	}
+
+	[Fact]
+	public void LocBlockCanBeModifiedWithoutOtherLocBlockForEveryLanguage() {
+		var nameLocBlock = new LocBlock("key1", "english") {
+			["english"] = "$NUM$$ORDER$ Revolt",
+			["french"] = "$NUM$$ORDER$ révolte",
+			["german"] = "$NUM$$ORDER$ Revolte",
+			["russian"] = "$NUM$$ORDER$ бунт",
+			["simp_chinese"] = "$NUM$$ORDER$ 反叛",
+			["spanish"] = "$NUM$$ORDER$ revuelta"
+		};
+		
+		var number = 2;
+		
+		nameLocBlock.ModifyForEveryLanguage(loc => loc?.Replace("$NUM$", number.ToString()));
+		nameLocBlock.ModifyForEveryLanguage(loc => loc?.Replace("$ORDER$", number.ToOrdinalSuffix()));
+		Assert.Equal("2nd Revolt", nameLocBlock["english"]);
+		// TODO: fix suffixes for other languages
+		throw new NotImplementedException();
+		Assert.Equal("2 révolte", nameLocBlock["french"]);
+		Assert.Equal("2 Revolte", nameLocBlock["german"]);
+		Assert.Equal("2 бунт", nameLocBlock["russian"]);
+		Assert.Equal("2 反叛", nameLocBlock["simp_chinese"]);
+		Assert.Equal("2 revuelta", nameLocBlock["spanish"]);
+		
 	}
 
 	[Fact]
