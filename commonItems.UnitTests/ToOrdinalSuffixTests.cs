@@ -19,23 +19,23 @@ public class ToOrdinalSuffixTests {
 	}
 
 	[Theory]
-	[InlineData(4, "th")]
-	[InlineData(5, "th")]
-	[InlineData(6, "th")]
-	[InlineData(7, "th")]
-	[InlineData(8, "th")]
-	[InlineData(9, "th")]
-	[InlineData(0, "th")]
-	public void RemainingDigitsGiveTh(int number, string expectedSuffix) {
-		Assert.Equal(expectedSuffix, number.ToOrdinalSuffix());
+	[InlineData(4)]
+	[InlineData(5)]
+	[InlineData(6)]
+	[InlineData(7)]
+	[InlineData(8)]
+	[InlineData(9)]
+	[InlineData(0)]
+	public void RemainingDigitsGiveTh(int number) {
+		Assert.Equal("th", number.ToOrdinalSuffix());
 	}
 	
 	[Theory]
-	[InlineData(10, "th")]
-	[InlineData(11, "th")]
-	[InlineData(12, "th")]
-	[InlineData(13, "th")]
-	public void TeensGiveTh(int number, string expectedSuffix) {
-		Assert.Equal(expectedSuffix, number.ToOrdinalSuffix());
+	[InlineData(10)]
+	[InlineData(11)]
+	[InlineData(12)]
+	[InlineData(13)]
+	public void TeensGiveTh(int number) {
+		Assert.Equal("th", number.ToOrdinalSuffix());
 	}
 }
