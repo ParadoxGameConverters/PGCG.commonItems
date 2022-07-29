@@ -38,4 +38,18 @@ public class ToOrdinalSuffixTests {
 	public void TeensGiveTh(int number) {
 		Assert.Equal("th", number.ToOrdinalSuffix());
 	}
+
+	[Theory]
+	[InlineData("catalan", "n")]
+	[InlineData("chinese", ".")]
+	[InlineData("simp_chinese", ".")]
+	[InlineData("dutch", "e")]
+	[InlineData("french", "e")]
+	[InlineData("italian", "º")]
+	[InlineData("japanese", "番")]
+	[InlineData("portuguese", "º")]
+	[InlineData("spanish", "º")]
+	public void ToOrdinalSuffixSupportsOtherLanguages(string languageName, string expectedSuffix) {
+		Assert.Equal(expectedSuffix, 2.ToOrdinalSuffix(languageName));
+	}
 }
