@@ -488,9 +488,9 @@ public class ParserHelperTests {
 
 	[Fact]
 	public void GetBoolThrowsExceptionWhenValueFormatIsInvalid() {
-		var reader = new BufferedReader("= something");
+		var reader = new BufferedReader("= perhaps");
 		var e = Assert.Throws<FormatException>(() => reader.GetBool());
-		Assert.Contains($"Text representation of bool should be \"yes\" or \"no\", not \"something\"!", e.ToString());
+		Assert.Contains($"Text representation of bool should be \"yes\" or \"no\", not \"perhaps\"!", e.ToString());
 	}
 
 	private class TypeClass : Parser {
