@@ -238,10 +238,7 @@ public class BufferedReader {
 	public StringOfItem GetStringOfItem() {
 		return new StringOfItem(this);
 	}
-	[Obsolete("Use GetBool instead.")]
-	public PDXBool GetPDXBool() {
-		return new PDXBool(this);
-	}
+
 	public bool GetBool() {
 		var valueString = GetString();
 		return valueString switch {
