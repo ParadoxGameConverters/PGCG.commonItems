@@ -1,11 +1,12 @@
 ﻿using commonItems.Localization;
+using System;
 using Xunit;
 
 namespace commonItems.UnitTests.Localization; 
 
 public class LocBlockTests {
 	[Fact]
-	public void LocCanBeModifiedByMethodForEveryLanguage() {
+	public void LocBlockCanBeModifiedWithOtherLocBlockForEveryLanguage() {
 		var nameLocBlock = new LocBlock("key1", "english") {
 			["english"] = "$ADJ$ Revolt",
 			["french"] = "$ADJ$ révolte",
@@ -24,7 +25,7 @@ public class LocBlockTests {
 			["spanish"] = "Romana"
 		};
 
-		nameLocBlock.ModifyForEveryLanguage(adjLocBlock, (baseLoc, modifyingLoc) =>
+		nameLocBlock.ModifyForEveryLanguage(adjLocBlock, (baseLoc, modifyingLoc, _) =>
 			baseLoc?.Replace("$ADJ$", modifyingLoc)
 		);
 		Assert.Equal("Roman Revolt", nameLocBlock["english"]);
@@ -33,6 +34,27 @@ public class LocBlockTests {
 		Assert.Equal("Роман бунт", nameLocBlock["russian"]);
 		Assert.Equal("罗马 反叛", nameLocBlock["simp_chinese"]);
 		Assert.Equal("Romana revuelta", nameLocBlock["spanish"]);
+	}
+
+	[Fact]
+	public void LocBlockCanBeModifiedWithoutOtherLocBlockForEveryLanguage() {
+		var nameLocBlock = new LocBlock("key1", "english") {
+			["english"] = "$NUM$ Revolt",
+			["french"] = "$NUM$ révolte",
+			["german"] = "$NUM$ Revolte",
+			["russian"] = "$NUM$ бунт",
+			["simp_chinese"] = "$NUM$ 反叛",
+			["spanish"] = "$NUM$ revuelta"
+		};
+		
+		const int number = 2;
+		nameLocBlock.ModifyForEveryLanguage((loc, _) => loc?.Replace("$NUM$", number.ToString()));
+		Assert.Equal("2 Revolt", nameLocBlock["english"]);
+		Assert.Equal("2 révolte", nameLocBlock["french"]);
+		Assert.Equal("2 Revolte", nameLocBlock["german"]);
+		Assert.Equal("2 бунт", nameLocBlock["russian"]);
+		Assert.Equal("2 反叛", nameLocBlock["simp_chinese"]);
+		Assert.Equal("2 revuelta", nameLocBlock["spanish"]);
 	}
 
 	[Fact]
