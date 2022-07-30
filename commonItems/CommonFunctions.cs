@@ -82,7 +82,11 @@ public static class CommonFunctions {
 		return number.ToOrdinalNumber(cultureInfo).Replace(number.ToString(), "");
 	}
 	
+	[Obsolete($"Use {nameof(ToRomanNumeral)}() extension method instead")]
 	public static string CardinalToRoman(int number) {
+		return number.ToRomanNumeral();
+	}
+	public static string ToRomanNumeral(this int number) {
 		var num = new[] { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
 		var sym = new[] { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
 		int i = 12;
