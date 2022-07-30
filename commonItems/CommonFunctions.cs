@@ -82,7 +82,7 @@ public static class CommonFunctions {
 		return number.ToOrdinalNumber(cultureInfo).Replace(number.ToString(), "");
 	}
 	
-	[Obsolete("Use ToRomanNumber() extension method instead")]
+	[Obsolete($"Use {nameof(ToRomanNumeral)}() extension method instead")]
 	public static string CardinalToRoman(int number) {
 		return number.ToRomanNumeral();
 	}
