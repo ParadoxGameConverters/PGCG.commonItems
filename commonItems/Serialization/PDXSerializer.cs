@@ -10,8 +10,6 @@ using System.Text;
 namespace commonItems.Serialization; 
 
 public static class PDXSerializer {
-	private static readonly CultureInfo cultureInfo = CultureInfo.InvariantCulture;
-
 	public static string Serialize(object obj, string indent) {
 		return Serialize(obj, indent, true);
 	}
@@ -34,7 +32,7 @@ public static class PDXSerializer {
 		} else if (obj is bool boolValue) {
 			sb.Append(boolValue ? "yes" : "no");
 		} else if (obj.GetType().IsValueType && obj is IFormattable formattable) { // for numbers
-			sb.Append(formattable.ToString("G", cultureInfo));
+			sb.Append(formattable.ToString("G", CultureInfo.InvariantCulture));
 		} else {
 			throw new SerializationException($"Objects of type {obj.GetType()} are not yet supported by PDXSerializer!");
 		}
