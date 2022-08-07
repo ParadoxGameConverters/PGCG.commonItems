@@ -3,3 +3,12 @@ value2 = -0.4
 value3 = 1
 value4 = -3
 common_value = 68
+
+
+clan_government_tax_max_possible = { # complex value, to be ignored
+	value = clan_government_tax_default
+	add = {
+		value = clan_government_tax_opinion_scale_positive
+		multiply = 100
+	}
+}
