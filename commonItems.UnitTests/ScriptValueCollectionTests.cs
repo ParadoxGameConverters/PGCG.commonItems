@@ -11,7 +11,7 @@ public class ScriptValueCollectionTests {
 	private readonly ModFilesystem modFS = new(GameRoot, mods);
 
 	[Fact]
-	public void ScriptValuesAreReadFromGameAndMods() {
+	public void SimpleScriptValuesAreReadFromGameAndMods() {
 		var scriptValueCollection = new ScriptValueCollection();
 		scriptValueCollection.LoadScriptValues(modFS);
 
@@ -34,6 +34,14 @@ public class ScriptValueCollectionTests {
 		Assert.Equal(-3d, scriptValueCollection["value4"]);
 		Assert.Equal(3.2d, scriptValueCollection["mod_value"]);
 		Assert.Equal(69d, scriptValueCollection["common_value"]); // 68 in game, overridden by 69 in mod
+	}
+
+	[Fact]
+	public void ComplexValuesAreIgnored() {
+		var scriptValueCollection = new ScriptValueCollection();
+		scriptValueCollection.LoadScriptValues(modFS);
+
+		Assert.DoesNotContain("clan_government_tax_max_possible", scriptValueCollection.Keys);
 	}
 
 	[Fact]
