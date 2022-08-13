@@ -106,6 +106,17 @@ public class GameVersionTests {
 		var version2 = new GameVersion(1, 2, 3, 4);
 		Assert.True(version > version2);
 	}
+	[Theory]
+	[InlineData("1.0.0.1", "1.0.0.2")]
+	[InlineData("1.0.1.0", "1.0.2.0")]
+	[InlineData("1.1.0.0", "1.2.0.0")]
+	[InlineData("1.0.0.0", "2.0.0.0")]
+	public void GreaterThanReturnsFalseForLesser(string lhsVersionString, string rhsVersionString) {
+		var lhs = new GameVersion(lhsVersionString);
+		var rhs = new GameVersion(rhsVersionString);
+		Assert.False(lhs > rhs);
+	}
+	
 	[Fact]
 	public void GreaterThanOrEqualsFromGreaterThan() {
 		var version = new GameVersion(2, 1, 2, 3);

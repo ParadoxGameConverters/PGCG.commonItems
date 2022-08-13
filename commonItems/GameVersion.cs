@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace commonItems; 
@@ -130,70 +131,25 @@ public class GameVersion {
 		return lhs > rhs || lhs.Equals(rhs);
 	}
 	public static bool operator >(GameVersion lhs, GameVersion rhs) {
-		int testL = 0;
-		int testR = 0;
-		if (lhs.FirstPart != null) {
-			testL = lhs.FirstPart.Value;
-		}
-		if (rhs.FirstPart != null) {
-			testR = rhs.FirstPart.Value;
-		}
+		var lhsParts = new[] {lhs.FirstPart, lhs.SecondPart, lhs.ThirdPart, lhs.FourthPart};
+		var rhsParts = new[] {rhs.FirstPart, rhs.SecondPart, rhs.ThirdPart, rhs.FourthPart};
 
-		if (testL > testR) {
-			return true;
-		}
-		if (testL < testR) {
-			return false;
-		}
+		foreach (var (lhsPart, rhsPart) in lhsParts.Zip(rhsParts, Tuple.Create)) {
+			int testL = 0;
+			int testR = 0;
+			if (lhsPart is not null) {
+				testL = lhsPart.Value;
+			}
+			if (rhsPart is not null) {
+				testR = rhsPart.Value;
+			}
 
-		testL = 0;
-		testR = 0;
-		if (lhs.SecondPart != null) {
-			testL = lhs.SecondPart.Value;
-		}
-
-		if (rhs.SecondPart != null) {
-			testR = rhs.SecondPart.Value;
-		}
-
-		if (testL > testR) {
-			return true;
-		}
-
-		if (testL < testR) {
-			return false;
-		}
-
-		testL = 0;
-		testR = 0;
-		if (lhs.ThirdPart != null) {
-			testL = lhs.ThirdPart.Value;
-		}
-
-		if (rhs.ThirdPart != null) {
-			testR = rhs.ThirdPart.Value;
-		}
-
-		if (testL > testR) {
-			return true;
-		}
-
-		if (testL < testR) {
-			return false;
-		}
-
-		testL = 0;
-		testR = 0;
-		if (lhs.FourthPart != null) {
-			testL = lhs.FourthPart.Value;
-		}
-
-		if (rhs.FourthPart != null) {
-			testR = rhs.FourthPart.Value;
-		}
-
-		if (testL > testR) {
-			return true;
+			if (testL > testR) {
+				return true;
+			}
+			if (testL < testR) {
+				return false;
+			}
 		}
 
 		return false;
