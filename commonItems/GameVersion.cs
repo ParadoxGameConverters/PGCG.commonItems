@@ -155,77 +155,7 @@ public class GameVersion {
 		return false;
 	}
 
-	public static bool operator <(GameVersion lhs, GameVersion rhs) {
-		var testL = 0;
-		var testR = 0;
-		if (lhs.FirstPart != null) {
-			testL = lhs.FirstPart.Value;
-		}
-
-		if (rhs.FirstPart != null) {
-			testR = rhs.FirstPart.Value;
-		}
-
-		if (testL < testR) {
-			return true;
-		}
-
-		if (testL > testR) {
-			return false;
-		}
-
-		testL = 0;
-		testR = 0;
-		if (lhs.SecondPart != null) {
-			testL = lhs.SecondPart.Value;
-		}
-
-		if (rhs.SecondPart != null) {
-			testR = rhs.SecondPart.Value;
-		}
-
-		if (testL < testR) {
-			return true;
-		}
-
-		if (testL > testR) {
-			return false;
-		}
-
-		testL = 0;
-		testR = 0;
-		if (lhs.ThirdPart != null) {
-			testL = lhs.ThirdPart.Value;
-		}
-
-		if (rhs.ThirdPart != null) {
-			testR = rhs.ThirdPart.Value;
-		}
-
-		if (testL < testR) {
-			return true;
-		}
-
-		if (testL > testR) {
-			return false;
-		}
-
-		testL = 0;
-		testR = 0;
-		if (lhs.FourthPart != null) {
-			testL = lhs.FourthPart.Value;
-		}
-
-		if (rhs.FourthPart != null) {
-			testR = rhs.FourthPart.Value;
-		}
-
-		if (testL < testR) {
-			return true;
-		}
-
-		return false;
-	}
+	public static bool operator <(GameVersion lhs, GameVersion rhs) => !(lhs > rhs) && !lhs.Equals(rhs);
 
 	public static bool operator <=(GameVersion lhs, GameVersion rhs) {
 		return lhs < rhs || lhs.Equals(rhs);
