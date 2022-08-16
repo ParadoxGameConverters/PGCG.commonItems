@@ -10,14 +10,7 @@ public static class LogExtensions {
 	public static Level ProgressLevel { get; } = new(35000, "PROGRESS");
 
 	public static int CurrentProgress { get; private set; } = 0;
-
-	[Obsolete("Use Progress(this ILog log, int progressValue)")]
-	public static void Progress(this ILog log, string message) {
-		var currentMethod = System.Reflection.MethodBase.GetCurrentMethod();
-		if (currentMethod is not null) {
-			log.Logger.Log(currentMethod.DeclaringType, ProgressLevel, message, null);
-		}
-	}
+	
 	public static void Progress(this ILog log, int progressValue) {
 		CurrentProgress = progressValue;
 

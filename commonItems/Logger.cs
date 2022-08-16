@@ -60,10 +60,6 @@ public static class Logger {
 		log.DebugFormat(message, args);
 	}
 
-	[Obsolete("Use Progress(int progress)")]
-	public static void Progress(string message) {
-		log.Progress(message);
-	}
 	public static void Progress(int progressValue) {
 		log.Progress(progressValue);
 	}
