@@ -84,19 +84,41 @@ public class LoggerTests {
 	}
 
 	[Fact]
-	public void ProgressMessagesLogged() {
+	public void ProgressMessagesAreLogged() {
 		var output = new StringWriter();
 		Console.SetOut(output);
-		Logger.Progress("Progress message");
-		Assert.Contains("[PROGRESS] Progress message", output.ToString());
+		Logger.Progress(42);
+		Assert.Contains("[PROGRESS] 42%", output.ToString());
 	}
 	[Fact]
-	public void ProgressMessagesFormatLogged() {
+	public void ProgressCanBeIncremented() {
 		var output = new StringWriter();
 		Console.SetOut(output);
-		Logger.ProgressFormat("Progress {0}", "message");
-		Assert.Contains("[PROGRESS] Progress message", output.ToString());
+		
+		Logger.Progress(20);
+		Assert.Contains("[PROGRESS] 20%", output.ToString());
+		
+		Logger.IncrementProgress();
+		Assert.Contains("[PROGRESS] 21%", output.ToString());
 	}
+
+	[Fact]
+	public void ProgressIncrementationCanBeLimited() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		
+		Logger.Progress(20);
+		Assert.Contains("[PROGRESS] 20%", output.ToString());
+
+		const int incrementLimit = 21;
+		
+		Logger.IncrementProgress(progressLimit: incrementLimit); // fits the limit
+		Assert.Contains("[PROGRESS] 21%", output.ToString());
+		
+		Logger.IncrementProgress(progressLimit: incrementLimit); // doesn't fit the limit
+		Assert.DoesNotContain("[PROGRESS] 22%", output.ToString());
+	}
+	
 	[Fact]
 	public void LevelCanBePassedAsArgument() {
 		var output = new StringWriter();

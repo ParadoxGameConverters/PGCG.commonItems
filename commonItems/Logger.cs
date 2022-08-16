@@ -56,11 +56,11 @@ public static class Logger {
 	public static void DebugFormat(string message, params object[] args) {
 		log.DebugFormat(message, args);
 	}
-	public static void Progress(string message) {
-		log.Progress(message);
+	public static void Progress(int progress) {
+		log.Progress(progress);
 	}
-	public static void ProgressFormat(string message, params object[] args) {
-		log.ProgressFormat(message, args);
+	public static void IncrementProgress(int progressLimit = 99) {
+		log.IncrementProgress(progressLimit);
 	}
 
 	public static void Log(Level level, string message) {
