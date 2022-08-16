@@ -1,22 +1,35 @@
 ﻿using log4net;
 using log4net.Core;
+using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace commonItems; 
 
+[SuppressMessage("ReSharper", "IntroduceOptionalParameters.Global")]
 public static class LogExtensions {
 	public static Level ProgressLevel { get; } = new(35000, "PROGRESS");
 
-	public static void Progress(this ILog log, string message) {
+	public static int CurrentProgress { get; private set; } = 0;
+	
+	public static void Progress(this ILog log, int progressValue) {
+		CurrentProgress = progressValue;
+
 		var currentMethod = System.Reflection.MethodBase.GetCurrentMethod();
 		if (currentMethod is not null) {
-			log.Logger.Log(currentMethod.DeclaringType, ProgressLevel, message, null);
+			log.Logger.Log(currentMethod.DeclaringType, ProgressLevel, $"{CurrentProgress}%", null);
 		}
 	}
-	public static void ProgressFormat(this ILog log, string message, params object[] args) {
-		string formattedMessage = string.Format(message, args);
+	public static void IncrementProgress(this ILog log) {
+		IncrementProgress(log, 99);
+	}
+	public static void IncrementProgress(this ILog log, int progressLimit) {
+		if (CurrentProgress >= progressLimit) {
+			return;
+		}
+
 		var currentMethod = System.Reflection.MethodBase.GetCurrentMethod();
 		if (currentMethod is not null) {
-			log.Logger.Log(currentMethod.DeclaringType, ProgressLevel, formattedMessage, null);
+			log.Logger.Log(currentMethod.DeclaringType, ProgressLevel, $"{++CurrentProgress}%", null);
 		}
 	}
 

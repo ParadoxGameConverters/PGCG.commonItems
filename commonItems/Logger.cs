@@ -1,11 +1,14 @@
 using log4net;
 using log4net.Config;
 using log4net.Core;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 // ReSharper disable InconsistentNaming
 
 namespace commonItems;
 
+[SuppressMessage("ReSharper", "IntroduceOptionalParameters.Global")]
 public static class Logger {
 	private static readonly ILog log = LogManager.GetLogger("mainLogger");
 	static Logger() {
@@ -56,11 +59,15 @@ public static class Logger {
 	public static void DebugFormat(string message, params object[] args) {
 		log.DebugFormat(message, args);
 	}
-	public static void Progress(string message) {
-		log.Progress(message);
+
+	public static void Progress(int progressValue) {
+		log.Progress(progressValue);
 	}
-	public static void ProgressFormat(string message, params object[] args) {
-		log.ProgressFormat(message, args);
+	public static void IncrementProgress() {
+		log.IncrementProgress();
+	}
+	public static void IncrementProgress(int progressLimit) {
+		log.IncrementProgress(progressLimit);
 	}
 
 	public static void Log(Level level, string message) {
