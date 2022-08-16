@@ -124,6 +124,7 @@ public class BufferedReader {
 		Logger.Warn($"Could not convert string {ulongStr} to ulong!");
 		return 0;
 	}
+	
 	public double GetDouble() {
 		var doubleStr = GetString().RemQuotes();
 		if (double.TryParse(doubleStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double theDouble)) {
@@ -133,6 +134,16 @@ public class BufferedReader {
 		Logger.Warn($"Could not convert string {doubleStr} to double!");
 		return 0;
 	}
+	public double GetDouble(ScriptValueCollection scriptValues) {
+		var valueStr = GetString().RemQuotes();
+		if (scriptValues.GetValueForString(valueStr) is double value) {
+			return value;
+		}
+
+		Logger.Warn($"Could not convert string {valueStr} to double!");
+		return 0;
+	}
+	
 	public List<string> GetStrings() {
 		var strings = new List<string>();
 		var parser = new Parser();
