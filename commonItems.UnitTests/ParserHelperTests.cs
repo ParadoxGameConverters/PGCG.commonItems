@@ -1,4 +1,5 @@
-﻿using System;
+﻿using commonItems.Mods;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
@@ -8,6 +9,10 @@ namespace commonItems.UnitTests;
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public class ParserHelperTests {
+	private const string GameRoot = "TestFiles/CK3/game";
+	private static readonly List<Mod> mods = new() {new("Cool Mod", "TestFiles/mod/themod")};
+	private readonly ModFilesystem modFS = new(GameRoot, mods);
+	
 	[Fact]
 	public void IgnoreItemIgnoresSimpleText() {
 		var input = new BufferedReader("ignore_me More text");
@@ -188,6 +193,14 @@ public class ParserHelperTests {
 		var theDouble = reader.GetDouble();
 		Assert.Contains("[WARN] Could not convert string 345.345 foo to double!", output.ToString());
 		Assert.Equal(0, theDouble);
+	}
+
+	[Fact]
+	public void GetDoubleCanBeUsedWithScriptValues() {
+		var scriptValues = new ScriptValueCollection();
+		scriptValues.LoadScriptValues(modFS);
+		var reader = new BufferedReader(" = mod_value");
+		Assert.Equal(3.2, reader.GetDouble(scriptValues));
 	}
 
 	[Fact]
