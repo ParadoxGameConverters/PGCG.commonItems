@@ -1,6 +1,7 @@
 using log4net;
 using log4net.Config;
 using log4net.Core;
+using System;
 using System.IO;
 // ReSharper disable InconsistentNaming
 
@@ -55,6 +56,11 @@ public static class Logger {
 	}
 	public static void DebugFormat(string message, params object[] args) {
 		log.DebugFormat(message, args);
+	}
+
+	[Obsolete("Use Progress(int progress)")]
+	public static void Progress(string message) {
+		log.Progress(message);
 	}
 	public static void Progress(int progress) {
 		log.Progress(progress);
