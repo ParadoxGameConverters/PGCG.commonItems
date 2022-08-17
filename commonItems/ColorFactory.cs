@@ -6,6 +6,40 @@ namespace commonItems;
 
 public class ColorFactory {
 	public Dictionary<string, Color> NamedColors { get; } = new();
+
+	private Color GetRgbColor(BufferedReader reader) {
+		var rgb = reader.GetInts();
+		if (rgb.Count != 3) {
+			throw new FormatException("Color has wrong number of components");
+		}
+		return new Color(rgb[0], rgb[1], rgb[2]);
+	}
+	private Color GetHexColor(BufferedReader reader) {
+		var hex = reader.GetString();
+		if (hex.Length != 6) {
+			throw new FormatException("Color has wrong number of digits");
+		}
+		var r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+		var g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+		var b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+		return new Color(r, g, b);
+	}
+	private static Color GetHsvColor(BufferedReader reader) {
+		var hsv = reader.GetDoubles();
+		if (hsv.Count != 3) {
+			throw new FormatException("Color has wrong number of components");
+		}
+
+		return new Color(hsv[0], hsv[1], hsv[2]);
+	}
+	private static Color GetHsv360Color(BufferedReader reader) {
+		var hsv = reader.GetDoubles();
+		if (hsv.Count != 3) {
+			throw new FormatException("Color has wrong number of components");
+		}
+
+		return new Color(hsv[0] / 360, hsv[1] / 100, hsv[2] / 100);
+	}
 	public Color GetColor(BufferedReader reader) {
 		Parser.GetNextTokenWithoutMatching(reader); // equals sign
 
@@ -16,35 +50,16 @@ public class ColorFactory {
 		token = token.RemQuotes();
 		switch (token) {
 			case "rgb": {
-				var rgb = reader.GetInts();
-				if (rgb.Count != 3) {
-					throw new FormatException("Color has wrong number of components");
-				}
-				return new Color(rgb[0], rgb[1], rgb[2]);
+				return GetRgbColor(reader);
 			}
 			case "hex": {
-				var hex = reader.GetString();
-				if (hex.Length != 6) {
-					throw new FormatException("Color has wrong number of digits");
-				}
-				var r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-				var g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-				var b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
-				return new Color(r, g, b);
+				return GetHexColor(reader);
 			}
 			case "hsv" or "HSV": {
-				var hsv = reader.GetDoubles();
-				if (hsv.Count != 3) {
-					throw new FormatException("Color has wrong number of components");
-				}
-				return new Color(hsv[0], hsv[1], hsv[2]);
+				return GetHsvColor(reader);
 			}
 			case "hsv360": {
-				var hsv = reader.GetDoubles();
-				if (hsv.Count != 3) {
-					throw new FormatException("Color has wrong number of components");
-				}
-				return new Color(hsv[0]/360, hsv[1]/100, hsv[2]/100);
+				return GetHsv360Color(reader);
 			}
 			default: {
 				if (CommonRegexes.Catchall.IsMatch(token)) {
