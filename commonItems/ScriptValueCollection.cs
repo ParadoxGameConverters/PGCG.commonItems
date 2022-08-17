@@ -72,6 +72,15 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 			return definedValue;
 		}
 		
+		// Value might be a bool - convert it to double.
+		var tempReader = new BufferedReader(valueStr);
+		try {
+			var boolValue = tempReader.GetBool();
+			return Convert.ToDouble(boolValue);
+		} catch {
+			// ignored
+		}
+
 		Logger.Warn($"No script value found for \"{valueStr}\"!");
 		return null;
 	}

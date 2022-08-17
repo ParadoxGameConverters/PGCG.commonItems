@@ -15,7 +15,7 @@ public class ColorFactory {
 		return new Color(rgb[0], rgb[1], rgb[2]);
 	}
 	private Color GetHexColor(BufferedReader reader) {
-		var hex = reader.GetString();
+		var hex = reader.GetStrings()[0];
 		if (hex.Length != 6) {
 			throw new FormatException("Color has wrong number of digits");
 		}
@@ -41,9 +41,12 @@ public class ColorFactory {
 		return new Color(hsv[0] / 360, hsv[1] / 100, hsv[2] / 100);
 	}
 	public Color GetColor(BufferedReader reader) {
-		Parser.GetNextTokenWithoutMatching(reader); // equals sign
-
+		// Remove equals if necessary.
 		var token = Parser.GetNextTokenWithoutMatching(reader);
+		if (token is not null && token == "=") {
+			token = Parser.GetNextTokenWithoutMatching(reader);
+		}
+		
 		if (token is null) {
 			throw new FormatException("Cannot get color without token");
 		}

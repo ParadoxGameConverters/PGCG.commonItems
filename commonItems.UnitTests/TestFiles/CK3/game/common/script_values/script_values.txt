@@ -16,4 +16,8 @@ clan_government_tax_max_possible = { # complex value, to be ignored
 }
 
 value_using_value = value1 # simple value using another simple value
+
 value_using_expression = @[variable] # simple value using interpolated expression
+
+bool_value_yes = yes
+bool_value_no = no
