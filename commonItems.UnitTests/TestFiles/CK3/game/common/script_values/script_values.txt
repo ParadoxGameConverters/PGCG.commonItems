@@ -12,3 +12,5 @@ clan_government_tax_max_possible = { # complex value, to be ignored
 		multiply = 100
 	}
 }
+
+value_using_value = value1 # simple value using another simple value

@@ -23,10 +23,9 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 				return;
 			}
 
-			try {
-				dict[name] = double.Parse(valueStringOfItem.ToString(), CultureInfo.InvariantCulture);
-			} catch (FormatException e) {
-				Logger.Warn($"Can't parse {valueStringOfItem} as float! {e}");
+			var value = GetValueForString(valueStringOfItem.ToString());
+			if (value is not null) {
+				dict[name] = (double)value;
 			}
 		});
 		parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);

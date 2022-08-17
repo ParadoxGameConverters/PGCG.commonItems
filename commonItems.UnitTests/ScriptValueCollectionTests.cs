@@ -15,17 +15,18 @@ public class ScriptValueCollectionTests {
 		var scriptValueCollection = new ScriptValueCollection();
 		scriptValueCollection.LoadScriptValues(modFS);
 
-		Assert.Equal(6, scriptValueCollection.Count);
+		Assert.Equal(7, scriptValueCollection.Count);
 
 		scriptValueCollection.Keys.Should()
-			.BeEquivalentTo("value1", "value2", "value3", "value4", "mod_value", "common_value");
+			.BeEquivalentTo("value1", "value2", "value3", "value4", "mod_value", "common_value", "value_using_value");
 		scriptValueCollection.Values.Should().BeEquivalentTo(new List<double> {
 			0.4d,
 			-0.4d,
 			1d,
 			-3d,
 			3.2d,
-			69d
+			69d,
+			0.4d
 		});
 
 		Assert.Equal(0.4d, scriptValueCollection["value1"]);
@@ -34,6 +35,7 @@ public class ScriptValueCollectionTests {
 		Assert.Equal(-3d, scriptValueCollection["value4"]);
 		Assert.Equal(3.2d, scriptValueCollection["mod_value"]);
 		Assert.Equal(69d, scriptValueCollection["common_value"]); // 68 in game, overridden by 69 in mod
+		Assert.Equal(0.4d, scriptValueCollection["value_using_value"]);
 	}
 
 	[Fact]
