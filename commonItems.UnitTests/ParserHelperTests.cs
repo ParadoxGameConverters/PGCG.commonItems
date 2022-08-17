@@ -196,6 +196,14 @@ public class ParserHelperTests {
 	}
 
 	[Fact]
+	public void GetDoubleCanBeUsedWithExpressions() {
+		var reader = new BufferedReader("= @[variable - 2]");
+		reader.Variables.Add("variable", 42.5);
+		
+		Assert.Equal(40.5, reader.GetDouble());
+	}
+
+	[Fact]
 	public void GetDoubleCanBeUsedWithScriptValues() {
 		var scriptValues = new ScriptValueCollection();
 		scriptValues.LoadScriptValues(modFS);
