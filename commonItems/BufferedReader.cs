@@ -86,10 +86,12 @@ public class BufferedReader {
 	}
 
 	public string GetString() {
-		// remove equals
-		Parser.GetNextTokenWithoutMatching(this);
-
+		// Remove equals if necessary.
 		var token = Parser.GetNextTokenWithoutMatching(this);
+		if (token is not null && token == "=") {
+			token = Parser.GetNextTokenWithoutMatching(this);
+		}
+
 		if (token is not null) {
 			return token.RemQuotes();
 		}

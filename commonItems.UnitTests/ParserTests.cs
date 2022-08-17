@@ -326,6 +326,36 @@ public class ParserTests {
 		var country = new TestCountry(reader);
 		Assert.Equal(35, country.Prestige);
 	}
+	
+	[Fact]
+	public void InterpolatedExpressionsCanBeUsedInVariableValues() {
+		var reader = new BufferedReader(
+			"@cheap_cost_scale_addition_per_tier = 50\n" + // 50
+			"@cheap_cost_base = 100\n" + // 100
+			"@cheap_cost_tier_1 = @[cheap_cost_base]\n" + // 100
+			"@cheap_cost_tier_2 = @[cheap_cost_tier_1 + cheap_cost_scale_addition_per_tier]"); // 150
+		
+		var parser = new Parser();
+		parser.ParseStream(reader);
+		
+		Assert.Collection(reader.Variables,
+			kvp => {
+				Assert.Equal("cheap_cost_scale_addition_per_tier", kvp.Key);
+				Assert.Equal(50, kvp.Value);
+			},
+			kvp => {
+				Assert.Equal("cheap_cost_base", kvp.Key);
+				Assert.Equal(100, kvp.Value);
+			},
+			kvp => {
+				Assert.Equal("cheap_cost_tier_1", kvp.Key);
+				Assert.Equal(100, kvp.Value);
+			},
+			kvp => {
+				Assert.Equal("cheap_cost_tier_2", kvp.Key);
+				Assert.Equal(150, kvp.Value);
+			});
+	}
 
 	[Fact]
 	public void ParserParsesGameFolderInVanillaAndMods() {
