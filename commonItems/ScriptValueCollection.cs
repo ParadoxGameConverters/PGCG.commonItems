@@ -1,4 +1,5 @@
 ﻿using commonItems.Mods;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,18 +19,31 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 
 		var parser = new Parser();
 		parser.RegisterRegex(CommonRegexes.String, (reader, name) => {
-			var valueStringOfItem = reader.GetStringOfItem();
-			if (valueStringOfItem.IsArrayOrObject()) {
-				return;
-			}
-
-			var value = GetValueForString(valueStringOfItem.ToString());
+			var value = ParseValue(reader);
 			if (value is not null) {
 				dict[name] = (double)value;
 			}
 		});
 		parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
 		parser.ParseGameFolder("common/script_values", modFilesystem, "txt", recursive: true);
+	}
+
+	private double? ParseValue(BufferedReader reader) {
+		var valueStringOfItem = reader.GetStringOfItem();
+		if (valueStringOfItem.IsArrayOrObject()) {
+			return null;
+		}
+
+		var valueStr = valueStringOfItem.ToString();
+		if (CommonRegexes.InterpolatedExpression.IsMatch(valueStr)) {
+			var expressionValue = reader.EvaluateExpression(valueStr);
+			if (Information.IsNumeric(expressionValue)) {
+				return Convert.ToDouble(expressionValue);
+			}
+		}
+
+		var value = GetValueForString(valueStr);
+		return value;
 	}
 
 	public IEnumerator<KeyValuePair<string, double>> GetEnumerator() {
