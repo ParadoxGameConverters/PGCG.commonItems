@@ -21,3 +21,7 @@ value_using_expression = @[variable] # simple value using interpolated expressio
 
 bool_value_yes = yes
 bool_value_no = no
+
+@cheap_cost_base = 100
+@cheap_cost_tier_1 = @[cheap_cost_base]
+cheap_building_tier_1_cost = @[cheap_cost_tier_1]

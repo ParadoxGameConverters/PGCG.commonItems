@@ -26,7 +26,8 @@ public class ScriptValueCollectionTests {
 				"value_using_value",
 				"value_using_expression",
 				"bool_value_yes",
-				"bool_value_no"
+				"bool_value_no",
+				"cheap_building_tier_1_cost"
 			);
 
 		Assert.Equal(0.4d, scriptValueCollection["value1"]);
@@ -39,6 +40,7 @@ public class ScriptValueCollectionTests {
 		Assert.Equal(69, scriptValueCollection["value_using_expression"]);
 		Assert.Equal(1, scriptValueCollection["bool_value_yes"]);
 		Assert.Equal(0, scriptValueCollection["bool_value_no"]);
+		Assert.Equal(100, scriptValueCollection["cheap_building_tier_1_cost"]);
 	}
 
 	[Fact]
