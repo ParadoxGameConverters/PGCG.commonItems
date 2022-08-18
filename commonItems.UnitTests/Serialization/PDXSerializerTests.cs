@@ -76,6 +76,24 @@ public class PDXSerializerTests {
 		Assert.Equal(expectedString, titleString);
 	}
 
+	private class TestClass : IPDXSerializable {
+		[SerializedName("number1")] public double Number1 { get; set; }
+		[SerializedName("number2")] public double Number2 { get; set; }
+		[SerializedName("number3")] public double Number3 { get; set; }
+	}
+
+	[Fact]
+	public void NumbersAreSerializedWithDigitLimit() {
+		var testObj = new TestClass {Number1 = 60.800000000000004, Number2 = 60.123456789, Number3=60};
+		var expectedString =
+			"{" + Environment.NewLine +
+			"\tnumber1=60.8" + Environment.NewLine +
+			"\tnumber2=60.123457" + Environment.NewLine +
+			"\tnumber3=60" + Environment.NewLine +
+			"}";
+		Assert.Equal(expectedString, PDXSerializer.Serialize(testObj));
+	}
+
 	[Fact]
 	public void NullMembersAreNotSerialized() {
 		var c1 = new RulerInfo { nickname = "the_great" };

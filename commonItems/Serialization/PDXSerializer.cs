@@ -32,7 +32,7 @@ public static class PDXSerializer {
 		} else if (obj is bool boolValue) {
 			sb.Append(boolValue ? "yes" : "no");
 		} else if (obj.GetType().IsValueType && obj is IFormattable formattable) { // for numbers
-			sb.Append(formattable.ToString("G", CultureInfo.InvariantCulture));
+			sb.Append(formattable.ToString("0.######", CultureInfo.InvariantCulture));
 		} else {
 			throw new SerializationException($"Objects of type {obj.GetType()} are not yet supported by PDXSerializer!");
 		}
