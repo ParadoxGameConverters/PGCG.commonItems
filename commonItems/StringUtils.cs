@@ -1,6 +1,10 @@
 ﻿namespace commonItems;
 
 public static class StringUtils {
+	public static bool IsQuoted(this string str) {
+		return str.StartsWith('"') && str.EndsWith('"');
+	}
+	
 	public static string RemQuotes(this string str) {
 		var length = str.Length;
 		if (length < 2) {
