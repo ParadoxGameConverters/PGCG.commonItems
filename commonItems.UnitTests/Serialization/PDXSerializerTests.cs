@@ -18,7 +18,7 @@ public class PDXSerializerTests {
 		public ulong capital_prov_id { get; set; } = 420;
 		public double development { get; set; } = 50.5;
 		[commonItems.Serialization.NonSerialized] public int priority { get; set; } = 50;
-		public string name { get; set; } = "Papal States";
+		public string name { get; set; } = "\"Papal States\"";
 		public List<string> pope_names_list { get; set; } = new() { "Peter", "John", "Hadrian" };
 		public List<short> empty_list { get; set; } = new();
 		public Color color1 { get; set; } = new(2, 4, 6);
@@ -28,14 +28,14 @@ public class PDXSerializerTests {
 		public bool landless = true;
 		public Date creation_date = new(600, 4, 5);
 		public Dictionary<string, string> textures = new() {
-			{ "diffuse", "gfx/models/diffuse.dds" },
-			{ "normal", "gfx/models/normal.dds" }
+			{ "diffuse", "\"gfx/models/diffuse.dds\"" },
+			{ "normal", "\"gfx/models/normal.dds\"" }
 		};
 		public Dictionary<int, string> weights = new() {
 			{ 10, "roman_gfx" },
 			{ 5, "italian_gfx" }
 		};
-		public HashSet<string> greetings = new() { "hi", "salutations", "greetings" };
+		public HashSet<string> greetings = new() { "\"hi\"", "\"salutations\"", "\"greetings\"" };
 		[SerializeOnlyValue] public KeyValuePair<string, string> kvPair = new("key", "value");
 		public RulerInfo ruler_info = new() { nickname = "the_great" };
 		public StringOfItem ai_priority = new(new BufferedReader("= { add = 70 }"));
@@ -52,7 +52,7 @@ public class PDXSerializerTests {
 			"\tcapital_prov_id=420" + Environment.NewLine +
 			"\tdevelopment=50.5" + Environment.NewLine +
 			"\tname=\"Papal States\"" + Environment.NewLine +
-			"\tpope_names_list={ \"Peter\" \"John\" \"Hadrian\" }" + Environment.NewLine +
+			"\tpope_names_list={ Peter John Hadrian }" + Environment.NewLine +
 			"\tempty_list={ }" + Environment.NewLine +
 			"\tcolor1={ 2 4 6 }" + Environment.NewLine +
 			"\tdefinite_form=no" + Environment.NewLine +
@@ -63,13 +63,13 @@ public class PDXSerializerTests {
 			"\t\tnormal=\"gfx/models/normal.dds\"" + Environment.NewLine +
 			"\t}" + Environment.NewLine +
 			"\tweights={" + Environment.NewLine +
-			"\t\t10=\"roman_gfx\"" + Environment.NewLine +
-			"\t\t5=\"italian_gfx\"" + Environment.NewLine +
+			"\t\t10=roman_gfx" + Environment.NewLine +
+			"\t\t5=italian_gfx" + Environment.NewLine +
 			"\t}" + Environment.NewLine +
 			"\tgreetings={ \"hi\" \"salutations\" \"greetings\" }" + Environment.NewLine +
-			"\tkey=\"value\"" + Environment.NewLine +
+			"\tkey=value" + Environment.NewLine +
 			"\truler_info={" + Environment.NewLine +
-			"\t\tnickname=\"the_great\"" + Environment.NewLine +
+			"\t\tnickname=the_great" + Environment.NewLine +
 			"\t}" + Environment.NewLine +
 			"\tai_priority={ add = 70 }" + Environment.NewLine +
 			"}";
@@ -98,7 +98,7 @@ public class PDXSerializerTests {
 	public void NullMembersAreNotSerialized() {
 		var c1 = new RulerInfo { nickname = "the_great" };
 		var c1Str = PDXSerializer.Serialize(c1, string.Empty);
-		Assert.Contains("nickname=\"the_great\"", c1Str);
+		Assert.Contains("nickname=the_great", c1Str);
 		var c2 = new RulerInfo { nickname = null };
 		var c2Str = PDXSerializer.Serialize(c2, string.Empty);
 		Assert.DoesNotContain("nickname", c2Str);
@@ -114,8 +114,8 @@ public class PDXSerializerTests {
 		var pascal = new PascalClass();
 		var str = PDXSerializer.Serialize(pascal);
 		var expectedStr = "{" + Environment.NewLine +
-		                  "\tname=\"Property\"" + Environment.NewLine +
-		                  "\tculture=\"roman\"" + Environment.NewLine +
+		                  "\tname=Property" + Environment.NewLine +
+		                  "\tculture=roman" + Environment.NewLine +
 		                  "}";
 		Assert.Equal(expectedStr, str);
 	}
@@ -133,9 +133,9 @@ public class PDXSerializerTests {
 	public void MembersCanBeSerializedWithoutNames() {
 		var history = new History();
 		var expectedStr =
-			"culture=\"roman\"" + Environment.NewLine +
+			"culture=roman" + Environment.NewLine +
 			"development=3.14" + Environment.NewLine +
-			"buildings={ \"baths\" \"aqueduct\" }" + Environment.NewLine;
+			"buildings={ baths aqueduct }" + Environment.NewLine;
 		Assert.Equal(expectedStr, PDXSerializer.Serialize(history, indent: string.Empty, withBraces: false));
 	}
 
@@ -143,9 +143,9 @@ public class PDXSerializerTests {
 	public void EnumerableCanBeSerializedWithoutBraces() {
 		var list = new List<string> { "veni", "vidi", "vici" };
 		var expectedStr =
-			"\"veni\"" + Environment.NewLine +
-			"\"vidi\"" + Environment.NewLine +
-			"\"vici\"";
+			"veni" + Environment.NewLine +
+			"vidi" + Environment.NewLine +
+			"vici";
 		Assert.Equal(expectedStr, PDXSerializer.Serialize(list, string.Empty, withBraces: false));
 	}
 
@@ -195,7 +195,7 @@ public class PDXSerializerTests {
 		const string unquotedString = "unquoted";
 		const string quotedString = "\"quoted\"";
 		
-		Assert.Equal("\"unquoted\"", PDXSerializer.Serialize(unquotedString));
+		Assert.Equal("unquoted", PDXSerializer.Serialize(unquotedString));
 		Assert.Equal("\"quoted\"", PDXSerializer.Serialize(quotedString));
 	}
 }
