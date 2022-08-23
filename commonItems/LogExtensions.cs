@@ -24,6 +24,7 @@ public static class LogExtensions {
 	}
 	public static void IncrementProgress(this ILog log, int progressLimit) {
 		if (CurrentProgress >= progressLimit) {
+			Logger.Debug($"Can't increment progress above {progressLimit}.");
 			return;
 		}
 
