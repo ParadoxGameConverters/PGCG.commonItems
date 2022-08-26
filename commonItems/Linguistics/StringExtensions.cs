@@ -7,6 +7,7 @@ namespace commonItems.Linguistics;
 public static class StringExtensions {
 	private static readonly OrderedDictionary<string, string> AdjectiveRules = new() {
 		// <ENDING, ADJ. SUFFIX>
+
 		// 4+ Letters		
 		{"* Islands", "*"}, // Cook Islands
 		{"* Republic", "*"}, // Dominican Republic
@@ -48,6 +49,7 @@ public static class StringExtensions {
 		{"*venia", "*vene"}, // Slovenia
 		{"*yotte", "*horan"}, // Mayotte
 		{"*cese", "*cesan"}, // Diocese
+
 		// 3 Letters
 		{"*[c]am", "*[c]amese"}, // 	Vietnam
 		{"*[c]us", "*[c]usian"}, // 	Belarus
@@ -133,6 +135,7 @@ public static class StringExtensions {
 		{"*x", "*xian"}, // 		Essex
 		{"*y", "*ian"} // 		Hungary
 	};
+
 	public static string GetAdjective(this string str) {
 		const string consonantPlaceholder = "[c]";
 		const string vowelPlaceholder = "[v]";

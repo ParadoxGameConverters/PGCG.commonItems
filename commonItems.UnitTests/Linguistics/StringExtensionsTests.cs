@@ -1,7 +1,7 @@
 ﻿using commonItems.Linguistics;
 using Xunit;
 
-namespace commonItems.UnitTests.Linguistics; 
+namespace commonItems.UnitTests.Linguistics;
 
 public class StringExtensionsTests {
 	[Theory]
@@ -58,7 +58,7 @@ public class StringExtensionsTests {
 	[InlineData("Sweden", "Swedish")]
 	[InlineData("Barbados", "Barbadian")]
 	[InlineData("Peru", "Peruvian")]
-	[InlineData("Cheese", "Cheese")]  // 🤔
+	[InlineData("Cheese", "Cheese")] // 🤔
 	[InlineData("Portugal", "Portuguese")]
 	[InlineData("Eswatini", "Eswati")]
 	[InlineData("Azerbaijan", "Azerbaijani")]
