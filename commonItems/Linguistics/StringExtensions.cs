@@ -1,22 +1,28 @@
 ﻿using Open.Collections;
+using Open.Text;
 using System;
 
-namespace commonItems.Linguistics; 
+namespace commonItems.Linguistics;
 
 public static class StringExtensions {
-	private static OrderedDictionary<string, string> adjectiveRules = new() {
+	private static readonly OrderedDictionary<string, string> AdjectiveRules = new() {
 		// <ENDING, ADJ. SUFFIX>
 		// 4+ Letters		
 		{"* Islands", "*"}, // Cook Islands
 		{"* Republic", "*"}, // Dominican Republic
 		{"* Union", "*"}, // Soviet Union
+		{"*emirates", "*emirati"}, // United Arab Emirates
+		{"*[v]tzerland", "*[v]ss"}, // Switzerland
+		{"*zealand", "*zealander"}, // New Zealand
+		{"*reland", "*rish"}, // Ireland
+		{"*ailand", "*ai"}, // Thailand
 		{"*tland", "*ttish"}, // Scotland
 		{"*pland", "*ppish"}, // Lapland
-		{"*nland", "*nnish"}, // Finland
-		{"*[c]land", "*[c]ish"}, // England
-		{"*[v]land", "*[v]landic"}, // Iceland
-		{"*[v]tzerland", "*ss"}, // Switzerland
-		{"*ailand", "*ai"}, // Thailand
+		{"*inland", "*innish"}, // Finland
+		{"*nland", "*nlander"}, // Greenland
+		{"*[c]land", "*[c]lish"}, // England
+		{"*eland", "*elandic"}, // Iceland
+		{"*[v]land", "*[v]lish"}, // Poland
 		{"*ance", "*ench"}, // France
 		{"*anon", "*anese"}, // Lebanon
 		{"*berg", "*berger"}, // Nuremberg
@@ -24,17 +30,14 @@ public static class StringExtensions {
 		{"*china", "*chinese"}, // Indochina
 		{"*eece", "*eek"}, // Greece
 		{"*egal", "*egalese"}, // Senegal
-		{"*emirates", "*emirati"}, // United Arab Emirates
 		{"*enmark", "*anish"}, // Denmark
 		{"*hana", "*hanaian"}, // Ghana
 		{"*irus", "*irote"}, // Epirus
+		{"*pakistan", "*pakistani"}, // Pakistan
 		{"*istan", "*"}, // Tajikistan
 		{"*lles", "*llois"}, // Seychelles
-		{"*nland", "*nlander"}, // Greenland
 		{"*pain", "*panish"}, // Spain
-		{"*pakistan", "*pakistani"}, // Pakistan
 		{"*prus", "*priote"}, // Cyprus
-		{"*reland", "*rish"}, // Ireland
 		{"*stan", "*"}, // Kazakhstan
 		{"*stein", "*steiner"}, // Liechtenstein
 		{"*tain", "*tish"}, // Great Britain
@@ -44,7 +47,6 @@ public static class StringExtensions {
 		{"*urma", "*urmese"}, // Burma
 		{"*venia", "*vene"}, // Slovenia
 		{"*yotte", "*horan"}, // Mayotte
-		{"*zealand", "*zealander"}, // New Zealand
 		{"*cese", "*cesan"}, // Diocese
 		// 3 Letters
 		{"*[c]am", "*[c]amese"}, // 	Vietnam
@@ -60,7 +62,7 @@ public static class StringExtensions {
 		{"*cau", "*canese"}, // 	Macau
 		{"*den", "*dish"}, // 	Sweden
 		{"*dos", "*dian"}, // 	Barbados
-		{"*eru", "*uvian"}, // 	Peru
+		{"*eru", "*eruvian"}, // 	Peru
 		{"*ese", "*ese"}, // 	Cheese
 		{"*gal", "*guese"}, // 		Portugal
 		{"*ini", "*i"}, // 		Eswatini
@@ -72,15 +74,15 @@ public static class StringExtensions {
 		{"*men", "*meni"}, // 		Yemen
 		{"*mor", "*morese"}, // 		Timor
 		{"*nce", "*ntine"}, // 		Florence
-		{"*nes", "*ne"}, // 		Phillipenes
+		{"*nes", "*ne"}, // 		Philippines
 		{"*oon", "*oonian"}, // 		Cameroon
 		{"*pan", "*panese"}, // 		Japan
 		{"*que", "*can"}, // 		Martinique
 		{"*ros", "*ran"}, // 		Comoros
 		{"*sey", "*sey"}, // 		Jersey
-		{"*[c]ey", "*ish"}, // 	Turkey
+		{"*[c]ey", "*[c]ish"}, // 	Turkey
 		{"*tan", "*tanese"}, // 		Bhutan
-		
+
 		// 2 Letters
 		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
 		{"*[v]y", "*[v]yan"}, // 		Paraguay
@@ -117,7 +119,7 @@ public static class StringExtensions {
 
 		// 1 Letter
 		{"*a", "*an"}, // 		Libya
-		{"*d", "*der"}, // 		Åland
+		{"*d", "*der"}, // 		Dortmund
 		{"*e", "*ian"}, // 		Ukraine
 		{"*g", "*gish"}, // 		Luxembourg
 		{"*i", "*ian"}, // 		Burundi
@@ -127,30 +129,29 @@ public static class StringExtensions {
 		{"*r", "*rian"}, // 		Ecuador
 		{"*s", "*ian"}, // 		Athens
 		{"*t", "*tian"}, // 		Egypt
-		{"*u", "*uan"}, // 		Papua
+		{"*u", "*uan"}, // 		 Vanuatu
 		{"*x", "*xian"}, // 		Essex
 		{"*y", "*ian"} // 		Hungary
 	};
 	public static string GetAdjective(this string str) {
 		const string consonantPlaceholder = "[c]";
 		const string vowelPlaceholder = "[v]";
-		foreach (var (ending, adjectiveEnding) in adjectiveRules) {
+		foreach (var (ending, adjectiveEnding) in AdjectiveRules) {
 			var evaluatedStr = str;
 			var evaluatedEnding = ending;
 
-			string commonPart = string.Empty;
 			string consonant = string.Empty;
 			string vowel = string.Empty;
-			
-			var asteriskOrClosingBracketPos = ending.LastIndexOfAny(new[]{'*', ']'});
+
+			var asteriskOrClosingBracketPos = ending.LastIndexOfAny(new[] {'*', ']'});
 			if (asteriskOrClosingBracketPos != -1) {
 				string literalEnding = ending[(asteriskOrClosingBracketPos + 1)..];
-				if (!str.EndsWith(literalEnding)) {
+				if (!str.EndsWith(literalEnding, StringComparison.OrdinalIgnoreCase)) {
 					continue;
 				}
 
-				evaluatedEnding = evaluatedEnding[..evaluatedEnding.LastIndexOf(literalEnding, StringComparison.Ordinal)];
-				evaluatedStr = evaluatedStr[..evaluatedStr.LastIndexOf(literalEnding, StringComparison.Ordinal)];
+				evaluatedEnding = evaluatedEnding[..evaluatedEnding.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
+				evaluatedStr = evaluatedStr[..evaluatedStr.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
 			}
 
 			if (evaluatedEnding.EndsWith(consonantPlaceholder)) {
@@ -158,6 +159,7 @@ public static class StringExtensions {
 				if (previousChar.IsVowel()) {
 					continue;
 				}
+
 				consonant = previousChar.ToString();
 				evaluatedStr = evaluatedStr[..^1];
 			} else if (evaluatedEnding.EndsWith(vowelPlaceholder)) {
@@ -165,17 +167,20 @@ public static class StringExtensions {
 				if (!previousChar.IsVowel()) {
 					continue;
 				}
+
 				vowel = previousChar.ToString();
 				evaluatedStr = evaluatedStr[..^1];
 			}
 
-			commonPart = evaluatedStr;
+			string commonPart = evaluatedStr;
 
 			return adjectiveEnding
 				.Replace("*", commonPart)
 				.Replace("[c]", consonant)
-				.Replace("[v]", vowel);
+				.Replace("[v]", vowel)
+				.ToTitleCase();
 		}
+
 		// fallback
 		Logger.Warn($"No matching adjective rule found for \"{str}\"!");
 		return str + "ite";
