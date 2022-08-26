@@ -117,6 +117,7 @@ public class LoggerTests {
 		
 		Logger.IncrementProgress(progressLimit: incrementLimit); // doesn't fit the limit
 		Assert.DoesNotContain("[PROGRESS] 22%", output.ToString());
+		Assert.Contains("[DEBUG] Can't increment progress above 21.", output.ToString());
 	}
 	
 	[Fact]
