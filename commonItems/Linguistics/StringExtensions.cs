@@ -9,6 +9,7 @@ public static class StringExtensions {
 		// <ENDING, ADJ. SUFFIX>
 
 		// 4+ Letters		
+		{"Verahram Qal'eh", "Verahrami"},
 		{"* Islands", "*"}, // Cook Islands
 		{"* Republic", "*"}, // Dominican Republic
 		{"* Union", "*"}, // Soviet Union
@@ -49,6 +50,7 @@ public static class StringExtensions {
 		{"*venia", "*vene"}, // Slovenia
 		{"*yotte", "*horan"}, // Mayotte
 		{"*cese", "*cesan"}, // Diocese
+		{"*qahn", "*qahni"},
 
 		// 3 Letters
 		{"*[c]am", "*[c]amese"}, // 	Vietnam
@@ -84,6 +86,7 @@ public static class StringExtensions {
 		{"*sey", "*sey"}, // 		Jersey
 		{"*[c]ey", "*[c]ish"}, // 	Turkey
 		{"*tan", "*tanese"}, // 		Bhutan
+		{"*nik", "*nikian"},
 
 		// 2 Letters
 		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
@@ -147,15 +150,13 @@ public static class StringExtensions {
 			string vowel = string.Empty;
 
 			var asteriskOrClosingBracketPos = ending.LastIndexOfAny(new[] {'*', ']'});
-			if (asteriskOrClosingBracketPos != -1) {
-				string literalEnding = ending[(asteriskOrClosingBracketPos + 1)..];
-				if (!str.EndsWith(literalEnding, StringComparison.OrdinalIgnoreCase)) {
-					continue;
-				}
-
-				evaluatedEnding = evaluatedEnding[..evaluatedEnding.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
-				evaluatedStr = evaluatedStr[..evaluatedStr.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
+			string literalEnding = ending[(asteriskOrClosingBracketPos + 1)..];
+			if (!str.EndsWith(literalEnding, StringComparison.OrdinalIgnoreCase)) {
+				continue;
 			}
+
+			evaluatedEnding = evaluatedEnding[..evaluatedEnding.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
+			evaluatedStr = evaluatedStr[..evaluatedStr.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
 
 			if (evaluatedEnding.EndsWith(consonantPlaceholder)) {
 				char previousChar = evaluatedStr[^1];
