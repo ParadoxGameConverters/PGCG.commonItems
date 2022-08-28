@@ -1,7 +1,6 @@
 using log4net;
 using log4net.Config;
 using log4net.Core;
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 // ReSharper disable InconsistentNaming
