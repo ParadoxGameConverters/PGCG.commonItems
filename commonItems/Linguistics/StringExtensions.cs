@@ -88,7 +88,8 @@ public static class StringExtensions {
 		{"*[c]ey", "*[c]ish"}, // 	Turkey
 		{"*tan", "*tanese"}, // 		Bhutan
 		{"*nik", "*nikian"},
-		{"*[v]ch", "*[v]chian"}, // Schech (rule made up)
+		{"*[v]ch", "*[v]chite"}, // Schech 
+		{"*yon", "*yonian"}, // Sikyon (rule made up)
 
 		// 2 Letters
 		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
@@ -123,9 +124,9 @@ public static class StringExtensions {
 		{"*vo", "*var"}, // 		Kosovo
 		{"*we", "*wean"}, // 		Zimbabwe
 		{"*ze", "*zean"}, // 		Belize
-		{"*[v]z", "*[v]zian"}, // Ziz (rule made up)
-		{"*[v]k", "*[v]kian"}, // Karamyk (rule made up)
-		{"*[v]n", "*[v]nian"}, // Sikyon (rule made up)
+		{"*[v]z", "*[v]zite"}, // Ziz (rule made up)
+		{"*yk", "*yk"}, // Karamyk (rule made up)
+		{"*[v]k", "*[v]kian"},
 		{"*th", "*thian"},  // Vilath (rule made up)
 
 		// 1 Letter
@@ -197,6 +198,6 @@ public static class StringExtensions {
 
 		// fallback
 		Logger.Warn($"No matching adjective rule found for \"{str}\"!");
-		return str + "ite";
+		return $"{str}ite";
 	}
 }

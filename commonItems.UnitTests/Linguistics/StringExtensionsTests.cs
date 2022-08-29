@@ -126,9 +126,9 @@ public class StringExtensionsTests {
 	[InlineData("Hungary", "Hungarian")]
 	[InlineData("Myanik", "Myanikian")]
 	[InlineData("Mizdaqahn", "Mizdaqahni")]
-	[InlineData("Schech", "Schechian")]
-	[InlineData("Ziz", "Zizian")]
-	[InlineData("Karamyk", "Karamykian")]
+	[InlineData("Schech", "Schechite")]
+	[InlineData("Ziz", "Zizite")]
+	[InlineData("Karamyk", "Karamyk")]
 	[InlineData("Sikyon", "Sikyonian")]
 	[InlineData("Vilath", "Vilathian")]
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
