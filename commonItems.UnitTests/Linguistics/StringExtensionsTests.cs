@@ -134,4 +134,14 @@ public class StringExtensionsTests {
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
+	
+	[Theory]
+	[InlineData("Rome", "Rome")]
+	[InlineData("Rome123", "Rome123")]
+	[InlineData("Rome###", "Rome")]
+	[InlineData("Rome?!", "Rome")]
+	[InlineData("Rome¡", "Rome")]
+	public void TrimNonAlphanumericEndingReturnsCorrectValue(string str, string expectedValue) {
+		Assert.Equal(expectedValue, str.TrimNonAlphanumericEnding());
+	}
 }

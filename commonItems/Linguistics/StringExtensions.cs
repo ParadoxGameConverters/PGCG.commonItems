@@ -1,6 +1,7 @@
 ﻿using Open.Collections;
 using Open.Text;
 using System;
+using System.Linq;
 
 namespace commonItems.Linguistics;
 
@@ -143,6 +144,10 @@ public static class StringExtensions {
 		{"*x", "*xian"}, // 		Essex
 		{"*y", "*ian"} // 		Hungary
 	};
+
+	public static string TrimNonAlphanumericEnding(this string str) {
+		return new string(str.Reverse().SkipWhile(c => !char.IsLetterOrDigit(c)).Reverse().ToArray());
+	}
 
 	public static string GetAdjective(this string str) {
 		const string consonantPlaceholder = "[c]";
