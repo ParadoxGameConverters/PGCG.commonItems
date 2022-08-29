@@ -129,7 +129,8 @@ public static class StringExtensions {
 		{"*yk", "*yk"}, // Karamyk (rule made up)
 		{"*[v]k", "*[v]kian"},
 		{"*th", "*thian"},  // Vilath (rule made up)
-		{"*aí", "*ian"}, // Kolōnaí (Colonae in Latin) -> Kolonian
+		{"*aí", "*aian"}, // Kolōnaí (Colonae in Latin) -> Kolonian
+		{"*ai", "*aian"}, // Kolōnai
 
 		// 1 Letter
 		{"*a", "*an"}, // 		Libya

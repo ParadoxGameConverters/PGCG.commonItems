@@ -132,7 +132,8 @@ public class StringExtensionsTests {
 	[InlineData("Sikyōn", "Sikyōnian")]
 	[InlineData("Sikyon", "Sikyonian")]
 	[InlineData("Vilath", "Vilathian")]
-	[InlineData("Kolōnaí", "Kolōnian")]
+	[InlineData("Kolōnaí", "Kolōnaian")]
+	[InlineData("Kolōnai", "Kolōnaian")]
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
