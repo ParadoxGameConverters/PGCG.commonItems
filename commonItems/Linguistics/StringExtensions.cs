@@ -1,6 +1,7 @@
 ﻿using Open.Collections;
 using Open.Text;
 using System;
+using System.Linq;
 
 namespace commonItems.Linguistics;
 
@@ -87,6 +88,9 @@ public static class StringExtensions {
 		{"*[c]ey", "*[c]ish"}, // 	Turkey
 		{"*tan", "*tanese"}, // 		Bhutan
 		{"*nik", "*nikian"},
+		{"*[v]ch", "*[v]chite"}, // Schech
+		{"*yon", "*yonian"}, // Sikyon (rule made up)
+		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
 
 		// 2 Letters
 		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
@@ -121,6 +125,12 @@ public static class StringExtensions {
 		{"*vo", "*var"}, // 		Kosovo
 		{"*we", "*wean"}, // 		Zimbabwe
 		{"*ze", "*zean"}, // 		Belize
+		{"*[v]z", "*[v]zite"}, // Ziz (rule made up)
+		{"*yk", "*yk"}, // Karamyk (rule made up)
+		{"*[v]k", "*[v]kian"},
+		{"*th", "*thian"},  // Vilath (rule made up)
+		{"*aí", "*aian"}, // Kolōnaí (Colonae in Latin) -> Kolonian
+		{"*ai", "*aian"}, // Kolōnai
 
 		// 1 Letter
 		{"*a", "*an"}, // 		Libya
@@ -138,6 +148,10 @@ public static class StringExtensions {
 		{"*x", "*xian"}, // 		Essex
 		{"*y", "*ian"} // 		Hungary
 	};
+
+	public static string TrimNonAlphanumericEnding(this string str) {
+		return new string(str.Reverse().SkipWhile(c => !char.IsLetterOrDigit(c)).Reverse().ToArray());
+	}
 
 	public static string GetAdjective(this string str) {
 		const string consonantPlaceholder = "[c]";
@@ -185,8 +199,13 @@ public static class StringExtensions {
 				.ToTitleCase();
 		}
 
+		var trimmedStr = str.TrimNonAlphanumericEnding();
+		if (trimmedStr != str) {
+			return trimmedStr.GetAdjective();
+		}
+
 		// fallback
 		Logger.Warn($"No matching adjective rule found for \"{str}\"!");
-		return str + "ite";
+		return $"{str}ite";
 	}
 }
