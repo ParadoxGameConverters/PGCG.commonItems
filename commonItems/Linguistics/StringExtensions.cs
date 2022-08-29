@@ -87,6 +87,7 @@ public static class StringExtensions {
 		{"*[c]ey", "*[c]ish"}, // 	Turkey
 		{"*tan", "*tanese"}, // 		Bhutan
 		{"*nik", "*nikian"},
+		{"*[v]ch", "*[v]chian"}, // Schech (rule made up)
 
 		// 2 Letters
 		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
@@ -121,6 +122,10 @@ public static class StringExtensions {
 		{"*vo", "*var"}, // 		Kosovo
 		{"*we", "*wean"}, // 		Zimbabwe
 		{"*ze", "*zean"}, // 		Belize
+		{"*[v]z", "*[v]zian"}, // Ziz (rule made up)
+		{"*[v]k", "*[v]kian"}, // Karamyk (rule made up)
+		{"*[v]n", "*[v]nian"}, // Sikyon (rule made up)
+		{"*th", "*thian"},  // Vilath (rule made up)
 
 		// 1 Letter
 		{"*a", "*an"}, // 		Libya
