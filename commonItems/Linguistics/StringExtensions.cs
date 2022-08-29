@@ -196,6 +196,11 @@ public static class StringExtensions {
 				.ToTitleCase();
 		}
 
+		var trimmedStr = str.TrimNonAlphanumericEnding();
+		if (trimmedStr != str) {
+			return trimmedStr.GetAdjective();
+		}
+
 		// fallback
 		Logger.Warn($"No matching adjective rule found for \"{str}\"!");
 		return $"{str}ite";

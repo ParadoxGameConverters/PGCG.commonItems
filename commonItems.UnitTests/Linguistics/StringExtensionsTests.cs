@@ -131,6 +131,7 @@ public class StringExtensionsTests {
 	[InlineData("Karamyk", "Karamyk")]
 	[InlineData("Sikyon", "Sikyonian")]
 	[InlineData("Vilath", "Vilathian")]
+	[InlineData("Vilath!@#", "Vilathian")]
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
