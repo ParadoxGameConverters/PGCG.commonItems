@@ -88,8 +88,9 @@ public static class StringExtensions {
 		{"*[c]ey", "*[c]ish"}, // 	Turkey
 		{"*tan", "*tanese"}, // 		Bhutan
 		{"*nik", "*nikian"},
-		{"*[v]ch", "*[v]chite"}, // Schech 
+		{"*[v]ch", "*[v]chite"}, // Schech
 		{"*yon", "*yonian"}, // Sikyon (rule made up)
+		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
 
 		// 2 Letters
 		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
@@ -128,6 +129,7 @@ public static class StringExtensions {
 		{"*yk", "*yk"}, // Karamyk (rule made up)
 		{"*[v]k", "*[v]kian"},
 		{"*th", "*thian"},  // Vilath (rule made up)
+		{"*aí", "*ian"}, // Kolōnaí (Colonae in Latin) -> Kolonian
 
 		// 1 Letter
 		{"*a", "*an"}, // 		Libya

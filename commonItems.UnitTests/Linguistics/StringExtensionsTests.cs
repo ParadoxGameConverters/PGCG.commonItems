@@ -129,10 +129,18 @@ public class StringExtensionsTests {
 	[InlineData("Schech", "Schechite")]
 	[InlineData("Ziz", "Zizite")]
 	[InlineData("Karamyk", "Karamyk")]
+	[InlineData("Sikyōn", "Sikyōnian")]
 	[InlineData("Sikyon", "Sikyonian")]
 	[InlineData("Vilath", "Vilathian")]
-	[InlineData("Vilath!@#", "Vilathian")]
+	[InlineData("Kolōnaí", "Kolōnian")]
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
+		Assert.Equal(expectedAdjective, noun.GetAdjective());
+	}
+
+	[Theory]
+	[InlineData("Vilath#?!", "Vilathian")]
+	[InlineData("Egypt.", "Egyptian")]
+	public void GetAdjectiveHandlesStringsWithNonAlphanumericEndings(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
 	
