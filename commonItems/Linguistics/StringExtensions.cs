@@ -11,6 +11,7 @@ public static class StringExtensions {
 
 		// 4+ Letters		
 		{"Verahram Qal'eh", "Verahrami"},
+		{"Ad Pontem", "Pontaine"},
 		{"* Islands", "*"}, // Cook Islands
 		{"* Republic", "*"}, // Dominican Republic
 		{"* Union", "*"}, // Soviet Union
@@ -91,11 +92,13 @@ public static class StringExtensions {
 		{"*[v]ch", "*[v]chite"}, // Schech
 		{"*yon", "*yonian"}, // Sikyon (rule made up)
 		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
+		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
 
 		// 2 Letters
-		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
-		{"*[v]y", "*[v]yan"}, // 		Paraguay
+		{"*ab", "*abite"}, // Achtab (rule made up)
 		{"*ad", "*adian"}, // 		Chad
+		{"*aí", "*aian"}, // Kolōnaí (Colonae in Latin) -> Kolonaian (rule made up)
+		{"*ai", "*aian"}, // Kolōnai
 		{"*al", "*ali"}, // 		Nepal
 		{"*an", "*anian"}, // 		Jordan
 		{"*ao", "*aoan"}, // 		Curaçao
@@ -105,6 +108,7 @@ public static class StringExtensions {
 		{"*co", "*can"}, // 		Morocco
 		{"*de", "*dean"}, // 		Cape Verde
 		{"*el", "*eli"}, // 		Israel
+		{"*em", "*emite"}, // Zarem (rule made up)
 		{"*en", "*enese"}, // 		Jan Mayen
 		{"*es", "*ian"}, // 		Maldives
 		{"*in", "*inese"}, // 		Benin
@@ -120,17 +124,16 @@ public static class StringExtensions {
 		{"*ro", "*rin"}, // 		Montenegro
 		{"*sh", "*shi"}, // 		Bangladesh
 		{"*ta", "*tese"}, // 		Malta
+		{"*th", "*thian"},  // Vilath (rule made up)
 		{"*ue", "*uan"}, // 		Niue
 		{"*um", "*an"}, // 		Belgium
 		{"*vo", "*var"}, // 		Kosovo
 		{"*we", "*wean"}, // 		Zimbabwe
-		{"*ze", "*zean"}, // 		Belize
-		{"*[v]z", "*[v]zite"}, // Ziz (rule made up)
 		{"*yk", "*yk"}, // Karamyk (rule made up)
+		{"*ze", "*zean"}, // 		Belize
 		{"*[v]k", "*[v]kian"},
-		{"*th", "*thian"},  // Vilath (rule made up)
-		{"*aí", "*aian"}, // Kolōnaí (Colonae in Latin) -> Kolonian
-		{"*ai", "*aian"}, // Kolōnai
+		{"*[v]y", "*[v]yan"}, // 		Paraguay
+		{"*[v]z", "*[v]zite"}, // Ziz (rule made up)
 
 		// 1 Letter
 		{"*a", "*an"}, // 		Libya

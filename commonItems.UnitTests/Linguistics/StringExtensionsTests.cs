@@ -6,6 +6,7 @@ namespace commonItems.UnitTests.Linguistics;
 public class StringExtensionsTests {
 	[Theory]
 	[InlineData("Verahram Qal'eh", "Verahrami")]
+	[InlineData("Ad Pontem", "Pontaine")]
 	[InlineData("Cook Islands", "Cook")]
 	[InlineData("Dominican Republic", "Dominican")]
 	[InlineData("Soviet Union", "Soviet")]
@@ -134,6 +135,8 @@ public class StringExtensionsTests {
 	[InlineData("Vilath", "Vilathian")]
 	[InlineData("Kolōnaí", "Kolōnaian")]
 	[InlineData("Kolōnai", "Kolōnaian")]
+	[InlineData("Zarem", "Zaremite")]
+	[InlineData("Achtab", "Achtabite")]
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
