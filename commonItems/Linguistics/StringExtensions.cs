@@ -11,7 +11,7 @@ public static class StringExtensions {
 
 		// 4+ Letters		
 		{"Verahram Qal'eh", "Verahrami"},
-		{"Ad Pontem", "Pontaine"},
+		{"Ad Pontem", "Pontan"},
 		{"* Islands", "*"}, // Cook Islands
 		{"* Republic", "*"}, // Dominican Republic
 		{"* Union", "*"}, // Soviet Union

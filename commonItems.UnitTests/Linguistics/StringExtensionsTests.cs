@@ -6,7 +6,7 @@ namespace commonItems.UnitTests.Linguistics;
 public class StringExtensionsTests {
 	[Theory]
 	[InlineData("Verahram Qal'eh", "Verahrami")]
-	[InlineData("Ad Pontem", "Pontaine")]
+	[InlineData("Ad Pontem", "Pontan")]
 	[InlineData("Cook Islands", "Cook")]
 	[InlineData("Dominican Republic", "Dominican")]
 	[InlineData("Soviet Union", "Soviet")]
