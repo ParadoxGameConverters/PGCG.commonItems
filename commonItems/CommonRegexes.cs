@@ -20,7 +20,7 @@ public static class CommonRegexes {
 
 	// strings
 	public static Regex String => new($"^(?!@).+[^{NonStringCharacters}]+$");
-	public static Regex QuotedString => new(@"^""[^\n=\{\}\""]+""$");
+	public static Regex QuotedString => new(@"^""[^\n\""]+""$");
 
 	// dates
 	public static Regex Date => new(@"^\d+[.]\d+[.]\d+$");
