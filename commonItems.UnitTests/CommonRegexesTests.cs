@@ -33,4 +33,23 @@ public class CommonRegexesTests {
 	public void InterpolatedExpressionRegexMatchesVariables() {
 		Assert.Matches(CommonRegexes.InterpolatedExpression, "@ai_aggressiveness");
 	}
+	
+	[Fact]
+	public void DateRegexMatchesDates() {
+		Assert.Matches(CommonRegexes.Date, "1918.11.11");
+	}
+
+	[Fact]
+	public void DateRegexRequiresThreeSections() {
+		Assert.DoesNotMatch(CommonRegexes.Date, "1918.11");
+		Assert.DoesNotMatch(CommonRegexes.Date, "1918");
+		Assert.DoesNotMatch(CommonRegexes.Date, "");
+	}
+	
+	[Fact]
+	public void DateRegexDoesntMatchDatesWithCharacters() {
+		Assert.DoesNotMatch(CommonRegexes.Date, "1918a.11.11");
+		Assert.DoesNotMatch(CommonRegexes.Date, "1918.11a.11");
+		Assert.DoesNotMatch(CommonRegexes.Date, "1918.11.11a");
+	}
 }
