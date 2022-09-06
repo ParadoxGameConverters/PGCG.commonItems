@@ -63,7 +63,7 @@ public class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void CatchallRegexDoesntMatchQuotedInternalQuotes() {
+	public void CatchallRegexMatchesQuotedInternalQuotes() {
 		Assert.Matches(CommonRegexes.Catchall, @"""1234-""abcd""");
 	}
 
