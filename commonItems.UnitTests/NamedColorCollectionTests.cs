@@ -1,13 +1,17 @@
 ﻿using commonItems.Mods;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using Xunit;
 
 namespace commonItems.UnitTests; 
 
+[Collection("Sequential")]
+[CollectionDefinition("Sequential", DisableParallelization = true)]
 public class NamedColorCollectionTests {
 	private const string GameRoot = "TestFiles/CK3/game";
-	private static readonly List<Mod> mods = new() { new("Cool Mod", "TestFiles/mod/themod") };
-	private readonly ModFilesystem modFS = new(GameRoot, mods);
+	private static readonly List<Mod> Mods = new() { new("Cool Mod", "TestFiles/mod/themod") };
+	private readonly ModFilesystem modFS = new(GameRoot, Mods);
 	private readonly ColorFactory referenceColorFactory = new();
 	
 	[Fact]
@@ -18,6 +22,21 @@ public class NamedColorCollectionTests {
 		Assert.Empty(namedColors);
 	}
 
+	[Fact]
+	public void FormatExceptionIsCaught() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		
+		var namedColors = new NamedColorCollection();
+		var mods = new List<Mod> {new("broken mod", "TestFiles/mod/mod_with_broken_colors")};
+		var modFSWithBrokenColors = new ModFilesystem(GameRoot, mods);
+		namedColors.LoadNamedColors("common/named_colors", modFSWithBrokenColors);
+
+		var outStr = output.ToString();
+		Assert.Contains("[WARN] Failed to read color ck2_black: Color has wrong number of components", outStr);
+		Assert.Contains("[WARN] Failed to read color delian_league_gold: Color has wrong number of components", outStr);
+	}
+	
 	[Fact]
 	public void NamedColorsCanBeLoadedFromGameAndMods() {
 		var namedColors = new NamedColorCollection();
