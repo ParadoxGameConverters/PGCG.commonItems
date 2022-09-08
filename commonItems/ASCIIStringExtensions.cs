@@ -63,14 +63,24 @@
 /// </summary>
 public static class StringExtensions
 {
-    /// <summary>
+	/// <summary>
+	/// Converts characters above ASCII to their ASCII equivalents.  For example,
+	/// accents are removed from accented characters. 
+	/// </summary>
+	/// <param name="input">     The string of characters to fold </param>
+	/// <returns> ASCII string </returns>
+	public static string FoldToASCII(this string input) {
+		return FoldToASCII(input, null);
+	}
+
+	/// <summary>
     /// Converts characters above ASCII to their ASCII equivalents.  For example,
     /// accents are removed from accented characters. 
     /// </summary>
     /// <param name="input">     The string of characters to fold </param>
     /// <param name="length">    The length of the folded return string </param>
-    /// <returns> length of output </returns>
-    public static string FoldToASCII(this string input, int? length = null)
+    /// <returns> ASCII string </returns>
+    public static string FoldToASCII(this string input, int? length)
     {
         int end = length ?? input.Length;
         
