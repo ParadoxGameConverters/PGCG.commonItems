@@ -69,4 +69,16 @@ public class StringUtilsTests {
 		string quotedString = improperlyQuotedString.AddQuotes();
 		Assert.Equal("\"c", quotedString);
 	}
+
+	[Theory]
+	// ReSharper disable StringLiteralTypo
+	[InlineData("Łódź", "Lodz")] // Polish
+	[InlineData("Łękołody", "Lekolody")] // Polish
+	[InlineData("Żur", "Zur")] // Polish
+	[InlineData("āăąēîïĩíĝġńñšŝśûůŷ", "aaaeiiiiggnnsssuuy")]
+	[InlineData("Ý", "Y")]
+	// ReSharper restore StringLiteralTypo
+	public void StringCanBeFoldedToASCII(string strWithAccents, string expectedStr) {
+		Assert.Equal(expectedStr, strWithAccents.FoldToASCII());
+	}
 }
