@@ -79,7 +79,7 @@ public static class CommonFunctions {
 		var languageTag = LanguageNameToIetfTag(languageName);
 		var cultureInfo = CultureInfo.GetCultureInfo(languageTag);
 		
-		return number.ToOrdinalNumber(cultureInfo).Replace(number.ToString(), "");
+		return number.ToOrdinalNumber(cultureInfo).Replace(number.ToString(CultureInfo.InvariantCulture), "");
 	}
 	
 	[Obsolete($"Use {nameof(ToRomanNumeral)}() extension method instead")]

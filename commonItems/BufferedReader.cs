@@ -173,11 +173,11 @@ public class BufferedReader {
 	public List<int> GetInts() {
 		var ints = new List<int>();
 		var parser = new Parser();
-		parser.RegisterRegex(CommonRegexes.Integer, (_, intString) => ints.Add(int.Parse(intString)));
+		parser.RegisterRegex(CommonRegexes.Integer, (_, intString) => ints.Add(int.Parse(intString, CultureInfo.InvariantCulture)));
 		parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, intString) => {
 			// remove quotes
 			intString = intString[1..^1];
-			ints.Add(int.Parse(intString));
+			ints.Add(int.Parse(intString, CultureInfo.InvariantCulture));
 		});
 		if (Variables.Count > 0) {
 			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
@@ -192,11 +192,11 @@ public class BufferedReader {
 	public List<long> GetLongs() {
 		var longs = new List<long>();
 		var parser = new Parser();
-		parser.RegisterRegex(CommonRegexes.Integer, (_, longString) => longs.Add(long.Parse(longString)));
+		parser.RegisterRegex(CommonRegexes.Integer, (_, longString) => longs.Add(long.Parse(longString, CultureInfo.InvariantCulture)));
 		parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, longString) => {
 			// remove quotes
 			longString = longString[1..^1];
-			longs.Add(long.Parse(longString));
+			longs.Add(long.Parse(longString, CultureInfo.InvariantCulture));
 		});
 		if (Variables.Count > 0) {
 			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
@@ -211,11 +211,11 @@ public class BufferedReader {
 	public List<ulong> GetULongs() {
 		var ulongs = new List<ulong>();
 		var parser = new Parser();
-		parser.RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ulongs.Add(ulong.Parse(ulongString)));
+		parser.RegisterRegex(CommonRegexes.Integer, (_, ulongString) => ulongs.Add(ulong.Parse(ulongString, CultureInfo.InvariantCulture)));
 		parser.RegisterRegex(CommonRegexes.QuotedInteger, (_, ulongString) => {
 			// remove quotes
 			ulongString = ulongString[1..^1];
-			ulongs.Add(ulong.Parse(ulongString));
+			ulongs.Add(ulong.Parse(ulongString, CultureInfo.InvariantCulture));
 		});
 		if (Variables.Count > 0) {
 			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
