@@ -76,7 +76,7 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 			return new(null, null);
 		}
 
-		if (line.StartsWith("l_")) {
+		if (line.StartsWith("l_", StringComparison.Ordinal)) {
 			if (line == $"l_{baseLanguage}:") {
 				currentLanguage = baseLanguage;
 			}
