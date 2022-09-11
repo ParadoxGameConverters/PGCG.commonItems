@@ -137,6 +137,17 @@ public class StringExtensionsTests {
 	[InlineData("Kolōnai", "Kolōnaian")]
 	[InlineData("Zarem", "Zaremite")]
 	[InlineData("Achtab", "Achtabite")]
+	[InlineData("Arn", "Arnite")]
+	[InlineData("Mandigac", "Mandigac")]
+	[InlineData("Aghaechk", "Aghaechk")]
+	[InlineData("Bielsk", "Bielskian")]
+	[InlineData("Baqbaqah", "Baqbaqian")]
+	[InlineData("Abaskun", "Abaskunite")]
+	[InlineData("Makarabah", "Makaraban")]
+	[InlineData("Kurnsck", "Kurnsck")]
+	[InlineData("Sahim", "Sahimite")]
+	[InlineData("Shethigk", "Shethigkan")]
+	[InlineData("Oghlu Qal'eh", "Oghlu")]
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
