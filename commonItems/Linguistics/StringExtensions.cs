@@ -61,6 +61,7 @@ public static class StringExtensions {
 		// 3 Letters
 		{"*[c]am", "*[c]amese"}, // 	Vietnam
 		{"*[c]us", "*[c]usian"}, // 	Belarus
+		{"*iam", "*iamese"}, // 	Siam
 		{"*[v]am", "*[v]amanian"}, // 	Guam
 		{"*[v]os", "*[v]o"}, // 	Laos
 		{"*[v]us", "*[v]an"}, // 	Mauritius
