@@ -1,15 +1,14 @@
 ﻿namespace commonItems;
 
 public static class ParserHelpers {
-	public static void IgnoreItem(BufferedReader sr) {
-		var next = Parser.GetNextLexeme(sr);
+	public static void IgnoreItem(BufferedReader reader) {
+		var next = Parser.GetNextLexeme(reader);
 		if (next == "=") {
-			next = Parser.GetNextLexeme(sr);
+			next = Parser.GetNextLexeme(reader);
 		}
-		if (next is "rgb" or "hsv") // Needed for ignoring color. Example: "color = rgb { 2 4 8 }"
-		{
-			if ((char)sr.Peek() == '{') {
-				next = Parser.GetNextLexeme(sr);
+		if (next is "rgb" or "hsv") { // Needed for ignoring color. Example: "color = rgb { 2 4 8 }"
+			if ((char)reader.Peek() == '{') {
+				next = Parser.GetNextLexeme(reader);
 			} else { // don't go further in cases like "type = rgb"
 				return;
 			}
@@ -17,10 +16,10 @@ public static class ParserHelpers {
 		if (next == "{") {
 			var braceDepth = 1;
 			while (true) {
-				if (sr.EndOfStream) {
+				if (reader.EndOfStream) {
 					return;
 				}
-				var lexeme = Parser.GetNextLexeme(sr);
+				var lexeme = Parser.GetNextLexeme(reader);
 				if (lexeme == "{") {
 					++braceDepth;
 				} else if (lexeme == "}") {
