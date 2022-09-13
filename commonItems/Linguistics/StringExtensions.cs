@@ -120,6 +120,7 @@ public static class StringExtensions {
 		{"*em", "*emite"}, // Zarem (rule made up)
 		{"*en", "*enese"}, // 		Jan Mayen
 		{"*es", "*ian"}, // 		Maldives
+		{"*gh", "*ghi"},
 		{"*gk", "*gkan"},
 		{"*in", "*inese"}, // 		Benin
 		{"*im", "*imite"},
