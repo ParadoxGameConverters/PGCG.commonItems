@@ -106,6 +106,7 @@ public static class StringExtensions {
 		// 2 Letters
 		{"*ab", "*abite"}, // Achtab (rule made up)
 		{"*ad", "*adian"}, // 		Chad
+		{"*ah", "*ah"},
 		{"*aí", "*aian"}, // Kolōnaí (Colonae in Latin) -> Kolonaian (rule made up)
 		{"*ai", "*aian"}, // Kolōnai
 		{"*al", "*ali"}, // 		Nepal
@@ -116,6 +117,7 @@ public static class StringExtensions {
 		{"*au", "*auan"}, // 		Palau
 		{"*co", "*can"}, // 		Morocco
 		{"*de", "*dean"}, // 		Cape Verde
+		{"*eh", "*ehi"},
 		{"*el", "*eli"}, // 		Israel
 		{"*em", "*emite"}, // Zarem (rule made up)
 		{"*en", "*enese"}, // 		Jan Mayen
@@ -126,11 +128,14 @@ public static class StringExtensions {
 		{"*im", "*imite"},
 		{"*it", "*iti"}, // 		Kuwait
 		{"*le", "*lean"}, // 		Chile
+		{"*kh", "*khi"},
 		{"*ll", "*llese"}, // 		Marshall
 		{"*my", "*mois"}, // 		Saint Barthélemy
 		{"*na", "*nian"}, // 		Argentina
+		{"*nj", "*nji"},
 		{"*ny", "*n"}, // 		Germany
 		{"*oe", "*oese"}, // 		Faroe
+		{"*oh", "*ohan"},
 		{"*on", "*onese"}, // 		Gabon
 		{"*re", "*rean"}, // 		Singapore
 		{"*ro", "*rin"}, // 		Montenegro
@@ -144,6 +149,7 @@ public static class StringExtensions {
 		{"*we", "*wean"}, // 		Zimbabwe
 		{"*yk", "*yk"}, // Karamyk (rule made up)
 		{"*ze", "*zean"}, // 		Belize
+		{"*[v]h", "*[v]hite"},
 		{"*[v]k", "*[v]kian"},
 		{"*[v]y", "*[v]yan"}, // 		Paraguay
 		{"*[v]z", "*[v]zite"}, // Ziz (rule made up)

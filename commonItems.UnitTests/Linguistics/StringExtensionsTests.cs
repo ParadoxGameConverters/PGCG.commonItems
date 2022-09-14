@@ -150,6 +150,11 @@ public class StringExtensionsTests {
 	[InlineData("Oghlu Qal'eh", "Oghlu")]
 	[InlineData("Siam", "Siamese")]
 	[InlineData("Rabigh", "Rabighi")]
+	[InlineData("Saliah", "Saliah")]
+	[InlineData("Khureh", "Khurehi")]
+	[InlineData("Kariglukh", "Kariglukhi")]
+	[InlineData("Bhawaniganj", "Bhawaniganji")]
+	[InlineData("Damoh", "Damohan")]
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
