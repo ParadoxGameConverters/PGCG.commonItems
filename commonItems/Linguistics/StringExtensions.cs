@@ -33,6 +33,11 @@ public static class StringExtensions {
 		{"*rithymna", "*rhithymnian"}, // Rithymna
 		{"*thuria", "*thuriat"}, // Thuria
 		{"*aionia", "*aeonian"}, // Paionia
+		{"*dhra Pradesh", "*dhrulu"}, // Andhra Pradesh
+		{"*al Pradesh", "*ali"}, // Arunachal Pradesh
+		{"*kshadweep", "*ccadivian"}, // Lakshadweep
+		{"*galand", "*galandese"}, // Nagaland
+		{"* Nadu", "*"}, // Tamil Nadu
 		
 		// 5 letters
 		{"*allia", "*aulish"}, // Gallia
@@ -40,23 +45,28 @@ public static class StringExtensions {
 		{"*china", "*chinese"}, // Indochina
 		{"*eland", "*elandic"}, // Iceland
 		{"*istan", "*"}, // Tajikistan
+		{"*khand", "*khandi"}, // Jharkhand
 		{"*lades", "*ladian"}, // Cyclades
 		{"*mania", "*manic"}, // Germania
 		{"*nland", "*nlander"}, // Greenland
 		{"*pelos", "*pelitan"}, // Skopelos
 		{"*pland", "*ppish"}, // Lapland
 		{"*rrhae", "*rrean"}, // Serrhae
+		{"*ryana", "*ryanvi"}, // Haryana
+		{"*shtra", "*shtrian"}, // Maharashtra
 		{"*stein", "*steiner"}, // Liechtenstein
 		{"*tland", "*ttish"}, // Scotland
 		{"*ttium", "*ttian"}, // Bruttium
 		{"*uiana", "*uianese"}, // Guiana
 		{"*venia", "*vene"}, // Slovenia
 		{"*yotte", "*horan"}, // Mayotte
+		{"*zoram", "*zo"}, // Mizoram
 		{"*[c]land", "*[c]lish"}, // England
 		{"*[v]land", "*[v]lish"}, // Poland
 		
 		// 4 Letters
 		{"*aïda", "*idonian"}, // Saïda
+		{"*ammu", "*ammu"}, // Jammu
 		{"*ance", "*ench"}, // France
 		{"*anon", "*anese"}, // Lebanon
 		{"*aras", "*arentine"}, // Taras
@@ -70,6 +80,7 @@ public static class StringExtensions {
 		{"*egal", "*egalese"}, // Senegal
 		{"*elos", "*elian"}, // Delos
 		{"*etus", "*esian"},
+		{"*gana", "*ganite"}, // Telangana
 		{"*gina", "*ginetan"}, // Aegina
 		{"*gnac", "*gnac"},
 		{"*hana", "*hanaian"}, // Ghana
@@ -81,6 +92,7 @@ public static class StringExtensions {
 		{"*mnus", "*mnian"}, // Epidamnus
 		{"*neia", "*nean"}, // Mantineia
 		{"*nium", "*nite"}, // Samnium
+		{"*ngal", "*ngali"}, // West Bengal
 		{"*nsck", "*nsck"},
 		{"*ntum", "*ntine"}, // Tarentum
 		{"*ntus", "*ntic"}, // Pontus
@@ -88,9 +100,11 @@ public static class StringExtensions {
 		{"*orus", "*oran"}, // Bosporus
 		{"*pain", "*panish"}, // Spain
 		{"*prus", "*priote"}, // Cyprus
+		{"*rala", "*ralite"}, // Kerala
 		{"*rrae", "*rrean"}, // Serrae
 		{"*stan", "*"}, // Kazakhstan
 		{"*tain", "*tish"}, // Great Britain
+		{"*than", "*thani"}, // Rajasthan
 		{"*thon", "*thonian"}, // Marathon
 		{"*tica", "*tic"}, // Antarctica
 		{"*tium", "*tine"}, // Byzantium
@@ -128,8 +142,10 @@ public static class StringExtensions {
 		{"*ion", "*ian"}, // Rhegion
 		{"*ios", "*iot"}, // Chios
 		{"*ite", "*itian"}, // Melite
+		{"*jab", "*jabi"}, // Punjab
 		{"*jan", "*jani"}, // Azerbaijan
 		{"*kia", "*k"}, // Slovakia
+		{"*kim", "*kimese"}, // Sikkim
 		{"*kun", "*kunite"},
 		{"*lan", "*lanese"}, // Milan
 		{"*los", "*losian"}, // Pylos
@@ -137,6 +153,7 @@ public static class StringExtensions {
 		{"*man", "*mani"}, // Oman
 		{"*mas", "*mian"}, // Bahamas
 		{"*men", "*meni"}, // Yemen
+		{"*mir", "*miri"}, // Kashmir
 		{"*mis", "*minian"}, // Salamis
 		{"*mon", "*monian"}, // Lakedaemon
 		{"*mor", "*morese"}, // Timor
@@ -147,6 +164,7 @@ public static class StringExtensions {
 		{"*num", "*ne"}, // Sabinum
 		{"*oon", "*oonian"}, // Cameroon
 		{"*pan", "*panese"}, // Japan
+		{"*pur", "*puri"}, // Manipur
 		{"*que", "*can"}, // Martinique
 		{"*qah", "*qian"},
 		{"*rii", "*rian"}, // Thurii
@@ -156,6 +174,7 @@ public static class StringExtensions {
 		{"*tan", "*tanese"}, // Bhutan
 		{"*ton", "*tonian"}, // Croton
 		{"*tus", "*tian"}, // Carystus
+		{"*ura", "*uran"}, // Tripura
 		{"*use", "*usan"}, // Syracuse
 		{"*yon", "*yonian"}, // Sikyon (rule made up)
 		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
@@ -183,6 +202,7 @@ public static class StringExtensions {
 		{"*ao", "*aoan"}, // Curaçao
 		{"*ar", "*ari"}, // Qatar
 		{"*as", "*an"}, // Honduras
+		{"*at", "*ati"}, // Gujarat
 		{"*au", "*auan"}, // Palau
 		{"*co", "*can"}, // Morocco
 		{"*de", "*dean"}, // Cape Verde
@@ -213,6 +233,7 @@ public static class StringExtensions {
 		{"*os", "*ian"}, // Thasos
 		{"*ra", "*rean"}, // Corcyra
 		{"*re", "*rean"}, // Singapore
+		{"*rh", "*rhi"}, // Chandigarh
 		{"*ro", "*rin"}, // 		Montenegro
 		{"*rn", "*rnite"}, // made up: Arn -> Arnite
 		{"*sh", "*shi"}, // 		Bangladesh
