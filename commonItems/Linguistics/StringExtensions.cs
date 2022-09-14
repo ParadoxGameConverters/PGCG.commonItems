@@ -28,16 +28,24 @@ public static class StringExtensions {
 		{"*ailand", "*ai"}, // Thailand
 		{"*ontium", "*ontinian"}, // Leontium
 		{"*serica", "*sere"}, // Serica
+		{"*iohaemum", "*ius"}, // Boiohaemum
+		{"*fpaktos", "*upactian"}, // Nafpaktos
+		{"*rithymna", "*rhithymnian"}, // Rithymna
+		{"*thuria", "*thuriat"}, // Thuria
+		{"*aionia", "*aeonian"}, // Paionia
 		
 		// 5 letters
+		{"*allia", "*aulish"}, // Gallia
 		{"*atium", "*atin"}, // Latium
 		{"*china", "*chinese"}, // Indochina
 		{"*eland", "*elandic"}, // Iceland
 		{"*istan", "*"}, // Tajikistan
 		{"*lades", "*ladian"}, // Cyclades
+		{"*mania", "*manic"}, // Germania
 		{"*nland", "*nlander"}, // Greenland
 		{"*pelos", "*pelitan"}, // Skopelos
 		{"*pland", "*ppish"}, // Lapland
+		{"*rrhae", "*rrean"}, // Serrhae
 		{"*stein", "*steiner"}, // Liechtenstein
 		{"*tland", "*ttish"}, // Scotland
 		{"*ttium", "*ttian"}, // Bruttium
@@ -48,38 +56,48 @@ public static class StringExtensions {
 		{"*[v]land", "*[v]lish"}, // Poland
 		
 		// 4 Letters
+		{"*aïda", "*idonian"}, // Saïda
 		{"*ance", "*ench"}, // France
 		{"*anon", "*anese"}, // Lebanon
 		{"*aras", "*arentine"}, // Taras
 		{"*aros", "*arian"}, // Paros
 		{"*berg", "*berger"}, // Nuremberg
 		{"*burg", "*burger"}, // Hamburg
+		{"*cese", "*cesan"}, // Diocese
 		{"*echk", "*echk"},
 		{"*eece", "*eek"}, // Greece
 		{"*eese", "*eese"}, // 	Cheese
 		{"*egal", "*egalese"}, // Senegal
 		{"*elos", "*elian"}, // Delos
 		{"*etus", "*esian"},
+		{"*gina", "*ginetan"}, // Aegina
+		{"*gnac", "*gnac"},
 		{"*hana", "*hanaian"}, // Ghana
+		{"*hria", "*hriasian"}, // Thria
 		{"*iana", "*ian"}, // Bactriana
 		{"*irus", "*irote"}, // Epirus
+		{"*lius", "*liasian"}, // Phlius
 		{"*lles", "*llois"}, // Seychelles
+		{"*mnus", "*mnian"}, // Epidamnus
+		{"*neia", "*nean"}, // Mantineia
+		{"*nium", "*nite"}, // Samnium
 		{"*nsck", "*nsck"},
 		{"*ntum", "*ntine"}, // Tarentum
 		{"*ntus", "*ntic"}, // Pontus
+		{"*odes", "*odian"}, // Rhodes
 		{"*orus", "*oran"}, // Bosporus
 		{"*pain", "*panish"}, // Spain
 		{"*prus", "*priote"}, // Cyprus
+		{"*rrae", "*rrean"}, // Serrae
 		{"*stan", "*"}, // Kazakhstan
 		{"*tain", "*tish"}, // Great Britain
+		{"*thon", "*thonian"}, // Marathon
 		{"*tica", "*tic"}, // Antarctica
 		{"*tium", "*tine"}, // Byzantium
 		{"*udan", "*udanese"}, // Sudan
 		{"*urma", "*urmese"}, // Burma
 		{"*urus", "*urian"}, // Epidaurus
-		{"*cese", "*cesan"}, // Diocese
 		{"*qahn", "*qahni"},
-		{"*gnac", "*gnac"},
 		{"*rgos", "*rgive"}, // Argos
 		{"*yros", "*yrian"}, // Nisyros
 		{"*[v]cis", "*[v]cian"}, // Phocis
@@ -101,7 +119,7 @@ public static class StringExtensions {
 		{"*dos", "*dian"}, // Barbados
 		{"*don", "*donian"}, // Sidon
 		{"*eia", "*ian"}, // Eleia
-		{"*ene", "*enean"}, // Mytilene
+		{"*ene", "*enian"}, // Cyrene
 		{"*eru", "*eruvian"}, // Peru
 		{"*gal", "*guese"}, // Portugal
 		{"*gac", "*gac"},
@@ -120,15 +138,18 @@ public static class StringExtensions {
 		{"*mas", "*mian"}, // Bahamas
 		{"*men", "*meni"}, // Yemen
 		{"*mis", "*minian"}, // Salamis
+		{"*mon", "*monian"}, // Lakedaemon
 		{"*mor", "*morese"}, // Timor
 		{"*nae", "*naean"}, // Mycenae
 		{"*nce", "*ntine"}, // Florence
 		{"*nik", "*nikian"},
 		{"*nes", "*ne"}, // Philippines
+		{"*num", "*ne"}, // Sabinum
 		{"*oon", "*oonian"}, // Cameroon
 		{"*pan", "*panese"}, // Japan
 		{"*que", "*can"}, // Martinique
 		{"*qah", "*qian"},
+		{"*rii", "*rian"}, // Thurii
 		{"*ros", "*ran"}, // Comoros
 		{"*sey", "*sey"}, // Jersey
 		{"*sus", "*sian"}, // Ephesus
@@ -138,6 +159,7 @@ public static class StringExtensions {
 		{"*use", "*usan"}, // Syracuse
 		{"*yon", "*yonian"}, // Sikyon (rule made up)
 		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
+		{"*zen", "*zenian"}, // Troezen
 		{"*[v]ng", "*[v]nger"}, // Hong Kong
 		{"*[v]os", "*[v]o"}, // Laos
 		{"*[v]us", "*[v]an"}, // Mauritius
@@ -161,32 +183,32 @@ public static class StringExtensions {
 		{"*ao", "*aoan"}, // Curaçao
 		{"*ar", "*ari"}, // Qatar
 		{"*as", "*an"}, // Honduras
-		{"*au", "*auan"}, // 		Palau
-		{"*co", "*can"}, // 		Morocco
-		{"*de", "*dean"}, // 		Cape Verde
+		{"*au", "*auan"}, // Palau
+		{"*co", "*can"}, // Morocco
+		{"*de", "*dean"}, // Cape Verde
 		{"*eh", "*ehi"},
-		{"*el", "*eli"}, // 		Israel
+		{"*el", "*eli"}, // Israel
 		{"*em", "*emite"}, // Zarem (rule made up)
 		{"*en", "*enese"}, // 		Jan Mayen
 		{"*es", "*ian"}, // 		Maldives
 		{"*ge", "*ginian"}, // Carthage
 		{"*gh", "*ghi"},
 		{"*gk", "*gkan"},
-		{"*in", "*inese"}, // 		Benin
+		{"*in", "*inese"}, // Benin
 		{"*im", "*imite"},
 		{"*is", "*ian"}, // Locris
-		{"*it", "*iti"}, // 		Kuwait
-		{"*le", "*lean"}, // 		Chile
+		{"*it", "*iti"}, // Kuwait
+		{"*le", "*lean"}, // Chile
 		{"*kh", "*khi"},
 		{"*ll", "*llese"}, // Marshall
 		{"*me", "*man"}, // Rome
 		{"*my", "*mois"}, // Saint Barthélemy
 		{"*na", "*nian"}, // Argentina
 		{"*nj", "*nji"},
-		{"*ny", "*n"}, // 		Germany
-		{"*oe", "*oese"}, // 		Faroe
+		{"*ny", "*n"}, // Germany
+		{"*oe", "*oese"}, // Faroe
 		{"*oh", "*ohan"},
-		{"*on", "*onese"}, // 		Gabon
+		{"*on", "*onese"}, // Gabon
 		{"*oy", "*ojan"}, // Troy
 		{"*os", "*ian"}, // Thasos
 		{"*ra", "*rean"}, // Corcyra
