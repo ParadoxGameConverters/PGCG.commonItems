@@ -49,6 +49,7 @@ public static class StringExtensions {
 		{"*stein", "*steiner"}, // Liechtenstein
 		{"*tain", "*tish"}, // Great Britain
 		{"*tica", "*tic"}, // Antarctica
+		{"*tium", "*tine"}, // Byzantium
 		{"*udan", "*udanese"}, // Sudan
 		{"*uiana", "*uianese"}, // Guiana
 		{"*urma", "*urmese"}, // Burma
@@ -59,12 +60,8 @@ public static class StringExtensions {
 		{"*gnac", "*gnac"},
 
 		// 3 Letters
-		{"*[c]am", "*[c]amese"}, // 	Vietnam
-		{"*[c]us", "*[c]usian"}, // 	Belarus
 		{"*iam", "*iamese"}, // 	Siam
-		{"*[v]am", "*[v]amanian"}, // 	Guam
-		{"*[v]os", "*[v]o"}, // 	Laos
-		{"*[v]us", "*[v]an"}, // 	Mauritius
+		{"*ios", "*iot"}, // Chios
 		{"*ain", "*aini"}, // 	Bahrain
 		{"*ales", "*elsh"}, // 	Wales
 		{"*ame", "*amese"}, // 	Suriname
@@ -72,6 +69,7 @@ public static class StringExtensions {
 		{"*bah", "*ban"},
 		{"*car", "*can"}, // 	Madagascar
 		{"*cau", "*canese"}, // 	Macau
+		{"*cis", "*cidian"}, // Chalcis
 		{"*den", "*dish"}, // 	Sweden
 		{"*dos", "*dian"}, // 	Barbados
 		{"*eru", "*eruvian"}, // 	Peru
@@ -95,17 +93,23 @@ public static class StringExtensions {
 		{"*qah", "*qian"},
 		{"*ros", "*ran"}, // 		Comoros
 		{"*sey", "*sey"}, // 		Jersey
-		{"*[c]ey", "*[c]ish"}, // 	Turkey
 		{"*tan", "*tanese"}, // 		Bhutan
 		{"*nik", "*nikian"},
-		{"*[v]ch", "*[v]chite"}, // Schech
+		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
+		{"*[v]os", "*[v]o"}, // 	Laos
+		{"*[v]us", "*[v]an"}, // 	Mauritius
+		{"*[c]ey", "*[c]ish"}, // 	Turkey
+		{"*[v]am", "*[v]amanian"}, // 	Guam
+		{"*[c]am", "*[c]amese"}, // 	Vietnam
+		{"*[c]us", "*[c]usian"}, // 	Belarus
 		{"*yon", "*yonian"}, // Sikyon (rule made up)
 		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
-		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
+		{"*[v]ch", "*[v]chite"}, // Schech
 
 		// 2 Letters
 		{"*ab", "*abite"}, // Achtab (rule made up)
 		{"*ad", "*adian"}, // 		Chad
+		{"*ae", "ian"}, // Colossae
 		{"*ah", "*ah"},
 		{"*aí", "*aian"}, // Kolōnaí (Colonae in Latin) -> Kolonaian (rule made up)
 		{"*ai", "*aian"}, // Kolōnai
@@ -122,6 +126,7 @@ public static class StringExtensions {
 		{"*em", "*emite"}, // Zarem (rule made up)
 		{"*en", "*enese"}, // 		Jan Mayen
 		{"*es", "*ian"}, // 		Maldives
+		{"*ge", "*ginian"}, // Carthage
 		{"*gh", "*ghi"},
 		{"*gk", "*gkan"},
 		{"*in", "*inese"}, // 		Benin
@@ -139,18 +144,21 @@ public static class StringExtensions {
 		{"*on", "*onese"}, // 		Gabon
 		{"*re", "*rean"}, // 		Singapore
 		{"*ro", "*rin"}, // 		Montenegro
-		{"*rn", "*rnite"}, // made up: Arn -> Arnite  // TODO: add test
+		{"*rn", "*rnite"}, // made up: Arn -> Arnite
 		{"*sh", "*shi"}, // 		Bangladesh
 		{"*ta", "*tese"}, // 		Malta
+		{"*te", "*tan"}, // Crete
 		{"*th", "*thian"},  // Vilath (rule made up)
 		{"*ue", "*uan"}, // 		Niue
 		{"*um", "*an"}, // 		Belgium
+		{"*us", "*ian"}, // Carystus
 		{"*vo", "*var"}, // 		Kosovo
 		{"*we", "*wean"}, // 		Zimbabwe
 		{"*yk", "*yk"}, // Karamyk (rule made up)
 		{"*ze", "*zean"}, // 		Belize
 		{"*[v]h", "*[v]hite"},
 		{"*[v]k", "*[v]kian"},
+		{"*[c]s", "*[c]ian"}, // 		Athens
 		{"*[v]y", "*[v]yan"}, // 		Paraguay
 		{"*[v]z", "*[v]zite"}, // Ziz (rule made up)
 
@@ -165,7 +173,6 @@ public static class StringExtensions {
 		{"*o", "*olese"}, // 		Congo
 		{"*q", "*qi"}, // 		Iraq
 		{"*r", "*rian"}, // 		Ecuador
-		{"*s", "*ian"}, // 		Athens
 		{"*t", "*tian"}, // 		Egypt
 		{"*u", "*uan"}, // 		 Vanuatu
 		{"*x", "*xian"}, // 		Essex
