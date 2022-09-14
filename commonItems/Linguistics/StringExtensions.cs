@@ -8,15 +8,17 @@ namespace commonItems.Linguistics;
 public static class StringExtensions {
 	private static readonly OrderedDictionary<string, string> AdjectiveRules = new() {
 		// <ENDING, ADJ. SUFFIX>
-
-		// 4+ Letters		
+		
+		// 5+ letters
 		{"Verahram Qal'eh", "Verahrami"},
-		{"* Qal'eh", "*"},
-		{"Ad Pontem", "Pontan"},
 		{"* Islands", "*"}, // Cook Islands
 		{"* Republic", "*"}, // Dominican Republic
 		{"* Union", "*"}, // Soviet Union
 		{"*emirates", "*emirati"}, // United Arab Emirates
+		{"* Qal'eh", "*"},
+		{"Ad Pontem", "Pontan"},
+		{"*ttium", "*ttian"}, // Bruttium
+		{"*atium", "*atin"}, // Latium
 		{"*[v]tzerland", "*[v]ss"}, // Switzerland
 		{"*zealand", "*zealander"}, // New Zealand
 		{"*reland", "*rish"}, // Ireland
@@ -28,40 +30,46 @@ public static class StringExtensions {
 		{"*[c]land", "*[c]lish"}, // England
 		{"*eland", "*elandic"}, // Iceland
 		{"*[v]land", "*[v]lish"}, // Poland
+		{"*china", "*chinese"}, // Indochina
+		{"*enmark", "*anish"}, // Denmark
+		{"*pakistan", "*pakistani"}, // Pakistan
+		{"*istan", "*"}, // Tajikistan
+		{"*stein", "*steiner"}, // Liechtenstein
+		{"*uiana", "*uianese"}, // Guiana
+		{"*venia", "*vene"}, // Slovenia
+		{"*yotte", "*horan"}, // Mayotte
+		
+		// 4 Letters
 		{"*ance", "*ench"}, // France
 		{"*anon", "*anese"}, // Lebanon
 		{"*berg", "*berger"}, // Nuremberg
 		{"*burg", "*burger"}, // Hamburg
-		{"*china", "*chinese"}, // Indochina
-		{"*eece", "*eek"}, // Greece
-		{"*egal", "*egalese"}, // Senegal
-		{"*enmark", "*anish"}, // Denmark
 		{"*echk", "*echk"},
+		{"*eece", "*eek"}, // Greece
+		{"*eese", "*eese"}, // 	Cheese
+		{"*egal", "*egalese"}, // Senegal
+		{"*etus", "*esian"},
 		{"*hana", "*hanaian"}, // Ghana
 		{"*irus", "*irote"}, // Epirus
-		{"*pakistan", "*pakistani"}, // Pakistan
-		{"*istan", "*"}, // Tajikistan
 		{"*lles", "*llois"}, // Seychelles
 		{"*nsck", "*nsck"},
+		{"*ntus", "*ntic"}, // Pontus
 		{"*pain", "*panish"}, // Spain
 		{"*prus", "*priote"}, // Cyprus
 		{"*stan", "*"}, // Kazakhstan
-		{"*stein", "*steiner"}, // Liechtenstein
 		{"*tain", "*tish"}, // Great Britain
 		{"*tica", "*tic"}, // Antarctica
 		{"*tium", "*tine"}, // Byzantium
 		{"*udan", "*udanese"}, // Sudan
-		{"*uiana", "*uianese"}, // Guiana
 		{"*urma", "*urmese"}, // Burma
-		{"*venia", "*vene"}, // Slovenia
-		{"*yotte", "*horan"}, // Mayotte
 		{"*cese", "*cesan"}, // Diocese
 		{"*qahn", "*qahni"},
 		{"*gnac", "*gnac"},
+		{"*rgos", "*rgive"}, // Argos
+		{"*[v]cis", "*[v]cian"}, // Phocis
+		{"*[c]cis", "*[c]cidian"}, // Chalcis
 
 		// 3 Letters
-		{"*iam", "*iamese"}, // 	Siam
-		{"*ios", "*iot"}, // Chios
 		{"*ain", "*aini"}, // 	Bahrain
 		{"*ales", "*elsh"}, // 	Wales
 		{"*ame", "*amese"}, // 	Suriname
@@ -69,32 +77,40 @@ public static class StringExtensions {
 		{"*bah", "*ban"},
 		{"*car", "*can"}, // 	Madagascar
 		{"*cau", "*canese"}, // 	Macau
-		{"*cis", "*cidian"}, // Chalcis
 		{"*den", "*dish"}, // 	Sweden
 		{"*dos", "*dian"}, // 	Barbados
 		{"*eru", "*eruvian"}, // 	Peru
-		{"*ese", "*ese"}, // 	Cheese
 		{"*gal", "*guese"}, // 		Portugal
 		{"*gac", "*gac"},
+		{"*iam", "*iamese"}, // 	Siam
 		{"*ini", "*i"}, // 		Eswatini
+		{"*ios", "*iot"}, // Chios
+		{"*ite", "*itian"}, // Melite
 		{"*jan", "*jani"}, // 		Azerbaijan
 		{"*kia", "*k"}, // 		Slovakia
 		{"*kun", "*kunite"},
-		{"*lan", "*lanese"}, // 		Milan
-		{"*man", "*mani"}, // 		Oman
-		{"*mas", "*mian"}, // 		Bahamas
-		{"*men", "*meni"}, // 		Yemen
-		{"*mor", "*morese"}, // 		Timor
-		{"*nce", "*ntine"}, // 		Florence
-		{"*nes", "*ne"}, // 		Philippines
-		{"*oon", "*oonian"}, // 		Cameroon
-		{"*pan", "*panese"}, // 		Japan
-		{"*que", "*can"}, // 		Martinique
-		{"*qah", "*qian"},
-		{"*ros", "*ran"}, // 		Comoros
-		{"*sey", "*sey"}, // 		Jersey
-		{"*tan", "*tanese"}, // 		Bhutan
+		{"*lan", "*lanese"}, // Milan
+		{"*lta", "*ltese"}, // Malta
+		{"*man", "*mani"}, // Oman
+		{"*mas", "*mian"}, // Bahamas
+		{"*men", "*meni"}, // Yemen
+		{"*mor", "*morese"}, // Timor
+		{"*nce", "*ntine"}, // Florence
 		{"*nik", "*nikian"},
+		{"*nes", "*ne"}, // Philippines
+		{"*oon", "*oonian"}, // Cameroon
+		{"*pan", "*panese"}, // Japan
+		{"*que", "*can"}, // Martinique
+		{"*qah", "*qian"},
+		{"*ros", "*ran"}, // Comoros
+		{"*rus", "*ran"}, // Bosporus
+		{"*sey", "*sey"}, // Jersey
+		{"*tan", "*tanese"}, // Bhutan
+		{"*ton", "*tonian"}, // Croton
+		{"*tus", "*tian"}, // Carystus
+		{"*use", "*usan"}, // Syracuse
+		{"*yon", "*yonian"}, // Sikyon (rule made up)
+		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
 		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
 		{"*[v]os", "*[v]o"}, // 	Laos
 		{"*[v]us", "*[v]an"}, // 	Mauritius
@@ -102,8 +118,6 @@ public static class StringExtensions {
 		{"*[v]am", "*[v]amanian"}, // 	Guam
 		{"*[c]am", "*[c]amese"}, // 	Vietnam
 		{"*[c]us", "*[c]usian"}, // 	Belarus
-		{"*yon", "*yonian"}, // Sikyon (rule made up)
-		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
 		{"*[v]ch", "*[v]chite"}, // Schech
 
 		// 2 Letters
@@ -131,27 +145,31 @@ public static class StringExtensions {
 		{"*gk", "*gkan"},
 		{"*in", "*inese"}, // 		Benin
 		{"*im", "*imite"},
+		{"*is", "*ian"}, // Locris
 		{"*it", "*iti"}, // 		Kuwait
 		{"*le", "*lean"}, // 		Chile
 		{"*kh", "*khi"},
-		{"*ll", "*llese"}, // 		Marshall
-		{"*my", "*mois"}, // 		Saint Barthélemy
-		{"*na", "*nian"}, // 		Argentina
+		{"*ll", "*llese"}, // Marshall
+		{"*me", "*man"}, // Rome
+		{"*my", "*mois"}, // Saint Barthélemy
+		{"*na", "*nian"}, // Argentina
 		{"*nj", "*nji"},
 		{"*ny", "*n"}, // 		Germany
 		{"*oe", "*oese"}, // 		Faroe
 		{"*oh", "*ohan"},
 		{"*on", "*onese"}, // 		Gabon
-		{"*re", "*rean"}, // 		Singapore
+		{"*oy", "*ojan"}, // Troy
+		{"*os", "*ian"}, // Thasos
+		{"*ra", "*rean"}, // Corcyra
+		{"*re", "*rean"}, // Singapore
 		{"*ro", "*rin"}, // 		Montenegro
 		{"*rn", "*rnite"}, // made up: Arn -> Arnite
 		{"*sh", "*shi"}, // 		Bangladesh
-		{"*ta", "*tese"}, // 		Malta
+		{"*ta", "*tan"}, // Egesta
 		{"*te", "*tan"}, // Crete
 		{"*th", "*thian"},  // Vilath (rule made up)
 		{"*ue", "*uan"}, // 		Niue
 		{"*um", "*an"}, // 		Belgium
-		{"*us", "*ian"}, // Carystus
 		{"*vo", "*var"}, // 		Kosovo
 		{"*we", "*wean"}, // 		Zimbabwe
 		{"*yk", "*yk"}, // Karamyk (rule made up)
