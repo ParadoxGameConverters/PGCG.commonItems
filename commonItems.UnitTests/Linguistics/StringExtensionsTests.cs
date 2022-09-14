@@ -60,7 +60,7 @@ public class StringExtensionsTests {
 	[InlineData("Peru", "Peruvian")]
 	[InlineData("Cheese", "Cheese")] // 🤔
 	[InlineData("Portugal", "Portuguese")]
-	[InlineData("Eswatini", "Eswati")]
+	[InlineData("Eswatini", "Swati")]
 	[InlineData("Azerbaijan", "Azerbaijani")]
 	[InlineData("Slovakia", "Slovak")]
 	[InlineData("Milan", "Milanese")]

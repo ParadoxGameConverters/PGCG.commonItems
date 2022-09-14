@@ -10,6 +10,7 @@ public static class StringExtensions {
 		// <ENDING, ADJ. SUFFIX>
 		
 		// 6+ letters
+		{"Eswatini", "Swati"}, // Eswatini
 		{"Ad Pontem", "Pontan"},
 		{"Verahram Qal'eh", "Verahrami"},
 		{"Orkney Islands", "Orcadian"},
@@ -25,18 +26,21 @@ public static class StringExtensions {
 		{"*inland", "*innish"}, // Finland
 		{"*reland", "*rish"}, // Ireland
 		{"*ailand", "*ai"}, // Thailand
+		{"*ontium", "*ontinian"}, // Leontium
+		{"*serica", "*sere"}, // Serica
 		
-		// 5+ letters
+		// 5 letters
 		{"*atium", "*atin"}, // Latium
 		{"*china", "*chinese"}, // Indochina
 		{"*eland", "*elandic"}, // Iceland
 		{"*istan", "*"}, // Tajikistan
 		{"*lades", "*ladian"}, // Cyclades
 		{"*nland", "*nlander"}, // Greenland
+		{"*pelos", "*pelitan"}, // Skopelos
 		{"*pland", "*ppish"}, // Lapland
+		{"*stein", "*steiner"}, // Liechtenstein
 		{"*tland", "*ttish"}, // Scotland
 		{"*ttium", "*ttian"}, // Bruttium
-		{"*stein", "*steiner"}, // Liechtenstein
 		{"*uiana", "*uianese"}, // Guiana
 		{"*venia", "*vene"}, // Slovenia
 		{"*yotte", "*horan"}, // Mayotte
@@ -46,18 +50,22 @@ public static class StringExtensions {
 		// 4 Letters
 		{"*ance", "*ench"}, // France
 		{"*anon", "*anese"}, // Lebanon
+		{"*aras", "*arentine"}, // Taras
+		{"*aros", "*arian"}, // Paros
 		{"*berg", "*berger"}, // Nuremberg
 		{"*burg", "*burger"}, // Hamburg
 		{"*echk", "*echk"},
 		{"*eece", "*eek"}, // Greece
 		{"*eese", "*eese"}, // 	Cheese
 		{"*egal", "*egalese"}, // Senegal
+		{"*elos", "*elian"}, // Delos
 		{"*etus", "*esian"},
 		{"*hana", "*hanaian"}, // Ghana
 		{"*iana", "*ian"}, // Bactriana
 		{"*irus", "*irote"}, // Epirus
 		{"*lles", "*llois"}, // Seychelles
 		{"*nsck", "*nsck"},
+		{"*ntum", "*ntine"}, // Tarentum
 		{"*ntus", "*ntic"}, // Pontus
 		{"*orus", "*oran"}, // Bosporus
 		{"*pain", "*panish"}, // Spain
@@ -68,10 +76,12 @@ public static class StringExtensions {
 		{"*tium", "*tine"}, // Byzantium
 		{"*udan", "*udanese"}, // Sudan
 		{"*urma", "*urmese"}, // Burma
+		{"*urus", "*urian"}, // Epidaurus
 		{"*cese", "*cesan"}, // Diocese
 		{"*qahn", "*qahni"},
 		{"*gnac", "*gnac"},
 		{"*rgos", "*rgive"}, // Argos
+		{"*yros", "*yrian"}, // Nisyros
 		{"*[v]cis", "*[v]cian"}, // Phocis
 		{"*[c]cis", "*[c]cidian"}, // Chalcis
 
@@ -82,6 +92,7 @@ public static class StringExtensions {
 		{"*ara", "*arian"}, // Megara
 		{"*ati", "*ati"}, // Kiribati
 		{"*bah", "*ban"},
+		{"*bes", "*ban"}, // Thebes
 		{"*car", "*can"}, // Madagascar
 		{"*cau", "*canese"}, // Macau
 		{"*dai", "*dan"}, // Oiniadai
@@ -90,17 +101,20 @@ public static class StringExtensions {
 		{"*dos", "*dian"}, // Barbados
 		{"*don", "*donian"}, // Sidon
 		{"*eia", "*ian"}, // Eleia
+		{"*ene", "*enean"}, // Mytilene
 		{"*eru", "*eruvian"}, // Peru
 		{"*gal", "*guese"}, // Portugal
 		{"*gac", "*gac"},
 		{"*iam", "*iamese"}, // Siam
-		{"*ini", "*i"}, // Eswatini
+		{"*ini", "*inian"}, // Leontini
+		{"*ion", "*ian"}, // Rhegion
 		{"*ios", "*iot"}, // Chios
 		{"*ite", "*itian"}, // Melite
 		{"*jan", "*jani"}, // Azerbaijan
 		{"*kia", "*k"}, // Slovakia
 		{"*kun", "*kunite"},
 		{"*lan", "*lanese"}, // Milan
+		{"*los", "*losian"}, // Pylos
 		{"*lta", "*ltese"}, // Malta
 		{"*man", "*mani"}, // Oman
 		{"*mas", "*mian"}, // Bahamas
@@ -124,27 +138,29 @@ public static class StringExtensions {
 		{"*use", "*usan"}, // Syracuse
 		{"*yon", "*yonian"}, // Sikyon (rule made up)
 		{"*yōn", "*yōnian"}, // Sikyōn (rule made up)
-		{"*[v]ng", "*[v]nger"}, // 		Hong Kong
-		{"*[v]os", "*[v]o"}, // 	Laos
-		{"*[v]us", "*[v]an"}, // 	Mauritius
-		{"*[c]ey", "*[c]ish"}, // 	Turkey
-		{"*[v]am", "*[v]amanian"}, // 	Guam
-		{"*[c]am", "*[c]amese"}, // 	Vietnam
-		{"*[c]us", "*[c]usian"}, // 	Belarus
+		{"*[v]ng", "*[v]nger"}, // Hong Kong
+		{"*[v]os", "*[v]o"}, // Laos
+		{"*[v]us", "*[v]an"}, // Mauritius
+		{"*[c]ey", "*[c]ish"}, // Turkey
+		{"*[v]am", "*[v]amanian"}, // Guam
+		{"*[c]am", "*[c]amese"}, // Vietnam
+		{"*[c]us", "*[c]usian"}, // Belarus
 		{"*[v]ch", "*[v]chite"}, // Schech
+		{"*[v]um", "*[v]an"}, // Belgium
+		{"*[c]um", "*[c]ian"}, // Pergamum
 
 		// 2 Letters
 		{"*ab", "*abite"}, // Achtab (rule made up)
-		{"*ad", "*adian"}, // 		Chad
+		{"*ad", "*adian"}, // Chad
 		{"*ae", "*ian"}, // Colossae
 		{"*ah", "*ah"},
 		{"*aí", "*aian"}, // Kolōnaí (Colonae in Latin) -> Kolonaian (rule made up)
 		{"*ai", "*aian"}, // Kolōnai
-		{"*al", "*ali"}, // 		Nepal
-		{"*an", "*anian"}, // 		Jordan
-		{"*ao", "*aoan"}, // 		Curaçao
-		{"*ar", "*ari"}, // 		Qatar
-		{"*as", "*an"}, // 		Honduras
+		{"*al", "*ali"}, // Nepal
+		{"*an", "*anian"}, // Jordan
+		{"*ao", "*aoan"}, // Curaçao
+		{"*ar", "*ari"}, // Qatar
+		{"*as", "*an"}, // Honduras
 		{"*au", "*auan"}, // 		Palau
 		{"*co", "*can"}, // 		Morocco
 		{"*de", "*dean"}, // 		Cape Verde
@@ -183,7 +199,6 @@ public static class StringExtensions {
 		{"*th", "*thian"},  // Vilath (rule made up)
 		{"*ue", "*uan"}, // Niue
 		{"*ul", "*ulish"}, // Gaul
-		{"*um", "*an"}, // 		Belgium
 		{"*vo", "*var"}, // 		Kosovo
 		{"*we", "*wean"}, // 		Zimbabwe
 		{"*yk", "*yk"}, // Karamyk (rule made up)
