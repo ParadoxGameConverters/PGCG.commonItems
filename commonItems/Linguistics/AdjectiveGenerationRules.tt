@@ -1,5 +1,5 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
-<#@ output extension=".cs" #>
+<#@ output extension=".Generated.cs" #>
 
 using Open.Collections;
 using System;
