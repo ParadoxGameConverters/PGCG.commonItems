@@ -225,6 +225,7 @@ public static partial class StringExtensions {
 {"*qah", "*qian"},
 {"*rii", "*rian"}, // Thurii
 {"*ros", "*ran"}, // Comoros
+{"*rsa", "*rsanese"}, // Bursa
 {"*rum", "*rumian"}, // Bodrum
 {"*rut", "*ruti"}, // Beirut
 {"*sel", "*sler"}, // Basel
@@ -302,7 +303,7 @@ public static partial class StringExtensions {
 {"*rh", "*rhi"}, // Chandigarh
 {"*ro", "*rin"}, // Montenegro
 {"*rn", "*rnese"}, // Bern
-{"*sa", "*sanese"}, // Bursa
+{"*sa", "*san"}, // Larissa
 {"*sh", "*shi"}, // Bangladesh
 {"*ta", "*tan"}, // Egesta
 {"*te", "*tan"}, // Crete

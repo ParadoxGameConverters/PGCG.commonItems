@@ -138,7 +138,6 @@ public class StringExtensionsTests {
 	[InlineData("Kolōnai", "Kolōnaian")]
 	[InlineData("Zarem", "Zaremite")]
 	[InlineData("Achtab", "Achtabite")]
-	[InlineData("Arn", "Arnite")]
 	[InlineData("Mandigac", "Mandigac")]
 	[InlineData("Aghaechk", "Aghaechk")]
 	[InlineData("Bielsk", "Bielskian")]
