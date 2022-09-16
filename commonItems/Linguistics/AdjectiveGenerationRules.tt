@@ -2,12 +2,12 @@
 <#@ output extension=".Generated.cs" #>
 
 using Open.Collections;
-using System;
 
 namespace commonItems.Linguistics;
 
 public static partial class StringExtensions {
 	private static readonly OrderedDictionary<string, string> AdjectiveRules = new() {
-		<#@ include file="rules.txt" #>
+		<#@ include file="adjective_rules.txt" #>
+
 	};
 }
