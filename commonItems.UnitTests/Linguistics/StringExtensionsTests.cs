@@ -1,4 +1,7 @@
 ﻿using commonItems.Linguistics;
+using Csv;
+using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace commonItems.UnitTests.Linguistics;
@@ -135,7 +138,6 @@ public class StringExtensionsTests {
 	[InlineData("Kolōnai", "Kolōnaian")]
 	[InlineData("Zarem", "Zaremite")]
 	[InlineData("Achtab", "Achtabite")]
-	[InlineData("Arn", "Arnite")]
 	[InlineData("Mandigac", "Mandigac")]
 	[InlineData("Aghaechk", "Aghaechk")]
 	[InlineData("Bielsk", "Bielskian")]
@@ -366,6 +368,27 @@ public class StringExtensionsTests {
 	// ReSharper restore StringLiteralTypo
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
+	}
+
+	[Fact]
+	public void CorrectAdjectivesAreGeneratedForCities() {
+		var filePath = "TestFiles/adjectives/cities.csv";
+		var csv = File.ReadAllText(filePath);
+		foreach (var line in CsvReader.ReadFromText(csv)) {
+			// Header is handled, each line will contain the actual row data.
+			var name = line[0];
+			var adj1 = line[1];
+			var adj2 = line[2];
+			var adj3 = line[3];
+			var adj4 = line[4];
+			var adj5 = line[5];
+
+			var validAdjectives = new[] {adj1, adj2, adj3, adj4, adj5}
+				.Where(adj=>!string.IsNullOrEmpty(adj));
+
+			var generatedAdj = name.GetAdjective();
+			Assert.Contains(generatedAdj, validAdjectives);
+		}
 	}
 
 	[Theory]

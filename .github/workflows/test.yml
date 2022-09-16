@@ -11,18 +11,22 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-    - name: "Init submodules"
-      run: |
-       git submodule update --init --recursive
+      with:
+        submodules: recursive
 
     # install dependencies, build, and test
-    - name: Setup Dotnet for use with actions
+    - name: "Setup Dotnet for use with actions"
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.*'
-    - name: Run tests
+
+    - name: "Restore tools"
+      run: dotnet tool restore
+
+    - name: "Run tests"
       run: dotnet test commonItems.UnitTests/commonItems.UnitTests.csproj /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:CoverletOutput=TestResults/ /p:CoverletOutputFormat=lcov /p:ExcludeByFile=**/Microsoft.NET.Test.Sdk.Program.cs /p:Exclude=[commonItems.UnitTests]*
-    - name: Publish coverage report to coveralls.io
+
+    - name: "Publish coverage report to coveralls.io"
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -35,14 +39,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
-    - name: "Init submodules"
-      run: |
-       git submodule update --init --recursive
+      with:
+        submodules: recursive
 
     # install dependencies, build, and test
-    - name: Setup Dotnet for use with actions
+    - name: "Setup Dotnet for use with actions"
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: '6.*'
-    - name: Run tests
+
+    - name: "Restore tools"
+      run: dotnet tool restore
+
+    - name: "Run tests"
       run: dotnet test commonItems.UnitTests/commonItems.UnitTests.csproj

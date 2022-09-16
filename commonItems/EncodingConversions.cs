@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace commonItems; 
+namespace commonItems;
 
 public static class EncodingConversions {
 	public static string ConvertUTF8ToASCII(string utf8String) {
