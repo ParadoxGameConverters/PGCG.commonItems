@@ -17,6 +17,15 @@
     <Compile Remove="commonItems\**" />
     <EmbeddedResource Remove="commonItems\**" />
     <None Remove="commonItems\**" />
+    <None Update="Linguistics\AdjectiveGenerationRules.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AdjectiveGenerationRules.cs</LastGenOutput>
+    </None>
+    <Compile Update="Linguistics\AdjectiveGenerationRules.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AdjectiveGenerationRules.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
