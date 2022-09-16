@@ -55,6 +55,11 @@ public static partial class StringExtensions {
 				.ToTitleCase();
 		}
 
+		var foldedStr = str.FoldToASCII();
+		if (foldedStr != str) {
+			return foldedStr.GetAdjective();
+		}
+
 		var trimmedStr = str.TrimNonAlphanumericEnding();
 		if (trimmedStr != str) {
 			return trimmedStr.GetAdjective();
