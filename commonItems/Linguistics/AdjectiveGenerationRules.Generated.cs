@@ -71,8 +71,10 @@ public static partial class StringExtensions {
 {"*aras", "*arentine"}, // Taras
 {"*aros", "*arian"}, // Paros
 {"*berg", "*berger"}, // Nuremberg
+{"*borg", "*borgenser"}, // Aalborg
 {"*burg", "*burger"}, // Hamburg
 {"*cese", "*cesan"}, // Diocese
+{"*deen", "*donian"}, // Aberdeen
 {"*echk", "*echk"},
 {"*eece", "*eek"}, // Greece
 {"*eese", "*eese"}, // 	Cheese

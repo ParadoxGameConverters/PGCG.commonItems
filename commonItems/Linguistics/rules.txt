@@ -63,8 +63,11 @@
 {"*aras", "*arentine"}, // Taras
 {"*aros", "*arian"}, // Paros
 {"*berg", "*berger"}, // Nuremberg
+{"*borg", "*borgenser"}, // Aalborg
 {"*burg", "*burger"}, // Hamburg
 {"*cese", "*cesan"}, // Diocese
+{"*deen", "*donian"}, // Aberdeen
+{"*djan", "*djanais"}, // Abidjan
 {"*echk", "*echk"},
 {"*eece", "*eek"}, // Greece
 {"*eese", "*eese"}, // 	Cheese
