@@ -48,11 +48,14 @@ public static partial class StringExtensions {
 
 			string commonPart = evaluatedStr;
 
-			return adjectiveEnding
+			var adjective = adjectiveEnding
 				.Replace("*", commonPart)
 				.Replace("[c]", consonant)
-				.Replace("[v]", vowel)
-				.ToTitleCase();
+				.Replace("[v]", vowel);
+			if (!adjectiveEnding.StartsWith("*-")) {
+				adjective = adjective.ToTitleCase();
+			}
+			return adjective;
 		}
 
 		var foldedStr = str.FoldToASCII();
