@@ -1,4 +1,4 @@
-﻿
+
 using Open.Collections;
 
 namespace commonItems.Linguistics;
@@ -53,18 +53,34 @@ public static partial class StringExtensions {
 {"*tenham", "*tonian"}, // Cheltenham
 {"*veland", "*velander"}, // Cleveland
 {"*órdoba", "*ordobense"}, // Córdoba
+{"*Épalinges", "*Palinsard"}, // Épalinges
+{"Foz do Iguaçu", "Iguaçuense"}, // Foz do Iguaçu
+{"*lasgow", "*laswegian"}, // Glasgow
+{"*dalming", "*dhelmian"}, // Godalming
+{"* Coast", "* Coast"}, // Gold Coast
+{"Guangzhou", "Cantonese"}, // Guangzhou
+{"*Iloilo", "*Ilonggo"}, // Iloilo
+{"Indianapolis", "Hoosier"}, // Indianapolis
+{"*qaluit", "*qalummiut"}, // Iqaluit
+{"Iriga", "Irigueño"}, // Iriga
+{"* de Fora", "*-forano"}, // Juiz de Fora
+{"* Borough", "*ite"}, // Juneau Borough
 
 // 5 characters
 {"* City", "*ite"}, // Carson City
+{"* Kong", "*kongese"}, // Hong Kong
 {"* Town", "*tonian"}, // Cape Town
 {"*allia", "*aulish"}, // Gallia
+{"*anton", "*antonese"}, // Canton
 {"*atium", "*atin"}, // Latium
 {"*blois", "*blesois"}, // Blois
+{"*burgh", "*burgensian"}, // Edinburgh
 {"*cádiz", "*gaditano"}, // Cádiz
 {"*china", "*chinese"}, // Indochina
 {"*deaux", "*delais"}, // Bordeaux
 {"*eland", "*elandic"}, // Iceland
 {"*iacán", "*ichi"}, // Culiacán
+{"*idale", "*idilian"}, // Armidale
 {"*istan", "*"}, // Tajikistan
 {"*geles", "*gelino"}, // Angeles
 {"*grade", "*gradian"}, // Belgrade
@@ -72,6 +88,7 @@ public static partial class StringExtensions {
 {"*lades", "*ladian"}, // Cyclades
 {"*mania", "*manic"}, // Germania
 {"*nland", "*nlander"}, // Greenland
+{"*noble", "*noblois"}, // Grenoble
 {"*nzona", "*nzonese"}, // Bellinzona
 {"*pelos", "*pelitan"}, // Skopelos
 {"*pland", "*ppish"}, // Lapland
@@ -81,13 +98,20 @@ public static partial class StringExtensions {
 {"*rouge", "*rougean"}, // Baton Rouge
 {"*rrhae", "*rrean"}, // Serrhae
 {"*ryana", "*ryanvi"}, // Haryana
+{"*shmir", "*shmiri"}, // Kashmir
 {"*shtra", "*shtrian"}, // Maharashtra
 {"*stein", "*steiner"}, // Liechtenstein
+{"*şehir", "*shehirian"}, // Eskişehir
+{"*tings", "*tingite"}, // Hastings
+{"*thiye", "*thiyennese"}, // Fethiye
 {"*tland", "*ttish"}, // Scotland
+{"*troit", "*troiter"}, // Detroit
 {"*ttium", "*ttian"}, // Bruttium
 {"*uiana", "*uianese"}, // Guiana
 {"*venia", "*vene"}, // Slovenia
-{"*ville", "*villain"}, // Asheville
+{"*ville", "*villian"}, // Asheville
+{"*wayne", "*wayner"}, // Fort Wayne
+{"*xeter", "*xonian"}, // Exeter
 {"*yotte", "*horan"}, // Mayotte
 {"*zoram", "*zo"}, // Mizoram
 {"*[c]ilia", "*[c]iliense"}, // Brasilia
@@ -107,6 +131,8 @@ public static partial class StringExtensions {
 {"*bany", "*banian"}, // Albany
 {"*bath", "*bathonian"}, // Bath
 {"*berg", "*berger"}, // Nuremberg
+{"*bira", "*birano"}, // Itabira
+{"*blin", "*blin"}, // Dublin
 {"*borg", "*borgenser"}, // Aalborg
 {"*burg", "*burger"}, // Hamburg
 {"*burn", "*burnian"}, // Blackburn
@@ -114,7 +140,7 @@ public static partial class StringExtensions {
 {"Cebu", "Cebuano"}, // Cebu
 {"*cese", "*cesan"}, // Diocese
 {"*ción", "*ceno"}, // Asunción
-{"*dale", "*dilian"}, // Armidale
+{"*dale", "*dalian"}, // Fort Lauderdale
 {"*dana", "*danite"}, // Adana
 {"*deen", "*donian"}, // Aberdeen
 {"*djan", "*djanais"}, // Abidjan
@@ -128,16 +154,20 @@ public static partial class StringExtensions {
 {"*elos", "*elian"}, // Delos
 {"*etus", "*esian"},
 {"*ford", "*fordian"}, // Bedford
+{"*furt", "*furter"}, // Frankfurt
 {"*gamo", "*gamasque"}, // Bergamo
 {"*gana", "*ganite"}, // Telangana
 {"*gena", "*genero"}, // Cartagena
+{"*gill", "*gill"}, // Invercargill
 {"*gina", "*ginetan"}, // Aegina
 {"*gnac", "*gnac"},
 {"*gong", "*gonian"}, // Chittagong
 {"*gotá", "*gotano"}, // Bogotá
+{"*graz", "*grazer"}, // Graz
 {"*hana", "*hanaian"}, // Ghana
 {"*hria", "*hriasian"}, // Thria
 {"*iana", "*ian"}, // Bactriana
+{"*ifax", "*igonian"}, // Halifax
 {"*irns", "*irnsite"}, // Cairns
 {"*irus", "*irote"}, // Epirus
 {"*jing", "*jingese"}, // Beijing
@@ -146,6 +176,7 @@ public static partial class StringExtensions {
 {"*lais", "*lais"}, // Calais
 {"*lius", "*liasian"}, // Phlius
 {"*lles", "*llois"}, // Seychelles
+{"*long", "*long"}, // Geelong
 {"*magh", "*machian"}, // Armagh
 {"*mara", "*maran"}, // Asmara
 {"*mmon", "*mmonite"}, // Ammon
@@ -160,12 +191,18 @@ public static partial class StringExtensions {
 {"*odes", "*odian"}, // Rhodes
 {"*orus", "*oran"}, // Bosporus
 {"*pain", "*panish"}, // Spain
+{"*pira", "*pirense"}, // Spain
+{"*pool", "*pudlian"}, // Hartlepool
 {"*prus", "*priote"}, // Cyprus
 {"*qaba", "*qabawi"}, // Aqaba
+{"*qahn", "*qahni"},
+{"*quil", "*quilean"}, // Guayaquil
 {"*rala", "*ralite"}, // Kerala
 {"*rage", "*rageite"}, // Anchorage
+{"*rara", "*rarese"}, // Ferrara
 {"*rque", "*rquean"}, // Albuquerque
 {"*rrae", "*rrean"}, // Serrae
+{"*sden", "*sdener"}, // Dresden
 {"*stan", "*"}, // Kazakhstan
 {"*stin", "*stonian"}, // Austin
 {"*tain", "*tish"}, // Great Britain
@@ -173,15 +210,18 @@ public static partial class StringExtensions {
 {"*thon", "*thonian"}, // Marathon
 {"*tiba", "*tibano"}, // Curitiba
 {"*tica", "*tic"}, // Antarctica
+{"*tino", "*tinesi"}, // Filettino
 {"*tium", "*tine"}, // Byzantium
 {"*udan", "*udanese"}, // Sudan
 {"*urma", "*urmese"}, // Burma
 {"*urus", "*urian"}, // Epidaurus
-{"*qahn", "*qahni"},
 {"*rgos", "*rgive"}, // Argos
 {"*yros", "*yrian"}, // Nisyros
+{"*vana", "*vanan"}, // Havana
 {"*[v]cis", "*[v]cian"}, // Phocis
 {"*[c]cis", "*[c]cidian"}, // Chalcis
+{"*[c]ver", "*[c]ver"}, // Denver
+{"*[v]ver", "*[v]verian"}, // Hanover
 
 // 3 characters
 {"* Lat", "*latese"}, // Da Lat
@@ -190,8 +230,13 @@ public static partial class StringExtensions {
 {"*ara", "*arian"}, // Megara
 {"*aro", "*arense"}, // Amparo
 {"*ati", "*ati"}, // Kiribati
+{"*bad", "*badi"}, // Hyderabad
 {"*bah", "*ban"},
+{"*bai", "*baite"}, // Dubai
+{"*ban", "*ban"}, // Durban
 {"*bes", "*ban"}, // Thebes
+{"*bin", "*binite"}, // Harbin
+{"*bul", "*bulite"}, // Istanbul
 {"*bus", "*busite"}, // Columbus
 {"*car", "*can"}, // Madagascar
 {"*cau", "*canese"}, // Macau
@@ -199,10 +244,12 @@ public static partial class StringExtensions {
 {"*cus", "*cene"}, // Damascus
 {"*dai", "*dan"}, // Oiniadai
 {"*dam", "*dammer"}, // Amsterdam
+{"*dee", "*donian"}, // Dundee
 {"*den", "*dish"}, // Sweden
 {"*des", "*dan"}, // Oiniades
 {"*dge", "*dgian"}, // Cambridge
-{"*din", "*dinian"}, // Aydın
+{"*din", "*din"}, // Dunedin
+{"*dın", "*dinian"}, // Aydın
 {"*dod", "*dodi"}, // Ashdod
 {"*dos", "*dian"}, // Barbados
 {"*don", "*donian"}, // Sidon
@@ -210,10 +257,13 @@ public static partial class StringExtensions {
 {"*eia", "*ian"}, // Eleia
 {"*ene", "*enian"}, // Cyrene
 {"*eru", "*eruvian"}, // Peru
+{"*ett", "*ettite"}, // Everett
 {"*gal", "*guese"}, // Portugal
 {"*gac", "*gac"},
 {"*gen", "*gener"}, // Copenhagen
 {"*gna", "*gnese"}, // Bologna
+{"*goa", "*goan"}, // Bossangoa
+{"*gue", "*guer"}, // Hague
 {"*ham", "*hamian"}, // Birmingham
 {"*iam", "*iamese"}, // Siam
 {"*ini", "*inian"}, // Leontini
@@ -226,9 +276,12 @@ public static partial class StringExtensions {
 {"*jan", "*jani"}, // Azerbaijan
 {"*kia", "*k"}, // Slovakia
 {"*kim", "*kimese"}, // Sikkim
+{"*kır", "*kirian"}, // Diyarbakır
 {"*kun", "*kunite"},
 {"*lan", "*lanese"}, // Milan
 {"*las", "*lasite"}, // Dallas
+{"*ley", "*leian"}, // Finchley
+{"*lhi", "*lhiite"}, // Delhi
 {"*lod", "*lodnon"}, // Bacolod
 {"*lon", "*lonian"}, // Ashkelon
 {"*los", "*losian"}, // Pylos
@@ -236,8 +289,9 @@ public static partial class StringExtensions {
 {"*man", "*mani"}, // Oman
 {"*mas", "*mian"}, // Bahamas
 {"*men", "*meni"}, // Yemen
-{"*mir", "*miri"}, // Kashmir
+{"*mir", "*mirian"}, // Izmir
 {"*mis", "*minian"}, // Salamis
+{"*mit", "*mitite"}, // Salamis
 {"*mon", "*monian"}, // Lakedaemon
 {"*mor", "*morese"}, // Timor
 {"*nae", "*naean"}, // Mycenae
@@ -248,12 +302,15 @@ public static partial class StringExtensions {
 {"*num", "*ne"}, // Sabinum
 {"*oon", "*oonian"}, // Cameroon
 {"*pan", "*panese"}, // Japan
+{"*poh", "*pohian"}, // Ipoh
 {"*pur", "*puri"}, // Manipur
 {"*que", "*can"}, // Martinique
 {"*qah", "*qian"},
+{"*rat", "*rati"}, // Gujarat
 {"*rii", "*rian"}, // Thurii
 {"*ros", "*ran"}, // Comoros
 {"*rra", "*rran"}, // Canberra
+{"*rry", "*rry"}, // Derry
 {"*rsa", "*rsanese"}, // Bursa
 {"*rum", "*rumian"}, // Bodrum
 {"*rut", "*ruti"}, // Beirut
@@ -265,12 +322,16 @@ public static partial class StringExtensions {
 {"*sso", "*ssese"}, // Chiasso
 {"*sus", "*sian"}, // Ephesus
 {"*tan", "*tanese"}, // Bhutan
+{"*tar", "*tarian"}, // Gibraltar
 {"*ton", "*tonian"}, // Croton
+{"*tep", "*tepian"}, // Gaziantep
 {"*ter", "*trian"}, // Chester
 {"*tte", "*ttean"}, // Charlotte
 {"*tus", "*tian"}, // Carystus
 {"*ura", "*uran"}, // Tripura
 {"*use", "*usan"}, // Syracuse
+{"*vao", "*vaoeño"}, // Davao
+{"*way", "*way"}, // Galway
 {"*win", "*winian"}, // Darwin
 {"*won", "*wonian"}, // Changwon
 {"*yon", "*yonian"}, // Sikyon (rule made up)
@@ -300,7 +361,7 @@ public static partial class StringExtensions {
 {"*ao", "*aoan"}, // Curaçao
 {"*ar", "*ari"}, // Qatar
 {"*as", "*an"}, // Honduras
-{"*at", "*ati"}, // Gujarat
+{"*at", "*atian"}, // Eilat
 {"*au", "*auan"}, // Palau
 {"*co", "*can"}, // Morocco
 {"*de", "*dean"}, // Cape Verde
@@ -308,6 +369,7 @@ public static partial class StringExtensions {
 {"*el", "*eli"}, // Israel
 {"*em", "*emite"}, // Zarem (rule made up)
 {"*en", "*enese"}, // Jan Mayen
+{"*én", "*enés"}, // Jaén
 {"*eo", "*ean"}, // Bengeo
 {"*er", "*erite"}, // Casper
 {"*es", "*ian"}, // Maldives
@@ -320,19 +382,25 @@ public static partial class StringExtensions {
 {"*is", "*ian"}, // Locris
 {"*it", "*iti"}, // Kuwait
 {"*ía", "*ian"}, // Almería
+{"*ju", "*ju"}, // Gwangju
 {"*fi", "*fitan"}, // Amalfi
 {"*ff", "*ffian"}, // Cardiff
 {"*le", "*lean"}, // Chile
+{"*ka", "*kai"}, // Dhaka
 {"*kh", "*khi"},
 {"*ku", "*kuvian"}, // Baku
 {"*ld", "*ldian"}, // Chesterfield
 {"*ll", "*llese"}, // Marshall
 {"*lo", "*lonian"}, // Buffalo
+{"*lu", "*lan"}, // Honolulu
 {"*me", "*man"}, // Rome
+{"*mi", "*mite"}, // Gumi
 {"*my", "*mois"}, // Saint Barthélemy
 {"*na", "*nian"}, // Argentina
 {"*nj", "*nji"},
+{"*no", "*nan"}, // Fresno
 {"*ny", "*n"}, // Germany
+{"*oa", "*oese"}, // Genoa
 {"*oe", "*oese"}, // Faroe
 {"*oh", "*ohan"},
 {"*on", "*onese"}, // Gabon
@@ -379,6 +447,5 @@ public static partial class StringExtensions {
 {"*u", "*uan"}, // Vanuatu
 {"*x", "*xian"}, // Essex
 {"*y", "*ian"} // Hungary
-
 	};
 }
