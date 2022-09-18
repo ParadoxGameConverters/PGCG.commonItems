@@ -1,4 +1,5 @@
 ﻿using commonItems.Mods;
+using FluentAssertions;
 using Xunit;
 
 namespace commonItems.UnitTests.Mods;
@@ -15,13 +16,23 @@ public class ModParserTests {
 		Assert.True(string.IsNullOrEmpty(mod.Name));
 		Assert.True(string.IsNullOrEmpty(mod.Path));
 		Assert.Empty(mod.Dependencies);
+		Assert.Empty(mod.ReplacedPaths);
+
+		var theModFile = new ModParser();
+		theModFile.ParseMod("TestFiles/mod/empty_mod_file.mod");  // TODO: add the mod file
+		Assert.Empty(theModFile.Name);
+		Assert.Empty(theModFile.Path);
+		Assert.Empty(theModFile.Dependencies);
+		Assert.Empty(theModFile.ReplacedPaths);
 	}
 	[Fact]
 	public void PrimitivesCanBeSet() {
 		var reader = new BufferedReader(
 			"name = modName\n" +
 			"path=modPath\n" +
-			"dependencies = { dep1 dep2 }\n"
+			"dependencies = { dep1 dep2 }\n" +
+			"replace_path=\"replaced/path\"\n" +
+			"replace_path=\"replaced/path/two\"\n"
 		);
 		var mod = new ModParser();
 		mod.ParseMod(reader);
@@ -32,6 +43,15 @@ public class ModParserTests {
 			item => Assert.Equal("dep1", item),
 			item => Assert.Equal("dep2", item)
 		);
+		mod.ReplacedPaths.Should().Equal("replaced/path", "replaced/path/two");
+
+		var theModFile = new ModParser();
+		theModFile.ParseMod("TestFiles/mod/parseable_mod_file.mod");
+		
+		Assert.Equal("modName", theModFile.Name);
+		Assert.Equal("modPath", theModFile.Path);
+		theModFile.Dependencies.Should().Equal("dep1", "dep2");
+		theModFile.ReplacedPaths.Should().Equal("replaced/path", "replaced/path/two");
 	}
 	[Fact]
 	public void PathCanBeSetFromArchive() {
@@ -84,5 +104,18 @@ public class ModParserTests {
 		var mod3 = new ModParser();
 		mod3.ParseMod(reader3);
 		Assert.True(mod3.IsCompressed());
+	}
+
+	[Fact]
+	public void PathCanBeUpdated() {
+		var reader = new BufferedReader(
+			"name=modName\n" +
+			"path=modPath\n");
+
+		var theModFile = new ModParser();
+		theModFile.ParseMod(reader);
+		theModFile.Path = "updated_path";
+		
+		Assert.Equal("updated_path", theModFile.Path);
 	}
 }
