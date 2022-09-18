@@ -46,7 +46,7 @@ public class ModParserTests {
 		mod.ReplacedPaths.Should().Equal("replaced/path", "replaced/path/two");
 
 		var theModFile = new ModParser();
-		theModFile.ParseMod("mod/parseable_mod_file.mod");
+		theModFile.ParseMod("TestFiles/mod/parseable_mod_file.mod");
 		
 		Assert.Equal("modName", theModFile.Name);
 		Assert.Equal("modPath", theModFile.Path);
