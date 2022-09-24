@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace commonItems.Collections; 
 
-public class IdObjectCollection<TKey, T> : IReadOnlyCollection<T> where TKey : notnull where T : IIdentifiable<TKey> {
+public class IdObjectCollection<TKey, T> : IReadOnlyCollection<T> where TKey : IComparable where T : IIdentifiable<TKey> {
 	protected readonly Dictionary<TKey, T> dict = new();
 
 	public T this[TKey key] => dict[key];
