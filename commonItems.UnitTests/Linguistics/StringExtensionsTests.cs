@@ -156,7 +156,6 @@ public class StringExtensionsTests {
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]
 	[InlineData("Achaea", "Achaean")]
-	[InlineData("Aegina", "Aeginetan")]
 	[InlineData("Aethaea", "Aethaean")]
 	[InlineData("Aetolia", "Aetolian")]
 	[InlineData("Andalusia", "Andalusian")]
