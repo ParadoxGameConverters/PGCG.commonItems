@@ -30,7 +30,7 @@ public static partial class StringExtensions {
 
 			if (evaluatedEnding.EndsWith(consonantPlaceholder)) {
 				char previousChar = evaluatedStr[^1];
-				if (previousChar.IsVowel()) {
+				if (!previousChar.IsConsonant()) {
 					continue;
 				}
 
