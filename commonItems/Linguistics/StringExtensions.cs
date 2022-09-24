@@ -21,12 +21,12 @@ public static partial class StringExtensions {
 
 			var asteriskOrClosingBracketPos = ending.LastIndexOfAny(new[] {'*', ']'});
 			string literalEnding = ending[(asteriskOrClosingBracketPos + 1)..];
-			if (!str.EndsWith(literalEnding, StringComparison.OrdinalIgnoreCase)) {
+			if (!str.EndsWith(literalEnding, StringComparison.Ordinal)) {
 				continue;
 			}
 
-			evaluatedEnding = evaluatedEnding[..evaluatedEnding.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
-			evaluatedStr = evaluatedStr[..evaluatedStr.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
+			evaluatedEnding = evaluatedEnding[..evaluatedEnding.LastIndexOf(literalEnding, StringComparison.Ordinal)];
+			evaluatedStr = evaluatedStr[..evaluatedStr.LastIndexOf(literalEnding, StringComparison.Ordinal)];
 
 			if (evaluatedEnding.EndsWith(consonantPlaceholder)) {
 				char previousChar = evaluatedStr[^1];
@@ -52,9 +52,6 @@ public static partial class StringExtensions {
 				.Replace("*", commonPart)
 				.Replace("[c]", consonant)
 				.Replace("[v]", vowel);
-			if (!adjectiveEnding.StartsWith("*-")) {
-				adjective = adjective.ToTitleCase();
-			}
 			return adjective;
 		}
 
