@@ -9,4 +9,12 @@ public static class CharacterExtensions {
 		bool isVowel = Vowels.Contains(character, StringComparison.InvariantCultureIgnoreCase);
 		return isVowel;
 	}
+
+	public static bool IsConsonant(this char character) {
+		if (!char.IsLetter(character)) {
+			return false;
+		}
+		
+		return !character.IsVowel();
+	}
 }
