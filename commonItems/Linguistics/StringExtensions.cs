@@ -21,16 +21,16 @@ public static partial class StringExtensions {
 
 			var asteriskOrClosingBracketPos = ending.LastIndexOfAny(new[] {'*', ']'});
 			string literalEnding = ending[(asteriskOrClosingBracketPos + 1)..];
-			if (!str.EndsWith(literalEnding, StringComparison.OrdinalIgnoreCase)) {
+			if (!str.EndsWith(literalEnding, StringComparison.Ordinal)) {
 				continue;
 			}
 
-			evaluatedEnding = evaluatedEnding[..evaluatedEnding.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
-			evaluatedStr = evaluatedStr[..evaluatedStr.LastIndexOf(literalEnding, StringComparison.OrdinalIgnoreCase)];
+			evaluatedEnding = evaluatedEnding[..evaluatedEnding.LastIndexOf(literalEnding, StringComparison.Ordinal)];
+			evaluatedStr = evaluatedStr[..evaluatedStr.LastIndexOf(literalEnding, StringComparison.Ordinal)];
 
 			if (evaluatedEnding.EndsWith(consonantPlaceholder)) {
 				char previousChar = evaluatedStr[^1];
-				if (previousChar.IsVowel()) {
+				if (!previousChar.IsConsonant()) {
 					continue;
 				}
 
@@ -48,11 +48,11 @@ public static partial class StringExtensions {
 
 			string commonPart = evaluatedStr;
 
-			return adjectiveEnding
+			var adjective = adjectiveEnding
 				.Replace("*", commonPart)
 				.Replace("[c]", consonant)
-				.Replace("[v]", vowel)
-				.ToTitleCase();
+				.Replace("[v]", vowel);
+			return adjective;
 		}
 
 		var foldedStr = str.FoldToASCII();
