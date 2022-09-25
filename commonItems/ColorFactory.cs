@@ -8,11 +8,11 @@ public class ColorFactory {
 	public Dictionary<string, Color> NamedColors { get; } = new();
 
 	private Color GetRgbColor(BufferedReader reader) {
-		var rgb = reader.GetInts();
+		var rgb = reader.GetDoubles();
 		if (rgb.Count != 3) {
 			throw new FormatException("Color has wrong number of components");
 		}
-		return new Color(rgb[0], rgb[1], rgb[2]);
+		return new Color((int)rgb[0], (int)rgb[1], (int)rgb[2]);
 	}
 	private Color GetHexColor(BufferedReader reader) {
 		var hex = reader.GetStrings()[0];
