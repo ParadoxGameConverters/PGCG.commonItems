@@ -19,7 +19,8 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 	public void ScrapeLocalizations(ModFilesystem modFS) {
 		Logger.Info("Reading Localization...");
 
-		var locFiles = modFS.GetAllFilesInFolderRecursive("localization");
+		var locFiles = modFS.GetAllFilesInFolderRecursive("localization")
+			.Where(f => CommonFunctions.GetExtension(f) == "yml");
 		var locLinesCount = locFiles.Sum(ScrapeFile);
 		
 		Logger.Info($"{locLinesCount} localization lines read.");
