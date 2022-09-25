@@ -120,4 +120,13 @@ public class LocDBTests {
 		Assert.Contains("Scraping loc line [ NO_LANGUAGE_KEY1:0 \"loc w/o language\"] without language specified!", output.ToString());
 		Assert.Equal("valor", locDB.GetLocBlockForKey("KEY1")!["spanish"]);
 	}
+
+	[Fact]
+	public void NonYmlFilesAreNotScrapedForLocalization() {
+		var locDB = new LocDB("english", "french", "spanish");
+		var modFS = new ModFilesystem("TestFiles/CK3/game", new List<Mod>());
+		locDB.ScrapeLocalizations(modFS);
+		
+		Assert.Null(locDB.GetLocBlockForKey("NON_LOC_KEY"));
+	}
 }
