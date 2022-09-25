@@ -44,9 +44,11 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 	public int ScrapeStream(BufferedReader reader) {
 		var linesRead = 0;
 		string? currentLanguage = null;
+		bool languageSpecified = false;
 
 		while (!reader.EndOfStream) {
-			var (key, loc) = DetermineKeyLocalizationPair(reader.ReadLine(), ref currentLanguage);
+			var line = reader.ReadLine();
+			var (key, loc) = DetermineKeyLocalizationPair(line, ref currentLanguage, ref languageSpecified);
 			if (currentLanguage is null) {
 				continue;
 			}
@@ -65,7 +67,11 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 
 		return linesRead;
 	}
-	private KeyValuePair<string?, string?> DetermineKeyLocalizationPair(string? line, ref string? currentLanguage) {
+	private KeyValuePair<string?, string?> DetermineKeyLocalizationPair(
+		string? line,
+		ref string? currentLanguage,
+		ref bool languageSpecified
+	) {
 		if (line == null || line.Length < 4 || line.TrimStart().StartsWith('#')) {
 			return new(null, null);
 		}
@@ -87,11 +93,12 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 				}
 				currentLanguage = language;
 			}
+			languageSpecified = true;
 
 			return new(null, null);
 		}
 
-		if (currentLanguage is null) {
+		if (!languageSpecified) {
 			Logger.Warn($"Scraping loc line [{line}] without language specified!");
 			return new(null, null);
 		}
