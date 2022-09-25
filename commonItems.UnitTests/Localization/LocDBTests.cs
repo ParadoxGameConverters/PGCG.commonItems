@@ -102,6 +102,22 @@ public class LocDBTests {
 	}
 
 	[Fact]
+	public void UnsupportedLanguageDoesNotCauseWarningsAboutUnspecifiedLanguage() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		var locDB = new LocDB("english", "french");
+		var reader = new BufferedReader(
+			"l_korean:\n" +
+			" key1:1 \"value 1\" # comment\n"
+		);
+		locDB.ScrapeStream(reader);
+		
+		Assert.DoesNotContain("without language specified!", output.ToString());
+		Assert.Null(locDB.GetLocBlockForKey("key1"));
+	}
+
+	[Fact]
 	public void VanillaAndModLocIsScraped() {
 		var output = new StringWriter();
 		Console.SetOut(output);
