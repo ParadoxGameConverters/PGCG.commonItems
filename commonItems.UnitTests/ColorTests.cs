@@ -284,6 +284,15 @@ public class ColorTests {
 	}
 
 	[Fact]
+	public void ColorCanBeInitializedFromStreamInRgbWithFloats() {
+		var reader = new BufferedReader("= rgb { 64.2 128.4 128.6 }");
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(64, color.R);
+		Assert.Equal(128, color.G);
+		Assert.Equal(128, color.B);
+	}
+
+	[Fact]
 	public void ColorInitializationRequiresThreeComponentsWhenRgb() {
 		var reader = new BufferedReader("= rgb { 64 128 }");
 		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
