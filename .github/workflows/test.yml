@@ -16,9 +16,9 @@ jobs:
 
     # install dependencies, build, and test
     - name: "Setup Dotnet for use with actions"
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '6.*'
+        dotnet-version: '6.x'
 
     - name: "Restore tools"
       run: dotnet tool restore
@@ -44,9 +44,9 @@ jobs:
 
     # install dependencies, build, and test
     - name: "Setup Dotnet for use with actions"
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '6.*'
+        dotnet-version: '6.x'
 
     - name: "Restore tools"
       run: dotnet tool restore

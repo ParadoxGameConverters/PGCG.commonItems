@@ -17,9 +17,9 @@ jobs:
         submodules: recursive
 
     - name: "Setup Dotnet for use with actions"
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '6.*'
+        dotnet-version: '6.x'
 
     - name: "Build project"
       run: |
