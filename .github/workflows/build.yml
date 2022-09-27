@@ -1,9 +1,6 @@
 name: Build
 
 on:
-  push:
-    branches-ignore:
-      - main
   pull_request:
     branches:
       - main
@@ -12,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [[self-hosted, linux], macos-latest, [self-hosted, windows]]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -20,9 +17,9 @@ jobs:
         submodules: recursive
 
     - name: "Setup Dotnet for use with actions"
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '6.*'
+        dotnet-version: '6.x'
 
     - name: "Build project"
       run: |

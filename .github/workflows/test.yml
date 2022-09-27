@@ -8,7 +8,7 @@ on:
 
 jobs:
   test_and_check_coverage:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -16,9 +16,9 @@ jobs:
 
     # install dependencies, build, and test
     - name: "Setup Dotnet for use with actions"
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '6.*'
+        dotnet-version: '6.x'
 
     - name: "Restore tools"
       run: dotnet tool restore
@@ -35,7 +35,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [[self-hosted, windows], macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -44,9 +44,9 @@ jobs:
 
     # install dependencies, build, and test
     - name: "Setup Dotnet for use with actions"
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '6.*'
+        dotnet-version: '6.x'
 
     - name: "Restore tools"
       run: dotnet tool restore
