@@ -367,8 +367,8 @@ public class StringExtensionsTests {
 	}
 
 	[Theory]
-	[InlineData("TestFiles/adjectives/cities.csv")]
-	[InlineData("TestFiles/adjectives/continents.csv")]
+	[InlineData("TestFiles/adjectives/cities.csv")] // https://en.wikipedia.org/wiki/Adjectivals_and_demonyms_for_cities
+	[InlineData("TestFiles/adjectives/continents.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Continents
 	public void CorrectAdjectivesAreGeneratedForNamesFromCsv(string csvFilePath) {
 		var csv = File.ReadAllText(csvFilePath);
 		foreach (var line in CsvReader.ReadFromText(csv)) {
