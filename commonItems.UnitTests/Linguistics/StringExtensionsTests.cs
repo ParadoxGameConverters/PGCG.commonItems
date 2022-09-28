@@ -1,5 +1,6 @@
 ﻿using commonItems.Linguistics;
 using Csv;
+using System;
 using System.IO;
 using System.Linq;
 using Xunit;
@@ -365,10 +366,11 @@ public class StringExtensionsTests {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
 
-	[Fact]
-	public void CorrectAdjectivesAreGeneratedForCities() {
-		var filePath = "TestFiles/adjectives/cities.csv";
-		var csv = File.ReadAllText(filePath);
+	[Theory]
+	[InlineData("TestFiles/adjectives/cities.csv")]
+	[InlineData("TestFiles/adjectives/continents.csv")]
+	public void CorrectAdjectivesAreGeneratedForNamesFromCsv(string csvFilePath) {
+		var csv = File.ReadAllText(csvFilePath);
 		foreach (var line in CsvReader.ReadFromText(csv)) {
 			// Header is handled, each line will contain the actual row data.
 			var name = line[0];

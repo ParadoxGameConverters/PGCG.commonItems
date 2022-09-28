@@ -27,7 +27,8 @@ public static partial class StringExtensions {
 {"Eswatini", "Swati"}, // Eswatini
 {"Ad Pontem", "Pontan"},
 {"Verahram Qal'eh", "Verahrami"},
-{"Orkney Islands", "Orcadian"},
+{"*Pacific Islands", "*Pacific Islands"}, // Pacific Islands
+{"*Orkney Islands", "*Orcadian"}, // Orkney Islands
 {"* Islands", "*"}, // Cook Islands
 {"* Republic", "*"}, // Dominican Republic
 {"* Union", "*"}, // Soviet Union
@@ -99,6 +100,7 @@ public static partial class StringExtensions {
 {"*Valparaíso", "*Porteño"}, // Valparaíso
 {"*Warsaw", "*Varsovian"}, // Warsaw
 {"*Xalapa", "*Xalapeño"}, // Xalapa
+{"*gorica", "*gorician"}, // Podgorica
 
 // 5 characters
 {"* Kong", "*kongese"}, // Hong Kong
@@ -188,6 +190,7 @@ public static partial class StringExtensions {
 {"*atte", "*atian"}, // Ville Platte
 {"*baco", "*baqueno"}, // Tabaco
 {"*bany", "*banian"}, // Albany
+{"*bean", "*bean"}, // Caribbean
 {"*Bath", "*Bathonian"}, // Bath
 {"*berg", "*berger"}, // Nuremberg
 {"*bira", "*birano"}, // Itabira
@@ -205,11 +208,13 @@ public static partial class StringExtensions {
 {"*dana", "*danite"}, // Adana
 {"*deen", "*donian"}, // Aberdeen
 {"*Dhaka", "*Dhakai"}, // Dhaka
+{"*dies", "*dian"}, // West Indies
 {"*dina", "*dinan"}, // Medina
 {"*djan", "*djanais"}, // Abidjan
 {"*dney", "*dneysider"}, // Sydney
 {"*dong", "*dong"}, // Andong
 {"*dung", "*dungite"}, // Bandung
+{"*East", "*Eastern"}, // Middle East
 {"*echk", "*echk"},
 {"*eece", "*eek"}, // Greece
 {"*eens", "*eensite"}, // Queens
@@ -293,7 +298,6 @@ public static partial class StringExtensions {
 {"*rara", "*rarese"}, // Ferrara
 {"*rdin", "*rdinian"}, // Mardin
 {"*real", "*realer"}, // Montreal
-{"*rica", "*rician"}, // Podgorica
 {"*rick", "*rick"}, // Limerick
 {"*rona", "*ronese"}, // Verona
 {"*rque", "*rquean"}, // Albuquerque
@@ -525,6 +529,7 @@ public static partial class StringExtensions {
 {"*as", "*an"}, // Honduras
 {"*at", "*atian"}, // Eilat
 {"*au", "*auan"}, // Palau
+{"*ca", "*can"}, // Africa
 {"*ce", "*cian"}, // Thrace
 {"*co", "*can"}, // Morocco
 {"*de", "*dean"}, // Cape Verde
@@ -573,6 +578,8 @@ public static partial class StringExtensions {
 {"*oy", "*ojan"}, // Troy
 {"*os", "*ian"}, // Thasos
 {"*ów", "*ovian"}, // Kraków
+{"*pa", "*pan"}, // Tampa
+{"*pe", "*pean"}, // Europe
 {"*po", "*pine"}, // Aleppo
 {"*ra", "*rean"}, // Corcyra
 {"*re", "*rean"}, // Singapore
