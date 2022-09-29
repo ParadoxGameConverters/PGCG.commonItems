@@ -365,10 +365,11 @@ public class StringExtensionsTests {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
 
-	[Fact]
-	public void CorrectAdjectivesAreGeneratedForCities() {
-		var filePath = "TestFiles/adjectives/cities.csv";
-		var csv = File.ReadAllText(filePath);
+	[Theory]
+	[InlineData("TestFiles/adjectives/cities.csv")] // https://en.wikipedia.org/wiki/Adjectivals_and_demonyms_for_cities
+	[InlineData("TestFiles/adjectives/continents.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Continents
+	public void CorrectAdjectivesAreGeneratedForNamesFromCsv(string csvFilePath) {
+		var csv = File.ReadAllText(csvFilePath);
 		foreach (var line in CsvReader.ReadFromText(csv)) {
 			// Header is handled, each line will contain the actual row data.
 			var name = line[0];
