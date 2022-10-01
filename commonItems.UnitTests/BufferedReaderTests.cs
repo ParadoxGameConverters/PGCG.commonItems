@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using Xunit;
 
@@ -98,5 +99,19 @@ public class BufferedReaderTests {
 				Assert.Equal(2, value);
 			}
 		);
+	}
+
+	[Fact]
+	public void GetNextTokenWithoutMatchingLogsErrorWhenInterpolatedExpressionCannotBeEvaluated() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		var reader = new BufferedReader();
+		reader.Variables.Add("a", 3);
+		var expressionStr = "@[@a-2]"; // should be @[a-2]
+		var value = new BufferedReader().EvaluateExpression("@[@a-2]"); // should be @[a-2]
+
+		Assert.Contains("[WARN] Failed to evaluate expression \"@[@a-2]\"", output.ToString());
+		Assert.Equal(expressionStr, value);
 	}
 }

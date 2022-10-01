@@ -247,7 +247,7 @@ public class Parser {
 		return sb.ToString();
 	}
 
-	// WithoutMatching refers to not matching against registered rules.
+	// "WithoutMatching" refers to not matching against registered rules.
 	// Here we are only matching against variable and interpolated expression regexes
 	// to resolve them before returning.
 	public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
@@ -264,8 +264,8 @@ public class Parser {
 		return lexeme;
 
 		static string? GetValueString(object obj) {
-			if (obj is double d) {
-				return d.ToString(CultureInfo.InvariantCulture);
+			if (obj is IFormattable formattable) {
+				return formattable.ToString("0.######", CultureInfo.InvariantCulture);
 			}
 			return obj.ToString();
 		}

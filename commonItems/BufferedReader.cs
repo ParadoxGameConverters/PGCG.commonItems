@@ -287,7 +287,13 @@ public class BufferedReader {
 		foreach (var (name, value) in Variables) {
 			expression.Parameters[name] = value;
 		}
-		return expression.Evaluate();
+
+		try {
+			return expression.Evaluate();
+		} catch (EvaluationException e) {
+			Logger.Warn($"Failed to evaluate expression \"{lexeme}\": {e.Message}");
+			return lexeme;
+		}
 	}
 
 	public void CopyVariables(BufferedReader otherReader) {
