@@ -102,7 +102,7 @@ public class BufferedReaderTests {
 	}
 
 	[Fact]
-	public void GetNextTokenWithoutMatchingLogsErrorWhenInterpolatedExpressionCannotBeEvaluated() {
+	public void EvaluateExpressionLogsErrorWhenInterpolatedExpressionCannotBeEvaluated() {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
