@@ -1,7 +1,6 @@
 ﻿using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.Steam;
 using IcgSoftware.IntToOrdinalNumber;
-using Microsoft.Win32;
 using System;
 using System.Globalization;
 using System.IO;
