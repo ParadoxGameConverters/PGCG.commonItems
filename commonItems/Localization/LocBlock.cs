@@ -18,7 +18,7 @@ public class LocBlock : IIdentifiable<string> {
 	public LocBlock(string locKey, LocBlock otherBlock) {
 		Id = locKey;
 		baseLanguage = otherBlock.baseLanguage;
-		localizations = new(otherBlock.localizations);
+		localizations = new Dictionary<string, string?>(otherBlock.localizations);
 	}
 
 	public void CopyFrom(LocBlock otherBlock) {
@@ -43,7 +43,7 @@ public class LocBlock : IIdentifiable<string> {
 	}
 
 	/// <summary>
-	/// <see cref="ModifyForEveryLanguage"/> helps remove boilerplate by applying modifyingMethod to every language in the struct
+	/// Helps remove boilerplate by applying modifyingMethod to every language in the struct
 	/// For example:
 	/// <code>
 	/// nameLocBlock["english"] = nameLocBlock["english"].Replace("$ADJ$", baseAdjLocBlock["english"]);

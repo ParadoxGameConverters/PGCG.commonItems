@@ -5,6 +5,7 @@
 // IMPORTANT     
     using System.Text;
 
+    // ReSharper disable CommentTypo
 // This gist was created thanks to this comment from Alexander on StackOverflow:
 // https://stackoverflow.com/questions/249087/how-do-i-remove-diacritics-accents-from-a-string-in-net#comment86833005_34272324
 
@@ -30,6 +31,7 @@
     * limitations under the License.
     */
     
+    // ReSharper restore CommentTypo
 /// <summary>
 /// This class converts alphabetic, numeric, and symbolic Unicode characters
 /// which are not in the first 127 ASCII characters (the "Basic Latin" Unicode
