@@ -1,5 +1,4 @@
-﻿using Open.Text;
-using System;
+﻿using System;
 using System.Linq;
 
 namespace commonItems.Linguistics;
