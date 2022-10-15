@@ -17,7 +17,7 @@ jobs:
 
     - name: "Get new version"
       id: get_new_version
-      uses: anothrNick/github-tag-action@master
+      uses: anothrNick/github-tag-action@v1.52.0
       env:
         GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
         DEFAULT_BUMP: none
@@ -29,7 +29,7 @@ jobs:
       if: ${{ steps.get_new_version.outputs.new_tag }}
       with:
         include: commonItems/commonItems.csproj
-        find: <Version>${{ steps.get_new_version.outputs.tag }}</Version>
+        find: <Version>${{ steps.get_new_version.outputs.old_tag }}</Version>
         replace: <Version>${{ steps.get_new_version.outputs.new_tag }}</Version>
         regex: false
 
