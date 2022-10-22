@@ -135,13 +135,18 @@ public static class CommonFunctions {
 		var handler = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
 			? new SteamHandler(new WindowsRegistry())
 			: new SteamHandler(null);
-		
-		var results = handler.FindAllGames();
 
-		foreach (var (game, error) in results) {
+		try {
+			var game = handler.FindOneGameById(steamId, out string[] errors);
+			foreach (var error in errors) {
+				Logger.Warn($"Error occurred when locating Steam game {steamId}: {error}");
+			}
+
 			if (game is not null && game.AppId == steamId) {
 				return game.Path;
 			}
+		} catch (Exception e) {
+			Logger.Warn($"Exception was raised when locating Steam game {steamId}: {e.Message}");
 		}
 
 		return null;
