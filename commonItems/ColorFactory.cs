@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace commonItems; 
@@ -19,9 +20,9 @@ public class ColorFactory {
 		if (hex.Length != 6) {
 			throw new FormatException("Color has wrong number of digits");
 		}
-		var r = int.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
-		var g = int.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
-		var b = int.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+		var r = int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber);
+		var g = int.Parse(hex.Substring(2, 2), NumberStyles.HexNumber);
+		var b = int.Parse(hex.Substring(4, 2), NumberStyles.HexNumber);
 		return new Color(r, g, b);
 	}
 	private static Color GetHsvColor(BufferedReader reader) {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 
 namespace commonItems; 
@@ -13,7 +14,7 @@ public static class DebugInfo {
 	}
 
 	public static void LogExecutableLocation() {
-		var location = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+		var location = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
 		Logger.Debug($"Executable location: {location}");
 	}
 
