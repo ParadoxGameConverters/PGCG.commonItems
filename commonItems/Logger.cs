@@ -3,6 +3,7 @@ using log4net.Config;
 using log4net.Core;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+
 // ReSharper disable InconsistentNaming
 
 namespace commonItems;

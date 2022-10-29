@@ -1,5 +1,6 @@
 ﻿using commonItems.Serialization;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -70,7 +71,7 @@ public class Color : IPDXSerializable {
 	}
 
 	public string OutputHsv() {
-		var cultureInfo = System.Globalization.CultureInfo.InvariantCulture;
+		var cultureInfo = CultureInfo.InvariantCulture;
 		var sb = new StringBuilder("hsv { ");
 		sb.Append(HsvComponents[0].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
 		sb.Append(' ');
