@@ -13,13 +13,12 @@ public static class DebugInfo {
 		Logger.DebugFormat("Installed UI language: {0}", ci.Name);
 	}
 
-	public static void LogExecutableLocation() {
-		var location = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-		Logger.Debug($"Executable location: {location}");
+	public static void LogExecutableDirectory() {
+		Logger.Debug($"Executable directory: {AppDomain.CurrentDomain.BaseDirectory}");
 	}
 
 	public static void LogEverything() {
 		LogSystemInfo();
-		LogExecutableLocation();
+		LogExecutableDirectory();
 	}
 }
