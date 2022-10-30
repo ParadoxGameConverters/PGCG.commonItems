@@ -138,12 +138,13 @@ public static class CommonFunctions {
 
 		try {
 			var game = handler.FindOneGameById(steamId, out string[] errors);
-			foreach (var error in errors) {
-				Logger.Warn($"Error occurred when locating Steam game {steamId}: {error}");
-			}
 
 			if (game is not null && game.AppId == steamId) {
 				return game.Path;
+			}
+
+			foreach (var error in errors) {
+				Logger.Warn($"Error occurred when locating Steam game {steamId}: {error}");
 			}
 		} catch (Exception e) {
 			Logger.Warn($"Exception was raised when locating Steam game {steamId}: {e.Message}");
