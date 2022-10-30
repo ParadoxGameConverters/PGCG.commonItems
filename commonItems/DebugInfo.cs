@@ -18,6 +18,9 @@ public static class DebugInfo {
 		Logger.Debug($"Executable directory: {AppDomain.CurrentDomain.BaseDirectory}");
 	}
 
+	/// <summary>
+	/// Based on https://stackoverflow.com/a/27168374/10249243.
+	/// </summary>
 	public static void LogAntivirusInfo() {
 		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 			return;
@@ -30,18 +33,17 @@ public static class DebugInfo {
 
 		var instances = preVistaResult.Concat(postVistaResult);
 
+#pragma warning disable CA1416
 		var installedAntiviruses = instances
 			.Select(i => i.Properties.OfType<PropertyData>())
 			.Where(pd => pd.Any(p => p.Name == "displayName"))
-			.Select(pd => new {
-				Name = pd.Single(p => p.Name == "displayName").Value
-			})
+			.Select(pd => pd.Single(p => p.Name == "displayName").Value.ToString())
 			.ToArray();
+#pragma warning restore CA1416
 
-		foreach (var antivirus in installedAntiviruses) {
-			Logger.Debug($"Found antivirus: {antivirus.Name}");
+		foreach (var antivirusName in installedAntiviruses) {
+			Logger.Debug($"Found antivirus: {antivirusName}");
 		}
-
 	}
 
 	public static void LogEverything() {
