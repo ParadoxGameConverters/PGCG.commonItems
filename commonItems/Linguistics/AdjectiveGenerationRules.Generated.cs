@@ -158,6 +158,7 @@ public static partial class StringExtensions {
 {"*thiye", "*thiyennese"}, // Fethiye
 {"*tland", "*tlander"}, // Portland
 {"*troit", "*troiter"}, // Detroit
+{"*Tsang", "*Tsangpa"}, // Tsang
 {"*ttium", "*ttian"}, // Bruttium
 {"*uiana", "*uianese"}, // Guiana
 {"*ourne", "*urnian"}, // Melbourne
@@ -404,6 +405,7 @@ public static partial class StringExtensions {
 {"*inz", "*inzer"}, // Linz
 {"*ion", "*ian"}, // Rhegion
 {"*ios", "*iot"}, // Chios
+{"*iri", "*iri"}, // Mahendragiri
 {"*iro", "*irene"}, // Cairo
 {"*ise", "*isean"}, // Boise
 {"*ite", "*itian"}, // Melite
