@@ -10,4 +10,9 @@ public static partial class StringExtensions {
 		<#@ include file="adjective_rules.txt" #>
 
 	};
+	// Same as adjective rules, but are matched multiple times.
+	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
+		<#@ include file="adjective_rewrite_rules.txt" #>
+
+	};
 }

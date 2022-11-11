@@ -444,6 +444,7 @@
 {"*osu", "*osuite"}, // Yeosu
 {"*pan", "*panese"}, // Japan
 {"*peg", "*pegger"}, // Winnipeg
+{"*pes", "*pine"}, // Alpes
 {"*pje", "*pjan"}, // Skopje
 {"*poh", "*pohian"}, // Ipoh
 {"*pur", "*puri"}, // Manipur

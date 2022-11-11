@@ -1,0 +1,12 @@
+﻿// <ENDING, ADJ. SUFFIX>
+		
+{"* Maioris", "*"}, // Armenia Maioris
+{"* Minoris", "*"}, // Armenia Minoris
+{"* Superioris", "*"}, // Caria Superioris
+{"* Inferioris", "*"}, // Caria Inferioris
+{"* Meridionalis", "*"}, // Celtiberia Meridionalis
+{"* Septentrionalis", "*"}, // Celtiberia Septentrionalis
+{"* Orientalis", "*"}, // Alania Orientalis
+{"* Borealis", "*"}, // Sardinia Borealis
+{"* Maritimae", "*"}, // Alpes Maritimae
+{"* Magna", "*"} // Media Magna

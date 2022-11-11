@@ -155,6 +155,18 @@ public class StringExtensionsTests {
 	[InlineData("Mahendragiri", "Mahendragiri")]
 	[InlineData("Tsang", "Tsangpa")]
 	
+	// adjectives relying on rewrite rules
+	[InlineData("Armenia Maioris", "Armenian")]
+	[InlineData("Armenia Minoris", "Armenian")]
+	[InlineData("Caria Superioris", "Carian")]
+	[InlineData("Caria Inferioris", "Carian")]
+	[InlineData("Celtiberia Meridionalis", "Celtiberian")]
+	[InlineData("Celtiberia Septentrionalis", "Celtiberian")]
+	[InlineData("Alania Orientalis", "Alanian")]
+	[InlineData("Sardinia Borealis", "Sardinian")]
+	[InlineData("Alpes Maritimae", "Alpine")]
+	[InlineData("Media Magna", "Median")]
+	
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]
 	[InlineData("Achaea", "Achaean")]

@@ -451,6 +451,7 @@ public static partial class StringExtensions {
 {"*osu", "*osuite"}, // Yeosu
 {"*pan", "*panese"}, // Japan
 {"*peg", "*pegger"}, // Winnipeg
+{"*pes", "*pine"}, // Alpes
 {"*pje", "*pjan"}, // Skopje
 {"*poh", "*pohian"}, // Ipoh
 {"*pur", "*puri"}, // Manipur
@@ -623,5 +624,21 @@ public static partial class StringExtensions {
 {"*u", "*uan"}, // Vanuatu
 {"*x", "*xian"}, // Essex
 {"*y", "*ian"} // Hungary
+	};
+	// Same as adjective rules, but are matched multiple times.
+	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
+		// <ENDING, ADJ. SUFFIX>
+		
+{"* Maioris", "*"}, // Armenia Maioris
+{"* Minoris", "*"}, // Armenia Minoris
+{"* Superioris", "*"}, // Caria Superioris
+{"* Inferioris", "*"}, // Caria Inferioris
+{"* Meridionalis", "*"}, // Celtiberia Meridionalis
+{"* Septentrionalis", "*"}, // Celtiberia Septentrionalis
+{"* Orientalis", "*"}, // Alania Orientalis
+{"* Borealis", "*"}, // Sardinia Borealis
+{"* Maritimae", "*"}, // Alpes Maritimae
+{"* Magna", "*"} // Media Magna
+
 	};
 }

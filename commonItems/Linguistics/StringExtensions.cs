@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Open.Collections;
+using System;
 using System.Linq;
 
 namespace commonItems.Linguistics;
@@ -8,10 +9,10 @@ public static partial class StringExtensions {
 		return new string(str.Reverse().SkipWhile(c => !char.IsLetterOrDigit(c)).Reverse().ToArray());
 	}
 
-	public static string GetAdjective(this string str) {
+	private static string ApplyAdjectiveRules(this string str, OrderedDictionary<string, string> rules, bool multipleIterations = false) {
 		const string consonantPlaceholder = "[c]";
 		const string vowelPlaceholder = "[v]";
-		foreach (var (ending, adjectiveEnding) in AdjectiveRules) {
+		foreach (var (ending, adjectiveEnding) in rules) {
 			var evaluatedStr = str;
 			var evaluatedEnding = ending;
 
@@ -51,21 +52,33 @@ public static partial class StringExtensions {
 				.Replace("*", commonPart)
 				.Replace("[c]", consonant)
 				.Replace("[v]", vowel);
+			
+			if (multipleIterations && adjective != str) {
+				return adjective.ApplyAdjectiveRules(rules, multipleIterations);
+			}
 			return adjective;
+		}
+		
+		if (multipleIterations) {
+			return str;
 		}
 
 		var foldedStr = str.FoldToASCII();
 		if (foldedStr != str) {
-			return foldedStr.GetAdjective();
+			return foldedStr.ApplyAdjectiveRules(rules, multipleIterations);
 		}
 
 		var trimmedStr = str.TrimNonAlphanumericEnding();
 		if (trimmedStr != str) {
-			return trimmedStr.GetAdjective();
+			return trimmedStr.ApplyAdjectiveRules(rules, multipleIterations);
 		}
-
+			
 		// fallback
 		Logger.Warn($"No matching adjective rule found for \"{str}\"!");
 		return $"{str}ite";
 	}
+
+	public static string GetAdjective(this string str) => str
+		.ApplyAdjectiveRules(AdjectiveRewriteRules, multipleIterations: true)
+		.ApplyAdjectiveRules(AdjectiveRules, multipleIterations: false);
 }
