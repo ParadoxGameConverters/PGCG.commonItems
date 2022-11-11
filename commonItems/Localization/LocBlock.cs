@@ -37,7 +37,7 @@ public class LocBlock : IIdentifiable<string> {
 			if (language != baseLanguage) {
 				toReturn = localizations.GetValueOrDefault(baseLanguage, null);
 			}
-			return toReturn ?? Id;
+			return toReturn;
 		}
 		set => localizations[language] = value;
 	}
