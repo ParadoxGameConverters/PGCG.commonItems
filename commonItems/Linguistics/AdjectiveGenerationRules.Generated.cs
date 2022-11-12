@@ -8,6 +8,10 @@ public static partial class StringExtensions {
 		// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Alpes Cottiae", "Cottian"}, // Alpes Cottiae
+{"Alpes Graiae", "Grajan"}, // Alpes Graiae
+{"Maritime Alps", "Maritimois"}, // Maritime Alps
+{"*Tarim Basin", "*Tarim"}, // Tarim Basin
 {"*Solihull", "*Silhillian"}, // Sendai
 {"*Sendai", "*Sendaikko"}, // Sendai
 {"*Sapporo", "*Sapporokko"}, // Sapporo
@@ -425,6 +429,7 @@ public static partial class StringExtensions {
 {"*loo", "*luvian"}, // Waterloo
 {"*los", "*losian"}, // Pylos
 {"*lta", "*ltese"}, // Malta
+{"*mah", "*mi"}, // Tihamah
 {"*man", "*mani"}, // Oman
 {"*mas", "*mian"}, // Bahamas
 {"*men", "*meni"}, // Yemen
@@ -627,18 +632,20 @@ public static partial class StringExtensions {
 	};
 	// Same as adjective rules, but are matched multiple times.
 	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
-		// <ENDING, ADJ. SUFFIX>
-		
-{"* Maioris", "*"}, // Armenia Maioris
-{"* Minoris", "*"}, // Armenia Minoris
-{"* Superioris", "*"}, // Caria Superioris
-{"* Inferioris", "*"}, // Caria Inferioris
-{"* Meridionalis", "*"}, // Celtiberia Meridionalis
-{"* Septentrionalis", "*"}, // Celtiberia Septentrionalis
-{"* Orientalis", "*"}, // Alania Orientalis
-{"* Borealis", "*"}, // Sardinia Borealis
-{"* Maritimae", "*"}, // Alpes Maritimae
-{"* Magna", "*"} // Media Magna
+		{"Arabia Maritimae", "Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
+{"Alpes Maritimae", "Maritime Alps"},
+{"Media Atropatene", "Atropatene"},
 
+{"* Minoris", "Lesser *"}, // Armenia Minoris		
+{"* Maioris", "Greater *"}, // Armenia Maioris
+{"* Superioris", "Upper *"}, // Caria Superioris
+{"* Inferioris", "Lower *"}, // Caria Inferioris
+{"* Borealis", "North *"}, // Sardinia Borealis
+{"* Septentrionalis", "North *"}, // Celtiberia Septentrionalis
+{"* Meridionalis", "South *"}, // Celtiberia Meridionalis
+{"* Australis", "South *"}, // Ivernia Australis
+{"* Orientalis", "East *"}, // Alania Orientalis
+{"* Magna", "Greater *"}, // Media Magna
+{"* Maritimae", "Maritime *"} // Arabia Maritimae
 	};
 }

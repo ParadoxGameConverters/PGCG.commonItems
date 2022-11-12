@@ -1,6 +1,10 @@
 ﻿// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Alpes Cottiae", "Cottian"}, // Alpes Cottiae
+{"Alpes Graiae", "Grajan"}, // Alpes Graiae
+{"Maritime Alps", "Maritimois"}, // Maritime Alps
+{"*Tarim Basin", "*Tarim"}, // Tarim Basin
 {"*Solihull", "*Silhillian"}, // Sendai
 {"*Sendai", "*Sendaikko"}, // Sendai
 {"*Sapporo", "*Sapporokko"}, // Sapporo
@@ -418,6 +422,7 @@
 {"*loo", "*luvian"}, // Waterloo
 {"*los", "*losian"}, // Pylos
 {"*lta", "*ltese"}, // Malta
+{"*mah", "*mi"}, // Tihamah
 {"*man", "*mani"}, // Oman
 {"*mas", "*mian"}, // Bahamas
 {"*men", "*meni"}, // Yemen
