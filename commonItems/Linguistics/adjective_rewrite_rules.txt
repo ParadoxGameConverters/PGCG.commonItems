@@ -1,0 +1,15 @@
+﻿{"Arabia Maritimae", "Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
+{"Alpes Maritimae", "Maritime Alps"},
+{"Media Atropatene", "Atropatene"},
+
+{"* Minoris", "Lesser *"}, // Armenia Minoris		
+{"* Maioris", "Greater *"}, // Armenia Maioris
+{"* Superioris", "Upper *"}, // Caria Superioris
+{"* Inferioris", "Lower *"}, // Caria Inferioris
+{"* Borealis", "North *"}, // Sardinia Borealis
+{"* Septentrionalis", "North *"}, // Celtiberia Septentrionalis
+{"* Meridionalis", "South *"}, // Celtiberia Meridionalis
+{"* Australis", "South *"}, // Ivernia Australis
+{"* Orientalis", "East *"}, // Alania Orientalis
+{"* Magna", "Greater *"}, // Media Magna
+{"* Maritimae", "Maritime *"} // Arabia Maritimae

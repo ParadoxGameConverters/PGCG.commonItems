@@ -1,6 +1,10 @@
 ﻿// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Alpes Cottiae", "Cottian"}, // Alpes Cottiae
+{"Alpes Graiae", "Grajan"}, // Alpes Graiae
+{"Maritime Alps", "Maritimois"}, // Maritime Alps
+{"*Tarim Basin", "*Tarim"}, // Tarim Basin
 {"*Solihull", "*Silhillian"}, // Sendai
 {"*Sendai", "*Sendaikko"}, // Sendai
 {"*Sapporo", "*Sapporokko"}, // Sapporo
@@ -151,6 +155,7 @@
 {"*thiye", "*thiyennese"}, // Fethiye
 {"*tland", "*tlander"}, // Portland
 {"*troit", "*troiter"}, // Detroit
+{"*Tsang", "*Tsangpa"}, // Tsang
 {"*ttium", "*ttian"}, // Bruttium
 {"*uiana", "*uianese"}, // Guiana
 {"*ourne", "*urnian"}, // Melbourne
@@ -397,6 +402,7 @@
 {"*inz", "*inzer"}, // Linz
 {"*ion", "*ian"}, // Rhegion
 {"*ios", "*iot"}, // Chios
+{"*iri", "*iri"}, // Mahendragiri
 {"*iro", "*irene"}, // Cairo
 {"*ise", "*isean"}, // Boise
 {"*ite", "*itian"}, // Melite
@@ -416,6 +422,7 @@
 {"*loo", "*luvian"}, // Waterloo
 {"*los", "*losian"}, // Pylos
 {"*lta", "*ltese"}, // Malta
+{"*mah", "*mi"}, // Tihamah
 {"*man", "*mani"}, // Oman
 {"*mas", "*mian"}, // Bahamas
 {"*men", "*meni"}, // Yemen
@@ -442,6 +449,7 @@
 {"*osu", "*osuite"}, // Yeosu
 {"*pan", "*panese"}, // Japan
 {"*peg", "*pegger"}, // Winnipeg
+{"*pes", "*pine"}, // Alpes
 {"*pje", "*pjan"}, // Skopje
 {"*poh", "*pohian"}, // Ipoh
 {"*pur", "*puri"}, // Manipur

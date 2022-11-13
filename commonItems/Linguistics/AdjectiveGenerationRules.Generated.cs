@@ -8,6 +8,10 @@ public static partial class StringExtensions {
 		// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Alpes Cottiae", "Cottian"}, // Alpes Cottiae
+{"Alpes Graiae", "Grajan"}, // Alpes Graiae
+{"Maritime Alps", "Maritimois"}, // Maritime Alps
+{"*Tarim Basin", "*Tarim"}, // Tarim Basin
 {"*Solihull", "*Silhillian"}, // Sendai
 {"*Sendai", "*Sendaikko"}, // Sendai
 {"*Sapporo", "*Sapporokko"}, // Sapporo
@@ -158,6 +162,7 @@ public static partial class StringExtensions {
 {"*thiye", "*thiyennese"}, // Fethiye
 {"*tland", "*tlander"}, // Portland
 {"*troit", "*troiter"}, // Detroit
+{"*Tsang", "*Tsangpa"}, // Tsang
 {"*ttium", "*ttian"}, // Bruttium
 {"*uiana", "*uianese"}, // Guiana
 {"*ourne", "*urnian"}, // Melbourne
@@ -404,6 +409,7 @@ public static partial class StringExtensions {
 {"*inz", "*inzer"}, // Linz
 {"*ion", "*ian"}, // Rhegion
 {"*ios", "*iot"}, // Chios
+{"*iri", "*iri"}, // Mahendragiri
 {"*iro", "*irene"}, // Cairo
 {"*ise", "*isean"}, // Boise
 {"*ite", "*itian"}, // Melite
@@ -423,6 +429,7 @@ public static partial class StringExtensions {
 {"*loo", "*luvian"}, // Waterloo
 {"*los", "*losian"}, // Pylos
 {"*lta", "*ltese"}, // Malta
+{"*mah", "*mi"}, // Tihamah
 {"*man", "*mani"}, // Oman
 {"*mas", "*mian"}, // Bahamas
 {"*men", "*meni"}, // Yemen
@@ -449,6 +456,7 @@ public static partial class StringExtensions {
 {"*osu", "*osuite"}, // Yeosu
 {"*pan", "*panese"}, // Japan
 {"*peg", "*pegger"}, // Winnipeg
+{"*pes", "*pine"}, // Alpes
 {"*pje", "*pjan"}, // Skopje
 {"*poh", "*pohian"}, // Ipoh
 {"*pur", "*puri"}, // Manipur
@@ -621,5 +629,23 @@ public static partial class StringExtensions {
 {"*u", "*uan"}, // Vanuatu
 {"*x", "*xian"}, // Essex
 {"*y", "*ian"} // Hungary
+	};
+	// Same as adjective rules, but are matched multiple times.
+	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
+		{"Arabia Maritimae", "Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
+{"Alpes Maritimae", "Maritime Alps"},
+{"Media Atropatene", "Atropatene"},
+
+{"* Minoris", "Lesser *"}, // Armenia Minoris		
+{"* Maioris", "Greater *"}, // Armenia Maioris
+{"* Superioris", "Upper *"}, // Caria Superioris
+{"* Inferioris", "Lower *"}, // Caria Inferioris
+{"* Borealis", "North *"}, // Sardinia Borealis
+{"* Septentrionalis", "North *"}, // Celtiberia Septentrionalis
+{"* Meridionalis", "South *"}, // Celtiberia Meridionalis
+{"* Australis", "South *"}, // Ivernia Australis
+{"* Orientalis", "East *"}, // Alania Orientalis
+{"* Magna", "Greater *"}, // Media Magna
+{"* Maritimae", "Maritime *"} // Arabia Maritimae
 	};
 }
