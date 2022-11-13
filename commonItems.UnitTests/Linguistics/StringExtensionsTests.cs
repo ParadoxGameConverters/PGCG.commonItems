@@ -162,6 +162,9 @@ public class StringExtensionsTests {
 	[InlineData("Media Atropatene", "Atropatenian")]
 	[InlineData("Atropatene", "Atropatenian")]
 	[InlineData("Maritime Alps", "Maritimois")]
+	[InlineData("Coele Syria", "Coelesyrian")]
+	[InlineData("Laugaricio", "Laugarician")]
+	[InlineData("Yonnav", "Yonnavite")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -176,6 +179,15 @@ public class StringExtensionsTests {
 	[InlineData("Ivernia Australis", "South Ivernian")]
 	[InlineData("Alpes Maritimae", "Maritimois")]
 	[InlineData("Arabia Maritimae", "Tihami")]
+	[InlineData("Celtiberia Centralis", "Central Celtiberian")]
+	[InlineData("Pannonia Prima", "Proto-Pannonian")]
+	[InlineData("Pannonia Secunda", "Deutero-Pannonian")]
+	[InlineData("Pannonia Tertia", "Trito-Pannonian")]
+	[InlineData("Caucasian Iberia", "Kartvelian")]
+	[InlineData("Dacia Ripensis", "Riparian Dacian")]
+	[InlineData("Phrygia Ripensis", "Riparian Phrygian")]
+	[InlineData("Cilicia Pedias", "Smooth Cilician")]
+	[InlineData("Alexandreia pros to Latmo", "Alexandrian")]
 	
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]

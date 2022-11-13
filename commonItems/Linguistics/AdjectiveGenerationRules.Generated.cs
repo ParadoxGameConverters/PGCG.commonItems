@@ -8,9 +8,10 @@ public static partial class StringExtensions {
 		// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
-{"Alpes Cottiae", "Cottian"}, // Alpes Cottiae
-{"Alpes Graiae", "Grajan"}, // Alpes Graiae
-{"Maritime Alps", "Maritimois"}, // Maritime Alps
+{"Coele Syria", "Coelesyrian"},
+{"Alpes Cottiae", "Cottian"},
+{"Alpes Graiae", "Grajan"},
+{"Maritime Alps", "Maritimois"},
 {"*Tarim Basin", "*Tarim"}, // Tarim Basin
 {"*Solihull", "*Silhillian"}, // Sendai
 {"*Sendai", "*Sendaikko"}, // Sendai
@@ -365,6 +366,7 @@ public static partial class StringExtensions {
 {"*car", "*can"}, // Madagascar
 {"*cau", "*canese"}, // Macau
 {"*chi", "*chiite"}, // Karachi
+{"*cio", "*cian"}, // Laugaricio
 {"*cow", "*covian"}, // Cracow
 {"*cus", "*cene"}, // Damascus
 {"*dağ", "*danian"}, // Tekirdağ
@@ -627,6 +629,7 @@ public static partial class StringExtensions {
 {"*r", "*rian"}, // Ecuador
 {"*t", "*tian"}, // Egypt
 {"*u", "*uan"}, // Vanuatu
+{"*v", "*vite"}, // Yonnav
 {"*x", "*xian"}, // Essex
 {"*y", "*ian"} // Hungary
 	};
@@ -635,6 +638,7 @@ public static partial class StringExtensions {
 		{"Arabia Maritimae", "Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
 {"Alpes Maritimae", "Maritime Alps"},
 {"Media Atropatene", "Atropatene"},
+{"Caucasian Iberia", "Kartvelia"},
 
 {"* Minoris", "Lesser *"}, // Armenia Minoris		
 {"* Maioris", "Greater *"}, // Armenia Maioris
@@ -645,7 +649,15 @@ public static partial class StringExtensions {
 {"* Meridionalis", "South *"}, // Celtiberia Meridionalis
 {"* Australis", "South *"}, // Ivernia Australis
 {"* Orientalis", "East *"}, // Alania Orientalis
+{"* Centralis", "Central *"}, // Celtiberia Centralis
 {"* Magna", "Greater *"}, // Media Magna
-{"* Maritimae", "Maritime *"} // Arabia Maritimae
+{"* Maritimae", "Maritime *"} ,// Arabia Maritimae
+{"* Ripensis", "Riparian *"}, // Dacia Ripensis
+{"* Prima", "Proto-*"}, // Armenia Prima
+{"* Secunda", "Deutero-*"}, // Armenia Secunda
+{"* Tertia", "Trito-*"}, // Armenia Tertia
+{"* Pedias", "Smooth *"}, // Cilicia Pedias
+
+{"* pros to Latmo", "*"} // Alexandreia pros to Latmo
 	};
 }

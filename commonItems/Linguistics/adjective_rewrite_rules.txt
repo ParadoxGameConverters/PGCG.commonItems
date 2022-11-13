@@ -1,6 +1,7 @@
 ﻿{"Arabia Maritimae", "Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
 {"Alpes Maritimae", "Maritime Alps"},
 {"Media Atropatene", "Atropatene"},
+{"Caucasian Iberia", "Kartvelia"},
 
 {"* Minoris", "Lesser *"}, // Armenia Minoris		
 {"* Maioris", "Greater *"}, // Armenia Maioris
@@ -11,5 +12,13 @@
 {"* Meridionalis", "South *"}, // Celtiberia Meridionalis
 {"* Australis", "South *"}, // Ivernia Australis
 {"* Orientalis", "East *"}, // Alania Orientalis
+{"* Centralis", "Central *"}, // Celtiberia Centralis
 {"* Magna", "Greater *"}, // Media Magna
-{"* Maritimae", "Maritime *"} // Arabia Maritimae
+{"* Maritimae", "Maritime *"} ,// Arabia Maritimae
+{"* Ripensis", "Riparian *"}, // Dacia Ripensis
+{"* Prima", "Proto-*"}, // Armenia Prima
+{"* Secunda", "Deutero-*"}, // Armenia Secunda
+{"* Tertia", "Trito-*"}, // Armenia Tertia
+{"* Pedias", "Smooth *"}, // Cilicia Pedias
+
+{"* pros to Latmo", "*"} // Alexandreia pros to Latmo

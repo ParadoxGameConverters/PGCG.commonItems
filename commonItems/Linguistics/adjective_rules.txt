@@ -1,9 +1,10 @@
 ﻿// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
-{"Alpes Cottiae", "Cottian"}, // Alpes Cottiae
-{"Alpes Graiae", "Grajan"}, // Alpes Graiae
-{"Maritime Alps", "Maritimois"}, // Maritime Alps
+{"Coele Syria", "Coelesyrian"},
+{"Alpes Cottiae", "Cottian"},
+{"Alpes Graiae", "Grajan"},
+{"Maritime Alps", "Maritimois"},
 {"*Tarim Basin", "*Tarim"}, // Tarim Basin
 {"*Solihull", "*Silhillian"}, // Sendai
 {"*Sendai", "*Sendaikko"}, // Sendai
@@ -358,6 +359,7 @@
 {"*car", "*can"}, // Madagascar
 {"*cau", "*canese"}, // Macau
 {"*chi", "*chiite"}, // Karachi
+{"*cio", "*cian"}, // Laugaricio
 {"*cow", "*covian"}, // Cracow
 {"*cus", "*cene"}, // Damascus
 {"*dağ", "*danian"}, // Tekirdağ
@@ -620,5 +622,6 @@
 {"*r", "*rian"}, // Ecuador
 {"*t", "*tian"}, // Egypt
 {"*u", "*uan"}, // Vanuatu
+{"*v", "*vite"}, // Yonnav
 {"*x", "*xian"}, // Essex
 {"*y", "*ian"} // Hungary
