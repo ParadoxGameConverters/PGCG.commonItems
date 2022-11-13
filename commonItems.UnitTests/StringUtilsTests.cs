@@ -5,6 +5,15 @@ namespace commonItems.UnitTests;
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public class StringUtilsTests {
+	[Theory]
+	[InlineData("abc def", false)]
+	[InlineData("\"abc def", false)]
+	[InlineData("abc def\"", false)]
+	[InlineData("\"abc def\"", true)]
+	public void IsQuotedReturnsCorrectValue(string str, bool expectedOutput) {
+		Assert.Equal(expectedOutput, str.IsQuoted());
+	}
+	
 	[Fact]
 	public void RemQuotesRemovesQuotes() {
 		const string quotedString = "\"Quoted string\"";
