@@ -187,6 +187,7 @@ public static partial class StringExtensions {
 {"*aïda", "*idonian"}, // Saïda
 {"*Agde", "*Agathois"}, // Agde
 {"*ales", "*elsh"}, // Wales
+{"*alta", "*altese"}, // Malta
 {"*aman", "*amanian"}, // Dalaman
 {"*ammu", "*ammu"}, // Jammu
 {"*ance", "*ench"}, // France
@@ -434,7 +435,7 @@ public static partial class StringExtensions {
 {"*lon", "*lonian"}, // Ashkelon
 {"*loo", "*luvian"}, // Waterloo
 {"*los", "*losian"}, // Pylos
-{"*lta", "*ltese"}, // Malta
+{"*lta", "*ltan"}, // Western Delta
 {"*mah", "*mi"}, // Tihamah
 {"*man", "*mani"}, // Oman
 {"*mas", "*mian"}, // Bahamas
@@ -499,6 +500,7 @@ public static partial class StringExtensions {
 {"*tep", "*tepian"}, // Gaziantep
 {"*ter", "*trian"}, // Chester
 {"*tle", "*tlian"}, // Newcastle
+{"*tra", "*tran"}, // Suvarna Gotra
 {"*tte", "*ttean"}, // Charlotte
 {"*tus", "*tian"}, // Carystus
 {"*umi", "*umite"}, // Gumi
@@ -644,11 +646,19 @@ public static partial class StringExtensions {
 {"Arabia Petraea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
 {"Alpes Maritimae", "Maritime Alps"},
 {"Media Atropatene", "Atropatene"},
+{"Media Choromithrene", "Choromithrene"},
 {"Caucasian Iberia", "Kartvelia"},
 {"Ptolemais Epithera", "Epitheros"}, // http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0006%3Aentry%3Dptolemais-theron
 {"Bithynia et Paphlagonia", "Bithyno-Paphlagonia"}, // https://dergipark.org.tr/tr/download/article-file/1715241
+{"Vallis Arni", "Arno"}, // means "valley of Arno"
 
-{"* Felix", "Felicio-*"},  // Arabia Felix
+// Phrygia Parorea
+{"* Asiatica", "Asio-*"}, // Sarmatia Asiatica
+{"* Europea", "Euro-*"}, // Sarmatia Europea
+{"* Hyrcania", "Hyrcano-*"}, // Sarmatia Hyrcania
+{"* Parorea", "Paroreo-*"}, // Phrygia Parorea
+{"* Trachea", "Tracheo-*"}, // Cilicia Trachea
+{"* Felix", "Felicio-*"}, // Arabia Felix
 {"* Felix Centralis", "Central Felicio-*"},  // Arabia Felix Centralis
 {"* Felix Occidentalis", "West Felicio-*"},  // Arabia Felix Occidentalis
 {"* Felix Orientalis", "East Felicio-*"},  // Arabia Felix Orientalis

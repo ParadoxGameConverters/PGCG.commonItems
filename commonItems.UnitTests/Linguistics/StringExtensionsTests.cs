@@ -168,6 +168,10 @@ public class StringExtensionsTests {
 	[InlineData("Baetica Gaditanus", "Gaditanian")]
 	[InlineData("Baetica Hispalensis", "Hispalensian")]
 	[InlineData("Baetica Cordubensis", "Cordubensian")]
+	[InlineData("Western Delta", "Western Deltan")]
+	[InlineData("Central Delta", "Central Deltan")]
+	[InlineData("Eastern Delta", "Eastern Deltan")]
+	[InlineData("Dakshina Kosala", "Dakshina Kosalan")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -205,29 +209,27 @@ public class StringExtensionsTests {
 	[InlineData("Bithynia et Paphlagonia", "Bithyno-Paphlagonian")]
 	[InlineData("Illyria Graeca", "Graeco-Illyrian")]
 	[InlineData("Illyria Greca", "Graeco-Illyrian")]
+	[InlineData("Sarmatia Europea", "Euro-Sarmatian")]
+	[InlineData("Sarmatia Asiatica", "Asio-Sarmatian")]
+	[InlineData("Media Choromithrene", "Choromithrenian")]
+	[InlineData("Suvarna Gotra", "Suvarna Gotran")]
+	[InlineData("Phrygia Parorea", "Paroreo-Phrygian")]
+	[InlineData("Cilicia Trachea", "Tracheo-Cilician")]
+	[InlineData("Vallis Arni", "Arnese")]  // doesn't need to be Arnese, other adjective from Arno would work
+	[InlineData("Sarmatia Hyrcania", "Hyrcano-Sarmatian")]
 	
-	// TODO: Alpes Carniae
-	// TODO: Alpes Raetiae 
-	// TODO: Vallis Arni
-	// TODO: Scandia Insula  (Scandian?)
-	// TODO: Ultima Thule  (Ultima Thulean?)
-	// TODO: Cilicia Trachea
-	// TODO: Phrygia Parorea
-	// TODO: Phrygia Ulterioris
-	// TODO: Cappadocia Taurica
-	// TODO: Cappadocia Pontica
-	// TODO: Myos Hormos  (Myos Hormosian?)
-	// TODO: Western Delta, Central Delta, Eastern Delta
-	// TODO: Maeotia Minores
-	// TODO: Sarmatia Europea
-	// TODO: Scythia Ultima
-	// TODO: Sarmatia Asiatica
-	// TODO: Caucasian Albania
-	// TODO: Sarmatia Hyrcania
-	// TODO:  Scythia Transmontem
-	// TODO: Media Choromithrene
-	// TODO: Suvarna Gotra
-	// TODO: Dakshina Kosala
+	// TODO: Alpes Carniae									Carnian ; Alpine Carnian
+	// TODO: Alpes Raetiae									Rhaetian ; Alpine Raetian
+	// TODO: Scandia Insula  (Scandian?)					Scandian ; Insular Scandian
+	// TODO: Ultima Thule  (Ultima Thulean?)				Ultima Thulean ; Thulian/Furthest Thulian
+	// TODO: Phrygia Ulterioris								Transphrygian ; Further Phrygian ; Ulterior Phrygian
+	// TODO: Cappadocia Taurica								Taurico-Cappadocian ; Tauric Cappadocian
+	// TODO: Cappadocia Pontica								Pontico-Cappadocian ; Pontic Cappadocian
+	// TODO: Myos Hormos  (Myos Hormosian?)					Myohormian ; Myohormite ; Myohorman ; Myos
+	// TODO: Maeotia Minores								Leser Maeotian ; Lesser Maeotian
+	// TODO: Scythia Ultima									Transscythian  ; Furthest Scythian
+	// TODO: Caucasian Albania								Caucasian Albanian ; Albanian
+	// TODO: Scythia Transmontem							Transmontane Scythian ; Transmontano-Scythian ; Scytho-Transmontane
 
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]

@@ -180,6 +180,7 @@
 {"*aïda", "*idonian"}, // Saïda
 {"*Agde", "*Agathois"}, // Agde
 {"*ales", "*elsh"}, // Wales
+{"*alta", "*altese"}, // Malta
 {"*aman", "*amanian"}, // Dalaman
 {"*ammu", "*ammu"}, // Jammu
 {"*ance", "*ench"}, // France
@@ -427,7 +428,7 @@
 {"*lon", "*lonian"}, // Ashkelon
 {"*loo", "*luvian"}, // Waterloo
 {"*los", "*losian"}, // Pylos
-{"*lta", "*ltese"}, // Malta
+{"*lta", "*ltan"}, // Western Delta
 {"*mah", "*mi"}, // Tihamah
 {"*man", "*mani"}, // Oman
 {"*mas", "*mian"}, // Bahamas
@@ -492,6 +493,7 @@
 {"*tep", "*tepian"}, // Gaziantep
 {"*ter", "*trian"}, // Chester
 {"*tle", "*tlian"}, // Newcastle
+{"*tra", "*tran"}, // Suvarna Gotra
 {"*tte", "*ttean"}, // Charlotte
 {"*tus", "*tian"}, // Carystus
 {"*umi", "*umite"}, // Gumi

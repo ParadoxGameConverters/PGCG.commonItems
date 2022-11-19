@@ -2,11 +2,19 @@
 {"Arabia Petraea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
 {"Alpes Maritimae", "Maritime Alps"},
 {"Media Atropatene", "Atropatene"},
+{"Media Choromithrene", "Choromithrene"},
 {"Caucasian Iberia", "Kartvelia"},
 {"Ptolemais Epithera", "Epitheros"}, // http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0006%3Aentry%3Dptolemais-theron
 {"Bithynia et Paphlagonia", "Bithyno-Paphlagonia"}, // https://dergipark.org.tr/tr/download/article-file/1715241
+{"Vallis Arni", "Arno"}, // means "valley of Arno"
 
-{"* Felix", "Felicio-*"},  // Arabia Felix
+// Phrygia Parorea
+{"* Asiatica", "Asio-*"}, // Sarmatia Asiatica
+{"* Europea", "Euro-*"}, // Sarmatia Europea
+{"* Hyrcania", "Hyrcano-*"}, // Sarmatia Hyrcania
+{"* Parorea", "Paroreo-*"}, // Phrygia Parorea
+{"* Trachea", "Tracheo-*"}, // Cilicia Trachea
+{"* Felix", "Felicio-*"}, // Arabia Felix
 {"* Felix Centralis", "Central Felicio-*"},  // Arabia Felix Centralis
 {"* Felix Occidentalis", "West Felicio-*"},  // Arabia Felix Occidentalis
 {"* Felix Orientalis", "East Felicio-*"},  // Arabia Felix Orientalis
