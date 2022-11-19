@@ -557,6 +557,7 @@
 {"*ix", "*ician"}, // Phoenix
 {"*ía", "*ian"}, // Almería
 {"*ík", "*ikian"}, // Reykjavík
+{"*jh", "*jhi"}, // Wajh
 {"*ju", "*ju"}, // Gwangju
 {"*fi", "*fitan"}, // Amalfi
 {"*ff", "*ffian"}, // Cardiff

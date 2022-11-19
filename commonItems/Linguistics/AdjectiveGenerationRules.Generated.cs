@@ -564,6 +564,7 @@ public static partial class StringExtensions {
 {"*ix", "*ician"}, // Phoenix
 {"*ía", "*ian"}, // Almería
 {"*ík", "*ikian"}, // Reykjavík
+{"*jh", "*jhi"}, // Wajh
 {"*ju", "*ju"}, // Gwangju
 {"*fi", "*fitan"}, // Amalfi
 {"*ff", "*ffian"}, // Cardiff
@@ -636,8 +637,8 @@ public static partial class StringExtensions {
 	};
 	// Same as adjective rules, but are matched multiple times.
 	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
-		{"Arabia Ad Sinus", "North Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
-{"Arabia Maritimae", "South Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
+		{"Arabia Ad Sinus", "Wajh"}, // https://en.wikipedia.org/wiki/Al_Wajh
+{"Arabia Maritimae", "Jedda"}, // https://en.wikipedia.org/wiki/Jeddah
 {"Arabia Petrea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
 {"Arabia Petraea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
 {"Arabia Relicta", "Tabouk"}, // https://en.wikipedia.org/wiki/Tabuk,_Saudi_Arabia#History
