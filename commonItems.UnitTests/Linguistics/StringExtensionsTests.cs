@@ -210,7 +210,7 @@ public class StringExtensionsTests {
 	// TODO: Alpes Raetiae 
 	// TODO: Vallis Arni
 	// TODO: Scandia Insula  (Scandian?)
-	// TODO: Ultima Thule  (Ultima Thulean)
+	// TODO: Ultima Thule  (Ultima Thulean?)
 	// TODO: Cilicia Trachea
 	// TODO: Phrygia Parorea
 	// TODO: Phrygia Ulterioris
