@@ -202,6 +202,7 @@ public static partial class StringExtensions {
 {"*bira", "*birano"}, // Itabira
 {"*blin", "*blin"}, // Dublin
 {"*borg", "*borgenser"}, // Aalborg
+{"*bouk", "*bouki"}, // Tabouk
 {"*burg", "*burger"}, // Hamburg
 {"*burn", "*burnian"}, // Blackburn
 {"Cali", "Caleño"}, // Cali
@@ -563,6 +564,7 @@ public static partial class StringExtensions {
 {"*ix", "*ician"}, // Phoenix
 {"*ía", "*ian"}, // Almería
 {"*ík", "*ikian"}, // Reykjavík
+{"*jh", "*jhi"}, // Wajh
 {"*ju", "*ju"}, // Gwangju
 {"*fi", "*fitan"}, // Amalfi
 {"*ff", "*ffian"}, // Cardiff
@@ -635,11 +637,19 @@ public static partial class StringExtensions {
 	};
 	// Same as adjective rules, but are matched multiple times.
 	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
-		{"Arabia Maritimae", "Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
+		{"Arabia Ad Sinus", "Wajh"}, // https://en.wikipedia.org/wiki/Al_Wajh
+{"Arabia Maritimae", "Jedda"}, // https://en.wikipedia.org/wiki/Jeddah
+{"Arabia Petrea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
+{"Arabia Petraea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
+{"Arabia Relicta", "Tabouk"}, // https://en.wikipedia.org/wiki/Tabuk,_Saudi_Arabia#History
 {"Alpes Maritimae", "Maritime Alps"},
 {"Media Atropatene", "Atropatene"},
 {"Caucasian Iberia", "Kartvelia"},
 
+{"* Felix Centralis", "Central Happy *"},
+{"* Felix Occidentalis", "West Happy *"},
+{"* Felix Orientalis", "East Happy *"},
+{"* Felix", "Happy *"}, // Arabia Felix
 {"* Minoris", "Lesser *"}, // Armenia Minoris		
 {"* Maioris", "Greater *"}, // Armenia Maioris
 {"* Superioris", "Upper *"}, // Caria Superioris
