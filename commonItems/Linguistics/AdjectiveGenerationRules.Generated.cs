@@ -648,6 +648,10 @@ public static partial class StringExtensions {
 {"Ptolemais Epithera", "Epitheros"}, // http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0006%3Aentry%3Dptolemais-theron
 {"Bithynia et Paphlagonia", "Bithyno-Paphlagonia"}, // https://dergipark.org.tr/tr/download/article-file/1715241
 
+{"* Felix", "Felicio-*"},  // Arabia Felix
+{"* Felix Centralis", "Central Felicio-*"},  // Arabia Felix Centralis
+{"* Felix Occidentalis", "West Felicio-*"},  // Arabia Felix Occidentalis
+{"* Felix Orientalis", "East Felicio-*"},  // Arabia Felix Orientalis
 {"* Minoris", "Lesser *"}, // Armenia Minoris		
 {"* Maioris", "Greater *"}, // Armenia Maioris
 {"* Superioris", "Upper *"}, // Caria Superioris
@@ -659,7 +663,6 @@ public static partial class StringExtensions {
 {"* Orientalis", "East *"}, // Alania Orientalis
 {"* Centralis", "Central *"}, // Celtiberia Centralis
 {"* Magna", "Greater *"}, // Media Magna
-{"* Maritimae", "Maritime *"} ,// Arabia Maritimae
 {"* Ripensis", "Riparian *"}, // Dacia Ripensis
 {"* Prima", "Proto-*"}, // Armenia Prima
 {"* Secunda", "Deutero-*"}, // Armenia Secunda
@@ -667,9 +670,10 @@ public static partial class StringExtensions {
 {"* Pedias", "Smooth *"}, // Cilicia Pedias
 {"* Ad Sinus", "Sinuo-*"}, // Arabia Ad Sinus
 {"* Maritimae", "Thalasso-*"}, // Arabia Maritimae
-{"* Felix", "Felicio-*"},  // Arabia Felix
 {"* Relicta", "Relicto-*"}, // Arabia Relicta
 {"* Salutaris", "Hygio-*"},  // Phrygia Salutaris
+{"* Greca", "Graeco-*"},  // Illyria Greca
+{"* Graeca", "Graeco-*"},
 
 {"* pros to Latmo", "*"} // Alexandreia pros to Latmo
 	};

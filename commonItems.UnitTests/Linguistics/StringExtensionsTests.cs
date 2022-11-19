@@ -203,13 +203,14 @@ public class StringExtensionsTests {
 	[InlineData("Phrygia Salutaris", "Hygio-Phrygian")]
 	[InlineData("Treveria Salutaris", "Hygio-Treverian")]
 	[InlineData("Bithynia et Paphlagonia", "Bithyno-Paphlagonian")]
+	[InlineData("Illyria Graeca", "Graeco-Illyrian")]
+	[InlineData("Illyria Greca", "Graeco-Illyrian")]
 	
 	// TODO: Alpes Carniae
 	// TODO: Alpes Raetiae 
 	// TODO: Vallis Arni
 	// TODO: Scandia Insula  (Scandian?)
 	// TODO: Ultima Thule  (Ultima Thulean)
-	// TODO: Illyria Graeca
 	// TODO: Cilicia Trachea
 	// TODO: Phrygia Parorea
 	// TODO: Phrygia Ulterioris
@@ -217,6 +218,10 @@ public class StringExtensionsTests {
 	// TODO: Cappadocia Pontica
 	// TODO: Myos Hormos  (Myos Hormosian?)
 	// TODO: Western Delta, Central Delta, Eastern Delta
+	// TODO: Maeotia Minores
+	// TODO: Sarmatia Europea
+	// TODO: Scythia Ultima
+	// TODO: Sarmatia Asiatica
 
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]
