@@ -165,6 +165,9 @@ public class StringExtensionsTests {
 	[InlineData("Coele Syria", "Coelesyrian")]
 	[InlineData("Laugaricio", "Laugarician")]
 	[InlineData("Yonnav", "Yonnavite")]
+	[InlineData("Baetica Gaditanus", "Gaditanian")]
+	[InlineData("Baetica Hispalensis", "Hispalensian")]
+	[InlineData("Baetica Cordubensis", "Cordubensian")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -187,16 +190,34 @@ public class StringExtensionsTests {
 	[InlineData("Phrygia Ripensis", "Riparian Phrygian")]
 	[InlineData("Cilicia Pedias", "Smooth Cilician")]
 	[InlineData("Alexandreia pros to Latmo", "Alexandrian")]
-	[InlineData("Arabia Felix", "Happy Arabian")]
-	[InlineData("Arabia Felix Centralis", "Central Happy Arabian")]
-	[InlineData("Arabia Felix Occidentalis", "West Happy Arabian")]
-	[InlineData("Arabia Felix Orientalis", "East Happy Arabian")]
-	[InlineData("Arabia Ad Sinus", "Wajhi")]
-	[InlineData("Arabia Maritimae", "Jeddan")]
+	[InlineData("Arabia Felix", "Felicio-Arabian")]
+	[InlineData("Arabia Felix Centralis", "Central Felicio-Arabian")]
+	[InlineData("Arabia Felix Occidentalis", "West Felicio-Arabian")]
+	[InlineData("Arabia Felix Orientalis", "East Felicio-Arabian")]
+	[InlineData("Arabia Ad Sinus", "Sinuo-Arabian")]
+	[InlineData("Arabia Maritimae", "Thalasso-Arabian")]
 	[InlineData("Arabia Petrea", "Petrean")]
 	[InlineData("Arabia Petraea", "Petrean")]
-	[InlineData("Arabia Relicta", "Tabouki")]
+	[InlineData("Arabia Relicta", "Relicto-Arabian")]
+	[InlineData("Ptolemais Epithera", "Epitheran")]
+	[InlineData("Phrygia Salutaris", "Hygio-Phrygian")]
+	[InlineData("Treveria Salutaris", "Hygio-Treverian")]
+	[InlineData("Bithynia et Paphlagonia", "Bithyno-Paphlagonian")]
 	
+	// TODO: Alpes Carniae
+	// TODO: Alpes Raetiae 
+	// TODO: Vallis Arni
+	// TODO: Scandia Insula  (Scandian?)
+	// TODO: Ultima Thule  (Ultima Thulean)
+	// TODO: Illyria Graeca
+	// TODO: Cilicia Trachea
+	// TODO: Phrygia Parorea
+	// TODO: Phrygia Ulterioris
+	// TODO: Cappadocia Taurica
+	// TODO: Cappadocia Pontica
+	// TODO: Myos Hormos  (Myos Hormosian?)
+	// TODO: Western Delta, Central Delta, Eastern Delta
+
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]
 	[InlineData("Achaea", "Achaean")]

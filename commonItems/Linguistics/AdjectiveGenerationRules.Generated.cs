@@ -8,6 +8,9 @@ public static partial class StringExtensions {
 		// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Baetica Cordubensis", "Cordubensian"}, // https://1library.co/article/cultura-y-pensamiento-estudios-medievales-hisp%C3%A1nicos.zlg664or
+{"Baetica Gaditanus", "Gaditanian"}, // https://en.wiktionary.org/wiki/Gaditanian
+{"Baetica Hispalensis", "Hispalensian"}, // https://quod.lib.umich.edu/e/eebo/A67489.0001.001/1:12.11?rgn=div2;view=fulltext
 {"Coele Syria", "Coelesyrian"},
 {"Alpes Cottiae", "Cottian"},
 {"Alpes Graiae", "Grajan"},
@@ -637,19 +640,14 @@ public static partial class StringExtensions {
 	};
 	// Same as adjective rules, but are matched multiple times.
 	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
-		{"Arabia Ad Sinus", "Wajh"}, // https://en.wikipedia.org/wiki/Al_Wajh
-{"Arabia Maritimae", "Jedda"}, // https://en.wikipedia.org/wiki/Jeddah
-{"Arabia Petrea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
+		{"Arabia Petrea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
 {"Arabia Petraea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
-{"Arabia Relicta", "Tabouk"}, // https://en.wikipedia.org/wiki/Tabuk,_Saudi_Arabia#History
 {"Alpes Maritimae", "Maritime Alps"},
 {"Media Atropatene", "Atropatene"},
 {"Caucasian Iberia", "Kartvelia"},
+{"Ptolemais Epithera", "Epitheros"}, // http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0006%3Aentry%3Dptolemais-theron
+{"Bithynia et Paphlagonia", "Bithyno-Paphlagonia"}, // https://dergipark.org.tr/tr/download/article-file/1715241
 
-{"* Felix Centralis", "Central Happy *"},
-{"* Felix Occidentalis", "West Happy *"},
-{"* Felix Orientalis", "East Happy *"},
-{"* Felix", "Happy *"}, // Arabia Felix
 {"* Minoris", "Lesser *"}, // Armenia Minoris		
 {"* Maioris", "Greater *"}, // Armenia Maioris
 {"* Superioris", "Upper *"}, // Caria Superioris
@@ -667,6 +665,11 @@ public static partial class StringExtensions {
 {"* Secunda", "Deutero-*"}, // Armenia Secunda
 {"* Tertia", "Trito-*"}, // Armenia Tertia
 {"* Pedias", "Smooth *"}, // Cilicia Pedias
+{"* Ad Sinus", "Sinuo-*"}, // Arabia Ad Sinus
+{"* Maritimae", "Thalasso-*"}, // Arabia Maritimae
+{"* Felix", "Felicio-*"},  // Arabia Felix
+{"* Relicta", "Relicto-*"}, // Arabia Relicta
+{"* Salutaris", "Hygio-*"},  // Phrygia Salutaris
 
 {"* pros to Latmo", "*"} // Alexandreia pros to Latmo
 	};
