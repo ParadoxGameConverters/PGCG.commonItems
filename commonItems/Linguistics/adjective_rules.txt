@@ -195,6 +195,7 @@
 {"*bira", "*birano"}, // Itabira
 {"*blin", "*blin"}, // Dublin
 {"*borg", "*borgenser"}, // Aalborg
+{"*bouk", "*bouki"}, // Tabouk
 {"*burg", "*burger"}, // Hamburg
 {"*burn", "*burnian"}, // Blackburn
 {"Cali", "Caleño"}, // Cali

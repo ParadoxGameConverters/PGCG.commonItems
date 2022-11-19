@@ -202,6 +202,7 @@ public static partial class StringExtensions {
 {"*bira", "*birano"}, // Itabira
 {"*blin", "*blin"}, // Dublin
 {"*borg", "*borgenser"}, // Aalborg
+{"*bouk", "*bouki"}, // Tabouk
 {"*burg", "*burger"}, // Hamburg
 {"*burn", "*burnian"}, // Blackburn
 {"Cali", "Caleño"}, // Cali
@@ -635,11 +636,19 @@ public static partial class StringExtensions {
 	};
 	// Same as adjective rules, but are matched multiple times.
 	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
-		{"Arabia Maritimae", "Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
+		{"Arabia Ad Sinus", "North Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
+{"Arabia Maritimae", "South Tihamah"}, // https://en.wikipedia.org/wiki/Tihamah
+{"Arabia Petrea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
+{"Arabia Petraea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
+{"Arabia Relicta", "Tabouk"}, // https://en.wikipedia.org/wiki/Tabuk,_Saudi_Arabia#History
 {"Alpes Maritimae", "Maritime Alps"},
 {"Media Atropatene", "Atropatene"},
 {"Caucasian Iberia", "Kartvelia"},
 
+{"* Felix Centralis", "Central Happy *"},
+{"* Felix Occidentalis", "West Happy *"},
+{"* Felix Orientalis", "East Happy *"},
+{"* Felix", "Happy *"}, // Arabia Felix
 {"* Minoris", "Lesser *"}, // Armenia Minoris		
 {"* Maioris", "Greater *"}, // Armenia Maioris
 {"* Superioris", "Upper *"}, // Caria Superioris

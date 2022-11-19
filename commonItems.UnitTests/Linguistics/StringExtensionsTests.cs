@@ -178,7 +178,6 @@ public class StringExtensionsTests {
 	[InlineData("Media Magna", "Greater Median")]
 	[InlineData("Ivernia Australis", "South Ivernian")]
 	[InlineData("Alpes Maritimae", "Maritimois")]
-	[InlineData("Arabia Maritimae", "Tihami")]
 	[InlineData("Celtiberia Centralis", "Central Celtiberian")]
 	[InlineData("Pannonia Prima", "Proto-Pannonian")]
 	[InlineData("Pannonia Secunda", "Deutero-Pannonian")]
@@ -188,6 +187,15 @@ public class StringExtensionsTests {
 	[InlineData("Phrygia Ripensis", "Riparian Phrygian")]
 	[InlineData("Cilicia Pedias", "Smooth Cilician")]
 	[InlineData("Alexandreia pros to Latmo", "Alexandrian")]
+	[InlineData("Arabia Felix", "Happy Arabian")]
+	[InlineData("Arabia Felix Centralis", "Central Happy Arabian")]
+	[InlineData("Arabia Felix Occidentalis", "West Happy Arabian")]
+	[InlineData("Arabia Felix Orientalis", "East Happy Arabian")]
+	[InlineData("Arabia Ad Sinus", "North Tihami")]
+	[InlineData("Arabia Maritimae", "South Tihami")]
+	[InlineData("Arabia Petrea", "Petrean")]
+	[InlineData("Arabia Petraea", "Petrean")]
+	[InlineData("Arabia Relicta", "Tabouki")]
 	
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]
