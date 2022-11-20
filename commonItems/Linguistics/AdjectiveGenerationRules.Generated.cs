@@ -8,7 +8,13 @@ public static partial class StringExtensions {
 		// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Myos Hormos", "Myos"},
+{"Baetica Cordubensis", "Cordubensian"}, // https://1library.co/article/cultura-y-pensamiento-estudios-medievales-hisp%C3%A1nicos.zlg664or
+{"Baetica Gaditanus", "Gaditanian"}, // https://en.wiktionary.org/wiki/Gaditanian
+{"Baetica Hispalensis", "Hispalensian"}, // https://quod.lib.umich.edu/e/eebo/A67489.0001.001/1:12.11?rgn=div2;view=fulltext
 {"Coele Syria", "Coelesyrian"},
+{"Alpes Carniae", "Alpine Carnian"},
+{"Alpes Raetiae", "Alpine Raetian"},
 {"Alpes Cottiae", "Cottian"},
 {"Alpes Graiae", "Grajan"},
 {"Maritime Alps", "Maritimois"},
@@ -184,6 +190,7 @@ public static partial class StringExtensions {
 {"*aïda", "*idonian"}, // Saïda
 {"*Agde", "*Agathois"}, // Agde
 {"*ales", "*elsh"}, // Wales
+{"*alta", "*altese"}, // Malta
 {"*aman", "*amanian"}, // Dalaman
 {"*ammu", "*ammu"}, // Jammu
 {"*ance", "*ench"}, // France
@@ -431,7 +438,7 @@ public static partial class StringExtensions {
 {"*lon", "*lonian"}, // Ashkelon
 {"*loo", "*luvian"}, // Waterloo
 {"*los", "*losian"}, // Pylos
-{"*lta", "*ltese"}, // Malta
+{"*lta", "*ltan"}, // Western Delta
 {"*mah", "*mi"}, // Tihamah
 {"*man", "*mani"}, // Oman
 {"*mas", "*mian"}, // Bahamas
@@ -496,6 +503,7 @@ public static partial class StringExtensions {
 {"*tep", "*tepian"}, // Gaziantep
 {"*ter", "*trian"}, // Chester
 {"*tle", "*tlian"}, // Newcastle
+{"*tra", "*tran"}, // Suvarna Gotra
 {"*tte", "*ttean"}, // Charlotte
 {"*tus", "*tian"}, // Carystus
 {"*umi", "*umite"}, // Gumi
@@ -637,20 +645,34 @@ public static partial class StringExtensions {
 	};
 	// Same as adjective rules, but are matched multiple times.
 	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
-		{"Arabia Ad Sinus", "Wajh"}, // https://en.wikipedia.org/wiki/Al_Wajh
-{"Arabia Maritimae", "Jedda"}, // https://en.wikipedia.org/wiki/Jeddah
-{"Arabia Petrea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
+		{"Arabia Petrea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
 {"Arabia Petraea", "Petrea"}, // https://en.wikipedia.org/wiki/Arabia_Petraea
-{"Arabia Relicta", "Tabouk"}, // https://en.wikipedia.org/wiki/Tabuk,_Saudi_Arabia#History
 {"Alpes Maritimae", "Maritime Alps"},
 {"Media Atropatene", "Atropatene"},
+{"Media Choromithrene", "Choromithrene"},
 {"Caucasian Iberia", "Kartvelia"},
+{"Ptolemais Epithera", "Epitheros"}, // http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0006%3Aentry%3Dptolemais-theron
+{"Bithynia et Paphlagonia", "Bithyno-Paphlagonia"}, // https://dergipark.org.tr/tr/download/article-file/1715241
+{"Vallis Arni", "Arno"}, // means "valley of Arno"
+{"Caucasian Albania", "Albania"}, // https://en.wikipedia.org/wiki/Caucasian_Albania
 
-{"* Felix Centralis", "Central Happy *"},
-{"* Felix Occidentalis", "West Happy *"},
-{"* Felix Orientalis", "East Happy *"},
-{"* Felix", "Happy *"}, // Arabia Felix
-{"* Minoris", "Lesser *"}, // Armenia Minoris		
+{"* Ultima", "Furthest *"}, // Scythia Ultima
+{"* Insula", "Insular *"}, // Scandia Insula
+{"* Ulterioris", "Ulterior *"}, // Phrygia Ulterioris
+{"* Pontica", "Pontic *"}, // Cappadocia Pontica
+{"* Taurica", "Tauric *"}, // Cappadocia Taurica
+{"* Transmontem", "Transmontano-*"}, // Scythia Transmontem
+{"* Asiatica", "Asio-*"}, // Sarmatia Asiatica
+{"* Europea", "Euro-*"}, // Sarmatia Europea
+{"* Hyrcania", "Hyrcano-*"}, // Sarmatia Hyrcania
+{"* Parorea", "Paroreo-*"}, // Phrygia Parorea
+{"* Trachea", "Tracheo-*"}, // Cilicia Trachea
+{"* Felix", "Felicio-*"}, // Arabia Felix
+{"* Felix Centralis", "Central Felicio-*"},  // Arabia Felix Centralis
+{"* Felix Occidentalis", "West Felicio-*"},  // Arabia Felix Occidentalis
+{"* Felix Orientalis", "East Felicio-*"},  // Arabia Felix Orientalis
+{"* Minoris", "Lesser *"}, // Armenia Minoris
+{"* Minores", "Lesser *"}, // Maeotia Minores
 {"* Maioris", "Greater *"}, // Armenia Maioris
 {"* Superioris", "Upper *"}, // Caria Superioris
 {"* Inferioris", "Lower *"}, // Caria Inferioris
@@ -661,12 +683,17 @@ public static partial class StringExtensions {
 {"* Orientalis", "East *"}, // Alania Orientalis
 {"* Centralis", "Central *"}, // Celtiberia Centralis
 {"* Magna", "Greater *"}, // Media Magna
-{"* Maritimae", "Maritime *"} ,// Arabia Maritimae
 {"* Ripensis", "Riparian *"}, // Dacia Ripensis
 {"* Prima", "Proto-*"}, // Armenia Prima
 {"* Secunda", "Deutero-*"}, // Armenia Secunda
 {"* Tertia", "Trito-*"}, // Armenia Tertia
 {"* Pedias", "Smooth *"}, // Cilicia Pedias
+{"* Ad Sinus", "Sinuo-*"}, // Arabia Ad Sinus
+{"* Maritimae", "Thalasso-*"}, // Arabia Maritimae
+{"* Relicta", "Relicto-*"}, // Arabia Relicta
+{"* Salutaris", "Hygio-*"},  // Phrygia Salutaris
+{"* Greca", "Graeco-*"},  // Illyria Greca
+{"* Graeca", "Graeco-*"},
 
 {"* pros to Latmo", "*"} // Alexandreia pros to Latmo
 	};
