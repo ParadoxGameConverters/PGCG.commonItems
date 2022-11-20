@@ -8,10 +8,13 @@ public static partial class StringExtensions {
 		// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Myos Hormos", "Myos"},
 {"Baetica Cordubensis", "Cordubensian"}, // https://1library.co/article/cultura-y-pensamiento-estudios-medievales-hisp%C3%A1nicos.zlg664or
 {"Baetica Gaditanus", "Gaditanian"}, // https://en.wiktionary.org/wiki/Gaditanian
 {"Baetica Hispalensis", "Hispalensian"}, // https://quod.lib.umich.edu/e/eebo/A67489.0001.001/1:12.11?rgn=div2;view=fulltext
 {"Coele Syria", "Coelesyrian"},
+{"Alpes Carniae", "Alpine Carnian"},
+{"Alpes Raetiae", "Alpine Raetian"},
 {"Alpes Cottiae", "Cottian"},
 {"Alpes Graiae", "Grajan"},
 {"Maritime Alps", "Maritimois"},
@@ -651,8 +654,14 @@ public static partial class StringExtensions {
 {"Ptolemais Epithera", "Epitheros"}, // http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0006%3Aentry%3Dptolemais-theron
 {"Bithynia et Paphlagonia", "Bithyno-Paphlagonia"}, // https://dergipark.org.tr/tr/download/article-file/1715241
 {"Vallis Arni", "Arno"}, // means "valley of Arno"
+{"Caucasian Albania", "Albania"}, // https://en.wikipedia.org/wiki/Caucasian_Albania
 
-// Phrygia Parorea
+{"* Ultima", "Furthest *"}, // Scythia Ultima
+{"* Insula", "Insular *"}, // Scandia Insula
+{"* Ulterioris", "Ulterior *"}, // Phrygia Ulterioris
+{"* Pontica", "Pontic *"}, // Cappadocia Pontica
+{"* Taurica", "Tauric *"}, // Cappadocia Taurica
+{"* Transmontem", "Transmontano-*"}, // Scythia Transmontem
 {"* Asiatica", "Asio-*"}, // Sarmatia Asiatica
 {"* Europea", "Euro-*"}, // Sarmatia Europea
 {"* Hyrcania", "Hyrcano-*"}, // Sarmatia Hyrcania
@@ -662,7 +671,8 @@ public static partial class StringExtensions {
 {"* Felix Centralis", "Central Felicio-*"},  // Arabia Felix Centralis
 {"* Felix Occidentalis", "West Felicio-*"},  // Arabia Felix Occidentalis
 {"* Felix Orientalis", "East Felicio-*"},  // Arabia Felix Orientalis
-{"* Minoris", "Lesser *"}, // Armenia Minoris		
+{"* Minoris", "Lesser *"}, // Armenia Minoris
+{"* Minores", "Lesser *"}, // Maeotia Minores
 {"* Maioris", "Greater *"}, // Armenia Maioris
 {"* Superioris", "Upper *"}, // Caria Superioris
 {"* Inferioris", "Lower *"}, // Caria Inferioris

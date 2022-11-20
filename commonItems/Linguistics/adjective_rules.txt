@@ -1,10 +1,13 @@
 ﻿// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Myos Hormos", "Myos"},
 {"Baetica Cordubensis", "Cordubensian"}, // https://1library.co/article/cultura-y-pensamiento-estudios-medievales-hisp%C3%A1nicos.zlg664or
 {"Baetica Gaditanus", "Gaditanian"}, // https://en.wiktionary.org/wiki/Gaditanian
 {"Baetica Hispalensis", "Hispalensian"}, // https://quod.lib.umich.edu/e/eebo/A67489.0001.001/1:12.11?rgn=div2;view=fulltext
 {"Coele Syria", "Coelesyrian"},
+{"Alpes Carniae", "Alpine Carnian"},
+{"Alpes Raetiae", "Alpine Raetian"},
 {"Alpes Cottiae", "Cottian"},
 {"Alpes Graiae", "Grajan"},
 {"Maritime Alps", "Maritimois"},

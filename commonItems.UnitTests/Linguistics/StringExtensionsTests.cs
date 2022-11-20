@@ -172,6 +172,10 @@ public class StringExtensionsTests {
 	[InlineData("Central Delta", "Central Deltan")]
 	[InlineData("Eastern Delta", "Eastern Deltan")]
 	[InlineData("Dakshina Kosala", "Dakshina Kosalan")]
+	[InlineData("Alpes Carniae", "Alpine Carnian")]
+	[InlineData("Alpes Raetiae", "Alpine Raetian")]
+	[InlineData("Ultima Thule", "Ultima Thulean")]
+	[InlineData("Myos Hormos", "Myos")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -215,21 +219,16 @@ public class StringExtensionsTests {
 	[InlineData("Suvarna Gotra", "Suvarna Gotran")]
 	[InlineData("Phrygia Parorea", "Paroreo-Phrygian")]
 	[InlineData("Cilicia Trachea", "Tracheo-Cilician")]
-	[InlineData("Vallis Arni", "Arnese")]  // doesn't need to be Arnese, other adjective from Arno would work
+	[InlineData("Vallis Arni", "Arnese")]  // any other adjective derived from Arno would work
 	[InlineData("Sarmatia Hyrcania", "Hyrcano-Sarmatian")]
-	
-	// TODO: Alpes Carniae									Carnian ; Alpine Carnian
-	// TODO: Alpes Raetiae									Rhaetian ; Alpine Raetian
-	// TODO: Scandia Insula  (Scandian?)					Scandian ; Insular Scandian
-	// TODO: Ultima Thule  (Ultima Thulean?)				Ultima Thulean ; Thulian/Furthest Thulian
-	// TODO: Phrygia Ulterioris								Transphrygian ; Further Phrygian ; Ulterior Phrygian
-	// TODO: Cappadocia Taurica								Taurico-Cappadocian ; Tauric Cappadocian
-	// TODO: Cappadocia Pontica								Pontico-Cappadocian ; Pontic Cappadocian
-	// TODO: Myos Hormos  (Myos Hormosian?)					Myohormian ; Myohormite ; Myohorman ; Myos
-	// TODO: Maeotia Minores								Leser Maeotian ; Lesser Maeotian
-	// TODO: Scythia Ultima									Transscythian  ; Furthest Scythian
-	// TODO: Caucasian Albania								Caucasian Albanian ; Albanian
-	// TODO: Scythia Transmontem							Transmontane Scythian ; Transmontano-Scythian ; Scytho-Transmontane
+	[InlineData("Caucasian Albania", "Albanian")]
+	[InlineData("Scythia Transmontem", "Transmontano-Scythian")]
+	[InlineData("Cappadocia Pontica", "Pontic Cappadocian")]
+	[InlineData("Cappadocia Taurica", "Tauric Cappadocian")]
+	[InlineData("Phrygia Ulterioris", "Ulterior Phrygian")]
+	[InlineData("Scandia Insula", "Insular Scandian")]
+	[InlineData("Scythia Ultima", "Furthest Scythian")]
+	[InlineData("Maeotia Minores", "Lesser Maeotian")]
 
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]

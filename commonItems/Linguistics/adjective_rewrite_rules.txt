@@ -7,8 +7,14 @@
 {"Ptolemais Epithera", "Epitheros"}, // http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0006%3Aentry%3Dptolemais-theron
 {"Bithynia et Paphlagonia", "Bithyno-Paphlagonia"}, // https://dergipark.org.tr/tr/download/article-file/1715241
 {"Vallis Arni", "Arno"}, // means "valley of Arno"
+{"Caucasian Albania", "Albania"}, // https://en.wikipedia.org/wiki/Caucasian_Albania
 
-// Phrygia Parorea
+{"* Ultima", "Furthest *"}, // Scythia Ultima
+{"* Insula", "Insular *"}, // Scandia Insula
+{"* Ulterioris", "Ulterior *"}, // Phrygia Ulterioris
+{"* Pontica", "Pontic *"}, // Cappadocia Pontica
+{"* Taurica", "Tauric *"}, // Cappadocia Taurica
+{"* Transmontem", "Transmontano-*"}, // Scythia Transmontem
 {"* Asiatica", "Asio-*"}, // Sarmatia Asiatica
 {"* Europea", "Euro-*"}, // Sarmatia Europea
 {"* Hyrcania", "Hyrcano-*"}, // Sarmatia Hyrcania
@@ -18,7 +24,8 @@
 {"* Felix Centralis", "Central Felicio-*"},  // Arabia Felix Centralis
 {"* Felix Occidentalis", "West Felicio-*"},  // Arabia Felix Occidentalis
 {"* Felix Orientalis", "East Felicio-*"},  // Arabia Felix Orientalis
-{"* Minoris", "Lesser *"}, // Armenia Minoris		
+{"* Minoris", "Lesser *"}, // Armenia Minoris
+{"* Minores", "Lesser *"}, // Maeotia Minores
 {"* Maioris", "Greater *"}, // Armenia Maioris
 {"* Superioris", "Upper *"}, // Caria Superioris
 {"* Inferioris", "Lower *"}, // Caria Inferioris
