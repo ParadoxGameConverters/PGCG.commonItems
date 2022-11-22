@@ -168,20 +168,22 @@ public class StringExtensionsTests {
 	[InlineData("Baetica Gaditanus", "Gaditanian")]
 	[InlineData("Baetica Hispalensis", "Hispalensian")]
 	[InlineData("Baetica Cordubensis", "Cordubensian")]
-	[InlineData("Western Delta", "Western Deltan")]
+	[InlineData("Western Delta", "Western Deltan")]  // "* Deltaic" would also be fine
 	[InlineData("Central Delta", "Central Deltan")]
 	[InlineData("Eastern Delta", "Eastern Deltan")]
-	[InlineData("Dakshina Kosala", "Dakshina Kosalan")]
-	[InlineData("Alpes Carniae", "Alpine Carnian")]
-	[InlineData("Alpes Raetiae", "Alpine Raetian")]
-	[InlineData("Ultima Thule", "Ultima Thulean")]
+	[InlineData("Dakshina Kosala", "Dakshina Kosalan")]  // Southern Kosalan would also be fine
+	[InlineData("Alpes Carniae", "Alpine Carnian")] // Carnian would also be fine
+	[InlineData("Alpes Raetiae", "Alpine Raetian")]  // Raetian/Rhaetian would also be fine
+	[InlineData("Ultima Thule", "Ultima Thulean")] // Furthest Thulean/Thulian would also be fine
 	[InlineData("Myos Hormos", "Myos")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
 	[InlineData("Armenia Minoris", "Lesser Armenian")]
 	[InlineData("Caria Superioris", "Upper Carian")]
+	[InlineData("Germania Superior", "Upper Germanic")]
 	[InlineData("Caria Inferioris", "Lower Carian")]
+	[InlineData("Germania Inferior", "Lower Germanic")]
 	[InlineData("Celtiberia Meridionalis", "South Celtiberian")]
 	[InlineData("Celtiberia Septentrionalis", "North Celtiberian")]
 	[InlineData("Alania Orientalis", "East Alanian")]
@@ -214,18 +216,18 @@ public class StringExtensionsTests {
 	[InlineData("Illyria Graeca", "Graeco-Illyrian")]
 	[InlineData("Illyria Greca", "Graeco-Illyrian")]
 	[InlineData("Sarmatia Europea", "Euro-Sarmatian")]
-	[InlineData("Sarmatia Asiatica", "Asio-Sarmatian")]
-	[InlineData("Media Choromithrene", "Choromithrenian")]
+	[InlineData("Sarmatia Asiatica", "Asio-Sarmatian")]  // Asiatic Sarmatian would also be fine
+	[InlineData("Media Choromithrene", "Choromithrenian")] // Choromithrene would also be fine
 	[InlineData("Suvarna Gotra", "Suvarna Gotran")]
 	[InlineData("Phrygia Parorea", "Paroreo-Phrygian")]
 	[InlineData("Cilicia Trachea", "Tracheo-Cilician")]
 	[InlineData("Vallis Arni", "Arnese")]  // any other adjective derived from Arno would work
 	[InlineData("Sarmatia Hyrcania", "Hyrcano-Sarmatian")]
-	[InlineData("Caucasian Albania", "Albanian")]
+	[InlineData("Caucasian Albania", "Albanian")] // Caucaso-Albanian would also be fine
 	[InlineData("Scythia Transmontem", "Transmontano-Scythian")]
-	[InlineData("Cappadocia Pontica", "Pontic Cappadocian")]
-	[InlineData("Cappadocia Taurica", "Tauric Cappadocian")]
-	[InlineData("Phrygia Ulterioris", "Ulterior Phrygian")]
+	[InlineData("Cappadocia Pontica", "Pontic Cappadocian")] // Pontico-Cappadocian would also be fine
+	[InlineData("Cappadocia Taurica", "Tauric Cappadocian")]  // Taurico-Cappadocian would also be fine
+	[InlineData("Phrygia Ulterioris", "Ulterior Phrygian")] // Further Phrygian would also be fine
 	[InlineData("Scandia Insula", "Insular Scandian")]
 	[InlineData("Scythia Ultima", "Furthest Scythian")]
 	[InlineData("Maeotia Minores", "Lesser Maeotian")]

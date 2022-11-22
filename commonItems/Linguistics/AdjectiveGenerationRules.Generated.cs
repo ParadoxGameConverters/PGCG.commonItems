@@ -675,7 +675,9 @@ public static partial class StringExtensions {
 {"* Minores", "Lesser *"}, // Maeotia Minores
 {"* Maioris", "Greater *"}, // Armenia Maioris
 {"* Superioris", "Upper *"}, // Caria Superioris
+{"* Superior", "Upper *"}, // Germania Superior
 {"* Inferioris", "Lower *"}, // Caria Inferioris
+{"* Inferior", "Lower *"}, // Germania Inferior
 {"* Borealis", "North *"}, // Sardinia Borealis
 {"* Septentrionalis", "North *"}, // Celtiberia Septentrionalis
 {"* Meridionalis", "South *"}, // Celtiberia Meridionalis
