@@ -56,7 +56,7 @@ public static class SystemUtils {
 			File.Copy(sourcePath, destPath);
 			return true;
 		} catch (Exception e) {
-			Logger.Warn($"Could not copy file {sourcePath} to {destPath} - {e}");
+			Logger.Warn($"Could not copy file \"{sourcePath}\" to \"{destPath}\" - {e}");
 			return false;
 		}
 	}
@@ -69,8 +69,7 @@ public static class SystemUtils {
 
 			if (!dir.Exists) {
 				throw new DirectoryNotFoundException(
-					"Source directory does not exist or could not be found: "
-					+ sourceFolder);
+					$"Source directory does not exist or could not be found: {sourceFolder}");
 			}
 
 			DirectoryInfo[] dirs = dir.GetDirectories();
@@ -93,7 +92,7 @@ public static class SystemUtils {
 
 			return true;
 		} catch (Exception e) {
-			Logger.Error("Could not copy folder: " + e);
+			Logger.Error($"Could not copy folder: {e}");
 			return false;
 		}
 	}
@@ -103,7 +102,7 @@ public static class SystemUtils {
 			Directory.Move(sourceFolder, destFolder);
 			return true;
 		} catch (Exception e) {
-			Logger.Error("Could not rename folder: " + e);
+			Logger.Error($"Could not rename folder: {e}");
 			return false;
 		}
 	}
@@ -113,7 +112,7 @@ public static class SystemUtils {
 			Directory.Delete(folder, recursive: true);
 			return true;
 		} catch (Exception e) {
-			Logger.Error("Could not delete folder: " + folder + " : " + e);
+			Logger.Error($"Could not delete folder: \"{folder}\": {e}");
 			return false;
 		}
 	}
