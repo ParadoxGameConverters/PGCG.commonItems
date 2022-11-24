@@ -46,7 +46,7 @@ public static class SystemUtils {
 		try {
 			return Directory.CreateDirectory(path).Exists;
 		} catch (Exception e) {
-			Logger.Error("Could not create directory: " + path + " : " + e);
+			Logger.Error($"Could not create directory: \"{path}\": {e}");
 			return false;
 		}
 	}
@@ -56,7 +56,7 @@ public static class SystemUtils {
 			File.Copy(sourcePath, destPath);
 			return true;
 		} catch (Exception e) {
-			Logger.Warn("Could not copy file " + sourcePath + " to " + destPath + " - " + e);
+			Logger.Warn($"Could not copy file {sourcePath} to {destPath} - {e}");
 			return false;
 		}
 	}
