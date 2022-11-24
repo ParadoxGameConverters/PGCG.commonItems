@@ -18,7 +18,7 @@ jobs:
     - name: "Setup Dotnet for use with actions"
       uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '6.x'
+        dotnet-version: '7.x'
 
     - name: "Restore tools"
       run: dotnet tool restore
@@ -51,7 +51,7 @@ jobs:
     - name: "Setup Dotnet for use with actions"
       uses: actions/setup-dotnet@main
       with:
-        dotnet-version: '6.x'
+        dotnet-version: '7.x'
 
     - name: "Restore tools"
       run: dotnet tool restore

@@ -638,6 +638,7 @@ public static partial class StringExtensions {
 {"*l", "*lian"}, // Brazil
 {"*q", "*qi"}, // Iraq
 {"*r", "*rian"}, // Ecuador
+{"*s", "*sian"},
 {"*t", "*tian"}, // Egypt
 {"*u", "*uan"}, // Vanuatu
 {"*v", "*vite"}, // Yonnav
