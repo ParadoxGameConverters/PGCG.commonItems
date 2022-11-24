@@ -70,7 +70,7 @@ public class SystemUtilsTests {
 		Assert.False(created);
 		Assert.False(Directory.Exists(path));
 		Assert.Contains(
-			$"[ERROR] Could not create directory: \"{path}\": System.IO.IOException",
+			$"[ERROR] Could not create directory: \"{path}\": ",
 			output.ToString());
 	}
 	[Fact]
@@ -171,7 +171,8 @@ public class SystemUtilsTests {
 		var success = SystemUtils.TryRenameFolder(sourcePath, destPath);
 		Assert.False(success);
 		Assert.False(Directory.Exists(destPath));
-		Assert.Contains("[ERROR] Could not rename folder: System.IO.DirectoryNotFoundException: Could not find a part of the path",
+		Assert.Contains("[ERROR] Could not rename folder: " +
+		                "System.IO.DirectoryNotFoundException: Could not find a part of the path",
 			output.ToString());
 	}
 
