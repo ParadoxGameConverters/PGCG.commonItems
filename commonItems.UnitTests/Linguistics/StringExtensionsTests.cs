@@ -176,6 +176,7 @@ public class StringExtensionsTests {
 	[InlineData("Alpes Raetiae", "Alpine Raetian")]  // Raetian/Rhaetian would also be fine
 	[InlineData("Ultima Thule", "Ultima Thulean")] // Furthest Thulean/Thulian would also be fine
 	[InlineData("Myos Hormos", "Myos")]
+	[InlineData("Arambys", "Arambysian")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]

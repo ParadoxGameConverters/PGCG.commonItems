@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
 
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -11,6 +11,7 @@
     <PackageProjectUrl>https://github.com/ParadoxGameConverters/commonItems.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ParadoxGameConverters/commonItems.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <LangVersion>11</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

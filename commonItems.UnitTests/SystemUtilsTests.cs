@@ -20,7 +20,7 @@ public class SystemUtilsTests {
 	}
 	[Fact]
 	public void GetAllFilesInFolderReturnsEmptySetOnNonexistentFolder() {
-		var files = SystemUtils.GetAllFilesInFolder(TestFilesPath + "/missingDir");
+		var files = SystemUtils.GetAllFilesInFolder($"{TestFilesPath}/missingDir");
 		Assert.Empty(files);
 	}
 	[Fact]
@@ -36,7 +36,7 @@ public class SystemUtilsTests {
 	}
 	[Fact]
 	public void GetAllFilesInFolderRecursiveReturnsEmptySetOnNonexistentFolder() {
-		var files = SystemUtils.GetAllFilesInFolderRecursive(TestFilesPath + "/missingDir");
+		var files = SystemUtils.GetAllFilesInFolderRecursive($"{TestFilesPath}/missingDir");
 		Assert.Empty(files);
 	}
 	[Fact]
@@ -50,15 +50,28 @@ public class SystemUtilsTests {
 	}
 	[Fact]
 	public void GetAllSubfoldersReturnsEmptySetOnNonexistentFolder() {
-		var subfolders = SystemUtils.GetAllSubfolders(TestFilesPath + "/missingDir");
+		var subfolders = SystemUtils.GetAllSubfolders($"{TestFilesPath}/missingDir");
 		Assert.Empty(subfolders);
 	}
 	[Fact]
 	public void TryCreateFolderCreatesFolder() {
-		var created = SystemUtils.TryCreateFolder(TestFilesPath + "/newFolder");
+		var created = SystemUtils.TryCreateFolder($"{TestFilesPath}/newFolder");
 		Assert.True(created);
-		Assert.True(Directory.Exists(TestFilesPath + "/newFolder"));
-		Directory.Delete(TestFilesPath + "/newFolder", recursive: true); // cleanup
+		Assert.True(Directory.Exists($"{TestFilesPath}/newFolder"));
+		Directory.Delete($"{TestFilesPath}/newFolder", recursive: true); // cleanup
+	}
+	[Fact]
+	public void TryCreateFolderLogsErrorOnImpossiblePath() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		const string path = "/!@#$%^&*()<>/?aęóź??@#$SFGsf65gfh";
+		var created = SystemUtils.TryCreateFolder(path);
+		Assert.False(created);
+		Assert.False(Directory.Exists(path));
+		Assert.Contains(
+			$"[ERROR] Could not create directory: \"{path}\": ",
+			output.ToString());
 	}
 	[Fact]
 	public void TryCreateFolderLogsErrorOnEmptyPath() {
@@ -69,15 +82,28 @@ public class SystemUtilsTests {
 		var created = SystemUtils.TryCreateFolder(path);
 		Assert.False(created);
 		Assert.False(Directory.Exists(path));
-		Assert.Contains("[ERROR] Could not create directory: " + path +
-		                " : System.ArgumentException: Path cannot be the empty string or all whitespace. (Parameter 'path')",
+		Assert.Contains(
+			$"[ERROR] Could not create directory: \"{path}\": Path is empty or whitespace.",
+			output.ToString());
+	}
+	[Fact]
+	public void TryCreateFolderLogsErrorOnWhitespacePath() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		const string path = "   ";
+		var created = SystemUtils.TryCreateFolder(path);
+		Assert.False(created);
+		Assert.False(Directory.Exists(path));
+		Assert.Contains(
+			$"[ERROR] Could not create directory: \"{path}\": Path is empty or whitespace.",
 			output.ToString());
 	}
 
 	[Fact]
 	public void TryCopyFileCopiesFile() {
-		const string sourcePath = TestFilesPath + "/subfolder2/subfolder2_file.txt";
-		const string destPath = TestFilesPath + "/subfolder/subfolder2_file.txt";
+		const string sourcePath = $"{TestFilesPath}/subfolder2/subfolder2_file.txt";
+		const string destPath = $"{TestFilesPath}/subfolder/subfolder2_file.txt";
 		var success = SystemUtils.TryCopyFile(sourcePath, destPath);
 		Assert.True(success);
 		Assert.True(File.Exists(destPath));
@@ -88,19 +114,20 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		const string sourcePath = TestFilesPath + "/subfolder/missingFile.txt";
-		const string destPath = TestFilesPath + "/newFolder/file.txt";
+		const string sourcePath = $"{TestFilesPath}/subfolder/missingFile.txt";
+		const string destPath = $"{TestFilesPath}/newFolder/file.txt";
 		var success = SystemUtils.TryCopyFile(sourcePath, destPath);
 		Assert.False(success);
 		Assert.False(File.Exists(destPath));
-		Assert.Contains($"[WARN] Could not copy file {sourcePath} to {destPath} - System.IO.FileNotFoundException: Could not find file",
+		Assert.Contains($"[WARN] Could not copy file \"{sourcePath}\" to \"{destPath}\" " +
+		                "- System.IO.FileNotFoundException: Could not find file",
 			output.ToString());
 	}
 
 	[Fact]
 	public void CopyFolderCopiesFolder() {
-		const string sourcePath = TestFilesPath + "/subfolder2";
-		const string destPath = TestFilesPath + "/subfolder3";
+		const string sourcePath = $"{TestFilesPath}/subfolder2";
+		const string destPath = $"{TestFilesPath}/subfolder3";
 		Assert.False(Directory.Exists(destPath));
 		var success = SystemUtils.TryCopyFolder(sourcePath, destPath);
 		Assert.True(success);
@@ -112,8 +139,8 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		const string sourcePath = TestFilesPath + "/missingFolder";
-		const string destPath = TestFilesPath + "/newFolder";
+		const string sourcePath = $"{TestFilesPath}/missingFolder";
+		const string destPath = $"{TestFilesPath}/newFolder";
 		var success = SystemUtils.TryCopyFolder(sourcePath, destPath);
 		Assert.False(success);
 		Assert.False(Directory.Exists(destPath));
@@ -124,8 +151,8 @@ public class SystemUtilsTests {
 
 	[Fact]
 	public void RenameFolderRenamesFolder() {
-		const string path = TestFilesPath + "/subfolder2";
-		const string newPath = TestFilesPath + "/subfolderRenamed";
+		const string path = $"{TestFilesPath}/subfolder2";
+		const string newPath = $"{TestFilesPath}/subfolderRenamed";
 		Assert.True(Directory.Exists(path));
 		Assert.False(Directory.Exists(newPath));
 		var success = SystemUtils.TryRenameFolder(path, newPath);
@@ -139,18 +166,19 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		const string sourcePath = TestFilesPath + "/missingFolder";
-		const string destPath = TestFilesPath + "/newFolder";
+		const string sourcePath = $"{TestFilesPath}/missingFolder";
+		const string destPath = $"{TestFilesPath}/newFolder";
 		var success = SystemUtils.TryRenameFolder(sourcePath, destPath);
 		Assert.False(success);
 		Assert.False(Directory.Exists(destPath));
-		Assert.Contains("[ERROR] Could not rename folder: System.IO.DirectoryNotFoundException: Could not find a part of the path",
+		Assert.Contains("[ERROR] Could not rename folder: " +
+		                "System.IO.DirectoryNotFoundException: Could not find a part of the path",
 			output.ToString());
 	}
 
 	[Fact]
 	public void DeleteFolderDeletesFolder() {
-		const string path = TestFilesPath + "/tempFolder";
+		const string path = $"{TestFilesPath}/tempFolder";
 		SystemUtils.TryCreateFolder(path);
 		Assert.True(Directory.Exists(path));
 		var success = SystemUtils.TryDeleteFolder(path);
@@ -162,11 +190,12 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		const string path = TestFilesPath + "/missingFolder";
+		const string path = $"{TestFilesPath}/missingFolder";
 		var success = SystemUtils.TryDeleteFolder(path);
 		Assert.False(success);
-		Assert.Contains($"[ERROR] Could not delete folder: {path} : " +
-		                "System.IO.DirectoryNotFoundException: Could not find a part of the path",
+		Assert.Contains(
+			$"[ERROR] Could not delete folder: \"{path}\"" +
+			": System.IO.DirectoryNotFoundException: Could not find a part of the path",
 			output.ToString());
 	}
 }
