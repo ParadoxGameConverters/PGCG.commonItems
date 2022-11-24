@@ -65,7 +65,7 @@ public class SystemUtilsTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
-		const string path = "!@#$%^&*()<>/?aęóź??@#$SFGsf65gfh";
+		const string path = "/!@#$%^&*()<>/?aęóź??@#$SFGsf65gfh";
 		var created = SystemUtils.TryCreateFolder(path);
 		Assert.False(created);
 		Assert.False(Directory.Exists(path));
