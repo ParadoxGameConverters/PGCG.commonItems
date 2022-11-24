@@ -61,6 +61,19 @@ public class SystemUtilsTests {
 		Directory.Delete($"{TestFilesPath}/newFolder", recursive: true); // cleanup
 	}
 	[Fact]
+	public void TryCreateFolderLogsErrorOnImpossiblePath() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		const string path = "!@#$%^&*()<>?aęóź??@#$SFGsf65gfh";
+		var created = SystemUtils.TryCreateFolder(path);
+		Assert.False(created);
+		Assert.False(Directory.Exists(path));
+		Assert.Contains(
+			$"[ERROR] Could not create directory: \"{path}\": System.IO.IOException",
+			output.ToString());
+	}
+	[Fact]
 	public void TryCreateFolderLogsErrorOnEmptyPath() {
 		var output = new StringWriter();
 		Console.SetOut(output);
@@ -70,7 +83,7 @@ public class SystemUtilsTests {
 		Assert.False(created);
 		Assert.False(Directory.Exists(path));
 		Assert.Contains(
-			$"[ERROR] Could not create directory: \"{path}\": System.ArgumentException: The value cannot be an empty string. (Parameter 'path')",
+			$"[ERROR] Could not create directory: \"{path}\": Path is empty or whitespace.",
 			output.ToString());
 	}
 	[Fact]
@@ -83,7 +96,7 @@ public class SystemUtilsTests {
 		Assert.False(created);
 		Assert.False(Directory.Exists(path));
 		Assert.Contains(
-			$"[ERROR] Could not create directory: \"{path}\": System.ArgumentException: The path is empty. (Parameter 'path')",
+			$"[ERROR] Could not create directory: \"{path}\": Path is empty or whitespace.",
 			output.ToString());
 	}
 

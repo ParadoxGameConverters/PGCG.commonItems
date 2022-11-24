@@ -43,6 +43,10 @@ public static class SystemUtils {
 	}
 
 	public static bool TryCreateFolder(string path) {
+		if (string.IsNullOrWhiteSpace(path)) {
+			Logger.Error($"Could not create directory: \"{path}\": Path is empty or whitespace.");
+			return false;
+		}
 		try {
 			return Directory.CreateDirectory(path).Exists;
 		} catch (Exception e) {
