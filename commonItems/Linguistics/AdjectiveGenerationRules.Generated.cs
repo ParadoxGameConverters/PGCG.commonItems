@@ -619,6 +619,7 @@ public static partial class StringExtensions {
 {"*we", "*wean"}, // Zimbabwe
 {"*ye", "*yer"}, // Rye
 {"*yk", "*yk"}, // Karamyk (rule made up)
+{"*ys", "*ysian"}, // Arambys (rule made up)
 {"*ze", "*zean"}, // Belize
 {"*[v]h", "*[v]hite"},
 {"*[v]k", "*[v]kian"},
