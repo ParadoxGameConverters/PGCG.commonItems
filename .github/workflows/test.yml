@@ -14,7 +14,6 @@ jobs:
       with:
         submodules: recursive
 
-    # install dependencies, build, and test
     - name: "Setup Dotnet for use with actions"
       uses: actions/setup-dotnet@main
       with:
@@ -29,7 +28,7 @@ jobs:
       run: |
        $env:CoverletOutput='./TestResults/coverage.info'
        $env:CoverletOutputFormat='lcov'
-       dotnet test commonItems.UnitTests.csproj /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:ExcludeByFile=**/Microsoft.NET.Test.Sdk.Program.cs /p:Exclude=[commonItems.UnitTests]*
+       dotnet test commonItems.UnitTests.csproj --verbosity detailed /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:ExcludeByFile=**/Microsoft.NET.Test.Sdk.Program.cs /p:Exclude=[commonItems.UnitTests]*
 
     - name: "Publish coverage report to coveralls.io"
       uses: coverallsapp/github-action@master
@@ -47,7 +46,6 @@ jobs:
       with:
         submodules: recursive
 
-    # install dependencies, build, and test
     - name: "Setup Dotnet for use with actions"
       uses: actions/setup-dotnet@main
       with:
@@ -57,4 +55,4 @@ jobs:
       run: dotnet tool restore
 
     - name: "Run tests"
-      run: dotnet test commonItems.UnitTests/commonItems.UnitTests.csproj
+      run: dotnet test commonItems.UnitTests/commonItems.UnitTests.csproj --verbosity detailed
