@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace commonItems; 
+namespace commonItems.Colors; 
 
 public class ColorFactory {
 	public Dictionary<string, Color> NamedColors { get; } = new();
@@ -27,11 +27,15 @@ public class ColorFactory {
 	}
 	private static Color GetHsvColor(BufferedReader reader) {
 		var hsv = reader.GetDoubles();
-		if (hsv.Count != 3) {
-			throw new FormatException("Color has wrong number of components");
+		var elementsCount = hsv.Count;
+		if (elementsCount == 3) {
+			return new Color(hsv[0], hsv[1], hsv[2]);
+		}
+		if (elementsCount == 4) {
+			return new Color(hsv[0], hsv[1], hsv[2], hsv[3]);
 		}
 
-		return new Color(hsv[0], hsv[1], hsv[2]);
+		throw new FormatException("Color has wrong number of components");
 	}
 	private static Color GetHsv360Color(BufferedReader reader) {
 		var hsv = reader.GetDoubles();
@@ -80,20 +84,36 @@ public class ColorFactory {
 				if (questionableList.Contains('.')) {
 					// This is a double list.
 					var doubleStreamReader = new BufferedReader(questionableList);
-					var hsv = doubleStreamReader.GetDoubles();
-					if (hsv.Count != 3) {
-						throw new FormatException("Color has wrong number of components");
+					var rgb = doubleStreamReader.GetDoubles();
+					switch (rgb.Count) {
+						case 3: {
+							// This is not HSV, this is RGB doubles. Multiply by 255 and round to get normal RGB.
+							var r = Math.Round(rgb[0] * 255);
+							var g = Math.Round(rgb[1] * 255);
+							var b = Math.Round(rgb[2] * 255);
+							return new Color(r, g, b);
+						}
+						case 4: {
+							// This is a RGBA double situation. We shouldn't touch alpha.
+							var r = Math.Round(rgb[0] * 255);
+							var g = Math.Round(rgb[1] * 255);
+							var b = Math.Round(rgb[2] * 255);
+							var a = rgb[3];
+							return new Color(r, g, b, a);
+						}
+						default:
+							throw new FormatException("Color has wrong number of components");
 					}
-					return new Color((int)Math.Round(hsv[0] * 255), (int)Math.Round(hsv[1] * 255), (int)Math.Round(hsv[2] * 255));
+				} else {
+					// integer list
+					var integerStreamReader = new BufferedReader(questionableList);
+					var rgb = integerStreamReader.GetInts();
+					return rgb.Count switch {
+						3 => new Color(rgb[0], rgb[1], rgb[2]),
+						4 => new Color(rgb[0], rgb[1], rgb[2], (float)rgb[3]),
+						_ => throw new FormatException("Color has wrong number of components")
+					};
 				}
-
-				// integer list
-				var integerStreamReader = new BufferedReader(questionableList);
-				var rgb = integerStreamReader.GetInts();
-				if (rgb.Count != 3) {
-					throw new FormatException("Color has wrong number of components");
-				}
-				return new Color(rgb[0], rgb[1], rgb[2]);
 			}
 		}
 	}
