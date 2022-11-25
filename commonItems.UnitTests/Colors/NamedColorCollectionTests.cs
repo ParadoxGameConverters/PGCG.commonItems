@@ -1,10 +1,11 @@
-﻿using commonItems.Mods;
+﻿using commonItems.Colors;
+using commonItems.Mods;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests.Colors; 
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]

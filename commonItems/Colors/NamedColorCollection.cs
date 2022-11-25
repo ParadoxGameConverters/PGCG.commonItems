@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace commonItems; 
+namespace commonItems.Colors; 
 
 public class NamedColorCollection : SortedDictionary<string, Color> {
 	public void LoadNamedColors(string relativePath, ModFilesystem modFilesystem) {

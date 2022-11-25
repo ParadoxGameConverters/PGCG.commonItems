@@ -4,8 +4,40 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 
-namespace commonItems; 
+namespace commonItems.Colors; 
 
+/// <summary>
+///  Represents a Paradox - defined color.
+///  Can be directly created in either the RGB or HSV color spaces.
+///  If alpha is present, we're assuming it's RGBA or HSVA.
+///
+/// <code>
+///  Can be imported in:
+///  * Unspecified with ints (becomes RGB) - "= { 64 128 128 }"
+///  * Unspecified with three floats (becomes RGB) - "= { 0.5 0.9 0.1 }"
+///  * Unspecified with four floats (becomes RGBA) - "= { 0.5 0.9 0.1 0.1 }"
+///  * RGB - "= rgb { 64 128 128 }"
+///  * Hex - "= hex { 408080 }"
+///  * HSV - "= hsv { 0.5 0.5 0.5 }"
+///  * HSVA - "= hsv { 0.5 0.5 0.5 0.1 }"
+///  * HSV360 - "= hsv360 { 180 50 50 }"
+///  * Name (requires caching definitions for the named colors in advance) - "= dark_moderate_cyan"
+/// </code>
+/// <code>
+///  Can be output in:
+///  * unspecified (RGB) - "= { 64 128 128 }"
+///  * RGB - "= rgb { 64 128 128 }"
+///  * RGBA - we don't export RGBA. yet.
+///  * hex - "= hex { 408080 }"
+///  * HSV - "= hsv { 0.5 0.5 0.5 }"
+///  * HSVA - "= hsv { 0.5 0.5 0.5 0.1 }"
+///  * HSV360 - "= hsv360 { 180 50 50 }"
+///  </code>
+///  
+///  The individual components can be accessed in both RGB and HSV color spaces,
+///  equality and inequality can be checked, the color cache can be reviewed and modified,
+///  and colors can have a random fluctuation be applied automatically.
+/// </summary>
 public class Color : IPDXSerializable {
 	public Color() { }
 	public Color(int r, int g, int b) {
@@ -14,11 +46,19 @@ public class Color : IPDXSerializable {
 		RgbComponents[2] = b;
 		DeriveHsvFromRgb();
 	}
+
+	public Color(int r, int g, int b, double alpha) : this(r, g, b) {
+		A = alpha;
+	}
 	public Color(double h, double s, double v) {
 		HsvComponents[0] = h;
 		HsvComponents[1] = s;
 		HsvComponents[2] = v;
 		DeriveRgbFromHsv();
+	}
+
+	public Color(double h, double s, double v, double alpha) : this(h, s, v) {
+		A = alpha;
 	}
 
 	public override bool Equals(object? obj) {
@@ -36,6 +76,8 @@ public class Color : IPDXSerializable {
 	public double H => HsvComponents[0];
 	public double S => HsvComponents[1];
 	public double V => HsvComponents[2];
+
+	public double A { get; } = 1;
 
 	public string Serialize(string indent, bool withBraces) {
 		return Output();
@@ -78,6 +120,10 @@ public class Color : IPDXSerializable {
 		sb.Append(HsvComponents[1].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
 		sb.Append(' ');
 		sb.Append(HsvComponents[2].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+		if (A != 1.0d) {
+			sb.Append(' ');
+			sb.Append(HsvComponents[2].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+		}
 		sb.Append(" }");
 		return sb.ToString();
 	}

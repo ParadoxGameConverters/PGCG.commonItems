@@ -1,8 +1,9 @@
-﻿using System;
+﻿using commonItems.Colors;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests.Colors; 
 
 public class ColorTests {
 	private const int decimalPlaces = 2;
@@ -35,12 +36,40 @@ public class ColorTests {
 	}
 
 	[Fact]
+	public void ColorCanBeInitializedWithRgbaComponents() {
+		var testColor = new Color(64, 128, 128, 0.5f);
+		
+		Assert.Equal(64, testColor.R);
+		Assert.Equal(128, testColor.G);
+		Assert.Equal(128, testColor.B);
+		Assert.Equal(0.5, testColor.A);
+
+		Assert.Equal(0.5, testColor.H, decimalPlaces);
+		Assert.Equal(0.5, testColor.S, decimalPlaces);
+		Assert.Equal(0.5, testColor.V, decimalPlaces);
+	}
+
+	[Fact]
 	public void ColorCanBeInitializedWithHsvComponents() {
 		var testColor = new Color(0.5f, 0.5f, 0.5f);
 
 		Assert.Equal(63, testColor.R);
 		Assert.Equal(127, testColor.G);
 		Assert.Equal(127, testColor.B);
+
+		Assert.Equal(0.5, testColor.H, decimalPlaces);
+		Assert.Equal(0.5, testColor.S, decimalPlaces);
+		Assert.Equal(0.5, testColor.V, decimalPlaces);
+	}
+
+	[Fact]
+	public void ColorCanBeInitializedWithHsvaComponents() {
+		var testColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+		
+		Assert.Equal(63, testColor.R);
+		Assert.Equal(127, testColor.G);
+		Assert.Equal(127, testColor.B);
+		Assert.Equal(0.5, testColor.A);
 
 		Assert.Equal(0.5, testColor.H, decimalPlaces);
 		Assert.Equal(0.5, testColor.S, decimalPlaces);
@@ -247,6 +276,21 @@ public class ColorTests {
 	}
 
 	[Fact]
+	public void ColorRGBADoublesCanBeInitializedFromStream() { // Yes, unfortunately this is a thing as well.
+		var reader = new BufferedReader("= { 0.5 0.9 0.1 0.5 }");
+		var color = new ColorFactory().GetColor(reader);
+		
+		Assert.Equal(128, color.R);
+		Assert.Equal(230, color.G);
+		Assert.Equal(26, color.B);
+		Assert.Equal(0.5, color.A);
+
+		Assert.Equal(0.25, color.H, decimalPlaces);
+		Assert.Equal(0.89, color.S, decimalPlaces);
+		Assert.Equal(0.9, color.V, decimalPlaces);
+	}
+
+	[Fact]
 	public void ColorInitializationRequiresNonNullToken() {
 		var reader = new BufferedReader("=");
 		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
@@ -331,6 +375,21 @@ public class ColorTests {
 	}
 
 	[Fact]
+	public void ColorCanBeInitializedFromStreamInHsva() {
+		var reader = new BufferedReader("= hsv { 0.5 0.5 0.5 0.5 }");
+		var color = new ColorFactory().GetColor(reader);
+		
+		Assert.Equal(63, color.R);
+		Assert.Equal(127, color.G);
+		Assert.Equal(127, color.B);
+		Assert.Equal(0.5, color.A);
+
+		Assert.Equal(0.5, color.H, decimalPlaces);
+		Assert.Equal(0.5, color.S, decimalPlaces);
+		Assert.Equal(0.5, color.V, decimalPlaces);
+	}
+
+	[Fact]
 	public void ColorInitializationRequiresThreeComponentsWhenHsv() {
 		var reader = new BufferedReader("= hsv { 0.333 0.5 }");
 		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
@@ -345,9 +404,9 @@ public class ColorTests {
 		Assert.Equal(127, testColor.G);
 		Assert.Equal(127, testColor.B);
 
-		Assert.Equal(0.5f, testColor.H, decimalPlaces);
-		Assert.Equal(0.5f, testColor.S, decimalPlaces);
-		Assert.Equal(0.5f, testColor.V, decimalPlaces);
+		Assert.Equal(0.5d, testColor.H, decimalPlaces);
+		Assert.Equal(0.5d, testColor.S, decimalPlaces);
+		Assert.Equal(0.5d, testColor.V, decimalPlaces);
 	}
 
 	[Fact]
@@ -534,6 +593,12 @@ public class ColorTests {
 	public void ColorCanBeOutputInHsvColorSpace() {
 		var color = new Color(64, 128, 128);
 		Assert.Equal("hsv { 0.5 0.5 0.5 }", color.OutputHsv());
+	}
+
+	[Fact]
+	public void ColorCanBeOutputInHsvaColorSpace() {
+		var color = new Color(64, 128, 128, 0.5f);
+		Assert.Equal("hsv { 0.5 0.5 0.5 0.5 }", color.OutputHsv());
 	}
 
 	[Fact]
