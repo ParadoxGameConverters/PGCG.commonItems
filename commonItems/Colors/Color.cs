@@ -120,7 +120,7 @@ public class Color : IPDXSerializable {
 		sb.Append(HsvComponents[1].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
 		sb.Append(' ');
 		sb.Append(HsvComponents[2].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
-		if (A != 1.0) {
+		if (A != 1.0d) {
 			sb.Append(' ');
 			sb.Append(HsvComponents[2].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
 		}
