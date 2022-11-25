@@ -42,6 +42,42 @@ public class ColorFactory {
 
 		return new Color(hsv[0] / 360, hsv[1] / 100, hsv[2] / 100);
 	}
+	private static Color GetUnprefixedColor(BufferedReader reader) {
+		var questionableList = reader.GetStringOfItem().ToString();
+		if (questionableList.Contains('.')) {
+			// This is a double list.
+			var doubleStreamReader = new BufferedReader(questionableList);
+			var rgb = doubleStreamReader.GetDoubles();
+			switch (rgb.Count) {
+				case 3: {
+					// This is not HSV, this is RGB doubles. Multiply by 255 and round to get normal RGB.
+					var r = (int)Math.Round(rgb[0] * 255);
+					var g = (int)Math.Round(rgb[1] * 255);
+					var b = (int)Math.Round(rgb[2] * 255);
+					return new Color(r, g, b);
+				}
+				case 4: {
+					// This is a RGBA double situation. We shouldn't touch alpha.
+					var r = (int)Math.Round(rgb[0] * 255);
+					var g = (int)Math.Round(rgb[1] * 255);
+					var b = (int)Math.Round(rgb[2] * 255);
+					var a = rgb[3];
+					return new Color(r, g, b, a);
+				}
+				default:
+					throw new FormatException("Color has wrong number of components");
+			}
+		} else {
+			// integer list
+			var integerStreamReader = new BufferedReader(questionableList);
+			var rgb = integerStreamReader.GetInts();
+			return rgb.Count switch {
+				3 => new Color(rgb[0], rgb[1], rgb[2]),
+				4 => new Color(rgb[0], rgb[1], rgb[2], (float)rgb[3]),
+				_ => throw new FormatException("Color has wrong number of components")
+			};
+		}
+	}
 	public Color GetColor(BufferedReader reader) {
 		// Remove equals if necessary.
 		var token = Parser.GetNextTokenWithoutMatching(reader);
@@ -77,40 +113,8 @@ public class ColorFactory {
 				foreach (var ch in token.ToCharArray().Reverse()) {
 					reader.PushBack(ch);
 				}
-				var questionableList = reader.GetStringOfItem().ToString();
-				if (questionableList.Contains('.')) {
-					// This is a double list.
-					var doubleStreamReader = new BufferedReader(questionableList);
-					var rgb = doubleStreamReader.GetDoubles();
-					switch (rgb.Count) {
-						case 3: {
-							// This is not HSV, this is RGB doubles. Multiply by 255 and round to get normal RGB.
-							var r = (int)Math.Round(rgb[0] * 255);
-							var g = (int)Math.Round(rgb[1] * 255);
-							var b = (int)Math.Round(rgb[2] * 255);
-							return new Color(r, g, b);
-						}
-						case 4: {
-							// This is a RGBA double situation. We shouldn't touch alpha.
-							var r = (int)Math.Round(rgb[0] * 255);
-							var g = (int)Math.Round(rgb[1] * 255);
-							var b = (int)Math.Round(rgb[2] * 255);
-							var a = rgb[3];
-							return new Color(r, g, b, a);
-						}
-						default:
-							throw new FormatException("Color has wrong number of components");
-					}
-				} else {
-					// integer list
-					var integerStreamReader = new BufferedReader(questionableList);
-					var rgb = integerStreamReader.GetInts();
-					return rgb.Count switch {
-						3 => new Color(rgb[0], rgb[1], rgb[2]),
-						4 => new Color(rgb[0], rgb[1], rgb[2], (float)rgb[3]),
-						_ => throw new FormatException("Color has wrong number of components")
-					};
-				}
+
+				return GetUnprefixedColor(reader);
 			}
 		}
 	}
