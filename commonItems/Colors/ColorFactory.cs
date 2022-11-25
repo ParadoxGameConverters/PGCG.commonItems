@@ -28,14 +28,11 @@ public class ColorFactory {
 	private static Color GetHsvColor(BufferedReader reader) {
 		var hsv = reader.GetDoubles();
 		var elementsCount = hsv.Count;
-		if (elementsCount == 3) {
-			return new Color(hsv[0], hsv[1], hsv[2]);
-		}
-		if (elementsCount == 4) {
-			return new Color(hsv[0], hsv[1], hsv[2], hsv[3]);
-		}
-
-		throw new FormatException("Color has wrong number of components");
+		return elementsCount switch {
+			3 => new Color(hsv[0], hsv[1], hsv[2]),
+			4 => new Color(hsv[0], hsv[1], hsv[2], hsv[3]),
+			_ => throw new FormatException("Color has wrong number of components")
+		};
 	}
 	private static Color GetHsv360Color(BufferedReader reader) {
 		var hsv = reader.GetDoubles();
@@ -88,16 +85,16 @@ public class ColorFactory {
 					switch (rgb.Count) {
 						case 3: {
 							// This is not HSV, this is RGB doubles. Multiply by 255 and round to get normal RGB.
-							var r = Math.Round(rgb[0] * 255);
-							var g = Math.Round(rgb[1] * 255);
-							var b = Math.Round(rgb[2] * 255);
+							var r = (int)Math.Round(rgb[0] * 255);
+							var g = (int)Math.Round(rgb[1] * 255);
+							var b = (int)Math.Round(rgb[2] * 255);
 							return new Color(r, g, b);
 						}
 						case 4: {
 							// This is a RGBA double situation. We shouldn't touch alpha.
-							var r = Math.Round(rgb[0] * 255);
-							var g = Math.Round(rgb[1] * 255);
-							var b = Math.Round(rgb[2] * 255);
+							var r = (int)Math.Round(rgb[0] * 255);
+							var g = (int)Math.Round(rgb[1] * 255);
+							var b = (int)Math.Round(rgb[2] * 255);
 							var a = rgb[3];
 							return new Color(r, g, b, a);
 						}
