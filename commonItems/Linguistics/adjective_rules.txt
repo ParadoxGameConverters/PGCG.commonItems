@@ -483,6 +483,7 @@
 {"*sel", "*sler"}, // Basel
 {"*sey", "*sey"}, // Jersey
 {"*sin", "*sinite"}, // Mersin
+{"*Sio", "*Sioan"}, // Sio
 {"*sio", "*siense"}, // Mendrisio
 {"*sir", "*sirian"}, // Balıkesir
 {"*sle", "*slian"}, // Carlisle
@@ -560,6 +561,7 @@
 {"*go", "*goan"}, // Chicago
 {"*in", "*inese"}, // Benin
 {"*im", "*imite"},
+{"*io", "*ian"}, // San Antonio
 {"*is", "*ian"}, // Locris
 {"*it", "*iti"}, // Kuwait
 {"*ix", "*ician"}, // Phoenix
