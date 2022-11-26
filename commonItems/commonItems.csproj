@@ -128,7 +128,7 @@
     <Exec WorkingDirectory="$(ProjectDir)" Command="echo %(TextTemplate.Identity)" />
     <Exec WorkingDirectory="$(ProjectDir)" Command="dotnet t4 %(TextTemplate.Identity) -I=%(TextTemplate.Identity)/.." />
     <ItemGroup>
-      <Compile Include="Linguistics\AdjectiveGenerationRules.Generated.cs" />
+      <Compile Include="%(TextTemplate.Identity)/../%(TextTemplate.Filename).Generated.cs" />
     </ItemGroup>
   </Target>
   <Target Name="TextTemplateClean" AfterTargets="Clean">
