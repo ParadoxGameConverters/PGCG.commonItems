@@ -107,7 +107,7 @@ public class ColorFactory {
 					if (NamedColors.TryGetValue(token, out var value)) {
 						return value;
 					}
-					throw new ArgumentException(token + " was not a cached color");
+					throw new ArgumentException($"{token} was not a cached color");
 				}
 
 				foreach (var ch in token.ToCharArray().Reverse()) {
@@ -123,7 +123,7 @@ public class ColorFactory {
 		if (NamedColors.TryGetValue(colorName, out var value)) {
 			return value;
 		}
-		throw new ArgumentException(colorName + " was not a cached color");
+		throw new ArgumentException($"{colorName} was not a cached color");
 	}
 
 	public void AddNamedColor(string name, Color color) {
