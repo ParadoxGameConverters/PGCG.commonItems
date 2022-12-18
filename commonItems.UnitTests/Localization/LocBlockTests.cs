@@ -58,6 +58,43 @@ public class LocBlockTests {
 	}
 
 	[Fact]
+	public void BaseLanguageIsAlwaysIncludedInModifyForEveryLanguageWithOtherBlock() {
+		var locBlock = new LocBlock("locBlock", "english") {
+			// Base language (English) loc not defined.
+			["french"] = "frLocValue"
+		};
+
+		var otherLocBlock = new LocBlock("locBlock", "english") {
+			["english"] = "enLocValue-2",
+			["french"] = "frLocValue-2"
+		};
+
+		locBlock.ModifyForEveryLanguage(otherLocBlock, (loc, otherLoc, language) => {
+			var baseLocStr = loc ?? "null";
+			return $"{baseLocStr} updated with {otherLoc}";
+		});
+		Assert.Equal("null updated with enLocValue-2", locBlock["english"]);
+		Assert.Equal("frLocValue updated with frLocValue-2", locBlock["french"]);
+	}
+
+	[Fact]
+	public void BaseLanguageIsAlwaysIncludedInModifyForEveryLanguageWithoutOtherBlock() {
+		var locBlock = new LocBlock("locBlock", "english") {
+			// Base language (English) loc not defined.
+			["french"] = "frLocValue"
+		};
+
+		locBlock.ModifyForEveryLanguage((loc, language) => {
+			if (string.IsNullOrEmpty(loc)) {
+				return $"new loc for language {language}";
+			}
+			return $"{loc} updated";
+		});
+		Assert.Equal("new loc for language english", locBlock["english"]);
+		Assert.Equal("frLocValue updated", locBlock["french"]);
+	}
+
+	[Fact]
 	public void LocBlockCanBeCopyConstructed() {
 		var origLocBlock = new LocBlock("key1", "english") {
 			["english"] = "a",
