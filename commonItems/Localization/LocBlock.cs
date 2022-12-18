@@ -67,10 +67,16 @@ public class LocBlock : IIdentifiable<string> {
 		foreach (var language in localizations.Keys) {
 			localizations[language] = modifyingFunction(localizations[language], otherBlock[language], language);
 		}
+		if (!localizations.ContainsKey(baseLanguage)) {
+			localizations[baseLanguage] = modifyingFunction(null, otherBlock[baseLanguage], baseLanguage);
+		}
 	}
 	public void ModifyForEveryLanguage(LocDelegate modifyingFunction) {
 		foreach (var language in localizations.Keys) {
 			localizations[language] = modifyingFunction(localizations[language], language);
+		}
+		if (!localizations.ContainsKey(baseLanguage)) {
+			localizations[baseLanguage] = modifyingFunction(null, baseLanguage);
 		}
 	}
 }
