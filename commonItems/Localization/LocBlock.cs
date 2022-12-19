@@ -79,4 +79,8 @@ public class LocBlock : IIdentifiable<string> {
 			localizations[baseLanguage] = modifyingFunction(null, baseLanguage);
 		}
 	}
+
+	public string GetYmlLocLineForLanguage(string language) {
+		return $" {Id}: \"{this[language]}\"";
+	}
 }
