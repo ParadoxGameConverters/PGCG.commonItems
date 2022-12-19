@@ -156,8 +156,8 @@ public class LocBlockTests {
 			["english"] = "Key 1 loc",
 			["french"] = "frLoc",
 			["german"] = "",
-			["italian"] = null
-			// korean not defined
+			["italian"] = null // will use base language loc
+			// korean not defined, will use base language loc
 		};
 		
 		Assert.Equal(" key1: \"Key 1 loc\"", locBlock.GetYmlLocLineForLanguage("english"));
