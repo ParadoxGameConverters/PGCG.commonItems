@@ -149,4 +149,21 @@ public class LocBlockTests {
 		var locBlock = new LocBlock("key1", "english");
 		Assert.Null(locBlock["italian"]);
 	}
+
+	[Fact]
+	public void YmlLocLineIsReturnedInCorrectFormat() {
+		var locBlock = new LocBlock("key1", "english") {
+			["english"] = "Key 1 loc",
+			["french"] = "frLoc",
+			["german"] = "",
+			["italian"] = null // will use base language loc
+			// korean not defined, will use base language loc
+		};
+		
+		Assert.Equal(" key1: \"Key 1 loc\"", locBlock.GetYmlLocLineForLanguage("english"));
+		Assert.Equal(" key1: \"frLoc\"", locBlock.GetYmlLocLineForLanguage("french"));
+		Assert.Equal(" key1: \"\"", locBlock.GetYmlLocLineForLanguage("german"));
+		Assert.Equal(" key1: \"Key 1 loc\"", locBlock.GetYmlLocLineForLanguage("italian"));
+		Assert.Equal(" key1: \"Key 1 loc\"", locBlock.GetYmlLocLineForLanguage("korean"));
+	}
 }
