@@ -11,56 +11,30 @@ public class ToRomanNumeralTests {
 	public void ZeroGivesEmptyString() {
 		Assert.Equal(string.Empty, 0.ToRomanNumeral());
 	}
-	[Fact]
-	public void OneConvertsToI() {
-		Assert.Equal("I", 1.ToRomanNumeral());
-	}
-	[Fact]
-	public void FourConvertsToIV() {
-		Assert.Equal("IV", 4.ToRomanNumeral());
-	}
-	[Fact]
-	public void FiveConvertsToV() {
-		Assert.Equal("V", 5.ToRomanNumeral());
-	}
-	[Fact]
-	public void NineConvertsToIX() {
-		Assert.Equal("IX", 9.ToRomanNumeral());
-	}
-	[Fact]
-	public void TenConvertsToX() {
-		Assert.Equal("X", 10.ToRomanNumeral());
-	}
-	[Fact]
-	public void FortyConvertsToXL() {
-		Assert.Equal("XLI", 41.ToRomanNumeral());
-	}
-	[Fact]
-	public void FiftyConvertsTol() {
-		Assert.Equal("LII", 52.ToRomanNumeral());
-	}
-	[Fact]
-	public void NinetyConvertsToXC() {
-		Assert.Equal("XCIII", 93.ToRomanNumeral());
-	}
-	[Fact]
-	public void HundredConvertsToC() {
-		Assert.Equal("CIV", 104.ToRomanNumeral());
-	}
-	[Fact]
-	public void FourHundredConvertsToCD() {
-		Assert.Equal("CDX", 410.ToRomanNumeral());
-	}
-	[Fact]
-	public void FiveHundredConvertsToCD() {
-		Assert.Equal("DXI", 511.ToRomanNumeral());
-	}
-	[Fact]
-	public void NineHundredConvertsToCM() {
-		Assert.Equal("CML", 950.ToRomanNumeral());
-	}
-	[Fact]
-	public void MultipleThousandsConvertToMultipleMs() {
-		Assert.Equal("MMMV", 3005.ToRomanNumeral());
+
+	[Theory]
+	[InlineData(1, "I")]
+	[InlineData(2, "II")]
+	[InlineData(4, "IV")]
+	[InlineData(5, "V")]
+	[InlineData(7, "VII")]
+	[InlineData(9, "IX")]
+	[InlineData(10, "X")]
+	[InlineData(11, "XI")]
+	[InlineData(31, "XXXI")]
+	[InlineData(41, "XLI")]
+	[InlineData(51, "LI")]
+	[InlineData(52, "LII")]
+	[InlineData(93, "XCIII")]
+	[InlineData(101, "CI")]
+	[InlineData(104, "CIV")]
+	[InlineData(410, "CDX")]
+	[InlineData(501, "DI")]
+	[InlineData(511, "DXI")]
+	[InlineData(950, "CML")]
+	[InlineData(1001, "MI")]
+	[InlineData(3005, "MMMV")]
+	public void PositiveNumbersAreCorrectlyConverted(int number, string expectedNumeral) {
+		Assert.Equal(expectedNumeral, number.ToRomanNumeral());
 	}
 }
