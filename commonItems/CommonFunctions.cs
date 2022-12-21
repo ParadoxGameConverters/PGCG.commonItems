@@ -88,15 +88,15 @@ public static class CommonFunctions {
 		return number.ToRomanNumeral();
 	}
 	public static string ToRomanNumeral(this int number) {
-		var num = new[] { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
-		var sym = new[] { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
-		int i = 12;
+		var numbers = new[] { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
+		var symbols = new[] { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
+		int i = 12; // (length of symbols array) - 1
 		var sb = new StringBuilder();
 		while (number > 0) {
-			var div = number / num[i];
-			number %= num[i];
+			var div = number / numbers[i];
+			number %= numbers[i];
 			while (div-- > 0) {
-				sb.Append(sym[i]);
+				sb.Append(symbols[i]);
 			}
 			--i;
 		}
