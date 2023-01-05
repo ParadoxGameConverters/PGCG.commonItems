@@ -86,6 +86,15 @@ public class StringUtilsTests {
 	[InlineData("Żur", "Zur")] // Polish
 	[InlineData("āăąēîïĩíĝġńñšŝśûůŷ", "aaaeiiiiggnnsssuuy")]
 	[InlineData("Ý", "Y")]
+	[InlineData("άνθρωποι", "anthropoi")] // Greek
+	// https://en.wikipedia.org/wiki/List_of_Latin-script_letters
+	[InlineData("ᴀ", "a")] // Small capital A
+	[InlineData("Ɐɐ", "Aa")] // Turned A
+	[InlineData("Ĉĉ", "Cc")] // C with circumflex
+	[InlineData("C̃c̃", "Cc")] // C with tilde
+	[InlineData("C̄c̄", "Cc")] // C with macron
+	[InlineData("C̄́c̄́", "Cc")] // C with macron and acute
+	[InlineData("C̆c̆", "Cc")] // C with breve
 	// ReSharper restore StringLiteralTypo
 	public void StringCanBeFoldedToASCII(string strWithAccents, string expectedStr) {
 		Assert.Equal(expectedStr, strWithAccents.FoldToASCII());
