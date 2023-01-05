@@ -86,7 +86,7 @@ public class StringUtilsTests {
 	[InlineData("Żur", "Zur")] // Polish
 	[InlineData("āăąēîïĩíĝġńñšŝśûůŷ", "aaaeiiiiggnnsssuuy")]
 	[InlineData("Ý", "Y")]
-	[InlineData("άνθρωποι", "anthropoi")]
+	[InlineData("άνθρωποι", "anthropoi")] // Greek
 	// https://en.wikipedia.org/wiki/List_of_Latin-script_letters
 	[InlineData("ᴀ", "A")] // Small capital A
 	[InlineData("Ɐɐ", "aa")] // Turned A
