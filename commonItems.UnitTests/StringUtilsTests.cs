@@ -88,8 +88,8 @@ public class StringUtilsTests {
 	[InlineData("Ý", "Y")]
 	[InlineData("άνθρωποι", "anthropoi")] // Greek
 	// https://en.wikipedia.org/wiki/List_of_Latin-script_letters
-	[InlineData("ᴀ", "A")] // Small capital A
-	[InlineData("Ɐɐ", "aa")] // Turned A
+	[InlineData("ᴀ", "a")] // Small capital A
+	[InlineData("Ɐɐ", "Aa")] // Turned A
 	[InlineData("Ĉĉ", "Cc")] // C with circumflex
 	[InlineData("C̃c̃", "Cc")] // C with tilde
 	[InlineData("C̄c̄", "Cc")] // C with macron
