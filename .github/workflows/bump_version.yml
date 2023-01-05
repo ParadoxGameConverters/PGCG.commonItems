@@ -24,6 +24,7 @@ jobs:
         WITH_V: false
         DRY_RUN: true
         BRANCH_HISTORY: 'last'
+        DEFAULT_BRANCH: 'main'
 
     - name: "Update version in project"
       uses: jacobtomlinson/gha-find-replace@v2
