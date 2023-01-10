@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/ParadoxGameConverters/commonItems.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ParadoxGameConverters/commonItems.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <LangVersion>11</LangVersion>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,7 +35,7 @@
     <PackageReference Include="NCalcSync" Version="3.6.0" />
     <PackageReference Include="Open.Collections" Version="3.1.2" />
     <PackageReference Include="SharpZipLib" Version="1.4.1" />
-    <PackageReference Include="System.Management" Version="7.0.0" />
+    <PackageReference Include="System.Management" Version="6.0.0" />
     <TextTemplate Include="**\*.tt" />
     <Generated Include="**\*.Generated.cs" />
   </ItemGroup>
