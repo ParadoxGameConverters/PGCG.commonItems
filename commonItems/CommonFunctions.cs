@@ -144,7 +144,7 @@ public static class CommonFunctions {
 			}
 
 			foreach (var error in errors) {
-				Logger.Warn($"Error occurred when locating Steam game {steamId}: {error}");
+				Logger.Debug($"Error occurred when locating Steam game {steamId}: {error}");
 			}
 		} catch (Exception e) {
 			Logger.Warn($"Exception was raised when locating Steam game {steamId}: {e.Message}");
