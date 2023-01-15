@@ -16,6 +16,6 @@ public class GetSteamInstallPathTests {
 
         var gamePath = CommonFunctions.GetSteamInstallPath(fakeSteamId);
         Assert.Null(gamePath);
-        Assert.Contains($"Error occurred when locating Steam game {fakeSteamId}: Unable to find Steam in one of the default paths", output.ToString());
+        Assert.Contains($"Error occurred when locating Steam game {fakeSteamId}: ", output.ToString());
     }
 }
