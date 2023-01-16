@@ -78,7 +78,13 @@ public static class CommonFunctions {
 	}
 	public static string ToOrdinalSuffix(this int number, string languageName) {
 		var languageTag = LanguageNameToIetfTag(languageName);
-		var cultureInfo = CultureInfo.GetCultureInfo(languageTag);
+		CultureInfo cultureInfo;
+		try {
+			cultureInfo = CultureInfo.GetCultureInfo(languageTag);
+		} catch(CultureNotFoundException e) {
+			Logger.Warn($"Failed to get ordinal number suffix for culture {languageTag}, defaulting to English. Details: {e.Message}");
+			cultureInfo = CultureInfo.GetCultureInfo(LanguageNameToIetfTag("english"));
+		}
 		
 		return number.ToOrdinalNumber(cultureInfo).Replace(number.ToString(CultureInfo.InvariantCulture), "");
 	}
