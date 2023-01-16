@@ -52,4 +52,9 @@ public class ToOrdinalSuffixTests {
 	public void ToOrdinalSuffixSupportsOtherLanguages(string languageName, string expectedSuffix) {
 		Assert.Equal(expectedSuffix, 2.ToOrdinalSuffix(languageName));
 	}
+
+	[Fact]
+	public void SuffixForUnsupportedLanguageDefaultsToEnglish() {
+		Assert.Equal("th", 5.ToOrdinalSuffix("zoomer"));
+	}
 }
