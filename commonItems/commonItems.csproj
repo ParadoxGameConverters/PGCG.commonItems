@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="AnyAscii" Version="0.3.1" />
-    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="2.4.0" />
+    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="2.5.0" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
     <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
