@@ -27,7 +27,7 @@ jobs:
         DEFAULT_BRANCH: 'main'
 
     - name: "Update version in project"
-      uses: jacobtomlinson/gha-find-replace@v2
+      uses: jacobtomlinson/gha-find-replace@v3
       if: ${{ steps.get_new_version.outputs.new_tag }}
       with:
         include: commonItems/commonItems.csproj
