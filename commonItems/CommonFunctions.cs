@@ -1,5 +1,6 @@
 ﻿using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.Steam;
+using GameFinder.StoreHandlers.GOG;
 using IcgSoftware.IntToOrdinalNumber;
 using System;
 using System.Globalization;
@@ -154,6 +155,35 @@ public static class CommonFunctions {
 			}
 		} catch (Exception e) {
 			Logger.Warn($"Exception was raised when locating Steam game {steamId}: {e.Message}");
+		}
+
+		return null;
+	}
+	
+	/// <summary>
+	///  Given a GOG game ID, returns the install path for the corresponding game.
+	///	 Game ID can be found here: https://www.gogdb.org/
+	/// </summary>
+	/// <returns>Install path for the corresponding game, or null</returns>
+	public static string? GetGOGInstallPath(long gogId) {
+		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+			// GOGHandler is only supported on Windows as of GameFinder 2.5.0.
+			return null;
+		}
+		
+		var handler = new GOGHandler();
+		try {
+			var game = handler.FindOneGameById(gogId, out string[] errors);
+
+			if (game is not null && game.Id == gogId) {
+				return game.Path;
+			}
+
+			foreach (var error in errors) {
+				Logger.Debug($"Error occurred when locating GOG game {gogId}: {error}");
+			}
+		} catch (Exception e) {
+			Logger.Warn($"Exception was raised when locating GOG game {gogId}: {e.Message}");
 		}
 
 		return null;
