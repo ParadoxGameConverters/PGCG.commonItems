@@ -455,6 +455,7 @@
 {"*num", "*ne"}, // Sabinum
 {"*nya", "*nyanite"}, // Konya
 {"*oke", "*oker"}, // Roanoke
+{"*omo", "*omo"},
 {"*oon", "*oonian"}, // Cameroon
 {"*osu", "*osuite"}, // Yeosu
 {"*pan", "*panese"}, // Japan
@@ -559,6 +560,7 @@
 {"*gh", "*ghian"}, // Middlesbroughian
 {"*gk", "*gkan"},
 {"*go", "*goan"}, // Chicago
+{"*if", "*ifi"},
 {"*in", "*inese"}, // Benin
 {"*im", "*imite"},
 {"*io", "*ian"}, // San Antonio

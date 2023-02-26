@@ -9,7 +9,7 @@ namespace commonItems.UnitTests;
 public class GetSteamInstallPathTests {
     [Fact]
     public void MessageIsLoggedAndNullIsReturnedWhenGameIsNotFound() {
-        var fakeSteamId = 420;
+        const int fakeSteamId = 420;
 
 		var output = new StringWriter();
 		Console.SetOut(output);
