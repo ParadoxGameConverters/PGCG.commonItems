@@ -612,6 +612,7 @@
 {"*to", "*tan"}, // Benevento
 {"*ue", "*uan"}, // Niue
 {"*ul", "*ulish"}, // Gaul
+{"*un", "*unite"},
 {"*vo", "*voan"}, // Provo
 {"*we", "*wean"}, // Zimbabwe
 {"*ye", "*yer"}, // Rye
@@ -633,7 +634,6 @@
 {"*i", "*ian"}, // Burundi
 {"*k", "*kian"},
 {"*l", "*lian"}, // Brazil
-{"*n", "*nite"},
 {"*q", "*qi"}, // Iraq
 {"*r", "*rian"}, // Ecuador
 {"*s", "*sian"},
