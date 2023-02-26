@@ -633,6 +633,7 @@
 {"*i", "*ian"}, // Burundi
 {"*k", "*kian"},
 {"*l", "*lian"}, // Brazil
+{"*n", "*nite"},
 {"*q", "*qi"}, // Iraq
 {"*r", "*rian"}, // Ecuador
 {"*s", "*sian"},
