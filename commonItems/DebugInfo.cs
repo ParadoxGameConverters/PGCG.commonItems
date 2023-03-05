@@ -25,24 +25,28 @@ public static class DebugInfo {
 		if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
 			return;
 		}
-		
-		var searcherPreVista = new ManagementObjectSearcher($@"\\{Environment.MachineName}\root\SecurityCenter", "SELECT * FROM AntivirusProduct");
-		var searcherPostVista = new ManagementObjectSearcher($@"\\{Environment.MachineName}\root\SecurityCenter2", "SELECT * FROM AntivirusProduct");
-		var preVistaResult = searcherPreVista.Get().OfType<ManagementObject>();
-		var postVistaResult = searcherPostVista.Get().OfType<ManagementObject>();
 
-		var instances = preVistaResult.Concat(postVistaResult);
+		try {
+			var searcherPreVista = new ManagementObjectSearcher($@"\\{Environment.MachineName}\root\SecurityCenter", "SELECT * FROM AntivirusProduct");
+			var searcherPostVista = new ManagementObjectSearcher($@"\\{Environment.MachineName}\root\SecurityCenter2", "SELECT * FROM AntivirusProduct");
+			var preVistaResult = searcherPreVista.Get().OfType<ManagementObject>();
+			var postVistaResult = searcherPostVista.Get().OfType<ManagementObject>();
+
+			var instances = preVistaResult.Concat(postVistaResult);
 
 #pragma warning disable CA1416
-		var installedAntiviruses = instances
-			.Select(i => i.Properties.OfType<PropertyData>())
-			.Where(pd => pd.Any(p => p.Name == "displayName"))
-			.Select(pd => pd.Single(p => p.Name == "displayName").Value.ToString())
-			.ToArray();
+			var installedAntiviruses = instances
+				.Select(i => i.Properties.OfType<PropertyData>())
+				.Where(pd => pd.Any(p => p.Name == "displayName"))
+				.Select(pd => pd.Single(p => p.Name == "displayName").Value.ToString())
+				.ToArray();
 #pragma warning restore CA1416
 
-		foreach (var antivirusName in installedAntiviruses) {
-			Logger.Debug($"Found antivirus: {antivirusName}");
+			foreach (var antivirusName in installedAntiviruses) {
+				Logger.Debug($"Found antivirus: {antivirusName}");
+			}
+		} catch (Exception e) {
+			Logger.Debug($"Exception was raised when locating antiviruses: {e.Message}");
 		}
 	}
 
