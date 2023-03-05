@@ -46,7 +46,7 @@ public static class DebugInfo {
 				Logger.Debug($"Found antivirus: {antivirusName}");
 			}
 		} catch (Exception e) {
-			Logger.Warn($"Exception was raised when locating antiviruses: {e.Message}");
+			Logger.Debug($"Exception was raised when locating antiviruses: {e.Message}");
 		}
 	}
 
