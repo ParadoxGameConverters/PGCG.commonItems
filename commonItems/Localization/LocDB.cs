@@ -27,11 +27,11 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 	}
 	
 	/// <summary>
-	/// Scrapes file for localization lines, returns count of loc lines read.
+	/// Scrapes file for localization lines.
 	/// </summary>
-	/// <param name="filePath"></param>
-	/// <returns></returns>
-	private int ScrapeFile(string filePath) {
+	/// <param name="filePath">Path to the file to be read.</param>
+	/// <returns>Count of read loc lines.</returns>
+	public int ScrapeFile(string filePath) {
 		try {
 			using var stream = File.OpenText(filePath);
 			var reader = new BufferedReader(stream);

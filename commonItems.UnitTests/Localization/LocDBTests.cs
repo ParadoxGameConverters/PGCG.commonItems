@@ -145,4 +145,21 @@ public class LocDBTests {
 		
 		Assert.Null(locDB.GetLocBlockForKey("NON_LOC_KEY"));
 	}
+	
+	[Fact]
+	public void LocalizationIsCorrectlyReadFromUTF8Files() {
+		var locDB = new LocDB("english", "french");
+		locDB.ScrapeFile("TestFiles/Localization/test_l_french_without_bom.yml");
+		
+		Assert.Equal("Test loc 1", locDB.GetLocBlockForKey("test_key_1")!["french"]);
+		Assert.Equal("Test loc 2", locDB.GetLocBlockForKey("test_key_2")!["french"]);
+	}
+	[Fact]
+	public void LocalizationIsCorrectlyReadFromUTF8BOMFiles() {
+		var locDB = new LocDB("english", "french");
+		locDB.ScrapeFile("TestFiles/Localization/test_l_french_with_bom.yml");
+		
+		Assert.Equal("Test loc 1", locDB.GetLocBlockForKey("test_key_1")!["french"]);
+		Assert.Equal("Test loc 2", locDB.GetLocBlockForKey("test_key_2")!["french"]);
+	}
 }
