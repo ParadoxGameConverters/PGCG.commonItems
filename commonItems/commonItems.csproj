@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AnyAscii" Version="0.3.1" />
+    <PackageReference Include="AnyAscii" Version="0.3.2" />
     <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="2.6.0" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="2.6.0" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
