@@ -17,7 +17,7 @@ jobs:
 
     - name: "Get new version"
       id: get_new_version
-      uses: anothrNick/github-tag-action@1.61.0
+      uses: anothrNick/github-tag-action@1.62.0
       env:
         GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
         DEFAULT_BUMP: none
