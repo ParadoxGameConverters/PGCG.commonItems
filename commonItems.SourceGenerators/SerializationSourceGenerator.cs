@@ -45,8 +45,8 @@ namespace commonItems.SourceGenerators {
 			// Keep moving "out" of nested classes etc until we get to a namespace
 			// or until we run out of parents
 			while (potentialNamespaceParent != null &&
-			       potentialNamespaceParent as NamespaceDeclarationSyntax == null
-			       && potentialNamespaceParent as FileScopedNamespaceDeclarationSyntax == null) {
+			       !(potentialNamespaceParent is NamespaceDeclarationSyntax)
+			       && !(potentialNamespaceParent is FileScopedNamespaceDeclarationSyntax)) {
 				potentialNamespaceParent = potentialNamespaceParent.Parent;
 			}
 
@@ -115,27 +115,42 @@ namespace commonItems.SourceGenerators {
 			var className = syntax.Identifier.Text;
 			var classModifier = syntax.Modifiers.ToFullString().Trim();
 
-			var root = syntax.Ancestors().OfType<CompilationUnitSyntax>().FirstOrDefault();
-
-			string classNamespace = root?.DescendantNodesAndSelf()
-				.OfType<NamespaceDeclarationSyntax>()
-				.FirstOrDefault()?
-				.Name
-				.ToString();
+			string classNamespace = GetNamespace(syntax);
 
 			SemanticModel classSemanticModel = compilation.GetSemanticModel(syntax.SyntaxTree);
 			if (classSemanticModel.GetDeclaredSymbol(syntax) is INamedTypeSymbol classSymbol) {
 				var serializableClassProperties = GetSerializablePropertyNames(classSymbol);
 
 				var codeBuilder = new StringBuilder();
-				codeBuilder.AppendLine($"namespace {classNamespace} {{");
-				codeBuilder.AppendLine($"\t{classModifier} class {className} {{");
+				codeBuilder.AppendLine("using System.Text;");
+				codeBuilder.AppendLine("using System.Linq;");
+				codeBuilder.AppendLine("using commonItems.Serialization;");
+				codeBuilder.AppendLine($"namespace {classNamespace};");
+				codeBuilder.AppendLine($"{classModifier} class {className} {{");
 
 				codeBuilder.AppendLine(@"
-					private string SerializeProperties(string indent) {
+					public string SerializeProperties(string indent) {
+						var properties = this.GetProperties().Values;
+						
 						var sb = new StringBuilder();
-						sb.Append(""FUCK ALL THIS"");
-
+						foreach (var property in properties) {
+							if (property.IsNonSerialized()) {
+								continue;
+							}
+							if (!property.TryGetValue(this, out var propertyValue)) {
+								continue;
+							}
+							
+							string lineRepresentation;
+							if (property.Attributes.Any(a => a is SerializeOnlyValue)) {
+								lineRepresentation = PDXSerializer.Serialize(propertyValue, indent, false);
+							} else {
+								lineRepresentation = $""{property.Name}={PDXSerializer.Serialize(propertyValue, indent)}"";
+							}
+							if (!string.IsNullOrWhiteSpace(lineRepresentation)) {
+								sb.Append(indent).AppendLine(lineRepresentation);
+							}
+						}
 						return sb.ToString();
 					}
 				");
@@ -153,12 +168,11 @@ namespace commonItems.SourceGenerators {
 						return sb.ToString();
 					}
 				");
-				codeBuilder.AppendLine("\t}");
 				codeBuilder.AppendLine("}");
 
 				return codeBuilder.ToString();
 			}
-			throw new System.Exception($"Cannot get class symbol for class: {className} in namespace {classNamespace}");
+			throw new Exception($"Cannot get class symbol for class: {className} in namespace {classNamespace}");
 		}
 
 		public void Initialize(GeneratorInitializationContext context) {
