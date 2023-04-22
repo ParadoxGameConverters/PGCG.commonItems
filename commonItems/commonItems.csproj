@@ -124,12 +124,6 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\commonItems.SourceGenerators\commonItems.SourceGenerators.csproj" 
-                      OutputItemType="Analyzer" 
-                      ReferenceOutputAssembly="false"/>
-  </ItemGroup>
-
   <Target Name="Date" BeforeTargets="CoreCompile">
     <WriteLinesToFile File="$(IntermediateOutputPath)gen.cs" Lines="static partial class Builtin { public static long CompileTime = $([System.DateTime]::UtcNow.Ticks) %3B }" Overwrite="true" />
     <ItemGroup>
