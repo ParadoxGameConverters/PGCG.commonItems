@@ -1,6 +1,7 @@
 ﻿using commonItems.Collections;
 using commonItems.Colors;
 using commonItems.Serialization;
+using commonItems.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -9,7 +10,8 @@ using Xunit;
 namespace commonItems.UnitTests.Serialization; 
 
 public class PDXSerializerTests {
-	private class RulerInfo : IPDXSerializable {
+	[SerializationByProperties]
+	private partial class RulerInfo : IPDXSerializable {
 		public string? nickname;
 	}
 	

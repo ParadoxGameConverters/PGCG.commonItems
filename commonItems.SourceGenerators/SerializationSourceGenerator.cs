@@ -1,16 +1,24 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-namespace commonItems.Serialization; 
+namespace commonItems.SourceGenerators; 
 
 [Generator]
 public class SerializationSourceGenerator : ISourceGenerator {
 	public void Execute(GeneratorExecutionContext context) {
 		// Code generation goes here.
+		
+		// Generate SerializationByPropertiesAttribute.
+		const string attribute = @"
+			using System;
+			namespace commonItems.SourceGenerators {
+			    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+			    public class SerializationByPropertiesAttribute : Attribute { }
+			}
+		";
+		context.AddSource("SerializationByPropertiesAttribute.cs", SourceText.From(attribute, Encoding.UTF8));
 		
 		if (context.SyntaxReceiver is SerializationByPropertiesReceiver actorSyntaxReceiver) {
 			foreach (ClassDeclarationSyntax candidate in actorSyntaxReceiver.Candidates) {
@@ -36,14 +44,24 @@ public class SerializationSourceGenerator : ISourceGenerator {
 	/// <summary>
 	/// Get all properties of class.
 	/// </summary>
-	private static string[] GetProperties(ITypeSymbol symbol) {
+	private static string[] GetSerializablePropertyNames(ITypeSymbol symbol) =>
+		GetSerializablePropertySymbols(symbol)
+			.Select(par => par.Name)
+			.ToArray();
+
+	private static IEnumerable<IPropertySymbol> GetPropertySymbols(ITypeSymbol symbol) {
 		var classTypes = GetTypes(symbol);
 		
 		var classMembers = classTypes.SelectMany(n => n.GetMembers());
 		return classMembers
 			.Where(x => x.Kind == SymbolKind.Property)
 			.OfType<IPropertySymbol>()
-			.Select(par => par.Name)
+			.ToArray();
+	}
+	
+	private static IEnumerable<IPropertySymbol> GetSerializablePropertySymbols(ITypeSymbol symbol) {
+		return GetPropertySymbols(symbol)
+			.Where(p => !p.GetAttributes().Any(a => a.AttributeClass?.Name == "NonSerializedAttribute"))
 			.ToArray();
 	}
 
@@ -62,7 +80,8 @@ public class SerializationSourceGenerator : ISourceGenerator {
 		if (classSemanticModel.GetDeclaredSymbol(syntax) is not INamedTypeSymbol classSymbol) {
 			throw new System.Exception($"Cannot get class symbol for class: {className} in namespace {classNamespace}");
 		}
-		var classProperties = GetProperties(classSymbol);
+		var serializableClassProperties = GetSerializablePropertyNames(classSymbol);
+		//throw new Exception("Serializable properties: " + string.Join(", ", serializableClassProperties)); // TODO: REMOVE THIS
 		
 		var codeBuilder = new StringBuilder();
 		codeBuilder.AppendLine($"namespace {classNamespace};");
