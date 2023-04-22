@@ -12,7 +12,7 @@ public class PDXSerializerTests {
 	private class RulerInfo : IPDXSerializable {
 		public string? nickname;
 	}
-
+	
 	private class Title : IPDXSerializable {
 		// public properties
 		public int id { get; set; } = 20;

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>PGCG.$(AssemblyName)</PackageId>
@@ -27,10 +28,16 @@
 
   <ItemGroup>
     <PackageReference Include="AnyAscii" Version="0.3.2" />
+    <PackageReference Include="Apparatus.AOT.Reflection" Version="1.0.0" />
     <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="2.6.0" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="2.6.0" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
     <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="Mono.TextTemplating" Version="2.3.1" />
     <PackageReference Include="NCalcSync" Version="3.6.0" />
