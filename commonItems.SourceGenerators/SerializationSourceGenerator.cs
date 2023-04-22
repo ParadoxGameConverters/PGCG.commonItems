@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,10 +27,54 @@ namespace commonItems.SourceGenerators {
 					var code = GenerateMethodImplementationForClass(candidate, context.Compilation);
 
 					var className = candidate.Identifier.Text;
-					context.AddSource($"{className}.cs", SourceText.From(code, Encoding.UTF8));
+					context.AddSource($"{className}SourceGenerated.cs", SourceText.From(code, Encoding.UTF8));
 				}
 			}
 		}
+		
+		/// Determine the namespace the class/enum/struct is declared in, if any.
+		private static string GetNamespace(BaseTypeDeclarationSyntax syntax) {
+			// If we don't have a namespace at all we'll return an empty string
+			// This accounts for the "default namespace" case
+			string nameSpace = string.Empty;
+
+			// Get the containing syntax node for the type declaration
+			// (could be a nested type, for example)
+			SyntaxNode potentialNamespaceParent = syntax.Parent;
+    
+			// Keep moving "out" of nested classes etc until we get to a namespace
+			// or until we run out of parents
+			while (potentialNamespaceParent != null &&
+			       potentialNamespaceParent as NamespaceDeclarationSyntax == null
+			       && potentialNamespaceParent as FileScopedNamespaceDeclarationSyntax == null) {
+				potentialNamespaceParent = potentialNamespaceParent.Parent;
+			}
+
+			// Build up the final namespace by looping until we no longer have a namespace declaration
+			if (potentialNamespaceParent is BaseNamespaceDeclarationSyntax namespaceParent)
+			{
+				// We have a namespace. Use that as the type
+				nameSpace = namespaceParent.Name.ToString();
+        
+				// Keep moving "out" of the namespace declarations until we 
+				// run out of nested namespace declarations
+				while (true)
+				{
+					NamespaceDeclarationSyntax parent = namespaceParent.Parent as NamespaceDeclarationSyntax;
+					if (parent == null) {
+						break;
+					}
+
+					// Add the outer namespace as a prefix to the final namespace
+					nameSpace = $"{namespaceParent.Name}.{nameSpace}";
+					namespaceParent = parent;
+				}
+			}
+
+			// return the final namespace
+			return nameSpace;
+		}
+
 
 		/// <summary>
 		/// Get all types in the inheritance hierarchy.
@@ -71,7 +116,8 @@ namespace commonItems.SourceGenerators {
 			var classModifier = syntax.Modifiers.ToFullString().Trim();
 
 			var root = syntax.Ancestors().OfType<CompilationUnitSyntax>().FirstOrDefault();
-			var classNamespace = root?.ChildNodes()
+
+			string classNamespace = root?.DescendantNodesAndSelf()
 				.OfType<NamespaceDeclarationSyntax>()
 				.FirstOrDefault()?
 				.Name
@@ -80,36 +126,15 @@ namespace commonItems.SourceGenerators {
 			SemanticModel classSemanticModel = compilation.GetSemanticModel(syntax.SyntaxTree);
 			if (classSemanticModel.GetDeclaredSymbol(syntax) is INamedTypeSymbol classSymbol) {
 				var serializableClassProperties = GetSerializablePropertyNames(classSymbol);
-				//throw new Exception("Serializable properties: " + string.Join(", ", serializableClassProperties)); // TODO: REMOVE THIS
 
 				var codeBuilder = new StringBuilder();
 				codeBuilder.AppendLine($"namespace {classNamespace} {{");
 				codeBuilder.AppendLine($"\t{classModifier} class {className} {{");
 
 				codeBuilder.AppendLine(@"
-					public string SerializeProperties(string indent) {
-						var properties = this.GetProperties().Values;
-
+					private string SerializeProperties(string indent) {
 						var sb = new StringBuilder();
-						foreach (var property in properties) {
-							if (property.IsNonSerialized()) {
-								continue;
-							}
-
-							if (!property.TryGetValue(this, out var propertyValue)) {
-								continue;
-							}
-					
-							string lineRepresentation;
-							if (property.Attributes.Any(a => a is SerializeOnlyValue)) {
-								lineRepresentation = PDXSerializer.Serialize(propertyValue, indent, false);
-							} else {
-								lineRepresentation = $""{property.Name}={PDXSerializer.Serialize(propertyValue, indent)}"";
-							}
-							if (!string.IsNullOrWhiteSpace(lineRepresentation)) {
-								sb.Append(indent).AppendLine(lineRepresentation);
-							}
-						}
+						sb.Append(""FUCK ALL THIS"");
 
 						return sb.ToString();
 					}
@@ -119,7 +144,7 @@ namespace commonItems.SourceGenerators {
 						// Default implementation: serialize properties.
 						var sb = new StringBuilder();
 						if (withBraces) {
-							sb.AppendLine('{');
+							sb.AppendLine(""{"");
 						}
 						sb.Append(SerializeProperties(withBraces ? indent + '\t' : indent));
 						if (withBraces) {
