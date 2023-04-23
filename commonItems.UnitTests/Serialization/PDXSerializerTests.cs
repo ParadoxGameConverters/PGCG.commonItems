@@ -11,12 +11,12 @@ namespace commonItems.UnitTests.Serialization;
 
 [SerializationByProperties]
 internal partial class TestRulerInfo : IPDXSerializable {
-	public string? nickname;
+	public string? nickname { get; set; }
+	[SerializedName("health")] public double? Health { get; set; }
 }
 
 [SerializationByProperties]
 internal partial class TestTitle : IPDXSerializable {
-	// public properties
 	public int id { get; set; } = 20;
 	public ulong capital_prov_id { get; set; } = 420;
 	public double development { get; set; } = 50.5;
@@ -26,22 +26,20 @@ internal partial class TestTitle : IPDXSerializable {
 	public List<short> empty_list { get; set; } = new();
 	public Color color1 { get; set; } = new(2, 4, 6);
 	public bool definite_form { get; private set; }
-
-	// public fields
-	public bool landless = true;
-	public Date creation_date = new(600, 4, 5);
-	public Dictionary<string, string> textures = new() {
+	public bool landless { get; } = true;
+	public Date creation_date { get; } = new(600, 4, 5);
+	public Dictionary<string, string> textures { get; } = new() {
 			{ "diffuse", "\"gfx/models/diffuse.dds\"" },
 			{ "normal", "\"gfx/models/normal.dds\"" }
 		};
-	public Dictionary<int, string> weights = new() {
+	public Dictionary<int, string> weights { get; } = new() {
 			{ 10, "roman_gfx" },
 			{ 5, "italian_gfx" }
 		};
-	public HashSet<string> greetings = new() { "\"hi\"", "\"salutations\"", "\"greetings\"" };
-	[SerializeOnlyValue] public KeyValuePair<string, string> kvPair = new("key", "value");
-	public TestRulerInfo ruler_info = new() { nickname = "the_great" };
-	public StringOfItem ai_priority = new(new BufferedReader("= { add = 70 }"));
+	public HashSet<string> greetings { get; } = new() { "\"hi\"", "\"salutations\"", "\"greetings\"" };
+	[SerializeOnlyValue] public KeyValuePair<string, string> kvPair { get; } = new("key", "value");
+	public TestRulerInfo ruler_info { get; } = new() { nickname = "the_great" };
+	public StringOfItem ai_priority { get; } = new(new BufferedReader("= { add = 70 }"));
 }
 
 [SerializationByProperties]
@@ -54,7 +52,7 @@ internal partial class TestClass : IPDXSerializable {
 [SerializationByProperties]
 internal partial class PascalCaseClass : IPDXSerializable {
 	[SerializedName("name")] public string Name { get; } = "Property";
-	[SerializedName("culture")] public string Culture = "roman";
+	[SerializedName("culture")] public string Culture { get; } = "roman";
 }
 
 [SerializationByProperties]
@@ -67,14 +65,13 @@ internal partial class TestHistory : IPDXSerializable {
 		};
 }
 
-[SerializationByProperties]
 internal partial class TestTitleCollection : IdObjectCollection<string, TestCK3Title> { }
 
 [SerializationByProperties]
 internal partial class TestCK3Title : IPDXSerializable, IIdentifiable<string> {
 	[commonItems.Serialization.NonSerialized] public string Id { get; }
 	public Color? color { get; set; }
-	[SerializeOnlyValue] public TestTitleCollection DeJureVassals = new();
+	[SerializeOnlyValue] public TestTitleCollection DeJureVassals { get; } = new();
 
 	public TestCK3Title(string id, Color color) {
 		Id = id;
@@ -132,17 +129,22 @@ public class PDXSerializerTests {
 	}
 
 	[Fact]
-	public void NullMembersAreNotSerialized() {
-		var c1 = new TestRulerInfo { nickname = "the_great" };
-		var c1Str = PDXSerializer.Serialize(c1, string.Empty);
-		Assert.Contains("nickname=the_great", c1Str);
-		var c2 = new TestRulerInfo { nickname = null };
-		var c2Str = PDXSerializer.Serialize(c2, string.Empty);
-		Assert.DoesNotContain("nickname", c2Str);
+	public void NullPropertiesAreNotSerialized() {
+		// string? property (reference type)
+		var i1 = new TestRulerInfo { nickname = "the_great" };
+		Assert.Contains("nickname=the_great", PDXSerializer.Serialize(i1, string.Empty));
+		var i2 = new TestRulerInfo { nickname = null };
+		Assert.DoesNotContain("nickname", PDXSerializer.Serialize(i2, string.Empty));
+
+		// double? property (value type)
+		var i3 = new TestRulerInfo { Health = 100 };
+		Assert.Contains("health=100", PDXSerializer.Serialize(i3, string.Empty));
+		var i4 = new TestRulerInfo { Health = null };
+		Assert.DoesNotContain("health", PDXSerializer.Serialize(i4, string.Empty));	
 	}
 
 	[Fact]
-	public void MembersCanHaveCustomSerializedNames() {
+	public void PropertiesCanHaveCustomSerializedNames() {
 		var pascal = new PascalCaseClass();
 		var str = PDXSerializer.Serialize(pascal);
 		var expectedStr = "{" + Environment.NewLine +

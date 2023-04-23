@@ -31,8 +31,11 @@ namespace commonItems.SourceGenerators {
 				}
 			}
 		}
-		
+
+		// Credits: https://andrewlock.net/creating-a-source-generator-part-5-finding-a-type-declarations-namespace-and-type-hierarchy/
+		/// <summary>
 		/// Determine the namespace the class/enum/struct is declared in, if any.
+		/// </summary>
 		private static string GetNamespace(BaseTypeDeclarationSyntax syntax) {
 			// If we don't have a namespace at all we'll return an empty string
 			// This accounts for the "default namespace" case
@@ -87,12 +90,33 @@ namespace commonItems.SourceGenerators {
 			}
 		}
 
+		private static string GetPropertyNameForSerialization(IPropertySymbol propertySymbol) {
+			var serializedNameAttr = propertySymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "SerializedName");
+			if (serializedNameAttr != null) {
+				return serializedNameAttr.ConstructorArguments[0].Value.ToString();
+			}
+			return propertySymbol.Name;
+		}
+
+		private struct SerializablePropertyModel {
+			public string Name;
+			public string SerializedName;
+			public bool CanBeNull;
+			public bool SerializeOnlyValue;
+		}
+
+
 		/// <summary>
-		/// Get all properties of class.
+		/// Get all serializable properties of class.
 		/// </summary>
-		private static string[] GetSerializablePropertyNames(ITypeSymbol symbol) =>
+		private static SerializablePropertyModel[] GetSerializableProperties(ITypeSymbol symbol) =>
 			GetSerializablePropertySymbols(symbol)
-				.Select(par => par.Name)
+				.Select(prop => new SerializablePropertyModel {
+					Name = prop.Name,
+					SerializedName = GetPropertyNameForSerialization(prop),
+					CanBeNull = prop.Type.NullableAnnotation == NullableAnnotation.Annotated,
+					SerializeOnlyValue = prop.GetAttributes().Any(a => a.AttributeClass?.Name == "SerializeOnlyValue")
+				})
 				.ToArray();
 
 		private static IEnumerable<IPropertySymbol> GetPropertySymbols(ITypeSymbol symbol) {
@@ -107,7 +131,7 @@ namespace commonItems.SourceGenerators {
 
 		private static IEnumerable<IPropertySymbol> GetSerializablePropertySymbols(ITypeSymbol symbol) {
 			return GetPropertySymbols(symbol)
-				.Where(p => !p.GetAttributes().Any(a => a.AttributeClass?.Name == "NonSerializedAttribute"))
+				.Where(p => !p.GetAttributes().Any(a => a.AttributeClass?.Name == "NonSerialized"))
 				.ToArray();
 		}
 
@@ -119,7 +143,7 @@ namespace commonItems.SourceGenerators {
 
 			SemanticModel classSemanticModel = compilation.GetSemanticModel(syntax.SyntaxTree);
 			if (classSemanticModel.GetDeclaredSymbol(syntax) is INamedTypeSymbol classSymbol) {
-				var serializableClassProperties = GetSerializablePropertyNames(classSymbol);
+				var serializableClassProperties = GetSerializableProperties(classSymbol); // TODO: use this
 
 				var codeBuilder = new StringBuilder();
 				codeBuilder.AppendLine("using System.Text;");
@@ -130,27 +154,40 @@ namespace commonItems.SourceGenerators {
 
 				codeBuilder.AppendLine(@"
 					public string SerializeProperties(string indent) {
-						var properties = this.GetProperties().Values;
-						
 						var sb = new StringBuilder();
-						foreach (var property in properties) {
-							if (property.IsNonSerialized()) {
-								continue;
+				");
+				foreach (var propertyModel in serializableClassProperties) {
+					string lineVariableName = propertyModel.Name + "_lineRepresentation";
+					codeBuilder.AppendLine($"string {lineVariableName};");
+					if (propertyModel.CanBeNull) {
+						codeBuilder.AppendLine($@"
+							if ({propertyModel.Name} is null) {{
+								{lineVariableName} = string.Empty;
+							}} else {{
+						");
+					}
+					if (propertyModel.SerializeOnlyValue) {
+						codeBuilder.AppendLine($@"
+								{lineVariableName} = PDXSerializer.Serialize({propertyModel.Name}, indent, false);
+						");
+					} else {
+						codeBuilder.AppendLine($@"
+								{lineVariableName} = $""{propertyModel.SerializedName}={{PDXSerializer.Serialize({propertyModel.Name}, indent)}}"";
+						");
+					}
+					if (propertyModel.CanBeNull) {
+						// Close else block.
+						codeBuilder.AppendLine(@"
 							}
-							if (!property.TryGetValue(this, out var propertyValue)) {
-								continue;
-							}
-							
-							string lineRepresentation;
-							if (property.Attributes.Any(a => a is SerializeOnlyValue)) {
-								lineRepresentation = PDXSerializer.Serialize(propertyValue, indent, false);
-							} else {
-								lineRepresentation = $""{property.Name}={PDXSerializer.Serialize(propertyValue, indent)}"";
-							}
-							if (!string.IsNullOrWhiteSpace(lineRepresentation)) {
-								sb.Append(indent).AppendLine(lineRepresentation);
-							}
-						}
+						");
+					}
+					codeBuilder.AppendLine($@"
+						if (!string.IsNullOrWhiteSpace({lineVariableName})) {{
+							sb.Append(indent).AppendLine({lineVariableName});
+						}}
+					");
+				}
+				codeBuilder.AppendLine(@"
 						return sb.ToString();
 					}
 				");
