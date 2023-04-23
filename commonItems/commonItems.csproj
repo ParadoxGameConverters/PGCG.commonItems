@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\commonItems.SourceGenerators\commonItems.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <PackageReference Include="AnyAscii" Version="0.3.2" />
     <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="2.6.0" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="2.6.0" />
