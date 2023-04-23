@@ -143,7 +143,7 @@ namespace commonItems.SourceGenerators {
 
 			SemanticModel classSemanticModel = compilation.GetSemanticModel(syntax.SyntaxTree);
 			if (classSemanticModel.GetDeclaredSymbol(syntax) is INamedTypeSymbol classSymbol) {
-				var serializableClassProperties = GetSerializableProperties(classSymbol); // TODO: use this
+				var serializableClassProperties = GetSerializableProperties(classSymbol);
 
 				var codeBuilder = new StringBuilder();
 				codeBuilder.AppendLine("using System.Text;");
