@@ -9,77 +9,77 @@ using Xunit;
 
 namespace commonItems.UnitTests.Serialization;
 
-[SerializationByProperties]
-internal partial class TestRulerInfo : IPDXSerializable {
-	public string? nickname { get; set; }
-	[SerializedName("health")] public double? Health { get; set; }
-}
+public partial class PDXSerializerTests {
+	[SerializationByProperties]
+	private partial class TestRulerInfo : IPDXSerializable {
+		public string? nickname { get; set; }
+		[SerializedName("health")] public double? Health { get; set; }
+	}
 
-[SerializationByProperties]
-internal partial class TestTitle : IPDXSerializable {
-	public int id { get; set; } = 20;
-	public ulong capital_prov_id { get; set; } = 420;
-	public double development { get; set; } = 50.5;
-	[commonItems.Serialization.NonSerialized] public int priority { get; set; } = 50;
-	public string name { get; set; } = "\"Papal States\"";
-	public List<string> pope_names_list { get; set; } = new() { "Peter", "John", "Hadrian" };
-	public List<short> empty_list { get; set; } = new();
-	public Color color1 { get; set; } = new(2, 4, 6);
-	public bool definite_form { get; private set; }
-	public bool landless { get; } = true;
-	public Date creation_date { get; } = new(600, 4, 5);
-	public Dictionary<string, string> textures { get; } = new() {
+	[SerializationByProperties]
+	private partial class TestTitle : IPDXSerializable {
+		public int id { get; set; } = 20;
+		public ulong capital_prov_id { get; set; } = 420;
+		public double development { get; set; } = 50.5;
+		[commonItems.Serialization.NonSerialized] public int priority { get; set; } = 50;
+		public string name { get; set; } = "\"Papal States\"";
+		public List<string> pope_names_list { get; set; } = new() { "Peter", "John", "Hadrian" };
+		public List<short> empty_list { get; set; } = new();
+		public Color color1 { get; set; } = new(2, 4, 6);
+		public bool definite_form { get; private set; }
+		public bool landless { get; } = true;
+		public Date creation_date { get; } = new(600, 4, 5);
+		public Dictionary<string, string> textures { get; } = new() {
 			{ "diffuse", "\"gfx/models/diffuse.dds\"" },
 			{ "normal", "\"gfx/models/normal.dds\"" }
 		};
-	public Dictionary<int, string> weights { get; } = new() {
+		public Dictionary<int, string> weights { get; } = new() {
 			{ 10, "roman_gfx" },
 			{ 5, "italian_gfx" }
 		};
-	public HashSet<string> greetings { get; } = new() { "\"hi\"", "\"salutations\"", "\"greetings\"" };
-	[SerializeOnlyValue] public KeyValuePair<string, string> kvPair { get; } = new("key", "value");
-	public TestRulerInfo ruler_info { get; } = new() { nickname = "the_great" };
-	public StringOfItem ai_priority { get; } = new(new BufferedReader("= { add = 70 }"));
-}
+		public HashSet<string> greetings { get; } = new() { "\"hi\"", "\"salutations\"", "\"greetings\"" };
+		[SerializeOnlyValue] public KeyValuePair<string, string> kvPair { get; } = new("key", "value");
+		public TestRulerInfo ruler_info { get; } = new() { nickname = "the_great" };
+		public StringOfItem ai_priority { get; } = new(new BufferedReader("= { add = 70 }"));
+	}
 
-[SerializationByProperties]
-internal partial class TestClass : IPDXSerializable {
-	[SerializedName("number1")] public double Number1 { get; set; }
-	[SerializedName("number2")] public double Number2 { get; set; }
-	[SerializedName("number3")] public double Number3 { get; set; }
-}
+	[SerializationByProperties]
+	private partial class TestClass : IPDXSerializable {
+		[SerializedName("number1")] public double Number1 { get; set; }
+		[SerializedName("number2")] public double Number2 { get; set; }
+		[SerializedName("number3")] public double Number3 { get; set; }
+	}
 
-[SerializationByProperties]
-internal partial class PascalCaseClass : IPDXSerializable {
-	[SerializedName("name")] public string Name { get; } = "Property";
-	[SerializedName("culture")] public string Culture { get; } = "roman";
-}
+	[SerializationByProperties]
+	private partial class PascalCaseClass : IPDXSerializable {
+		[SerializedName("name")] public string Name { get; } = "Property";
+		[SerializedName("culture")] public string Culture { get; } = "roman";
+	}
 
-[SerializationByProperties]
-internal partial class TestHistory : IPDXSerializable {
-	[SerializeOnlyValue]
-	public Dictionary<string, object> HistoryFields { get; } = new() {
+	[SerializationByProperties]
+	private partial class TestHistory : IPDXSerializable {
+		[SerializeOnlyValue]
+		public Dictionary<string, object> HistoryFields { get; } = new() {
 			{ "culture", "roman" },
 			{ "development", 3.14 },
 			{ "buildings", new List<string> { "baths", "aqueduct" } }
 		};
-}
-
-internal partial class TestTitleCollection : IdObjectCollection<string, TestCK3Title> { }
-
-[SerializationByProperties]
-internal partial class TestCK3Title : IPDXSerializable, IIdentifiable<string> {
-	[commonItems.Serialization.NonSerialized] public string Id { get; }
-	public Color? color { get; set; }
-	[SerializeOnlyValue] public TestTitleCollection DeJureVassals { get; } = new();
-
-	public TestCK3Title(string id, Color color) {
-		Id = id;
-		this.color = color;
 	}
-}
 
-public class PDXSerializerTests {
+	private class TestTitleCollection : IdObjectCollection<string, TestCK3Title> { }
+
+	[SerializationByProperties]
+	private partial class TestCK3Title : IPDXSerializable, IIdentifiable<string> {
+		[commonItems.Serialization.NonSerialized] public string Id { get; }
+		public Color? color { get; set; }
+		[SerializeOnlyValue] public TestTitleCollection DeJureVassals { get; } = new();
+
+		public TestCK3Title(string id, Color color) {
+			Id = id;
+			this.color = color;
+		}
+	}
+
 	[Fact]
 	public void PDXSerializableClassIsProperlySerialized() {
 		var title = new TestTitle();
