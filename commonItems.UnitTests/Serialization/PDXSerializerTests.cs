@@ -1,20 +1,23 @@
 ﻿using commonItems.Collections;
 using commonItems.Colors;
 using commonItems.Serialization;
+using commonItems.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using Xunit;
 // ReSharper disable InconsistentNaming
 
-namespace commonItems.UnitTests.Serialization; 
+namespace commonItems.UnitTests.Serialization;
 
-public class PDXSerializerTests {
-	private class RulerInfo : IPDXSerializable {
-		public string? nickname;
+public partial class PDXSerializerTests {
+	[SerializationByProperties]
+	private partial class TestRulerInfo : IPDXSerializable {
+		public string? nickname { get; set; }
+		[SerializedName("health")] public double? Health { get; set; }
 	}
 
-	private class Title : IPDXSerializable {
-		// public properties
+	[SerializationByProperties]
+	private partial class TestTitle : IPDXSerializable {
 		public int id { get; set; } = 20;
 		public ulong capital_prov_id { get; set; } = 420;
 		public double development { get; set; } = 50.5;
@@ -24,27 +27,62 @@ public class PDXSerializerTests {
 		public List<short> empty_list { get; set; } = new();
 		public Color color1 { get; set; } = new(2, 4, 6);
 		public bool definite_form { get; private set; }
-
-		// public fields
-		public bool landless = true;
-		public Date creation_date = new(600, 4, 5);
-		public Dictionary<string, string> textures = new() {
+		public bool landless { get; } = true;
+		public Date creation_date { get; } = new(600, 4, 5);
+		public Dictionary<string, string> textures { get; } = new() {
 			{ "diffuse", "\"gfx/models/diffuse.dds\"" },
 			{ "normal", "\"gfx/models/normal.dds\"" }
 		};
-		public Dictionary<int, string> weights = new() {
+		public Dictionary<int, string> weights { get; } = new() {
 			{ 10, "roman_gfx" },
 			{ 5, "italian_gfx" }
 		};
-		public HashSet<string> greetings = new() { "\"hi\"", "\"salutations\"", "\"greetings\"" };
-		[SerializeOnlyValue] public KeyValuePair<string, string> kvPair = new("key", "value");
-		public RulerInfo ruler_info = new() { nickname = "the_great" };
-		public StringOfItem ai_priority = new(new BufferedReader("= { add = 70 }"));
+		public HashSet<string> greetings { get; } = new() { "\"hi\"", "\"salutations\"", "\"greetings\"" };
+		[SerializeOnlyValue] public KeyValuePair<string, string> kvPair { get; } = new("key", "value");
+		public TestRulerInfo ruler_info { get; } = new() { nickname = "the_great" };
+		public StringOfItem ai_priority { get; } = new(new BufferedReader("= { add = 70 }"));
+	}
+
+	[SerializationByProperties]
+	private partial class TestClass : IPDXSerializable {
+		[SerializedName("number1")] public double Number1 { get; set; }
+		[SerializedName("number2")] public double Number2 { get; set; }
+		[SerializedName("number3")] public double Number3 { get; set; }
+	}
+
+	[SerializationByProperties]
+	private partial class PascalCaseClass : IPDXSerializable {
+		[SerializedName("name")] public string Name { get; } = "Property";
+		[SerializedName("culture")] public string Culture { get; } = "roman";
+	}
+
+	[SerializationByProperties]
+	private partial class TestHistory : IPDXSerializable {
+		[SerializeOnlyValue]
+		public Dictionary<string, object> HistoryFields { get; } = new() {
+			{ "culture", "roman" },
+			{ "development", 3.14 },
+			{ "buildings", new List<string> { "baths", "aqueduct" } }
+		};
+	}
+
+	private class TestTitleCollection : IdObjectCollection<string, TestCK3Title> { }
+
+	[SerializationByProperties]
+	private partial class TestCK3Title : IPDXSerializable, IIdentifiable<string> {
+		[commonItems.Serialization.NonSerialized] public string Id { get; }
+		public Color? color { get; set; }
+		[SerializeOnlyValue] public TestTitleCollection DeJureVassals { get; } = new();
+
+		public TestCK3Title(string id, Color color) {
+			Id = id;
+			this.color = color;
+		}
 	}
 
 	[Fact]
 	public void PDXSerializableClassIsProperlySerialized() {
-		var title = new Title();
+		var title = new TestTitle();
 		var titleString = PDXSerializer.Serialize(title, string.Empty);
 
 		var expectedString =
@@ -77,12 +115,6 @@ public class PDXSerializerTests {
 		Assert.Equal(expectedString, titleString);
 	}
 
-	private class TestClass : IPDXSerializable {
-		[SerializedName("number1")] public double Number1 { get; set; }
-		[SerializedName("number2")] public double Number2 { get; set; }
-		[SerializedName("number3")] public double Number3 { get; set; }
-	}
-
 	[Fact]
 	public void NumbersAreSerializedWithDigitLimit() {
 		var testObj = new TestClass {Number1 = 60.800000000000004, Number2 = 60.123456789, Number3=60};
@@ -96,23 +128,23 @@ public class PDXSerializerTests {
 	}
 
 	[Fact]
-	public void NullMembersAreNotSerialized() {
-		var c1 = new RulerInfo { nickname = "the_great" };
-		var c1Str = PDXSerializer.Serialize(c1, string.Empty);
-		Assert.Contains("nickname=the_great", c1Str);
-		var c2 = new RulerInfo { nickname = null };
-		var c2Str = PDXSerializer.Serialize(c2, string.Empty);
-		Assert.DoesNotContain("nickname", c2Str);
-	}
+	public void NullPropertiesAreNotSerialized() {
+		// string? property (reference type)
+		var i1 = new TestRulerInfo { nickname = "the_great" };
+		Assert.Contains("nickname=the_great", PDXSerializer.Serialize(i1, string.Empty));
+		var i2 = new TestRulerInfo { nickname = null };
+		Assert.DoesNotContain("nickname", PDXSerializer.Serialize(i2, string.Empty));
 
-	private class PascalClass : IPDXSerializable {
-		[SerializedName("name")] public string Name { get; } = "Property";
-		[SerializedName("culture")] public string Culture = "roman";
+		// double? property (value type)
+		var i3 = new TestRulerInfo { Health = 100 };
+		Assert.Contains("health=100", PDXSerializer.Serialize(i3, string.Empty));
+		var i4 = new TestRulerInfo { Health = null };
+		Assert.DoesNotContain("health", PDXSerializer.Serialize(i4, string.Empty));	
 	}
 
 	[Fact]
-	public void MembersCanHaveCustomSerializedNames() {
-		var pascal = new PascalClass();
+	public void PropertiesCanHaveCustomSerializedNames() {
+		var pascal = new PascalCaseClass();
 		var str = PDXSerializer.Serialize(pascal);
 		var expectedStr = "{" + Environment.NewLine +
 		                  "\tname=Property" + Environment.NewLine +
@@ -121,18 +153,9 @@ public class PDXSerializerTests {
 		Assert.Equal(expectedStr, str);
 	}
 
-	private class History : IPDXSerializable {
-		[SerializeOnlyValue]
-		public Dictionary<string, object> HistoryFields { get; } = new() {
-			{ "culture", "roman" },
-			{ "development", 3.14 },
-			{ "buildings", new List<string> { "baths", "aqueduct" } }
-		};
-	}
-
 	[Fact]
 	public void MembersCanBeSerializedWithoutNames() {
-		var history = new History();
+		var history = new TestHistory();
 		var expectedStr =
 			"culture=roman" + Environment.NewLine +
 			"development=3.14" + Environment.NewLine +
@@ -150,27 +173,16 @@ public class PDXSerializerTests {
 		Assert.Equal(expectedStr, PDXSerializer.Serialize(list, string.Empty, withBraces: false));
 	}
 
-	private class TitleCollection : IdObjectCollection<string, CK3Title> { }
-	private class CK3Title : IPDXSerializable, IIdentifiable<string> {
-		[commonItems.Serialization.NonSerialized] public string Id { get; }
-		public Color? color { get; set; }
-		[SerializeOnlyValue] public TitleCollection DeJureVassals = new();
-
-		public CK3Title(string id, Color color) {
-			Id = id;
-			this.color = color;
-		}
-	}
 	[Fact]
 	public void RecursiveClassesAreSerializedWithCorrectIndentation() {
-		var empire = new CK3Title("e_empire", new(1, 1, 1));
-		var kingdom1 = new CK3Title("k_kingdom1", new(2, 2, 2));
+		var empire = new TestCK3Title("e_empire", new(1, 1, 1));
+		var kingdom1 = new TestCK3Title("k_kingdom1", new(2, 2, 2));
 		empire.DeJureVassals.Add(kingdom1);
-		var duchy1 = new CK3Title("d_duchy1", new(3, 3, 3));
+		var duchy1 = new TestCK3Title("d_duchy1", new(3, 3, 3));
 		kingdom1.DeJureVassals.Add(duchy1);
-		var kingdom2 = new CK3Title("k_kingdom2", new(4, 4, 4));
+		var kingdom2 = new TestCK3Title("k_kingdom2", new(4, 4, 4));
 		empire.DeJureVassals.Add(kingdom2);
-		TitleCollection topLevelTitles = new() { empire };
+		TestTitleCollection topLevelTitles = new() { empire };
 
 		var expectedStr =
 			"e_empire={" + Environment.NewLine +
