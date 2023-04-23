@@ -3,4 +3,4 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/paradoxgameconverters/commonitems.net/badge)](https://www.codefactor.io/repository/github/paradoxgameconverters/commonitems.net)
 [![Coverage Status](https://coveralls.io/repos/github/ParadoxGameConverters/commonItems.NET/badge.svg?branch=main)](https://coveralls.io/github/ParadoxGameConverters/commonItems.NET?branch=main)
 
-Common utilities for PGCG converters written for .NET platform.
+Common utilities for Paradox game converters written for .NET platform.
