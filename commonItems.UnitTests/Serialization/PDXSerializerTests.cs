@@ -80,7 +80,6 @@ internal partial class TestCK3Title : IPDXSerializable, IIdentifiable<string> {
 }
 
 public class PDXSerializerTests {
-
 	[Fact]
 	public void PDXSerializableClassIsProperlySerialized() {
 		var title = new TestTitle();

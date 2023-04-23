@@ -78,7 +78,6 @@ namespace commonItems.SourceGenerators {
 			return nameSpace;
 		}
 
-
 		/// <summary>
 		/// Get all types in the inheritance hierarchy.
 		/// </summary>
@@ -104,7 +103,6 @@ namespace commonItems.SourceGenerators {
 			public bool CanBeNull;
 			public bool SerializeOnlyValue;
 		}
-
 
 		/// <summary>
 		/// Get all serializable properties of class.
