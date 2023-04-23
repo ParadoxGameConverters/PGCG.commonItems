@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace commonItems.Serialization; 
+namespace commonItems.Serialization;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+[AttributeUsage(AttributeTargets.Property)]
 public class SerializeOnlyValue : Attribute { }
