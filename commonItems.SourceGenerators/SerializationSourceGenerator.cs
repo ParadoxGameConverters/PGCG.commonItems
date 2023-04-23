@@ -269,7 +269,7 @@ namespace commonItems.SourceGenerators {
 
 				// We need to "close" each of the parent types, so write
 				// the required number of '}'
-				for (int i = parentsCount; i < parentsCount; ++i) {
+				for (int i = 0; i < parentsCount; ++i) {
 					codeBuilder.AppendLine("}");
 				}
 
