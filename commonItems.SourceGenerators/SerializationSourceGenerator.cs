@@ -2,11 +2,10 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
-using static commonItems.SourceGenerators.SerializationSourceGenerator;
 
 namespace commonItems.SourceGenerators {
 	[Generator]
@@ -121,7 +120,6 @@ namespace commonItems.SourceGenerators {
 
 			// return a link to the outermost parent type
 			return parentClassInfo;
-
 		}
 
 		/// <summary>
@@ -275,7 +273,7 @@ namespace commonItems.SourceGenerators {
 
 				return FormatCode(codeBuilder.ToString());
 			}
-			throw new Exception($"Cannot get class symbol for class: {className} in namespace {classNamespace}");
+			throw new SerializationException($"Cannot get class symbol for class: {className} in namespace {classNamespace}");
 		}
 
 		private static string FormatCode(string generatedCode) {
