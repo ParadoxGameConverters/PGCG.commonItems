@@ -44,6 +44,11 @@ public class Date : IComparable<Date>, IPDXSerializable {
 			Day = 1;
 		}
 	}
+	public Date(DateTimeOffset dateTimeOffset) {
+		Year = dateTimeOffset.Year;
+		Month = dateTimeOffset.Month;
+		Day = dateTimeOffset.Day;
+	}
 	
 	public static implicit operator Date(string dateString) => new Date(dateString);
 	
@@ -246,5 +251,9 @@ public class Date : IComparable<Date>, IPDXSerializable {
 	}
 	public static bool operator !=(Date? left, Date? right) {
 		return !(left == right);
+	}
+
+	public DateTimeOffset ToDateTimeOffset() {
+		return new DateTimeOffset(new DateTime(Year, Month, Day), offset: TimeSpan.Zero);
 	}
 }
