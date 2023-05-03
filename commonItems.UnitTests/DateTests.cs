@@ -8,7 +8,7 @@ namespace commonItems.UnitTests;
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public class DateTests {
-	private const int decimalPlaces = 4;
+	private const int DecimalPlaces = 4;
 
 	[Fact]
 	public void DefaultDateIsNotSet() {
@@ -166,21 +166,21 @@ public class DateTests {
 	public void DiffInYearsHandlesPartialYears() {
 		var date1 = new Date(2020, 4, 25);
 		var date2 = new Date(2020, 1, 25);
-		Assert.Equal(0.246575, date1.DiffInYears(date2), decimalPlaces);
+		Assert.Equal(0.246575, date1.DiffInYears(date2), DecimalPlaces);
 	}
 
 	[Fact]
 	public void DiffInYearsHandlesWrapAround() {
 		var date1 = new Date(2020, 4, 25);
 		var date2 = new Date(2019, 8, 25);
-		Assert.Equal(0.665753, date1.DiffInYears(date2), decimalPlaces);
+		Assert.Equal(0.665753, date1.DiffInYears(date2), DecimalPlaces);
 	}
 
 	[Fact]
 	public void DiffInYearsHandlesNegative() {
 		var date1 = new Date(2020, 1, 25);
 		var date2 = new Date(2020, 4, 25);
-		Assert.Equal(-0.246575, date1.DiffInYears(date2), decimalPlaces);
+		Assert.Equal(-0.246575, date1.DiffInYears(date2), DecimalPlaces);
 	}
 
 	[Fact]
@@ -301,5 +301,34 @@ public class DateTests {
 		Assert.Equal(800, date.Year);
 		Assert.Equal(4, date.Month);
 		Assert.Equal(5, date.Day);
+	}
+
+	[Theory]
+	[InlineData(1, 1, 1, "1.1.1")]
+	[InlineData(1, 12, 31, "1.12.31")]
+	[InlineData(9999, 1, 1, "9999.1.1")]
+	public void DateCanBeConstructedFromDateTimeOffset(int year, int month, int day, string expectedDateStr) {
+		var dateTime = new DateTime(year, month, day);
+		var dateTimeOffset = new DateTimeOffset(dateTime, offset: TimeSpan.Zero);
+		var constructedPDXDate = new Date(dateTimeOffset);
+		
+		Date expectedPDXDate = expectedDateStr;
+		Assert.Equal(expectedPDXDate, constructedPDXDate);
+		Assert.Equal(year, constructedPDXDate.Year);
+		Assert.Equal(month, constructedPDXDate.Month);
+		Assert.Equal(day, constructedPDXDate.Day);
+	}
+
+	[Theory]
+	[InlineData("1.1.1", 1, 1, 1)]
+	[InlineData("1.12.31", 1, 12, 31)]
+	[InlineData("9999.1.1", 9999, 1, 1)]
+	public void DateCanBeConvertedToDateTimeOffset(string dateStr, int expectedYear, int expectedMonth, int expectedDay) {
+		Date pdxDate = dateStr;
+		var dateTimeOffset = pdxDate.ToDateTimeOffset();
+		
+		Assert.Equal(expectedYear, dateTimeOffset.Year);
+		Assert.Equal(expectedMonth, dateTimeOffset.Month);
+		Assert.Equal(expectedDay, dateTimeOffset.Day);
 	}
 }
