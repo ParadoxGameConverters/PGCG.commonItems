@@ -1,7 +1,9 @@
-﻿using GameFinder.RegistryUtils;
+﻿using GameFinder.Common;
+using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.GOG;
 using IcgSoftware.IntToOrdinalNumber;
+using NexusMods.Paths;
 using System;
 using System.Globalization;
 using System.IO;
@@ -139,15 +141,14 @@ public static class CommonFunctions {
 	/// </summary>
 	/// <returns>Install path for the corresponding game, or null</returns>
 	public static string? GetSteamInstallPath(int steamId) {
-		var handler = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-			? new SteamHandler(new WindowsRegistry())
-			: new SteamHandler(null);
+		var handler = new SteamHandler(FileSystem.Shared, OperatingSystem.IsWindows() ? WindowsRegistry.Shared : null);
 
 		try {
-			var game = handler.FindOneGameById(steamId, out string[] errors);
+			var gameId = SteamGameId.From(steamId);
+			var game = handler.FindOneGameById(gameId, out ErrorMessage[] errors);
 
-			if (game is not null && game.AppId == steamId) {
-				return game.Path;
+			if (game is not null && game.AppId == gameId) {
+				return game.Path.GetFullPath();
 			}
 
 			foreach (var error in errors) {
