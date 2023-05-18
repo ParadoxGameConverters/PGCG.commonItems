@@ -24,6 +24,7 @@ public class ScriptValueCollectionTests {
 				"mod_value",
 				"common_value",
 				"value_using_value",
+				"value_using_variable",
 				"value_using_expression",
 				"bool_value_yes",
 				"bool_value_no",
@@ -37,6 +38,7 @@ public class ScriptValueCollectionTests {
 		Assert.Equal(3.2d, scriptValueCollection["mod_value"]);
 		Assert.Equal(69d, scriptValueCollection["common_value"]); // 68 in game, overridden by 69 in mod
 		Assert.Equal(0.4d, scriptValueCollection["value_using_value"]);
+		Assert.Equal(420, scriptValueCollection["value_using_variable"]);
 		Assert.Equal(69, scriptValueCollection["value_using_expression"]);
 		Assert.Equal(1, scriptValueCollection["bool_value_yes"]);
 		Assert.Equal(0, scriptValueCollection["bool_value_no"]);

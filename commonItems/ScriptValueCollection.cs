@@ -35,6 +35,13 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 		}
 
 		var valueStr = valueStringOfItem.ToString();
+		if (CommonRegexes.Variable.IsMatch(valueStr)) {
+			var variableValue = reader.ResolveVariable(valueStr);
+			if (Information.IsNumeric(variableValue)) {
+				return Convert.ToDouble(variableValue);
+			}
+		}
+		
 		if (CommonRegexes.InterpolatedExpression.IsMatch(valueStr)) {
 			var expressionValue = reader.EvaluateExpression(valueStr);
 			if (Information.IsNumeric(expressionValue)) {
