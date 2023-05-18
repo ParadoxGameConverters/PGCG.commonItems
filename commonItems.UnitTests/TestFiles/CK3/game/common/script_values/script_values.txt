@@ -1,4 +1,5 @@
-@variable = 69
+@variable1 = 420
+@variable2 = 69
 
 value1 = 0.4
 value2 = -0.4
@@ -16,8 +17,8 @@ clan_government_tax_max_possible = { # complex value, to be ignored
 }
 
 value_using_value = value1 # simple value using another simple value
-
-value_using_expression = @[variable] # simple value using interpolated expression
+value_using_variable = @variable1 # simple value using a variable
+value_using_expression = @[variable2] # simple value using an interpolated expression
 
 bool_value_yes = yes
 bool_value_no = no
