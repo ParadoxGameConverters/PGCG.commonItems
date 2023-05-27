@@ -443,6 +443,7 @@ public class StringExtensionsTests {
 	[InlineData("Uttar Pradesh", "Uttar Pradeshi")]
 	[InlineData("Uttarakhand", "Uttarakhandi")]
 	[InlineData("West Bengal", "West Bengali")]
+	[InlineData("Zhanatalap", "Zhanatalapian")]
 	// ReSharper restore StringLiteralTypo
 	public void GetAdjectiveGeneratesCorrectishAdjective(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());

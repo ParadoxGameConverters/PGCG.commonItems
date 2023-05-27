@@ -540,6 +540,7 @@
 {"*al", "*ali"}, // Nepal
 {"*an", "*anian"}, // Jordan
 {"*ao", "*aoan"}, // Curaçao
+{"*ap", "*apian"},
 {"*as", "*an"}, // Honduras
 {"*at", "*atian"}, // Eilat
 {"*au", "*auan"}, // Palau
