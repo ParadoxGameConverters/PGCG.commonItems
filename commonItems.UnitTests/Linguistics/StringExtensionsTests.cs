@@ -180,6 +180,7 @@ public class StringExtensionsTests {
 	[InlineData("Guercif", "Guercifi")]
 	[InlineData("Mcif", "Mcifi")]
 	[InlineData("Maqomo", "Maqomo")]
+	[InlineData("Frej", "Frejite")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -235,7 +236,6 @@ public class StringExtensionsTests {
 	[InlineData("Scandia Insula", "Insular Scandian")]
 	[InlineData("Scythia Ultima", "Furthest Scythian")]
 	[InlineData("Maeotia Minores", "Lesser Maeotian")]
-	[InlineData("Frej", "Frejite")]
 
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Regions_in_Greco-Roman_antiquity
 	[InlineData("Acarnania", "Acarnanian")]
