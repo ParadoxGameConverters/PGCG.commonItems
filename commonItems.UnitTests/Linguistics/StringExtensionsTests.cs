@@ -180,6 +180,7 @@ public class StringExtensionsTests {
 	[InlineData("Guercif", "Guercifi")]
 	[InlineData("Mcif", "Mcifi")]
 	[InlineData("Maqomo", "Maqomo")]
+	[InlineData("Frej", "Frejite")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]

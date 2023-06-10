@@ -550,6 +550,7 @@
 {"*de", "*dean"}, // Cape Verde
 {"*du", "*dunite"}, // Ordu
 {"*eh", "*ehi"},
+{"*ej", "*ejite"},
 {"*el", "*eli"}, // Israel
 {"*em", "*emite"}, // Zarem (rule made up)
 {"*en", "*enese"}, // Jan Mayen
