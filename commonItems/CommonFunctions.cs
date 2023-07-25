@@ -2,6 +2,7 @@
 using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.GOG;
+using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using GameFinder.Wine;
 using IcgSoftware.IntToOrdinalNumber;
 using NexusMods.Paths;
@@ -141,14 +142,12 @@ public static class CommonFunctions {
 	///  Given a Steam AppId, returns the install path for the corresponding game.
 	/// </summary>
 	/// <returns>Install path for the corresponding game, or null</returns>
-	public static string? GetSteamInstallPath(int steamId) {
+	public static string? GetSteamInstallPath(uint steamId) {
 		var handler = new SteamHandler(FileSystem.Shared, OperatingSystem.IsWindows() ? WindowsRegistry.Shared : null);
 
 		try {
-			var gameId = SteamGameId.From(steamId);
-			var game = handler.FindOneGameById(gameId, out ErrorMessage[] errors);
-
-			if (game is not null && game.AppId == gameId) {
+			var game = handler.FindOneGameById(AppId.From(steamId), out ErrorMessage[] errors);
+			if (game is not null) {
 				return game.Path.GetFullPath();
 			}
 
