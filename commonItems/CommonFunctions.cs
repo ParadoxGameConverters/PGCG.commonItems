@@ -168,31 +168,31 @@ public static class CommonFunctions {
 	/// </summary>
 	/// <returns>Install path for the corresponding game, or null</returns>
 	public static string? GetGOGInstallPath(long gogId) {
-		GOGHandler? handler = null;
-		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-			handler = new GOGHandler(WindowsRegistry.Shared, FileSystem.Shared);
-		} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-			var prefixManager = new DefaultWinePrefixManager(FileSystem.Shared);
-
-			foreach (var result in prefixManager.FindPrefixes()) {
-				result.Switch(prefix => {
-					Logger.Debug($"Found wine prefix at {prefix.ConfigurationDirectory}");
-					
-					var wineFileSystem = prefix.CreateOverlayFileSystem(FileSystem.Shared);
-					var wineRegistry = prefix.CreateRegistry(FileSystem.Shared);
-
-					handler = new GOGHandler(wineRegistry, wineFileSystem);
-				}, error => {
-					Logger.Debug(error.Message);
-				});
-			}
-		}
-		if (handler is null) {
-			Logger.Debug($"Failed to init GOGHandler on system: {RuntimeInformation.OSDescription}");
-			return null;
-		}
-
 		try {
+			GOGHandler? handler = null;
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				handler = new GOGHandler(WindowsRegistry.Shared, FileSystem.Shared);
+			} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+				var prefixManager = new DefaultWinePrefixManager(FileSystem.Shared);
+
+				foreach (var result in prefixManager.FindPrefixes()) {
+					result.Switch(prefix => {
+						Logger.Debug($"Found wine prefix at {prefix.ConfigurationDirectory}");
+						
+						var wineFileSystem = prefix.CreateOverlayFileSystem(FileSystem.Shared);
+						var wineRegistry = prefix.CreateRegistry(FileSystem.Shared);
+
+						handler = new GOGHandler(wineRegistry, wineFileSystem);
+					}, error => {
+						Logger.Debug(error.Message);
+					});
+				}
+			}
+			if (handler is null) {
+				Logger.Debug($"Failed to init GOGHandler on system: {RuntimeInformation.OSDescription}");
+				return null;
+			}
+
 			var gameId = GOGGameId.From(gogId);
 			var game = handler.FindOneGameById(gameId, out ErrorMessage[] errors);
 
