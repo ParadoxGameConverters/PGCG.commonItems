@@ -108,24 +108,29 @@ public class ModLoader {
 
 		var steamId = match.Groups[1].Value;
 		Logger.Debug($"Trying to get Steam Workshop name for mod with ID: {steamId}...");
-			
-		var httpClient = new HttpClient();
-		var modDetailsUrl = $"https://steamcommunity.com/sharedfiles/filedetails/?id={steamId}";
-		var task = Task.Run(() => httpClient.GetAsync(modDetailsUrl)); 
-		task.Wait();
-		var response = task.Result;
-		var responseContent = response.Content.ReadAsStringAsync().Result;
+
+		try {
+			var httpClient = new HttpClient();
+			var modDetailsUrl = $"https://steamcommunity.com/sharedfiles/filedetails/?id={steamId}";
+			var task = Task.Run(() => httpClient.GetAsync(modDetailsUrl)); 
+			task.Wait();
+			var response = task.Result;
+			var responseContent = response.Content.ReadAsStringAsync().Result;
 		
-		var title = Regex.Match(
-			input: responseContent, 
-			pattern: @"<title\b[^>]*>\s*(?<Title>[\s\S]*?)</title>",
-			options: RegexOptions.IgnoreCase
-		).Groups["Title"].Value;
-		const string workshopPrefix = "Steam Workshop::";
-		if (title.StartsWith(workshopPrefix)) {
-			title = title[workshopPrefix.Length..];
+			var title = Regex.Match(
+				input: responseContent, 
+				pattern: @"<title\b[^>]*>\s*(?<Title>[\s\S]*?)</title>",
+				options: RegexOptions.IgnoreCase
+			).Groups["Title"].Value;
+			const string workshopPrefix = "Steam Workshop::";
+			if (title.StartsWith(workshopPrefix)) {
+				title = title[workshopPrefix.Length..];
+			}
+			return title;
+		} catch (Exception e) {
+			Logger.Debug($"Failed to get probable Steam Workshop name for mod {mod.Path}: {e}");
+			return null;
 		}
-		return title;
 	}
 
 	private void ProcessLoadedMod(ModParser theMod, string modName, string modFileName, string modPath, string modsPath, string gameDocumentsPath) {
