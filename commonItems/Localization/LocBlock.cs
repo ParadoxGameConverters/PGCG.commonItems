@@ -26,6 +26,10 @@ public class LocBlock : IIdentifiable<string> {
 			localizations[language] = loc;
 		}
 	}
+	
+	public bool HasLocForLanguage(string language) {
+		return localizations.GetValueOrDefault(language) is not null;
+	}
 
 	public string? this[string language] {
 		get {
@@ -34,6 +38,7 @@ public class LocBlock : IIdentifiable<string> {
 				return toReturn;
 			}
 			
+			// As fallback, try to use base language loc.
 			if (language != baseLanguage) {
 				toReturn = localizations.GetValueOrDefault(baseLanguage, null);
 			}

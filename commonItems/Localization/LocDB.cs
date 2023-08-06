@@ -78,8 +78,8 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 
 		line = line.TrimEnd();
 
-		var sepLoc = line.IndexOf(':');
-		if (sepLoc == -1) {
+		var separatorIndex = line.IndexOf(':');
+		if (separatorIndex == -1) {
 			return new(null, null);
 		}
 
@@ -103,8 +103,8 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 			return new(null, null);
 		}
 
-		var key = line.Substring(1, sepLoc - 1);
-		var newLine = line.Substring(sepLoc + 1);
+		var key = line.Substring(0, separatorIndex).TrimStart();
+		var newLine = line.Substring(separatorIndex + 1);
 		var quoteIndex = newLine.IndexOf('\"');
 		var quote2Index = newLine.LastIndexOf('\"');
 		if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) {

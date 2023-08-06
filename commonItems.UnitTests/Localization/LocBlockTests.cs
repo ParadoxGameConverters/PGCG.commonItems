@@ -141,12 +141,18 @@ public class LocBlockTests {
 		var locBlock = new LocBlock("key1", "english") {
 			["english"] = "Key 1 loc"
 		};
+		Assert.False(locBlock.HasLocForLanguage("italian"));
+		Assert.True(locBlock.HasLocForLanguage("english"));
+		
 		Assert.Equal("Key 1 loc", locBlock["italian"]);
 	}
 
 	[Fact]
-	public void LocForNonBaseLanguageDefaultsNullIfBaseLanguageHasNoLoc() {
+	public void LocForNonBaseLanguageDefaultsToNullIfBaseLanguageHasNoLoc() {
 		var locBlock = new LocBlock("key1", "english");
+		Assert.False(locBlock.HasLocForLanguage("italian"));
+		Assert.False(locBlock.HasLocForLanguage("english"));
+		
 		Assert.Null(locBlock["italian"]);
 	}
 
