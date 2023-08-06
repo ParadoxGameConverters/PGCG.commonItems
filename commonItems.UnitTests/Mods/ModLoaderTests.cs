@@ -1,6 +1,7 @@
 ﻿using commonItems.Mods;
 using System;
 using System.IO;
+using System.Linq;
 using Xunit;
 using ModList = System.Collections.Generic.List<commonItems.Mods.Mod>;
 
@@ -86,5 +87,25 @@ public class ModLoaderTests {
 		
 		Assert.Empty(usableMods);
 		Assert.Contains("[INFO] No mods were detected in savegame. Skipping mod processing.", output.ToString());
+	}
+
+	[Fact]
+	public void SteamWorkshopNameCanBeRetrievedForModMissingFromDisk() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		
+		var incomingMods = new ModList {
+			new(name: string.Empty, path: "mod/ugc_2845446001.mod") // Timeline Extension for Invictus
+		};
+		var modLoader = new ModLoader();
+		modLoader.LoadMods(TestFilesPath, incomingMods);
+		var usableMods = modLoader.UsableMods;
+		
+		Assert.Empty(usableMods);
+		var expectedModDetails = $"mod at {incomingMods.First().Path} " +
+		                         $"(probable Steam Workshop name: Timeline Extension for Invictus)";
+		var consoleOutput = output.ToString();
+		Assert.Contains($"Savegame uses {expectedModDetails}, which is not present on disk. " +
+		                $"Skipping at your risk, but this can greatly affect conversion.", consoleOutput);
 	}
 }

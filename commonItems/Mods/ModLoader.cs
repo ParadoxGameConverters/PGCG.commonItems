@@ -2,10 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace commonItems.Mods; 
 
-public class ModLoader {
+public partial class ModLoader {
 	private readonly List<Mod> possibleUncompressedMods = new(); // name, absolute path to mod directory
 	private readonly List<Mod> possibleCompressedMods = new(); // name, absolute path to zip file
 	public List<Mod> UsableMods { get; } = new(); // name, absolute path for directories, relative for unpacked
@@ -59,13 +62,20 @@ public class ModLoader {
 			var trimmedModFileName = CommonFunctions.TrimPath(mod.Path);
 
 			if (!diskModNames.Contains(trimmedModFileName)) {
+				string missingModDetails;
+				
 				if (string.IsNullOrEmpty(mod.Name)) {
-					Logger.Warn(
-						$"\t\tSavegame uses mod at {mod.Path}, which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
+					var workshopName = GetProbableSteamName(mod);
+					if (workshopName is not null) {
+						missingModDetails = $"mod at {mod.Path} (probable Steam Workshop name: {workshopName})";
+					} else {
+						missingModDetails = $"mod at {mod.Path}";
+					}
 				} else {
-					Logger.Warn(
-						$"\t\tSavegame uses [{mod.Name}] at {mod.Path}, which is not present on disk. Skipping at your risk, but this can greatly affect conversion.");
+					missingModDetails = $"[{mod.Name}] at {mod.Path}";
 				}
+				Logger.Warn($"\t\tSavegame uses {missingModDetails}, which is not present on disk. " +
+				            $"Skipping at your risk, but this can greatly affect conversion.");
 				continue;
 			}
 
@@ -85,6 +95,36 @@ public class ModLoader {
 			}
 			ProcessLoadedMod(theMod, mod.Name, trimmedModFileName, mod.Path, modsPath, gameDocumentsPath);
 		}
+	}
+
+	private static string? GetProbableSteamName(Mod mod) {
+		// Using regex, check if mod path looks like: mod/ugc_<ID>.mod
+		// Make the ID a capture group so we can use it to retrieve the mod name.
+		var match = SteamModPathRegex().Match(mod.Path);
+		if (!match.Success) {
+			return null;
+		}
+
+		var steamId = match.Groups[1].Value;
+		Logger.Debug($"Trying to get Steam Workshop name for mod with ID: {steamId}...");
+			
+		var httpClient = new HttpClient();
+		var modDetailsUrl = $"https://steamcommunity.com/sharedfiles/filedetails/?id={steamId}";
+		var task = Task.Run(() => httpClient.GetAsync(modDetailsUrl)); 
+		task.Wait();
+		var response = task.Result;
+		var responseContent = response.Content.ReadAsStringAsync().Result;
+		
+		var title = Regex.Match(
+			input: responseContent, 
+			pattern: @"<title\b[^>]*>\s*(?<Title>[\s\S]*?)</title>",
+			options: RegexOptions.IgnoreCase
+		).Groups["Title"].Value;
+		const string workshopPrefix = "Steam Workshop::";
+		if (title.StartsWith(workshopPrefix)) {
+			title = title[workshopPrefix.Length..];
+		}
+		return title;
 	}
 
 	private void ProcessLoadedMod(ModParser theMod, string modName, string modFileName, string modPath, string modsPath, string gameDocumentsPath) {
@@ -188,4 +228,7 @@ public class ModLoader {
 
 		return true;
 	}
+
+	[GeneratedRegex("mod/ugc_(\\d+).mod")]
+	private static partial Regex SteamModPathRegex();
 }
