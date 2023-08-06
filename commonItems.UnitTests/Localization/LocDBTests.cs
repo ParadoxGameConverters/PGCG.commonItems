@@ -37,6 +37,29 @@ public class LocDBTests {
 	}
 
 	[Fact]
+	private void LocalizationWithNonStandardIndentIsCorrectlyRead() {
+		var noIndentReader = new BufferedReader(
+			"l_english:\n" +
+			"key1:0 \"value 1\" # comment\n" +
+			"key2:0 \"value \"subquoted\" 2\"\n"
+		);
+		var locDB = new LocDB("english");
+		locDB.ScrapeStream(noIndentReader);
+		Assert.Equal("value 1", locDB.GetLocBlockForKey("key1")!["english"]);
+		Assert.Equal("value \"subquoted\" 2", locDB.GetLocBlockForKey("key2")!["english"]);
+		
+		var bigIndentReader = new BufferedReader(
+			"l_english:\n" +
+			"    key1:0 \"value 1\" # comment\n" +
+			"    key2:0 \"value \"subquoted\" 2\"\n"
+		);
+		locDB = new LocDB("english");
+		locDB.ScrapeStream(bigIndentReader);
+		Assert.Equal("value 1", locDB.GetLocBlockForKey("key1")!["english"]);
+		Assert.Equal("value \"subquoted\" 2", locDB.GetLocBlockForKey("key2")!["english"]);
+	}
+
+	[Fact]
 	public void UnquotedLocIsIgnored() {
 		var reader = new BufferedReader(
 			"l_english:\n" +
