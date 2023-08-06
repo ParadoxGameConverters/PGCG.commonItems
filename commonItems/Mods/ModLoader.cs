@@ -100,7 +100,8 @@ public partial class ModLoader {
 	private static string? GetProbableSteamName(Mod mod) {
 		// Using regex, check if mod path looks like: mod/ugc_<ID>.mod
 		// Make the ID a capture group so we can use it to retrieve the mod name.
-		var match = SteamModPathRegex().Match(mod.Path);
+		var steamModPathRegex = new Regex("mod/ugc_(\\d+).mod");
+		var match = steamModPathRegex.Match(mod.Path);
 		if (!match.Success) {
 			return null;
 		}
@@ -228,7 +229,4 @@ public partial class ModLoader {
 
 		return true;
 	}
-
-	[GeneratedRegex("mod/ugc_(\\d+).mod")]
-	private static partial Regex SteamModPathRegex();
 }
