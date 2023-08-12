@@ -617,6 +617,7 @@
 {"*un", "*unite"},
 {"*vo", "*voan"}, // Provo
 {"*we", "*wean"}, // Zimbabwe
+{"*wo", "*wo"},
 {"*ye", "*yer"}, // Rye
 {"*yk", "*yk"}, // Karamyk (rule made up)
 {"*ys", "*ysian"}, // Arambys (rule made up)
