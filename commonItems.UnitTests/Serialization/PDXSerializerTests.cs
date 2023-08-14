@@ -87,30 +87,30 @@ public partial class PDXSerializerTests {
 
 		var expectedString =
 			"{" + Environment.NewLine +
-			"\tid=20" + Environment.NewLine +
-			"\tcapital_prov_id=420" + Environment.NewLine +
-			"\tdevelopment=50.5" + Environment.NewLine +
-			"\tname=\"Papal States\"" + Environment.NewLine +
-			"\tpope_names_list={ Peter John Hadrian }" + Environment.NewLine +
-			"\tempty_list={ }" + Environment.NewLine +
-			"\tcolor1={ 2 4 6 }" + Environment.NewLine +
-			"\tdefinite_form=no" + Environment.NewLine +
-			"\tlandless=yes" + Environment.NewLine +
-			"\tcreation_date=600.4.5" + Environment.NewLine +
-			"\ttextures={" + Environment.NewLine +
-			"\t\tdiffuse=\"gfx/models/diffuse.dds\"" + Environment.NewLine +
-			"\t\tnormal=\"gfx/models/normal.dds\"" + Environment.NewLine +
+			"\tid = 20" + Environment.NewLine +
+			"\tcapital_prov_id = 420" + Environment.NewLine +
+			"\tdevelopment = 50.5" + Environment.NewLine +
+			"\tname = \"Papal States\"" + Environment.NewLine +
+			"\tpope_names_list = { Peter John Hadrian }" + Environment.NewLine +
+			"\tempty_list = { }" + Environment.NewLine +
+			"\tcolor1 = { 2 4 6 }" + Environment.NewLine +
+			"\tdefinite_form = no" + Environment.NewLine +
+			"\tlandless = yes" + Environment.NewLine +
+			"\tcreation_date = 600.4.5" + Environment.NewLine +
+			"\ttextures = {" + Environment.NewLine +
+			"\t\tdiffuse = \"gfx/models/diffuse.dds\"" + Environment.NewLine +
+			"\t\tnormal = \"gfx/models/normal.dds\"" + Environment.NewLine +
 			"\t}" + Environment.NewLine +
-			"\tweights={" + Environment.NewLine +
-			"\t\t10=roman_gfx" + Environment.NewLine +
-			"\t\t5=italian_gfx" + Environment.NewLine +
+			"\tweights = {" + Environment.NewLine +
+			"\t\t10 = roman_gfx" + Environment.NewLine +
+			"\t\t5 = italian_gfx" + Environment.NewLine +
 			"\t}" + Environment.NewLine +
-			"\tgreetings={ \"hi\" \"salutations\" \"greetings\" }" + Environment.NewLine +
-			"\tkey=value" + Environment.NewLine +
-			"\truler_info={" + Environment.NewLine +
-			"\t\tnickname=the_great" + Environment.NewLine +
+			"\tgreetings = { \"hi\" \"salutations\" \"greetings\" }" + Environment.NewLine +
+			"\tkey = value" + Environment.NewLine +
+			"\truler_info = {" + Environment.NewLine +
+			"\t\tnickname = the_great" + Environment.NewLine +
 			"\t}" + Environment.NewLine +
-			"\tai_priority={ add = 70 }" + Environment.NewLine +
+			"\tai_priority = { add = 70 }" + Environment.NewLine +
 			"}";
 		Assert.Equal(expectedString, titleString);
 	}
@@ -120,9 +120,9 @@ public partial class PDXSerializerTests {
 		var testObj = new TestClass {Number1 = 60.800000000000004, Number2 = 60.123456789, Number3=60};
 		var expectedString =
 			"{" + Environment.NewLine +
-			"\tnumber1=60.8" + Environment.NewLine +
-			"\tnumber2=60.123457" + Environment.NewLine +
-			"\tnumber3=60" + Environment.NewLine +
+			"\tnumber1 = 60.8" + Environment.NewLine +
+			"\tnumber2 = 60.123457" + Environment.NewLine +
+			"\tnumber3 = 60" + Environment.NewLine +
 			"}";
 		Assert.Equal(expectedString, PDXSerializer.Serialize(testObj));
 	}
@@ -131,13 +131,13 @@ public partial class PDXSerializerTests {
 	public void NullPropertiesAreNotSerialized() {
 		// string? property (reference type)
 		var i1 = new TestRulerInfo { nickname = "the_great" };
-		Assert.Contains("nickname=the_great", PDXSerializer.Serialize(i1, string.Empty));
+		Assert.Contains("nickname = the_great", PDXSerializer.Serialize(i1, string.Empty));
 		var i2 = new TestRulerInfo { nickname = null };
 		Assert.DoesNotContain("nickname", PDXSerializer.Serialize(i2, string.Empty));
 
 		// double? property (value type)
 		var i3 = new TestRulerInfo { Health = 100 };
-		Assert.Contains("health=100", PDXSerializer.Serialize(i3, string.Empty));
+		Assert.Contains("health = 100", PDXSerializer.Serialize(i3, string.Empty));
 		var i4 = new TestRulerInfo { Health = null };
 		Assert.DoesNotContain("health", PDXSerializer.Serialize(i4, string.Empty));	
 	}
@@ -147,8 +147,8 @@ public partial class PDXSerializerTests {
 		var pascal = new PascalCaseClass();
 		var str = PDXSerializer.Serialize(pascal);
 		var expectedStr = "{" + Environment.NewLine +
-		                  "\tname=Property" + Environment.NewLine +
-		                  "\tculture=roman" + Environment.NewLine +
+		                  "\tname = Property" + Environment.NewLine +
+		                  "\tculture = roman" + Environment.NewLine +
 		                  "}";
 		Assert.Equal(expectedStr, str);
 	}
@@ -157,9 +157,9 @@ public partial class PDXSerializerTests {
 	public void MembersCanBeSerializedWithoutNames() {
 		var history = new TestHistory();
 		var expectedStr =
-			"culture=roman" + Environment.NewLine +
-			"development=3.14" + Environment.NewLine +
-			"buildings={ baths aqueduct }" + Environment.NewLine;
+			"culture = roman" + Environment.NewLine +
+			"development = 3.14" + Environment.NewLine +
+			"buildings = { baths aqueduct }" + Environment.NewLine;
 		Assert.Equal(expectedStr, PDXSerializer.Serialize(history, indent: string.Empty, withBraces: false));
 	}
 
@@ -185,16 +185,16 @@ public partial class PDXSerializerTests {
 		TestTitleCollection topLevelTitles = new() { empire };
 
 		var expectedStr =
-			"e_empire={" + Environment.NewLine +
-			"\tcolor={ 1 1 1 }" + Environment.NewLine +
-			"\tk_kingdom1={" + Environment.NewLine +
-			"\t\tcolor={ 2 2 2 }" + Environment.NewLine +
-			"\t\td_duchy1={" + Environment.NewLine +
-			"\t\t\tcolor={ 3 3 3 }" + Environment.NewLine +
+			"e_empire = {" + Environment.NewLine +
+			"\tcolor = { 1 1 1 }" + Environment.NewLine +
+			"\tk_kingdom1 = {" + Environment.NewLine +
+			"\t\tcolor = { 2 2 2 }" + Environment.NewLine +
+			"\t\td_duchy1 = {" + Environment.NewLine +
+			"\t\t\tcolor = { 3 3 3 }" + Environment.NewLine +
 			"\t\t}" + Environment.NewLine +
 			"\t}" + Environment.NewLine +
-			"\tk_kingdom2={" + Environment.NewLine +
-			"\t\tcolor={ 4 4 4 }" + Environment.NewLine +
+			"\tk_kingdom2 = {" + Environment.NewLine +
+			"\t\tcolor = { 4 4 4 }" + Environment.NewLine +
 			"\t}" + Environment.NewLine +
 			"}";
 		Assert.Equal(
