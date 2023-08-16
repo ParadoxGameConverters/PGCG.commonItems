@@ -217,6 +217,7 @@ public class CommonRegexesTests {
 	[Fact]
 	public void DateRegexMatchesDates() {
 		Assert.Matches(CommonRegexes.Date, "1918.11.11");
+		Assert.Matches(CommonRegexes.Date, "-1918.11.11");
 	}
 
 	[Fact]
@@ -227,7 +228,7 @@ public class CommonRegexesTests {
 	}
 	
 	[Fact]
-	public void DateRegexDoesntMatchDatesWithCharacters() {
+	public void DateRegexDoesNotMatchDatesWithCharacters() {
 		Assert.DoesNotMatch(CommonRegexes.Date, "1918a.11.11");
 		Assert.DoesNotMatch(CommonRegexes.Date, "1918.11a.11");
 		Assert.DoesNotMatch(CommonRegexes.Date, "1918.11.11a");
