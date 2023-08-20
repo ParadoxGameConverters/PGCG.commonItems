@@ -593,6 +593,7 @@
 {"*oa", "*oese"}, // Genoa
 {"*oe", "*oese"}, // Faroe
 {"*oh", "*ohan"},
+{"*om", "*omian"},
 {"*on", "*onese"}, // Gabon
 {"*oy", "*ojan"}, // Troy
 {"*os", "*ian"}, // Thasos
