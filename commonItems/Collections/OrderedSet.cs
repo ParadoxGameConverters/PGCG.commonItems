@@ -9,7 +9,7 @@ namespace commonItems.Collections;
 /// A set that preserves insertion order
 /// https://stackoverflow.com/a/17853085/10249243
 /// </summary>
-public class OrderedSet<T> : ISet<T> where T : notnull {
+public class OrderedSet<T> : ISet<T>, IReadOnlyCollection<T> where T : notnull {
 	private readonly IDictionary<T, LinkedListNode<T>> dictionary;
 	private readonly LinkedList<T> linkedList;
 
