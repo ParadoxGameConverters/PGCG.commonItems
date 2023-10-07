@@ -11,7 +11,8 @@ public class ColorFactory {
 	private Color GetRgbColor(BufferedReader reader) {
 		var rgb = reader.GetDoubles();
 		if (rgb.Count != 3) {
-			throw new FormatException("Color has wrong number of components");
+			throw new FormatException($"Color has wrong number of components for RGB: " +
+			                          $"{string.Join(',', rgb)}");
 		}
 		return new Color((int)rgb[0], (int)rgb[1], (int)rgb[2]);
 	}
@@ -31,13 +32,15 @@ public class ColorFactory {
 		return elementsCount switch {
 			3 => new Color(hsv[0], hsv[1], hsv[2]),
 			4 => new Color(hsv[0], hsv[1], hsv[2], hsv[3]),
-			_ => throw new FormatException("Color has wrong number of components")
+			_ => throw new FormatException("Color has wrong number of components for HSV: " +
+			                               $"{string.Join(',', hsv)}")
 		};
 	}
 	private static Color GetHsv360Color(BufferedReader reader) {
 		var hsv = reader.GetDoubles();
 		if (hsv.Count != 3) {
-			throw new FormatException("Color has wrong number of components");
+			throw new FormatException("Color has wrong number of components for HSV 360: " +
+			                          $"{string.Join(',', hsv)}");
 		}
 
 		return new Color(hsv[0] / 360, hsv[1] / 100, hsv[2] / 100);
@@ -65,7 +68,8 @@ public class ColorFactory {
 					return new Color(r, g, b, a);
 				}
 				default:
-					throw new FormatException("Color has wrong number of components");
+					throw new FormatException("Color has wrong number of components for unprefixed color: " +
+					                          $"{string.Join(',', rgb)}");
 			}
 		} else {
 			// integer list
@@ -74,7 +78,8 @@ public class ColorFactory {
 			return rgb.Count switch {
 				3 => new Color(rgb[0], rgb[1], rgb[2]),
 				4 => new Color(rgb[0], rgb[1], rgb[2], (float)rgb[3]),
-				_ => throw new FormatException("Color has wrong number of components")
+				_ => throw new FormatException("Color has wrong number of components for unprefixed color: " +
+				                               $"{string.Join(',', rgb)}")
 			};
 		}
 	}
