@@ -1,7 +1,10 @@
 ﻿using commonItems.Linguistics;
 using Csv;
+using FluentAssertions;
+using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Xunit;
 
 namespace commonItems.UnitTests.Linguistics;
@@ -181,6 +184,7 @@ public class StringExtensionsTests {
 	[InlineData("Mcif", "Mcifi")]
 	[InlineData("Maqomo", "Maqomo")]
 	[InlineData("Frej", "Frejite")]
+	[InlineData("Trelew", "Trelewense")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -470,6 +474,24 @@ public class StringExtensionsTests {
 			var generatedAdj = name.GetAdjective();
 			Assert.Contains(generatedAdj, validAdjectives);
 		}
+	}
+
+	[Fact]
+	public void AdjectiveRuleExistsForEveryMajorCityInTheWorld() {
+		var csvUrl = "https://datahub.io/core/world-cities/r/world-cities.csv";
+		var csv = new WebClient().DownloadString(csvUrl);
+		var cities = CsvReader.ReadFromText(csv)
+			.Select(line => line[0])
+			.Where(city => !string.IsNullOrEmpty(city))
+			.ToList();
+
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		foreach (var city in cities) {
+			_ = city.GetAdjective();
+		}
+		output.ToString().Should().NotContain("No matching adjective rule found");
 	}
 
 	[Theory]

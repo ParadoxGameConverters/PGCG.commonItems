@@ -557,7 +557,8 @@
 {"*én", "*enés"}, // Jaén
 {"*eo", "*ean"}, // Bengeo
 {"*er", "*erite"}, // Casper
-{"*es", "*ian"}, // Maldives
+{"*es", "*ian"}, // Maldives,
+{"*ew", "*ewense"}, // Trelew
 {"*ge", "*ginian"}, // Carthage
 {"*gh", "*ghian"}, // Middlesbroughian
 {"*gk", "*gkan"},
