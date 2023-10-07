@@ -477,12 +477,19 @@ public class StringExtensionsTests {
 	}
 
 	[Fact]
-	public void AdjectiveRuleExistsForEveryMajorCityInTheWorld() {
+	public void AdjectiveRuleExistsForEveryCountryAndMajorCityInTheWorld() {
 		var csvUrl = "https://datahub.io/core/world-cities/r/world-cities.csv";
 		var csv = new WebClient().DownloadString(csvUrl);
 		var cities = CsvReader.ReadFromText(csv)
 			.Select(line => line[0])
 			.Where(city => !string.IsNullOrEmpty(city))
+			.Distinct()
+			.ToList();
+		
+		var countries = CsvReader.ReadFromText(csv)
+			.Select(line => line[1])
+			.Where(country => !string.IsNullOrEmpty(country))
+			.Distinct()
 			.ToList();
 
 		var output = new StringWriter();
@@ -490,6 +497,10 @@ public class StringExtensionsTests {
 
 		foreach (var city in cities) {
 			_ = city.GetAdjective();
+		}
+
+		foreach (var country in countries) {
+			_ = country.GetAdjective();
 		}
 		output.ToString().Should().NotContain("No matching adjective rule found");
 	}
