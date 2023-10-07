@@ -191,6 +191,7 @@
 {"*anon", "*anese"}, // Lebanon
 {"*anya", "*anyan"}, // Netanya
 {"*aras", "*arentine"}, // Taras
+{"*ardo", "*ardino"}, // San Bernardo
 {"*aros", "*arian"}, // Paros
 {"*atar", "*atari"}, // Qatar
 {"*atte", "*atian"}, // Ville Platte
@@ -235,6 +236,7 @@
 {"*etus", "*esian"}, // Miletus
 {"*ford", "*fordian"}, // Bedford
 {"*furt", "*furter"}, // Frankfurt
+{"*gado", "*gadeño"}, // Envigado
 {"*gamo", "*gamasque"}, // Bergamo
 {"*gano", "*ganese"}, // Lugano
 {"*gana", "*ganite"}, // Telangana
@@ -341,6 +343,7 @@
 {"*[c]cis", "*[c]cidian"}, // Chalcis
 {"*[c]nai", "*[c]naite"}, // Chennai
 {"*[v]ris", "*[v]risian"}, // Marmaris
+{"*[v]ado", "*[v]ense"}, // Encantado
 {"*[c]ver", "*[c]ver"}, // Denver
 {"*[v]ver", "*[v]verian"}, // Hanover
 
@@ -407,6 +410,7 @@
 {"*ice", "*icean"}, // Nice
 {"*ier", "*ieran"}, // Napier
 {"*iev", "*ievan"}, // Kiev
+{"*imo", "*imoite"}, // Nanaimo
 {"*ing", "*ingite"}, // Kuching
 {"*ini", "*inian"}, // Leontini
 {"*inz", "*inzer"}, // Linz
@@ -548,6 +552,7 @@
 {"*ce", "*cian"}, // Thrace
 {"*co", "*can"}, // Morocco
 {"*de", "*dean"}, // Cape Verde
+{"*dó", "*doseño"}, // Chigorodó
 {"*du", "*dunite"}, // Ordu
 {"*eh", "*ehi"},
 {"*ej", "*ejite"},
@@ -557,7 +562,8 @@
 {"*én", "*enés"}, // Jaén
 {"*eo", "*ean"}, // Bengeo
 {"*er", "*erite"}, // Casper
-{"*es", "*ian"}, // Maldives
+{"*es", "*ian"}, // Maldives,
+{"*ew", "*ewense"}, // Trelew
 {"*ge", "*ginian"}, // Carthage
 {"*gh", "*ghian"}, // Middlesbroughian
 {"*gk", "*gkan"},
@@ -581,6 +587,7 @@
 {"*ku", "*kuvian"}, // Baku
 {"*ld", "*ldian"}, // Chesterfield
 {"*ll", "*llese"}, // Marshall
+{"*ln", "*lnite"}, // https://en.wikipedia.org/wiki/Lincoln,_Nebraska
 {"*lo", "*lonian"}, // Buffalo
 {"*lu", "*lan"}, // Honolulu
 {"*me", "*man"}, // Rome

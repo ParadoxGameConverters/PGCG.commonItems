@@ -1,7 +1,10 @@
 ﻿using commonItems.Linguistics;
 using Csv;
+using FluentAssertions;
+using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Xunit;
 
 namespace commonItems.UnitTests.Linguistics;
@@ -181,6 +184,13 @@ public class StringExtensionsTests {
 	[InlineData("Mcif", "Mcifi")]
 	[InlineData("Maqomo", "Maqomo")]
 	[InlineData("Frej", "Frejite")]
+	[InlineData("Trelew", "Trelewense")]
+	[InlineData("Nanaimo", "Nanaimoite")]
+	[InlineData("Envigado", "Envigadeño")]
+	[InlineData("Chigorodó", "Chigorodoseño")]
+	[InlineData("San Bernardo", "San Bernardino")]
+	[InlineData("Encantado", "Encantense")]
+	[InlineData("Lincoln", "Lincolnite")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -470,6 +480,35 @@ public class StringExtensionsTests {
 			var generatedAdj = name.GetAdjective();
 			Assert.Contains(generatedAdj, validAdjectives);
 		}
+	}
+
+	[Fact]
+	public void AdjectiveRuleExistsForEveryCountryAndMajorCityInTheWorld() {
+		var csvUrl = "https://datahub.io/core/world-cities/r/world-cities.csv";
+		var csv = new WebClient().DownloadString(csvUrl);
+		var cities = CsvReader.ReadFromText(csv)
+			.Select(line => line[0])
+			.Where(city => !string.IsNullOrEmpty(city) && !city.StartsWith("Zürich (Kreis"))
+			.Distinct()
+			.ToList();
+		
+		var countries = CsvReader.ReadFromText(csv)
+			.Select(line => line[1])
+			.Where(country => !string.IsNullOrEmpty(country))
+			.Distinct()
+			.ToList();
+
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		foreach (var city in cities) {
+			_ = city.GetAdjective();
+		}
+
+		foreach (var country in countries) {
+			_ = country.GetAdjective();
+		}
+		output.ToString().Should().NotContain("No matching adjective rule found");
 	}
 
 	[Theory]
