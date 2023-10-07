@@ -187,6 +187,7 @@ public class StringExtensionsTests {
 	[InlineData("Trelew", "Trelewense")]
 	[InlineData("Nanaimo", "Nanaimoite")]
 	[InlineData("Envigado", "Envigadeño")]
+	[InlineData("Chigorodó", "Chigorodoseño")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]

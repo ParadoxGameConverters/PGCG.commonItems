@@ -550,6 +550,7 @@
 {"*ce", "*cian"}, // Thrace
 {"*co", "*can"}, // Morocco
 {"*de", "*dean"}, // Cape Verde
+{"*dó", "*doseño"}, // Chigorodó
 {"*du", "*dunite"}, // Ordu
 {"*eh", "*ehi"},
 {"*ej", "*ejite"},
