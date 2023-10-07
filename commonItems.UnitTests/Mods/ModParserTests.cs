@@ -19,7 +19,7 @@ public class ModParserTests {
 		Assert.Empty(mod.ReplacedPaths);
 
 		var theModFile = new ModParser();
-		theModFile.ParseMod("TestFiles/mod/empty_mod_file.mod");  // TODO: add the mod file
+		theModFile.ParseMod("TestFiles/mod/empty_mod_file.mod");
 		Assert.Empty(theModFile.Name);
 		Assert.Empty(theModFile.Path);
 		Assert.Empty(theModFile.Dependencies);
