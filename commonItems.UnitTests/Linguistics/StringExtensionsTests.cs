@@ -188,6 +188,9 @@ public class StringExtensionsTests {
 	[InlineData("Nanaimo", "Nanaimoite")]
 	[InlineData("Envigado", "Envigadeño")]
 	[InlineData("Chigorodó", "Chigorodoseño")]
+	[InlineData("San Bernardo", "San Bernardino")]
+	[InlineData("Encantado", "Encantense")]
+	[InlineData("Lincoln", "Lincolnite")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -485,7 +488,7 @@ public class StringExtensionsTests {
 		var csv = new WebClient().DownloadString(csvUrl);
 		var cities = CsvReader.ReadFromText(csv)
 			.Select(line => line[0])
-			.Where(city => !string.IsNullOrEmpty(city))
+			.Where(city => !string.IsNullOrEmpty(city) && !city.StartsWith("Zürich (Kreis"))
 			.Distinct()
 			.ToList();
 		

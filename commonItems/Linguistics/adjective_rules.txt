@@ -191,6 +191,7 @@
 {"*anon", "*anese"}, // Lebanon
 {"*anya", "*anyan"}, // Netanya
 {"*aras", "*arentine"}, // Taras
+{"*ardo", "*ardino"}, // San Bernardo
 {"*aros", "*arian"}, // Paros
 {"*atar", "*atari"}, // Qatar
 {"*atte", "*atian"}, // Ville Platte
@@ -342,6 +343,7 @@
 {"*[c]cis", "*[c]cidian"}, // Chalcis
 {"*[c]nai", "*[c]naite"}, // Chennai
 {"*[v]ris", "*[v]risian"}, // Marmaris
+{"*[v]ado", "*[v]ense"}, // Encantado
 {"*[c]ver", "*[c]ver"}, // Denver
 {"*[v]ver", "*[v]verian"}, // Hanover
 
@@ -585,6 +587,7 @@
 {"*ku", "*kuvian"}, // Baku
 {"*ld", "*ldian"}, // Chesterfield
 {"*ll", "*llese"}, // Marshall
+{"*ln", "*lnite"}, // https://en.wikipedia.org/wiki/Lincoln,_Nebraska
 {"*lo", "*lonian"}, // Buffalo
 {"*lu", "*lan"}, // Honolulu
 {"*me", "*man"}, // Rome
