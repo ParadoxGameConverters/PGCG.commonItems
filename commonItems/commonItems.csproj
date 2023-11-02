@@ -6,7 +6,7 @@
 
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>PGCG.$(AssemblyName)</PackageId>
-    <Version>9.0.0</Version>
+    <Version>9.0.1</Version>
     <Authors>PGCG</Authors>
     <PackageProjectUrl>https://github.com/ParadoxGameConverters/commonItems.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ParadoxGameConverters/commonItems.NET</RepositoryUrl>

@@ -488,7 +488,9 @@ public class StringExtensionsTests {
 		var csv = new WebClient().DownloadString(csvUrl);
 		var cities = CsvReader.ReadFromText(csv)
 			.Select(line => line[0])
-			.Where(city => !string.IsNullOrEmpty(city) && !city.StartsWith("Zürich (Kreis"))
+			.Where(city => !string.IsNullOrEmpty(city))
+			.Where(city => !city.StartsWith("Zürich (Kreis"))
+			.Where(city => !city.StartsWith("Sector "))
 			.Distinct()
 			.ToList();
 		
