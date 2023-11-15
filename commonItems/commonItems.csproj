@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
 
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>PGCG.$(AssemblyName)</PackageId>
-    <Version>9.0.1</Version>
+    <Version>9.1.0</Version>
     <Authors>PGCG</Authors>
     <PackageProjectUrl>https://github.com/ParadoxGameConverters/commonItems.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ParadoxGameConverters/commonItems.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <LangVersion>11</LangVersion>
+    <LangVersion>12</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
