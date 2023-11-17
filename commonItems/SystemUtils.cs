@@ -7,7 +7,7 @@ namespace commonItems;
 public static class SystemUtils {
 	public static SortedSet<string> GetAllFilesInFolder(string path) {
 		if (!Directory.Exists(path)) {
-			return new SortedSet<string>();
+			return [];
 		}
 
 		var paths = new SortedSet<string>(Directory.GetFiles(path));
@@ -26,12 +26,12 @@ public static class SystemUtils {
 			}
 			return files;
 		}
-		return new SortedSet<string>();
+		return [];
 	}
 
 	public static SortedSet<string> GetAllSubfolders(string path) {
 		if (!Directory.Exists(path)) {
-			return new SortedSet<string>();
+			return [];
 		}
 
 		var paths = new SortedSet<string>(Directory.GetDirectories(path));
