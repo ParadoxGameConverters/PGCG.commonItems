@@ -8,7 +8,7 @@ using System.Globalization;
 namespace commonItems; 
 
 public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
-	private readonly Dictionary<string, double> dict = new();
+	private readonly Dictionary<string, double> dict = [];
 	
 	/// <summary>
 	/// Loads script values from common/script_values
