@@ -4,7 +4,7 @@ using FluentAssertions;
 using System;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using Xunit;
 
 namespace commonItems.UnitTests.Linguistics;
@@ -485,7 +485,13 @@ public class StringExtensionsTests {
 	[Fact]
 	public void AdjectiveRuleExistsForEveryCountryAndMajorCityInTheWorld() {
 		var csvUrl = "https://datahub.io/core/world-cities/r/world-cities.csv";
-		var csv = new WebClient().DownloadString(csvUrl);
+
+		using var httpClient = new HttpClient();
+		var request = new HttpRequestMessage(HttpMethod.Get, csvUrl);
+		var response = httpClient.Send(request);
+		using var reader = new StreamReader(response.Content.ReadAsStream());
+		var csv = reader.ReadToEnd();
+		
 		var cities = CsvReader.ReadFromText(csv)
 			.Select(line => line[0])
 			.Where(city => !string.IsNullOrEmpty(city))
