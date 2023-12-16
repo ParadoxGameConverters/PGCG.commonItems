@@ -109,10 +109,7 @@ public class ColorFactory {
 			}
 			default: {
 				if (CommonRegexes.Catchall.IsMatch(token)) {
-					if (NamedColors.TryGetValue(token, out var value)) {
-						return value;
-					}
-					throw new ArgumentException($"{token} was not a cached color");
+					return GetColorByName(token);
 				}
 
 				foreach (var ch in token.ToCharArray().Reverse()) {
@@ -124,11 +121,57 @@ public class ColorFactory {
 		}
 	}
 
-	public Color GetColor(string colorName) {
+	private static System.Drawing.Color? GetSystemDrawingColorByName(string colorName) {
+		try {
+			var color = System.Drawing.Color.FromName(colorName);
+			if (!color.IsKnownColor) {
+				return null;
+			}
+			if (color == System.Drawing.Color.Empty) {
+				return null;
+			}
+
+			return color;
+		} catch {
+			return null;
+		}
+	}
+	
+	public Color GetColorByName(string colorName) {
 		if (NamedColors.TryGetValue(colorName, out var value)) {
 			return value;
 		}
-		throw new ArgumentException($"{colorName} was not a cached color");
+		
+		Logger.Warn($"{colorName} was not a cached color");
+		
+		// Try to find a color that matches the name.
+		var systemDrawingColor = GetSystemDrawingColorByName(colorName);
+		if (systemDrawingColor is not null) {
+			var color = new Color(systemDrawingColor.Value);
+			NamedColors[colorName] = color;
+			return color;
+		}
+		
+		// Split the color name into words and try to find a color that matches each word.
+		foreach (string word in colorName.Split('_')) {
+			string wordToUse = word;
+			if (wordToUse == "grey") {
+				wordToUse = "gray";
+			}
+			
+			var colorFromWord = GetSystemDrawingColorByName(wordToUse);
+			if (colorFromWord is null) {
+				continue;
+			}
+
+			var color = new Color(colorFromWord.Value);
+			NamedColors[colorName] = color;
+			return color;
+		}
+		
+		// If all else fails, return black.
+		Logger.Warn($"No matching fallback color found for {colorName}, using black");
+		return new Color(System.Drawing.Color.Black);
 	}
 
 	public void AddNamedColor(string name, Color color) {

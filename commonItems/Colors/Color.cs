@@ -60,6 +60,13 @@ public class Color : IPDXSerializable {
 	public Color(double h, double s, double v, double alpha) : this(h, s, v) {
 		A = alpha;
 	}
+	
+	public Color(System.Drawing.Color color) {
+		RgbComponents[0] = color.R;
+		RgbComponents[1] = color.G;
+		RgbComponents[2] = color.B;
+		DeriveHsvFromRgb();
+	}
 
 	public override bool Equals(object? obj) {
 		return obj is Color color && RgbComponents.SequenceEqual(color.RgbComponents);
