@@ -158,7 +158,7 @@ public class BufferedReader {
 		);
 		if (Variables.Count > 0) {
 			parser.RegisterRegex(CommonRegexes.Variable, (reader, varStr) => {
-				var value = reader.ResolveVariable(varStr).ToString();
+				var value = reader.ResolveVariable(varStr)?.ToString();
 				if (value is null) {
 					Logger.Warn($"StringList: variable {varStr} resolved to null value!");
 				} else {
@@ -278,8 +278,14 @@ public class BufferedReader {
 
 	public Dictionary<string, object> Variables { get; } = new();
 
-	public object ResolveVariable(string lexeme) {
-		return Variables[lexeme[1..]];
+	public object? ResolveVariable(string lexeme) {
+		var key = lexeme[1..];
+		if (Variables.TryGetValue(key, out var value)) {
+			return value;
+		}
+		
+		Logger.Warn($"Variable not found: {lexeme}");
+		return null;
 	}
 
 	public object EvaluateExpression(string lexeme) {
