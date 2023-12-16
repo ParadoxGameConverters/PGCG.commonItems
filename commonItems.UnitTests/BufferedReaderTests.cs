@@ -114,4 +114,25 @@ public class BufferedReaderTests {
 		Assert.Contains("[WARN] Failed to evaluate expression \"@[@a-2]\"", output.ToString());
 		Assert.Equal(expressionStr, value);
 	}
+	
+	[Fact]
+	public void VariableIsResolvedWhenItExists() {
+		var reader = new BufferedReader();
+		reader.Variables.Add("a", 3);
+		var value = reader.ResolveVariable("@a");
+
+		Assert.Equal(3, value);
+	}
+	
+	[Fact]
+	public void WarningIsLoggedAndNullReturnedWhenVariableCannotBeResolved() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		var reader = new BufferedReader();
+		var value = reader.ResolveVariable("@a");
+
+		Assert.Contains("[WARN] Variable not found: @a", output.ToString());
+		Assert.Null(value);
+	}
 }
