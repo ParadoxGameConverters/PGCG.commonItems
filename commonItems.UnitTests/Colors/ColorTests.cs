@@ -76,6 +76,21 @@ public class ColorTests {
 		Assert.Equal(0.5, testColor.V, decimalPlaces);
 	}
 
+	[Theory]
+	[InlineData(0, 0, 0)]
+	[InlineData(255, 0, 0)]
+	[InlineData(0, 255, 0)]
+	[InlineData(0, 0, 255)]
+	[InlineData(255, 255, 255)]
+	[InlineData(128, 128, 128)]
+	public void ColorCanBeConstructedFromSystemDrawingColor(int r, int g, int b) {
+		var systemDrawingColor = System.Drawing.Color.FromArgb(r, g, b);
+		var color = new Color(systemDrawingColor);
+		Assert.Equal(r, color.R);
+		Assert.Equal(g, color.G);
+		Assert.Equal(b, color.B);
+	}
+
 	[Fact]
 	public void HsvConversion_GreyHasZeroHue() {
 		var testColor = new Color(128, 128, 128);
@@ -470,13 +485,6 @@ public class ColorTests {
 	}
 
 	[Fact]
-	public void ColorInitializingRequiresCachedColorWhenUsingName() {
-		var colorFactory = new ColorFactory();
-		var reader = new BufferedReader("= dark_moderate_cyan");
-		Assert.Throws<ArgumentException>(() => colorFactory.GetColor(reader));
-	}
-
-	[Fact]
 	public void ColorCanBeCachedFromStream() {
 		var colorFactory = new ColorFactory();
 		var cacheReader = new BufferedReader("= rgb { 64 128 128 }");
@@ -499,7 +507,7 @@ public class ColorTests {
 		var colorFactory = new ColorFactory();
 		colorFactory.AddNamedColor("dark_moderate_cyan", new Color(64, 128, 128));
 
-		var color = colorFactory.GetColor("dark_moderate_cyan");
+		var color = colorFactory.GetColorByName("dark_moderate_cyan");
 
 		Assert.Equal(64, color.R);
 		Assert.Equal(128, color.G);
@@ -508,6 +516,28 @@ public class ColorTests {
 		Assert.Equal(0.5, color.H, decimalPlaces);
 		Assert.Equal(0.5, color.S, decimalPlaces);
 		Assert.Equal(0.5, color.V, decimalPlaces);
+	}
+
+	[Theory]
+	[InlineData("white", "white")]
+	[InlineData("ck2_purple", "purple")]
+	[InlineData("purple", "purple")]
+	[InlineData("green_light", "green")]
+	[InlineData("yellow_light", "yellow")]
+	[InlineData("gray", "gray")]
+	[InlineData("grey", "gray")] // the classic
+	[InlineData("red_green_blue", "red")] // first matching word is used
+	[InlineData("snow_white", "snow")]
+	[InlineData("random_bullshit", "black")] // black is the final fallback
+	public void ColorCanBeReturnedEvenForUncachedName(string colorName, string expectedReturnedColorName) {
+		var colorFactory = new ColorFactory();
+		
+		var color = colorFactory.GetColorByName(colorName);
+		var expectedColor = System.Drawing.Color.FromName(expectedReturnedColorName);
+		
+		Assert.Equal(expectedColor.R, color.R);
+		Assert.Equal(expectedColor.G, color.G);
+		Assert.Equal(expectedColor.B, color.B);
 	}
 
 	private class Foo : Parser {
@@ -668,7 +698,7 @@ public class ColorTests {
 		var reader2 = new BufferedReader("= hex { FFD700 }");
 		colorFactory.AddNamedColor("gold", reader2);
 
-		var gold = colorFactory.GetColor("gold");
+		var gold = colorFactory.GetColorByName("gold");
 
 		Assert.Equal(255, gold.R);
 		Assert.Equal(215, gold.G);
@@ -685,7 +715,7 @@ public class ColorTests {
 		colorFactory.AddNamedColor("gold", new Color(255, 0, 0));
 		colorFactory.AddNamedColor("gold", new Color(255, 215, 0));
 
-		var gold = colorFactory.GetColor("gold");
+		var gold = colorFactory.GetColorByName("gold");
 
 		Assert.Equal(255, gold.R);
 		Assert.Equal(215, gold.G);
