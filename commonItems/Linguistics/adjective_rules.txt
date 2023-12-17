@@ -377,6 +377,7 @@
 {"*car", "*can"}, // Madagascar
 {"*cau", "*canese"}, // Macau
 {"*chi", "*chiite"}, // Karachi
+{"*cho", "*choan"}, // Jericho
 {"*cio", "*cian"}, // Laugaricio
 {"*cow", "*covian"}, // Cracow
 {"*cus", "*cene"}, // Damascus
@@ -560,6 +561,8 @@
 {"*as", "*an"}, // Honduras
 {"*at", "*atian"}, // Eilat
 {"*au", "*auan"}, // Palau
+{"*bo", "*boan"}, // Labo, rule made up
+{"*bz", "*bzian"}, // Shahrisabz
 {"*ca", "*can"}, // Africa
 {"*ce", "*cian"}, // Thrace
 {"*co", "*can"}, // Morocco
@@ -582,6 +585,7 @@
 {"*gk", "*gkan"},
 {"*go", "*goan"}, // Chicago
 {"*if", "*ifi"},
+{"*ij", "*ijan"}, // Lahij, rule made up
 {"*in", "*inese"}, // Benin
 {"*im", "*imite"},
 {"*io", "*ian"}, // San Antonio
@@ -596,6 +600,7 @@
 {"*ff", "*ffian"}, // Cardiff
 {"*le", "*lean"}, // Chile
 {"*ka", "*kan"}, // Osaka
+{"*ko", "*konian"}, // Shorko, rule made up
 {"*kh", "*khi"},
 {"*ku", "*kuvian"}, // Baku
 {"*ld", "*ldian"}, // Chesterfield
@@ -630,6 +635,7 @@
 {"*rp", "*rpian"}, // Klerksdorp
 {"*sa", "*san"}, // Larissa
 {"*sh", "*shi"}, // Bangladesh
+{"*so", "*soan"}, // El Paso
 {"*sp", "*spian"}, // Hazorasp
 {"*ta", "*tan"}, // Egesta
 {"*te", "*tan"}, // Crete
