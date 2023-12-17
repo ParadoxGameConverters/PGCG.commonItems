@@ -50,4 +50,5 @@
 {"* Greca", "Graeco-*"},  // Illyria Greca
 {"* Graeca", "Graeco-*"},
 
-{"* pros to Latmo", "*"} // Alexandreia pros to Latmo
+{"* pros to Latmo", "*"}, // Alexandreia pros to Latmo
+{"* The Fort", "*"}, // "The Fort" in Arabic

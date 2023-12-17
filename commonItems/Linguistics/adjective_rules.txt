@@ -1,6 +1,8 @@
 ﻿// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
+{"Lesotho", "Basotho"},
+{"Burkina Faso", "Burkinabe"},
 {"Myos Hormos", "Myos"},
 {"Baetica Cordubensis", "Cordubensian"}, // https://1library.co/article/cultura-y-pensamiento-estudios-medievales-hisp%C3%A1nicos.zlg664or
 {"Baetica Gaditanus", "Gaditanian"}, // https://en.wiktionary.org/wiki/Gaditanian
@@ -233,6 +235,7 @@
 {"*enna", "*ennese"}, // Siena
 {"*enne", "*enneite"}, // Cheyenne
 {"*elos", "*elian"}, // Delos
+{"*erac", "*eracois"}, // Bergerac
 {"*etus", "*esian"}, // Miletus
 {"*ford", "*fordian"}, // Bedford
 {"*furt", "*furter"}, // Frankfurt
@@ -325,6 +328,7 @@
 {"*tica", "*tic"}, // Antarctica
 {"*tino", "*tinesi"}, // Filettino
 {"*tium", "*tine"}, // Byzantium
+{"*town", "*tonian"}, // Charlottetown
 {"*ttan", "*ttanite"}, // Manhattan
 {"*udan", "*udanese"}, // Sudan
 {"*uğla", "*ughlanian"}, // Muğla
@@ -357,6 +361,7 @@
 {"*ati", "*ati"}, // Kiribati
 {"*aus", "*auense"}, // Manaus
 {"*awa", "*awian"}, // Oshawa
+{"*ayo", "*ayan"}, // Bulawayo
 {"*bad", "*badi"}, // Hyderabad
 {"*bah", "*ban"},
 {"*bai", "*baite"}, // Dubai
@@ -484,9 +489,11 @@
 {"*rsa", "*rsanese"}, // Bursa
 {"*rum", "*rumian"}, // Bodrum
 {"*rut", "*ruti"}, // Beirut
+{"*sch", "*scher"}, // Rondebosch
 {"*sco", "*scan"}, // San Francisco
 {"*sel", "*sler"}, // Basel
 {"*sey", "*sey"}, // Jersey
+{"*sho", "*sho"}, // Bhisho
 {"*sin", "*sinite"}, // Mersin
 {"*Sio", "*Sioan"}, // Sio
 {"*sio", "*siense"}, // Mendrisio
@@ -623,11 +630,13 @@
 {"*ue", "*uan"}, // Niue
 {"*ul", "*ulish"}, // Gaul
 {"*un", "*unite"},
+{"*uw", "*uwite"}, // Grabouw
 {"*vo", "*voan"}, // Provo
 {"*we", "*wean"}, // Zimbabwe
 {"*wo", "*wo"},
 {"*ye", "*yer"}, // Rye
 {"*yk", "*yk"}, // Karamyk (rule made up)
+{"*yn", "*ynite"}, // Brooklyn
 {"*ys", "*ysian"}, // Arambys (rule made up)
 {"*ze", "*zean"}, // Belize
 {"*[v]h", "*[v]hite"},

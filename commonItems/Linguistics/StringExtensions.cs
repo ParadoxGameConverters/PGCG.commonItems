@@ -9,6 +9,11 @@ public static partial class StringExtensions {
 		return new string(str.Reverse().SkipWhile(c => !char.IsLetterOrDigit(c)).Reverse().ToArray());
 	}
 
+	// Function for trimming non-letter characters from the end.
+	public static string TrimNonLetterEnding(this string str) {
+		return new string(str.Reverse().SkipWhile(c => !char.IsLetter(c)).Reverse().ToArray());
+	}
+
 	private static string ApplyAdjectiveRules(this string str, OrderedDictionary<string, string> rules, bool multipleIterations = false) {
 		const string consonantPlaceholder = "[c]";
 		const string vowelPlaceholder = "[v]";
@@ -68,7 +73,7 @@ public static partial class StringExtensions {
 			return foldedStr.ApplyAdjectiveRules(rules, multipleIterations);
 		}
 
-		var trimmedStr = str.TrimNonAlphanumericEnding();
+		var trimmedStr = str.TrimNonLetterEnding();
 		if (trimmedStr != str) {
 			return trimmedStr.ApplyAdjectiveRules(rules, multipleIterations);
 		}
