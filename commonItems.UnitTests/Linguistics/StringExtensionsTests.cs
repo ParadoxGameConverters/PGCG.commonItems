@@ -555,5 +555,4 @@ public class StringExtensionsTests {
 	public void TrimNonLetterEndingReturnsCorrectValueForNonAlphanumericEndings(string str, string expectedValue) {
 		Assert.Equal(expectedValue, str.TrimNonLetterEnding());
 	}
-
 }
