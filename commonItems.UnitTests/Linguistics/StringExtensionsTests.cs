@@ -191,6 +191,10 @@ public class StringExtensionsTests {
 	[InlineData("San Bernardo", "San Bernardino")]
 	[InlineData("Encantado", "Encantense")]
 	[InlineData("Lincoln", "Lincolnite")]
+	[InlineData("Charlottetown", "Charlottetonian")]
+	[InlineData("Bulawayo", "Bulawayan")]
+	[InlineData("Rondebosch", "Rondeboscher")]
+	[InlineData("Grabouw", "Grabouwite")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -538,5 +542,17 @@ public class StringExtensionsTests {
 	// ReSharper restore StringLiteralTypo
 	public void TrimNonAlphanumericEndingReturnsCorrectValue(string str, string expectedValue) {
 		Assert.Equal(expectedValue, str.TrimNonAlphanumericEnding());
+	}
+
+	[Theory]
+	// ReSharper disable StringLiteralTypo
+	[InlineData("Rome", "Rome")]
+	[InlineData("Rome123", "Rome")]
+	[InlineData("Rome###", "Rome")]
+	[InlineData("Rome?!", "Rome")]
+	[InlineData("Rome¡", "Rome")]
+	// ReSharper restore StringLiteralTypo
+	public void TrimNonLetterEndingReturnsCorrectValueForNonAlphanumericEndings(string str, string expectedValue) {
+		Assert.Equal(expectedValue, str.TrimNonLetterEnding());
 	}
 }
