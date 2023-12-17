@@ -182,6 +182,7 @@
 {"* Bay", "*bite"}, // Thunder Bay
 {"* Jaw", "* Jaw"}, // Moose Jaw
 {"* Lat", "*latese"}, // Da Lat
+{"*aibo", "*aibero"}, // Maracaibo
 {"*aïda", "*idonian"}, // Saïda
 {"*Agde", "*Agathois"}, // Agde
 {"*ales", "*elsh"}, // Wales
@@ -250,6 +251,7 @@
 {"*gong", "*gonian"}, // Chittagong
 {"*gotá", "*gotano"}, // Bogotá
 {"*Graz", "*Grazer"}, // Graz
+{"*hamn", "*hamner"}, // Kristinehamn
 {"*hana", "*hanaian"}, // Ghana
 {"*hang", "*hang"}, // Pohang
 {"*hria", "*hriasian"}, // Thria
@@ -410,6 +412,7 @@
 {"*gue", "*guer"}, // Hague
 {"*ham", "*hamian"}, // Birmingham
 {"*har", "*hari"}, // Bihar
+{"*hof", "*hofer"}, // Bloemhof
 {"*iam", "*iamese"}, // Siam
 {"*ica", "*ican"}, // Corsica
 {"*ice", "*icean"}, // Nice
@@ -465,6 +468,7 @@
 {"*nya", "*nyanite"}, // Konya
 {"*oke", "*oker"}, // Roanoke
 {"*omo", "*omo"},
+{"*oof", "*oofian"}, // Duiwelskloof, rule made up
 {"*oon", "*oonian"}, // Cameroon
 {"*osu", "*osuite"}, // Yeosu
 {"*pan", "*panese"}, // Japan
@@ -508,6 +512,7 @@
 {"*ton", "*tonian"}, // Croton
 {"*tep", "*tepian"}, // Gaziantep
 {"*ter", "*trian"}, // Chester
+{"*tho", "*thoan"}, // Mmabatho, rule made up
 {"*tle", "*tlian"}, // Newcastle
 {"*tra", "*tran"}, // Suvarna Gotra
 {"*tte", "*ttean"}, // Charlotte
@@ -559,6 +564,7 @@
 {"*ce", "*cian"}, // Thrace
 {"*co", "*can"}, // Morocco
 {"*de", "*dean"}, // Cape Verde
+{"*do", "*dense"}, // https://en.wikipedia.org/wiki/Ejido,_Venezuela
 {"*dó", "*doseño"}, // Chigorodó
 {"*du", "*dunite"}, // Ordu
 {"*eh", "*ehi"},
@@ -619,14 +625,17 @@
 {"*re", "*rean"}, // Singapore
 {"*rh", "*rhi"}, // Chandigarh
 {"*rk", "*rk"}, // Cork
-{"*ro", "*rin"}, // Montenegro
 {"*rn", "*rnese"}, // Bern
+{"*ro", "*rin"}, // Montenegro
+{"*rp", "*rpian"}, // Klerksdorp
 {"*sa", "*san"}, // Larissa
 {"*sh", "*shi"}, // Bangladesh
+{"*sp", "*spian"}, // Hazorasp
 {"*ta", "*tan"}, // Egesta
 {"*te", "*tan"}, // Crete
 {"*th", "*thian"},  // Vilath (rule made up)
 {"*to", "*tan"}, // Benevento
+{"*tz", "*tzian"}, // Reitz, rule made up
 {"*ue", "*uan"}, // Niue
 {"*ul", "*ulish"}, // Gaul
 {"*un", "*unite"},

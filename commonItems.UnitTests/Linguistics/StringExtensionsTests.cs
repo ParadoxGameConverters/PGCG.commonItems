@@ -195,6 +195,11 @@ public class StringExtensionsTests {
 	[InlineData("Bulawayo", "Bulawayan")]
 	[InlineData("Rondebosch", "Rondeboscher")]
 	[InlineData("Grabouw", "Grabouwite")]
+	[InlineData("Klerksdorp", "Klerksdorpian")]
+	[InlineData("Ejido", "Ejidense")]
+	[InlineData("Maracaibo", "Maracaibero")]
+	[InlineData("Hazorasp", "Hazoraspian")]
+	[InlineData("Kristinehamn", "Kristinehamner")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
