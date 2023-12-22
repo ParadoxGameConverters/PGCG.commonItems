@@ -204,6 +204,12 @@ public class StringExtensionsTests {
 	[InlineData("Arecibo", "Areciboan")]
 	[InlineData("Shahrisabz", "Shahrisabzian")]
 	[InlineData("El Paso", "El Pasoan")]
+	[InlineData("Kerch", "Kerchian")]
+	[InlineData("Konotop", "Konotopian")]
+	[InlineData("Iskilip", "Iskilipian")]
+	[InlineData("Peruwelz", "Peruwelzian")]
+	[InlineData("Schmargendorf", "Schmargendorfer")]
+	[InlineData("Schwelm", "Schwelmer")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -508,8 +514,12 @@ public class StringExtensionsTests {
 		var cities = CsvReader.ReadFromText(csv)
 			.Select(line => line[0])
 			.Where(city => !string.IsNullOrEmpty(city))
+			.Where(city => !city.Contains(" in der "))
+			.Where(city => !city.Contains(" an der "))
+			.Where(city => !city.Contains(" am "))
 			.Where(city => !city.StartsWith("Zürich (Kreis"))
 			.Where(city => !city.StartsWith("Sector "))
+			.Where(city => !city.EndsWith(" II"))
 			.Distinct()
 			.ToList();
 		

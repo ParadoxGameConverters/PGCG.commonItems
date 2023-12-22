@@ -397,6 +397,7 @@
 {"*ego", "*egan"}, // San Diego
 {"*egu", "*egu"}, // Daegu
 {"*eia", "*ian"}, // Eleia
+{"*elm", "*elmer"}, // Schwelm
 {"*ene", "*enian"}, // Cyrene
 {"*eno", "*enoite"}, // Reno
 {"*eru", "*eruvian"}, // Peru
@@ -471,6 +472,7 @@
 {"*omo", "*omo"},
 {"*oof", "*oofian"}, // Duiwelskloof, rule made up
 {"*oon", "*oonian"}, // Cameroon
+{"*orf", "*orfer"}, // Schmargendorf
 {"*osu", "*osuite"}, // Yeosu
 {"*pan", "*panese"}, // Japan
 {"*peg", "*pegger"}, // Winnipeg
@@ -565,6 +567,7 @@
 {"*bz", "*bzian"}, // Shahrisabz
 {"*ca", "*can"}, // Africa
 {"*ce", "*cian"}, // Thrace
+{"*ch", "*chian"}, // Kerch
 {"*co", "*can"}, // Morocco
 {"*de", "*dean"}, // Cape Verde
 {"*do", "*dense"}, // https://en.wikipedia.org/wiki/Ejido,_Venezuela
@@ -577,6 +580,7 @@
 {"*en", "*enese"}, // Jan Mayen
 {"*én", "*enés"}, // Jaén
 {"*eo", "*ean"}, // Bengeo
+{"*ep", "*epian"}, // Pochep
 {"*er", "*erite"}, // Casper
 {"*es", "*ian"}, // Maldives,
 {"*ew", "*ewense"}, // Trelew
@@ -589,6 +593,7 @@
 {"*in", "*inese"}, // Benin
 {"*im", "*imite"},
 {"*io", "*ian"}, // San Antonio
+{"*ip", "*ipian"}, // Iskilip
 {"*is", "*ian"}, // Locris
 {"*it", "*iti"}, // Kuwait
 {"*ix", "*ician"}, // Phoenix
@@ -605,11 +610,16 @@
 {"*ku", "*kuvian"}, // Baku
 {"*ld", "*ldian"}, // Chesterfield
 {"*ll", "*llese"}, // Marshall
+{"*lm", "*lmite"}, // Stockholm
 {"*ln", "*lnite"}, // https://en.wikipedia.org/wiki/Lincoln,_Nebraska
 {"*lo", "*lonian"}, // Buffalo
+{"*lp", "*lpian"}, // Kulp (rule made up)
+{"*lz", "*lzian"}, // Peruwelz
 {"*lu", "*lan"}, // Honolulu
 {"*me", "*man"}, // Rome
 {"*mi", "*mian"}, // Symi
+{"*mo", "*moan"}, // Alamo
+{"*mp", "*mpian"}, // Oostkamp
 {"*my", "*mois"}, // Saint Barthélemy
 {"*na", "*nian"}, // Argentina
 {"*nj", "*nji"},
@@ -620,8 +630,9 @@
 {"*oh", "*ohan"},
 {"*om", "*omian"},
 {"*on", "*onese"}, // Gabon
-{"*oy", "*ojan"}, // Troy
+{"*op", "*opian"}, // Konotop
 {"*os", "*ian"}, // Thasos
+{"*oy", "*ojan"}, // Troy
 {"*ów", "*ovian"}, // Kraków
 {"*pa", "*pan"}, // Tampa
 {"*pe", "*pean"}, // Europe
@@ -654,6 +665,7 @@
 {"*yn", "*ynite"}, // Brooklyn
 {"*ys", "*ysian"}, // Arambys (rule made up)
 {"*ze", "*zean"}, // Belize
+{"*zh", "*zhian"}, // Novovoronezh (rule made up)
 {"*[v]h", "*[v]hite"},
 {"*[v]k", "*[v]kian"},
 {"*[c]s", "*[c]ian"}, // Athens
