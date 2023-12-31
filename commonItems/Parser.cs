@@ -254,7 +254,11 @@ public class Parser {
 		}
 		var lexeme = GetNextLexeme(reader);
 		if (CommonRegexes.Variable.IsMatch(lexeme)) {
-			return GetValueString(reader.ResolveVariable(lexeme));
+			var variableValue = reader.ResolveVariable(lexeme);
+			if (variableValue is null) {
+				return null;
+			}
+			return GetValueString(variableValue);
 		}
 		if (CommonRegexes.InterpolatedExpression.IsMatch(lexeme)) {
 			return GetValueString(reader.EvaluateExpression(lexeme));

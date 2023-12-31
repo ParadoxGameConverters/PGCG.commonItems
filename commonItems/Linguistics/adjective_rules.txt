@@ -556,6 +556,7 @@
 {"*ah", "*ah"},
 {"*aí", "*aian"}, // Kolōnaí (Colonae in Latin) -> Kolonaian (rule made up)
 {"*ai", "*aian"}, // Kolōnai
+{"*aj", "*ajian"}, // Thaj (place in Arabia), rule made up
 {"*al", "*ali"}, // Nepal
 {"*an", "*anian"}, // Jordan
 {"*ao", "*aoan"}, // Curaçao
@@ -601,6 +602,7 @@
 {"*ík", "*ikian"}, // Reykjavík
 {"*jh", "*jhi"}, // Wajh
 {"*ju", "*ju"}, // Gwangju
+{"*jo", "*joan"}, // Blaikingawjo, rule made up
 {"*fi", "*fitan"}, // Amalfi
 {"*ff", "*ffian"}, // Cardiff
 {"*le", "*lean"}, // Chile
