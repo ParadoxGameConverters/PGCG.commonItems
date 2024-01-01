@@ -375,6 +375,22 @@ public class Parser {
 		return reader;
 	}
 
+	public void ParseFolder(string path, string extensions, bool recursive, bool logFilePaths = false) {
+		var searchPattern = recursive ? "*" : "*.*";
+		var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+		var files = Directory.GetFiles(path, searchPattern, searchOption);
+
+		var validExtensions = extensions.Split(';');
+		files.RemoveWhere(f => !validExtensions.Contains(CommonFunctions.GetExtension(f)));
+
+		foreach (var file in files) {
+			if (logFilePaths) {
+				Logger.Debug($"Parsing file: {file}");
+			}
+			ParseFile(file);
+		}
+	}
+
 	/// <summary>
 	/// Parses a game folder in both vanilla game and mods directory.
 	/// For example:
