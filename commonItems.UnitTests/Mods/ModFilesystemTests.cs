@@ -9,7 +9,7 @@ namespace commonItems.UnitTests.Mods;
 public class ModFilesystemTests {
 	[Fact]
 	public void MissingFileReturnsNull() {
-		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new Mod[] { });
+		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", Array.Empty<Mod>());
 
 		var filePath = modFS.GetActualFileLocation("test_folder/non_file.txt");
 		Assert.Null(filePath);
@@ -17,7 +17,7 @@ public class ModFilesystemTests {
 	
 	[Fact]
 	public void FileCanBeFoundInGameRoot() {
-		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new Mod[] { });
+		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", Array.Empty<Mod>());
 
 		var filePath = modFS.GetActualFileLocation("test_folder/test_file.txt");
 		Assert.NotNull(filePath);
@@ -63,7 +63,7 @@ public class ModFilesystemTests {
 	public void ReplacePathBlocksEarlierInstancesOfFile() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
 		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two");
-		var modThree = new Mod("Mod Three", "TestFiles/ModFilesystem/GetActualFileLocation/mod_three", new string[] { },
+		var modThree = new Mod("Mod Three", "TestFiles/ModFilesystem/GetActualFileLocation/mod_three", Array.Empty<string>(),
 			new HashSet<string> {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo, modThree});
@@ -76,7 +76,7 @@ public class ModFilesystemTests {
 	public void ReplacePathOnlyBlocksActualPath() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
 		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two");
-		var modThree = new Mod("Mod Three", "TestFiles/ModFilesystem/GetActualFileLocation/mod_three", new string[] { },
+		var modThree = new Mod("Mod Three", "TestFiles/ModFilesystem/GetActualFileLocation/mod_three", Array.Empty<string>(),
 			new HashSet<string> {"test_fold"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo, modThree});
@@ -142,7 +142,7 @@ public class ModFilesystemTests {
 	public void ReplacePathBlocksEarlierInstancesOfFolder() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
 		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two");
-		var modThree = new Mod("Mod Three", "TestFiles/ModFilesystem/GetActualFileLocation/mod_three", new string[] { },
+		var modThree = new Mod("Mod Three", "TestFiles/ModFilesystem/GetActualFileLocation/mod_three", Array.Empty<string>(),
 			new HashSet<string> {"test_folder/"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo, modThree});
@@ -195,7 +195,7 @@ public class ModFilesystemTests {
 	[Fact]
 	public void ReplaceFolderKeepsFilesFromBeingFound() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
-		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
 			new HashSet<string>() {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
@@ -220,7 +220,7 @@ public class ModFilesystemTests {
 	[Fact]
 	public void GetAllFilesInFolderCanBeCalledWithCustomFilePrecedenceComparer() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
-		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
 			new HashSet<string>() {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
@@ -275,7 +275,7 @@ public class ModFilesystemTests {
 	[Fact]
 	public void ReplaceFolderKeepsFoldersFromBeingFound() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
-		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
 			new HashSet<string> {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
@@ -288,7 +288,7 @@ public class ModFilesystemTests {
 	[Fact]
 	public void GetAllSubfoldersCanBeCalledWithCustomFolderPrecedenceComparer() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
-		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
 			new HashSet<string> {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
@@ -351,7 +351,7 @@ public class ModFilesystemTests {
 	[Fact]
 	public void ReplaceFolderKeepsFilesAndSubfoldersFromBeingFound() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
-		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
 			new HashSet<string> {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
@@ -366,7 +366,7 @@ public class ModFilesystemTests {
 	[Fact]
 	public void GetAllFilesInFolderRecursiveCanBeCalledWithCustomFilePrecedenceComparer() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
-		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", new string[] { },
+		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
 			new HashSet<string> {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});

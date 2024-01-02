@@ -7,7 +7,7 @@ namespace commonItems.UnitTests;
 
 public class ScriptValueCollectionTests {
 	private const string GameRoot = "TestFiles/CK3/game";
-	private static readonly List<Mod> Mods = new() {new("Cool Mod", "TestFiles/mod/themod")};
+	private static readonly List<Mod> Mods = [new("Cool Mod", "TestFiles/mod/themod")];
 	private readonly ModFilesystem modFS = new(GameRoot, Mods);
 
 	[Fact]
