@@ -10,7 +10,7 @@ namespace commonItems.UnitTests;
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public class ParserHelperTests {
 	private const string GameRoot = "TestFiles/CK3/game";
-	private static readonly List<Mod> mods = new() {new("Cool Mod", "TestFiles/mod/themod")};
+	private static readonly List<Mod> mods = [new("Cool Mod", "TestFiles/mod/themod")];
 	private readonly ModFilesystem modFS = new(GameRoot, mods);
 	
 	[Fact]
@@ -80,31 +80,31 @@ public class ParserHelperTests {
 	[Fact]
 	public void GetIntsAddsInts() {
 		var reader = new BufferedReader("1 2 3");
-		Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
+		Assert.Equal([1, 2, 3], reader.GetInts());
 	}
 
 	[Fact]
 	public void GetIntsAddsNegativeInts() {
 		var reader = new BufferedReader("-1 -2 -3");
-		Assert.Equal(new List<int> { -1, -2, -3 }, reader.GetInts());
+		Assert.Equal([-1, -2, -3], reader.GetInts());
 	}
 
 	[Fact]
 	public void GetIntsAddsQuotedInts() {
 		var reader = new BufferedReader("\"1\" \"2\" \"3\"");
-		Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
+		Assert.Equal([1, 2, 3], reader.GetInts());
 	}
 
 	[Fact]
 	public void GetIntsAddsQuotedNegativeInts() {
 		var reader = new BufferedReader("\"-1\" \"-2\" \"-3\"");
-		Assert.Equal(new List<int> { -1, -2, -3 }, reader.GetInts());
+		Assert.Equal([-1, -2, -3], reader.GetInts());
 	}
 
 	[Fact]
 	public void GetIntsAddsIntsFromBracedBlock() {
 		var reader = new BufferedReader(" = {1 2 3} 4");
-		Assert.Equal(new List<int> { 1, 2, 3 }, reader.GetInts());
+		Assert.Equal([1, 2, 3], reader.GetInts());
 	}
 
 	[Fact]
@@ -145,31 +145,31 @@ public class ParserHelperTests {
 	[Fact]
 	public void GetDoublesAddsDoubles() {
 		var reader = new BufferedReader("1.25 2.5 3.75");
-		Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, reader.GetDoubles());
+		Assert.Equal([1.25, 2.5, 3.75], reader.GetDoubles());
 	}
 
 	[Fact]
 	public void GetDoublesAddsNegativeDoubles() {
 		var reader = new BufferedReader("1.25 -2.5 -3.75");
-		Assert.Equal(new List<double> { 1.25, -2.5, -3.75 }, reader.GetDoubles());
+		Assert.Equal([1.25, -2.5, -3.75], reader.GetDoubles());
 	}
 
 	[Fact]
 	public void GetDoublesAddsQuotedDoubles() {
 		var reader = new BufferedReader("\"1.25\" \"2.5\" \"3.75\"");
-		Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, reader.GetDoubles());
+		Assert.Equal([1.25, 2.5, 3.75], reader.GetDoubles());
 	}
 
 	[Fact]
 	public void GetDoublesAddsQuotedNegativeDoubles() {
 		var reader = new BufferedReader("\"1.25\" \"-2.5\" \"-3.75\"");
-		Assert.Equal(new List<double> { 1.25, -2.5, -3.75 }, reader.GetDoubles());
+		Assert.Equal([1.25, -2.5, -3.75], reader.GetDoubles());
 	}
 
 	[Fact]
 	public void GetDoublesAddsDoublesFromBracedBlock() {
 		var reader = new BufferedReader(" = {1.25 2.5 3.75} 4.5");
-		Assert.Equal(new List<double> { 1.25, 2.5, 3.75 }, reader.GetDoubles());
+		Assert.Equal([1.25, 2.5, 3.75], reader.GetDoubles());
 	}
 
 	[Fact]
@@ -220,19 +220,19 @@ public class ParserHelperTests {
 	[Fact]
 	public void GetStringsAddsStrings() {
 		var reader = new BufferedReader("foo bar baz");
-		Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
+		Assert.Equal(["foo", "bar", "baz"], reader.GetStrings());
 	}
 
 	[Fact]
 	public void GetStringsAddsQuotedStrings() {
 		var reader = new BufferedReader("\"foo\" \"bar\" \"baz\"");
-		Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
+		Assert.Equal(["foo", "bar", "baz"], reader.GetStrings());
 	}
 
 	[Fact]
 	public void GetStringsAddsStringsFromBracedBlock() {
 		var reader = new BufferedReader(" = { foo bar baz } qux");
-		Assert.Equal(new List<string> { "foo", "bar", "baz" }, reader.GetStrings());
+		Assert.Equal(["foo", "bar", "baz"], reader.GetStrings());
 	}
 
 	[Fact]
@@ -262,11 +262,16 @@ public class ParserHelperTests {
 			" = {\n" +
 			"\tid = 180\n" +
 			"\ttype = 46\n" +
+			"\ttype = 48\n" + // duplicates are allowed
 			"}"
 		);
 		var assignments = reader.GetAssignments();
 
-		var expectedAssignments = new Dictionary<string, string> { { "id", "180" }, { "type", "46" } };
+		var expectedAssignments = new List<KeyValuePair<string, string>> {
+			new("id", "180"),
+			new("type", "46"),
+			new("type", "48")
+		};
 		Assert.Equal(expectedAssignments, assignments);
 	}
 
@@ -295,7 +300,7 @@ public class ParserHelperTests {
 			});
 			ParseStream(reader);
 		}
-		public readonly Dictionary<string, bool> theMap = new();
+		public readonly Dictionary<string, bool> theMap = [];
 	}
 
 	[Fact]
@@ -520,12 +525,12 @@ public class ParserHelperTests {
 		public long longInt;
 		public ulong ulongInt;
 		public double d;
-		public List<string> strings = new();
-		public List<int> ints = new();
-		public List<long> longs = new();
-		public List<ulong> ulongs = new();
-		public List<double> doubles = new();
-		public Dictionary<string, string> assignments = new();
+		public List<string> strings = [];
+		public List<int> ints = [];
+		public List<long> longs = [];
+		public List<ulong> ulongs = [];
+		public List<double> doubles = [];
+		public List<KeyValuePair<string, string>> assignments = [];
 
 		public TypeClass(BufferedReader reader) {
 			RegisterKeyword("str", reader => str = reader.GetString());

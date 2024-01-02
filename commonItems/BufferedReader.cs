@@ -261,8 +261,8 @@ public class BufferedReader {
 		};
 	}
 
-	public Dictionary<string, string> GetAssignments() {
-		var assignments = new Dictionary<string, string>();
+	public List<KeyValuePair<string, string>> GetAssignments() {
+		var assignments = new List<KeyValuePair<string, string>>();
 		var parser = new Parser();
 		parser.RegisterRegex(CommonRegexes.Catchall, (reader, assignmentName) => {
 			Parser.GetNextTokenWithoutMatching(reader); // remove equals
@@ -270,7 +270,7 @@ public class BufferedReader {
 			if (assignmentValue is null) {
 				throw new FormatException($"Cannot assign null to {assignmentName}!");
 			}
-			assignments[assignmentName] = assignmentValue;
+			assignments.Add(new KeyValuePair<string, string>(assignmentName, assignmentValue));
 		});
 		parser.ParseStream(this);
 		return assignments;
