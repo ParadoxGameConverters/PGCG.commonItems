@@ -529,7 +529,7 @@ public class ColorTests {
 	[InlineData("grey", "gray")] // the classic
 	[InlineData("red_green_blue", "red")] // first matching word is used
 	[InlineData("snow_white", "snow")]
-	public void ColorCanBeReturnedEvenOnlyPartiallyMatchingName(string colorName, string expectedReturnedColorName) {
+	public void ColorCanBeReturnedEvenForUncachedNameIfNameContainsKnownBuiltinColor(string colorName, string expectedReturnedColorName) {
 		var colorFactory = new ColorFactory();
 		
 		var color = colorFactory.GetColorByName(colorName);
