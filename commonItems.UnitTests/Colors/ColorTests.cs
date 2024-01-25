@@ -1,4 +1,5 @@
 ﻿using commonItems.Colors;
+using Fernandezja.ColorHashSharp;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -528,8 +529,7 @@ public class ColorTests {
 	[InlineData("grey", "gray")] // the classic
 	[InlineData("red_green_blue", "red")] // first matching word is used
 	[InlineData("snow_white", "snow")]
-	[InlineData("random_bullshit", "black")] // black is the final fallback
-	public void ColorCanBeReturnedEvenForUncachedName(string colorName, string expectedReturnedColorName) {
+	public void ColorCanBeReturnedEvenForUncachedNameIfNameContainsKnownBuiltinColor(string colorName, string expectedReturnedColorName) {
 		var colorFactory = new ColorFactory();
 		
 		var color = colorFactory.GetColorByName(colorName);
@@ -538,6 +538,25 @@ public class ColorTests {
 		Assert.Equal(expectedColor.R, color.R);
 		Assert.Equal(expectedColor.G, color.G);
 		Assert.Equal(expectedColor.B, color.B);
+	}
+	
+	[Fact]
+	public void ColorHashIsUsedWhenNoMatchingColorIsFound() {
+		var colorFactory = new ColorFactory();
+		var color = colorFactory.GetColorByName("random_bullshit");
+		
+		var colorHash = new ColorHash().Rgb("random_bullshit");
+		Assert.Equal(colorHash.R, color.R);
+		Assert.Equal(colorHash.G, color.G);
+		Assert.Equal(colorHash.B, color.B);
+		
+		// Check if the hash is the same for the same name.
+		var color2 = colorFactory.GetColorByName("random_bullshit");
+		Assert.Equal(color, color2);
+		
+		// Check if the hash is different for different names.
+		var color3 = colorFactory.GetColorByName("random_bullshit2");
+		Assert.NotEqual(color, color3);
 	}
 
 	private class Foo : Parser {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fernandezja.ColorHashSharp;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -169,9 +170,12 @@ public class ColorFactory {
 			return color;
 		}
 		
-		// If all else fails, return black.
-		Logger.Warn($"No matching fallback color found for {colorName}, using black");
-		return new Color(System.Drawing.Color.Black);
+		// If all else fails, instead of always returning the same color, use a color hash.
+		// This will at least give us a different color for each name.
+		Color fallbackColor = new(new ColorHash().Rgb(colorName));
+		Logger.Warn($"No matching fallback color found for {colorName}, " +
+		            $"using color hash {fallbackColor.OutputRgb()}.");
+		return fallbackColor;
 	}
 
 	public void AddNamedColor(string name, Color color) {
