@@ -210,6 +210,11 @@ public class StringExtensionsTests {
 	[InlineData("Peruwelz", "Peruwelzian")]
 	[InlineData("Schmargendorf", "Schmargendorfer")]
 	[InlineData("Schwelm", "Schwelmer")]
+	[InlineData("Lukow", "Lukowian")]
+	[InlineData("Muzambinho", "Muzambinhense")]
+
+	// adjectives mostly made up
+	[InlineData("Sidh", "Sidhian")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
