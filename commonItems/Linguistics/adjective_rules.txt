@@ -412,6 +412,7 @@
 {"*gos", "*gosian"}, // Lagos
 {"*gra", "*gran"}, // Serra Negra
 {"*gue", "*guer"}, // Hague
+{"*gyo", "*gyian"},
 {"*ham", "*hamian"}, // Birmingham
 {"*har", "*hari"}, // Bihar
 {"*hof", "*hofer"}, // Bloemhof
@@ -572,6 +573,7 @@
 {"*ch", "*chian"}, // Kerch
 {"*co", "*can"}, // Morocco
 {"*de", "*dean"}, // Cape Verde
+{"*dj", "*djian"}, // Cape Verde
 {"*do", "*dense"}, // https://en.wikipedia.org/wiki/Ejido,_Venezuela
 {"*dó", "*doseño"}, // Chigorodó
 {"*du", "*dunite"}, // Ordu
@@ -621,11 +623,11 @@
 {"*lu", "*lan"}, // Honolulu
 {"*me", "*man"}, // Rome
 {"*mi", "*mian"}, // Symi
-{"*mo", "*moan"}, // Alamo
 {"*mp", "*mpian"}, // Oostkamp
 {"*my", "*mois"}, // Saint Barthélemy
 {"*na", "*nian"}, // Argentina
 {"*nj", "*nji"},
+{"*nn", "*nner"}, // Baiersbronn
 {"*no", "*nan"}, // Fresno
 {"*ny", "*n"}, // Germany
 {"*oa", "*oese"}, // Genoa
@@ -633,6 +635,7 @@
 {"*oh", "*ohan"},
 {"*om", "*omian"},
 {"*on", "*onese"}, // Gabon
+{"*oo", "*ooan"}, // Kalamazoo
 {"*op", "*opian"}, // Konotop
 {"*os", "*ian"}, // Thasos
 {"*oy", "*ojan"}, // Troy
@@ -641,6 +644,7 @@
 {"*pe", "*pean"}, // Europe
 {"*ph", "*phite"}, // Guelph
 {"*po", "*pine"}, // Aleppo
+{"*pp", "*ppite"}, // Kingisepp
 {"*ra", "*rean"}, // Corcyra
 {"*re", "*rean"}, // Singapore
 {"*rh", "*rhi"}, // Chandigarh
@@ -650,7 +654,6 @@
 {"*rp", "*rpian"}, // Klerksdorp
 {"*sa", "*san"}, // Larissa
 {"*sh", "*shi"}, // Bangladesh
-{"*so", "*soan"}, // El Paso
 {"*sp", "*spian"}, // Hazorasp
 {"*ta", "*tan"}, // Egesta
 {"*te", "*tan"}, // Crete
@@ -661,15 +664,16 @@
 {"*ul", "*ulish"}, // Gaul
 {"*un", "*unite"},
 {"*uw", "*uwite"}, // Grabouw
-{"*vo", "*voan"}, // Provo
 {"*we", "*wean"}, // Zimbabwe
 {"*wo", "*wo"},
 {"*ye", "*yer"}, // Rye
 {"*yk", "*yk"}, // Karamyk (rule made up)
 {"*yn", "*ynite"}, // Brooklyn
+{"*yo", "*yoite"}, // Tokyo
 {"*ys", "*ysian"}, // Arambys (rule made up)
 {"*ze", "*zean"}, // Belize
 {"*zh", "*zhian"}, // Novovoronezh (rule made up)
+{"*zo", "*zan"}, // San Lorenzo, https://en.wikipedia.org/wiki/Cat%27s_Cradle
 {"*[v]h", "*[v]hite"},
 {"*[v]k", "*[v]kian"},
 {"*[c]s", "*[c]ian"}, // Athens
@@ -679,13 +683,20 @@
 // 1 character
 {"*a", "*an"}, // Libya
 {"*b", "*bian"}, // Zagreb
+{"*c", "*cian"},
 {"*d", "*der"}, // Dortmund
 {"*e", "*ian"}, // Ukraine
+{"*f", "*fian"},
 {"*g", "*gish"}, // Luxembourg
 {"*h", "*hian"},
 {"*i", "*ian"}, // Burundi
+{"*j", "*jian"},
 {"*k", "*kian"},
 {"*l", "*lian"}, // Brazil
+{"*m", "*mian"},
+{"*n", "*nian"},
+{"*o", "*oan"}, // El Paso, Provo
+{"*p", "*pian"},
 {"*q", "*qi"}, // Iraq
 {"*r", "*rian"}, // Ecuador
 {"*s", "*sian"},
@@ -694,4 +705,5 @@
 {"*v", "*vite"}, // Yonnav
 {"*w", "*wian"}, // Lukow
 {"*x", "*xian"}, // Essex
-{"*y", "*ian"} // Hungary
+{"*y", "*ian"}, // Hungary
+{"*z", "*zian"}
