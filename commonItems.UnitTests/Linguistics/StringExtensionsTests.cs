@@ -189,7 +189,7 @@ public class StringExtensionsTests {
 	[InlineData("Envigado", "Envigadeño")]
 	[InlineData("Chigorodó", "Chigorodoseño")]
 	[InlineData("San Bernardo", "San Bernardino")]
-	[InlineData("Encantado", "Encantense")]
+	[InlineData("Encantado", "Encantadense")] // https://pt.wiktionary.org/wiki/encantadense
 	[InlineData("Lincoln", "Lincolnite")]
 	[InlineData("Charlottetown", "Charlottetonian")]
 	[InlineData("Bulawayo", "Bulawayan")]
@@ -212,9 +212,24 @@ public class StringExtensionsTests {
 	[InlineData("Schwelm", "Schwelmer")]
 	[InlineData("Lukow", "Lukowian")]
 	[InlineData("Muzambinho", "Muzambinhense")]
+	[InlineData("Kingisepp", "Kingiseppite")] // https://terra-groom.ru/en/aleksandr-veremeenko-schitaet-sebya-postradavshim-veremeenko-sergei.html
+	[InlineData("Glostrup", "Glostrupian")] // https://doxbin.org/upload/Doxxingmyselfdanishreupload
+	[InlineData("San Lorenzo", "San Lorenzan")] // https://en.wikipedia.org/wiki/Cat%27s_Cradle
+	[InlineData("Baiersbronn", "Baiersbronner")]
+	[InlineData("Woodlawn", "Woodlawnian")] // https://www.e-yearbook.com/Woodlawn_High_School_Woodlawnian_Yearbook
+	[InlineData("Kalamazoo", "Kalamazooan")] // https://en.wiktionary.org/wiki/Kalamazooan
+	[InlineData("Kannauj", "Kannaujian")] // https://www.ouddict.com/threads/after-how-much-time-i-should-expect-to-judge-the-smell-of-deer-musk-macerating-in-sandlewood.6113/
 
 	// adjectives mostly made up
 	[InlineData("Sidh", "Sidhian")]
+	[InlineData("Theudoburgz", "Theudoburgzian")]
+	[InlineData("Ashawm", "Ashawmian")]
+	[InlineData("Khaluf", "Khalufian")]
+	[InlineData("Bundibugyo", "Bundibugyian")]
+	[InlineData("Arandelovac", "Arandelovacian")]
+	[InlineData("Taastrup", "Taastrupian")]
+	[InlineData("Batangafo", "Batangafoan")]
+	[InlineData("Bordj Bou Arreridj", "Bordj Bou Arreridjian")]
 	
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
@@ -524,7 +539,11 @@ public class StringExtensionsTests {
 			.Where(city => !city.Contains(" am "))
 			.Where(city => !city.StartsWith("Zürich (Kreis"))
 			.Where(city => !city.StartsWith("Sector "))
+			.Where(city => !city.EndsWith(" TDA"))
+			.Where(city => !city.EndsWith(" I"))
 			.Where(city => !city.EndsWith(" II"))
+			.Where(city => !city.EndsWith(" VI"))
+			.Where(city => !city.EndsWith(" XXI"))
 			.Distinct()
 			.ToList();
 		

@@ -8,6 +8,7 @@
 {"Bithynia et Paphlagonia", "Bithyno-Paphlagonia"}, // https://dergipark.org.tr/tr/download/article-file/1715241
 {"Vallis Arni", "Arno"}, // means "valley of Arno"
 {"Caucasian Albania", "Albania"}, // https://en.wikipedia.org/wiki/Caucasian_Albania
+{"BABOR - VILLE", "Babor - Ville"}, // https://www.mindat.org/feature-6698360.html
 
 {"* Ultima", "Furthest *"}, // Scythia Ultima
 {"* Insula", "Insular *"}, // Scandia Insula
@@ -51,3 +52,7 @@
 {"* Graeca", "Graeco-*"},
 
 {"* pros to Latmo", "*"}, // Alexandreia pros to Latmo
+{"*, D.C.", "*"}, // Washington, D.C.
+
+{"*eón", "*eon"}, // León
+{"* B", "*"}, // Baggabag B
