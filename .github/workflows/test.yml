@@ -55,7 +55,7 @@ jobs:
       run: dotnet tool restore
 
     - name: "Prevent SSL protocol version exception on Windows and MacOS"
-      if: matrix.os == 'windows' || matrix.os == 'macos-latest'
+      if: contains(matrix.os, 'windows') || contains(matrix.os, 'macos-latest')
       run: |
         dotnet dev-certs https
         dotnet dev-certs https --trust
