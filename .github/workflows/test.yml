@@ -26,9 +26,6 @@ jobs:
       working-directory: commonItems.UnitTests
       shell: pwsh
       run: |
-       dotnet dev-certs https
-       dotnet dev-certs https --trust
-
        $env:CoverletOutput='./TestResults/coverage.info'
        $env:CoverletOutputFormat='lcov'
        dotnet test /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:ExcludeByFile=**/Microsoft.NET.Test.Sdk.Program.cs /p:Exclude=[commonItems.UnitTests]*
@@ -59,8 +56,4 @@ jobs:
 
     - name: "Run tests"
       working-directory: commonItems.UnitTests
-      run:
-        dotnet dev-certs https
-        dotnet dev-certs https --trust
-        
-        dotnet test
+      run: dotnet test
