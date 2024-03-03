@@ -56,4 +56,11 @@ jobs:
 
     - name: "Run tests"
       working-directory: commonItems.UnitTests
-      run: dotnet test
+      run: |
+        # Prevent "Interop+AppleCrypto+SslException : bad protocol version" on macOS
+        if [ $RUNNER_OS = 'macOS' ]; then
+          dotnet dev-certs https
+          dotnet dev-certs https --trust
+        fi
+        
+        dotnet test
