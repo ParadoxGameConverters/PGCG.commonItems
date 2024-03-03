@@ -1,5 +1,6 @@
 ﻿using commonItems.Collections;
 using commonItems.Mods;
+using Open.Collections;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -397,7 +398,7 @@ public class Parser {
 	///		relativePath may be "common/governments"
 	///		extensions may be "txt;text" (a list separated by semicolon)
 	/// </summary>
-	public void ParseGameFolder(string relativePath, ModFilesystem modFS, string extensions, bool recursive, bool logFilePaths = false) {
+	public void ParseGameFolder(string relativePath, ModFilesystem modFS, string extensions, bool recursive, bool logFilePaths = false, bool parallel = false) {
 		var extensionSet = extensions.Split(';');
 
 		OrderedSet<string> files;
@@ -407,11 +408,16 @@ public class Parser {
 			files = modFS.GetAllFilesInFolder(relativePath);
 		}
 		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
-		foreach (var file in files) {
+
+		files.ForEach(ProcessFile, allowParallel: parallel);
+
+		return;
+
+		void ProcessFile(string filePath) {
 			if (logFilePaths) {
-				Logger.Debug($"Parsing file: {file}");
+				Logger.Debug($"Parsing file: {filePath}");
 			}
-			ParseFile(file);
+			ParseFile(filePath);
 		}
 	}
 
