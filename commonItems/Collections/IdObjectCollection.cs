@@ -15,7 +15,6 @@ public class IdObjectCollection<TKey, T> : IReadOnlyCollection<T> where TKey : I
 		this.dict = dict;
 	}
 
-
 	public T this[TKey key] => dict[key];
 	public int Count => dict.Count;
 	public bool ContainsKey(TKey key) => dict.ContainsKey(key);
