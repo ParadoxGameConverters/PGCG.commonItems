@@ -54,8 +54,8 @@ jobs:
     - name: "Restore tools"
       run: dotnet tool restore
 
-    - name: "Prevent \"Interop+AppleCrypto+SslException : bad protocol version\" on macOS"
-      if: matrix.os == 'macos-latest'
+    - name: "Prevent SSL protocol version exception on Windows and MacOS"
+      if: matrix.os == 'windows' || matrix.os == 'macos-latest'
       run: |
         dotnet dev-certs https
         dotnet dev-certs https --trust
