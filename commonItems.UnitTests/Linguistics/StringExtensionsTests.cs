@@ -523,7 +523,7 @@ public class StringExtensionsTests {
 
 	[Fact]
 	public void AdjectiveRuleExistsForEveryCountryAndMajorCityInTheWorld() {
-		var csvUrl = "https://datahub.io/core/world-cities/r/world-cities.csv";
+		const string csvUrl = "https://pkgstore.datahub.io/core/world-cities/world-cities_csv/data/6cc66692f0e82b18216a48443b6b95da/world-cities_csv.csv"; // redirected from https://datahub.io/core/world-cities/r/world-cities.csv
 
 		using var httpClient = new HttpClient();
 		var request = new HttpRequestMessage(HttpMethod.Get, csvUrl);
