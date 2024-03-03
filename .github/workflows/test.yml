@@ -54,11 +54,10 @@ jobs:
     - name: "Restore tools"
       run: dotnet tool restore
 
-    - name: "Prevent SSL protocol version exception on Windows and MacOS"
-      if: matrix.os == 'windows-latest' || matrix.os == 'macos-latest'
+    - name: "Prevent SSL protocol version exception on macOS"
+      if: matrix.os == 'macos-latest'
       run: |
-        dotnet dev-certs https
-        dotnet dev-certs https --trust --verbose
+        export MONO_TLS_PROVIDER=legacy
 
     - name: "Run tests"
       working-directory: commonItems.UnitTests
