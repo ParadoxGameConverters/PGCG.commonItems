@@ -39,7 +39,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [[self-hosted, windows], macos-latest]
+        os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -55,7 +55,7 @@ jobs:
       run: dotnet tool restore
 
     - name: "Prevent SSL protocol version exception on Windows and MacOS"
-      if: contains(matrix.os, 'windows') || contains(matrix.os, 'macos-latest')
+      if: matrix.os == 'windows-latest' || matrix.os == 'macos-latest'
       run: |
         dotnet dev-certs https
         dotnet dev-certs https --trust --verbose
