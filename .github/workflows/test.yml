@@ -58,7 +58,7 @@ jobs:
       if: contains(matrix.os, 'windows') || contains(matrix.os, 'macos-latest')
       run: |
         dotnet dev-certs https
-        dotnet dev-certs https --trust
+        dotnet dev-certs https --trust --verbose
 
     - name: "Run tests"
       working-directory: commonItems.UnitTests
