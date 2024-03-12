@@ -253,7 +253,29 @@ public class ParserHelperTests {
 		Console.SetOut(output);
 		var reader = new BufferedReader(" =");
 		_ = reader.GetString();
-		Assert.Contains("[ERROR] SingleString: next token not found!", output.ToString());
+		Assert.Contains("[ERROR] GetString: next token not found!", output.ToString());
+	}
+	
+	[Fact]
+	public void GetCharGetsFirstCharAfterEquals() {
+		var reader = new BufferedReader(" = foo");
+		Assert.Equal('f', reader.GetChar());
+	}
+
+	[Fact]
+	public void GetCharGetsFirstCharFromQuotedStringAfterEquals() {
+		var reader = new BufferedReader(" = \"foo\"");
+		Assert.Equal('f', reader.GetChar());
+	}
+
+	[Fact]
+	public void GetCharLogsErrorOnTokenNotFound() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var reader = new BufferedReader(" =");
+		char c = reader.GetChar();
+		Assert.Contains("[ERROR] GetChar: next token not found!", output.ToString());
+		Assert.Equal('\0', c);
 	}
 
 	[Fact]
