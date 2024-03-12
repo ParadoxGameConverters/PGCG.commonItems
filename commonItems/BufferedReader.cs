@@ -96,8 +96,17 @@ public class BufferedReader {
 			return token.RemQuotes();
 		}
 
-		Logger.Error("SingleString: next token not found!");
+		Logger.Error("GetString: next token not found!");
 		return string.Empty;
+	}
+	public char GetChar() {
+		string str = GetString().RemQuotes();
+		if (!string.IsNullOrEmpty(str)) {
+			return str[0];
+		}
+
+		Logger.Error("GetChar: next token not found!");
+		return '\0';
 	}
 	public int GetInt() {
 		var intStr = GetString().RemQuotes();
