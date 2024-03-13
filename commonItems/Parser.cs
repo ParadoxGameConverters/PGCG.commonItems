@@ -78,14 +78,14 @@ public class Parser {
 			var value = reader.GetString();
 			var variableName = varStr[1..];
 			if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-				reader.Variables.Add(variableName, intValue);
+				reader.Variables[variableName] = intValue;
 				return;
 			}
 			if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
-				reader.Variables.Add(variableName, doubleValue);
+				reader.Variables[variableName] = doubleValue;
 				return;
 			}
-			reader.Variables.Add(variableName, value);
+			reader.Variables[variableName] = value;
 		});
 	}
 
