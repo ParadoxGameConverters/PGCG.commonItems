@@ -35,7 +35,8 @@ public class NamedColorCollectionTests {
 
 		var outStr = output.ToString();
 		Assert.Contains("[WARN] Failed to read color ck2_black: Color has wrong number of components", outStr);
-		Assert.Contains("[WARN] Failed to read color delian_league_gold: Color has wrong number of components", outStr);
+		// delian_league_gold is also malformed, but wrong number of RGB components is gracefully handled.
+		Assert.DoesNotContain("[WARN] Failed to read color delian_league_gold", outStr);
 	}
 	
 	[Fact]

@@ -2,6 +2,7 @@
 using Fernandezja.ColorHashSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Xunit;
 
 namespace commonItems.UnitTests.Colors; 
@@ -325,9 +326,16 @@ public class ColorTests {
 	}
 
 	[Fact]
-	public void ColorInitializationRequiresThreeComponentsWhenUnspecified() {
+	public void ColorInitializationLogsWarningForFewerThanThreeComponentsWhenColorFormatUnspecified() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		
 		var reader = new BufferedReader("= { 64 128 }");
-		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(64, color.R);
+		Assert.Equal(128, color.G);
+		Assert.Equal(0, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for unprefixed color: 64,128.", output.ToString());
 	}
 
 	[Fact]
@@ -353,9 +361,16 @@ public class ColorTests {
 	}
 
 	[Fact]
-	public void ColorInitializationRequiresThreeComponentsWhenRgb() {
+	public void ColorInitializationLogsWarningWhenRgbHasFewerThan3Components() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		
 		var reader = new BufferedReader("= rgb { 64 128 }");
-		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(64, color.R);
+		Assert.Equal(128, color.G);
+		Assert.Equal(0, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for RGB: 64,128.", output.ToString());
 	}
 
 	[Fact]
