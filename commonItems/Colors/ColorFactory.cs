@@ -206,18 +206,15 @@ public class ColorFactory {
 	}
 	
 	private static Color GetRgbColorFromAnyNumberOfComponents(IReadOnlyList<int> components) {
-		switch (components.Count) {
-			case < 3: {
-				// Use 0 for missing components.
-				var r = components.Count > 0 ? components[0] : 0;
-				var g = components.Count > 1 ? components[1] : 0;
-				var b = components.Count > 2 ? components[2] : 0;
-				return new Color(r, g, b);
-			}
-			default: {
-				// Use first 3 components.
-				return new Color(components[0], components[1], components[2]);
-			}
+		if (components.Count >= 3) {
+			// Use first 3 components.
+			return new Color(components[0], components[1], components[2]);
 		}
+
+		// Use 0 for missing components.
+		var r = components.Count > 0 ? components[0] : 0;
+		var g = components.Count > 1 ? components[1] : 0;
+		var b = components.Count > 2 ? components[2] : 0;
+		return new Color(r, g, b);
 	}
 }
