@@ -10,12 +10,13 @@ public class ColorFactory {
 	public Dictionary<string, Color> NamedColors { get; } = new();
 
 	private Color GetRgbColor(BufferedReader reader) {
-		var rgb = reader.GetDoubles();
-		if (rgb.Count != 3) {
-			throw new FormatException($"Color has wrong number of components for RGB: " +
-			                          $"{string.Join(',', rgb)}");
+		var rgbDoubles = reader.GetDoubles();
+		if (rgbDoubles.Count != 3) {
+			Logger.Warn($"Color has wrong number of components for RGB: " +
+			            $"{string.Join(',', rgbDoubles)}.");
 		}
-		return new Color((int)rgb[0], (int)rgb[1], (int)rgb[2]);
+		var rgbInts = rgbDoubles.Select(d => (int)d).ToArray();
+		return GetRgbColorFromAnyNumberOfComponents(rgbInts);
 	}
 	private Color GetHexColor(BufferedReader reader) {
 		var hex = reader.GetStrings()[0];
@@ -61,27 +62,37 @@ public class ColorFactory {
 					return new Color(r, g, b);
 				}
 				case 4: {
-					// This is a RGBA double situation. We shouldn't touch alpha.
+					// This is an RGBA double situation. We shouldn't touch alpha.
 					var r = (int)Math.Round(rgb[0] * 255);
 					var g = (int)Math.Round(rgb[1] * 255);
 					var b = (int)Math.Round(rgb[2] * 255);
 					var a = rgb[3];
 					return new Color(r, g, b, a);
 				}
-				default:
-					throw new FormatException("Color has wrong number of components for unprefixed color: " +
-					                          $"{string.Join(',', rgb)}");
+				default: {
+					Logger.Warn("Color has wrong number of components for unprefixed color: " +
+					            $"{string.Join(',', rgb)}.");
+					var components = rgb.Select(d => (int)Math.Round(d * 255)).ToArray();
+					return GetRgbColorFromAnyNumberOfComponents(components);
+				}
 			}
 		} else {
 			// integer list
 			var integerStreamReader = new BufferedReader(questionableList);
 			var rgb = integerStreamReader.GetInts();
-			return rgb.Count switch {
-				3 => new Color(rgb[0], rgb[1], rgb[2]),
-				4 => new Color(rgb[0], rgb[1], rgb[2], (float)rgb[3]),
-				_ => throw new FormatException("Color has wrong number of components for unprefixed color: " +
-				                               $"{string.Join(',', rgb)}")
-			};
+			switch (rgb.Count) {
+				case 3:
+					return new Color(rgb[0], rgb[1], rgb[2]);
+				case 4:
+					// RGBA
+					return new Color(rgb[0], rgb[1], rgb[2], (float)rgb[3]);
+				default: {
+					Logger.Warn("Color has wrong number of components for unprefixed color: " +
+					            $"{string.Join(',', rgb)}.");
+					return GetRgbColorFromAnyNumberOfComponents(rgb);
+				}
+			}
+			// as default, log a warning and return black
 		}
 	}
 	public Color GetColor(BufferedReader reader) {
@@ -192,5 +203,18 @@ public class ColorFactory {
 	}
 	public void Clear() {
 		NamedColors.Clear();
+	}
+	
+	private static Color GetRgbColorFromAnyNumberOfComponents(IReadOnlyList<int> components) {
+		if (components.Count >= 3) {
+			// Use first 3 components.
+			return new Color(components[0], components[1], components[2]);
+		}
+
+		// Use 0 for missing components.
+		var r = components.Count > 0 ? components[0] : 0;
+		var g = components.Count > 1 ? components[1] : 0;
+		var b = components.Count > 2 ? components[2] : 0;
+		return new Color(r, g, b);
 	}
 }
