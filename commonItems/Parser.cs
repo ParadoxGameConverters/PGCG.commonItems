@@ -366,6 +366,7 @@ public class Parser {
 	public void ParseFile(string filename) {
 		if (!File.Exists(filename)) {
 			Logger.Error($"Could not open {filename} for parsing");
+			return;
 		}
 		
 		// Open file without locking it.
