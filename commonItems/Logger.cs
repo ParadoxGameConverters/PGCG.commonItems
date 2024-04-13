@@ -61,6 +61,7 @@ public static class Logger {
 				Layout = layout,
 				Threshold = Level.All,
 			};
+			fileAppender.ActivateOptions();
 			appenders.Add(fileAppender);
 		}
 		
