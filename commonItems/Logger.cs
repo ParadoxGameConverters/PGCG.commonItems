@@ -3,6 +3,7 @@ using log4net.Appender;
 using log4net.Core;
 using log4net.Layout;
 using log4net.Repository.Hierarchy;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 // ReSharper disable InconsistentNaming
@@ -17,28 +18,36 @@ public static class Logger {
 		Configure();
 	}
 
-	public static void Configure(bool logToConsole = true, bool logToFile = false) {
+	public static void Configure(IEnumerable<IAppender> appenders) {
 		var repository = LogManager.GetRepository();
-		if (repository.Configured) {
-			return;
-		}
-
 		var hierarchy = (Hierarchy)repository;
 		hierarchy.Root.RemoveAllAppenders();
 
 		// Add custom "PROGRESS" level.
 		repository.LevelMap.Add(LogExtensions.ProgressLevel);
+		
+		foreach (var appender in appenders) {
+			hierarchy.Root.AddAppender(appender);
+		}
+
+		hierarchy.Root.Level = Level.All;
+		hierarchy.Configured = true;
+	}
+
+	public static void Configure(bool logToConsole = true, bool logToFile = false) {
+		var appenders = new List<IAppender>();
 
 		var layout = new PatternLayout {
 			ConversionPattern = "%date{yyyy'-'MM'-'dd HH':'mm':'ss} [%level] %message%newline",
 		};
 		layout.ActivateOptions();
+		
 		if (logToConsole) {
 			var consoleAppender = new ConsoleAppender {
 				Threshold = Level.All, Target = "Console.Out", Layout = layout,
 			};
 			consoleAppender.ActivateOptions();
-			hierarchy.Root.AddAppender(consoleAppender);
+			appenders.Add(consoleAppender);
 		}
 		if (logToFile) {
 			var fileAppender = new RollingFileAppender {
@@ -52,12 +61,10 @@ public static class Logger {
 				Layout = layout,
 				Threshold = Level.All,
 			};
-			fileAppender.ActivateOptions();
-			hierarchy.Root.AddAppender(fileAppender);
+			appenders.Add(fileAppender);
 		}
-
-		hierarchy.Root.Level = Level.All;
-		hierarchy.Configured = true;
+		
+		Configure(appenders);
 	}
 
 	public static void Error(string message) {

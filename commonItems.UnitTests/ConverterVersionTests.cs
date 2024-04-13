@@ -11,7 +11,7 @@ public class ConverterVersionTests {
 	[Fact]
 	public void ItemsDefaultToEmpty() {
 		var converterVersion = new ConverterVersion();
-		converterVersion.LoadVersion("emptyVersion.txt");
+		converterVersion.LoadVersion("TestFiles/emptyVersion.txt");
 
 		Assert.True(string.IsNullOrEmpty(converterVersion.Name));
 		Assert.True(string.IsNullOrEmpty(converterVersion.Version));
