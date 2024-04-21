@@ -236,6 +236,18 @@ public class ParserHelperTests {
 	}
 
 	[Fact]
+	public void GetStringsAddsSingleCharacterStrings() {
+		var reader = new BufferedReader("a b c x y z");
+		Assert.Equal(["a", "b", "c", "x", "y", "z"], reader.GetStrings());
+	}
+
+	[Fact]
+	public void GetStringGetsSingleCharacterString() {
+		var reader = new BufferedReader(" = f");
+		Assert.Equal("f", reader.GetString());
+	}
+
+	[Fact]
 	public void GetStringGetsStringAfterEquals() {
 		var reader = new BufferedReader(" = foo");
 		Assert.Equal("foo", reader.GetString());

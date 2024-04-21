@@ -19,8 +19,8 @@ public static partial class CommonRegexes {
 	public static Regex QuotedFloat => GetQuotedFloatRegex();
 
 	// strings
-	public static Regex String => new($"^(?!@).+[^{NonStringCharacters}]+$");
-	public static Regex QuotedString => new(@"^""[^\n\""]+""$");
+	public static Regex String => new($"^(?!@).*[^{NonStringCharacters}]+$");
+	public static Regex QuotedString => GetQuotedStringRegex();
 
 	// dates
 	public static Regex Date => GetDateRegex();
@@ -40,4 +40,6 @@ public static partial class CommonRegexes {
 	private static partial Regex GetQuotedFloatRegex();
 	[GeneratedRegex("^\\-?\\d+[.]\\d+[.]\\d+$")]
 	private static partial Regex GetDateRegex();
+	[GeneratedRegex(@"^""[^\n\""]+""$")]
+	private static partial Regex GetQuotedStringRegex();
 }

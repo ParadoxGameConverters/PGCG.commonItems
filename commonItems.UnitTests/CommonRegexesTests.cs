@@ -188,6 +188,12 @@ public class CommonRegexesTests {
 	}
 
 	[Fact]
+	public void StringRegexMatchesSingleCharacters() {
+		Assert.Matches(CommonRegexes.String, "a");
+		Assert.Matches(CommonRegexes.String, "1");
+	}
+
+	[Fact]
 	public void QuotedStringRegexMatchesQuotedStrings() {
 		Assert.Matches(CommonRegexes.QuotedString, @"""1234-abcd""");
 	}
