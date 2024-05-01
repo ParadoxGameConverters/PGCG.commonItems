@@ -50,8 +50,8 @@ public class DateTests {
 	public void DateLogsBadInitializationFromBadString() {
 		var output = new StringWriter();
 		Console.SetOut(output);
-		_ = new Date("2020a.january.32");
-		Assert.Contains("[WARN] Problem constructing date from string 2020a.january.32: Input string was not in a correct format.", output.ToString());
+		_ = new Date("2020.january.32");
+		Assert.Contains("[WARN] Problem constructing date from string \"2020.january.32\": The input string 'january' was not in a correct format.", output.ToString());
 	}
 
 	[Fact]
