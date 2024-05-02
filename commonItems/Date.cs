@@ -1,5 +1,6 @@
 ﻿using commonItems.Serialization;
 using System;
+using System.Linq;
 using System.Text;
 
 namespace commonItems; 
@@ -23,25 +24,27 @@ public class Date : IComparable<Date>, IPDXSerializable {
 	public Date(int year, int month, int day) : this(year, month, day, false) { }
 	public Date(string init) : this(init, false) { }
 	public Date(string init, bool AUC) {
-		if (init.Length < 1) {
-			return;
-		}
 		init = init.RemQuotes();
 
-		var firstDot = init.IndexOf('.');
-		var lastDot = init.LastIndexOf('.');
+		var dateElements = init.Split('.').Where(x => !string.IsNullOrEmpty(x)).ToArray();
 		try {
-			Year = int.Parse(init.Substring(0, firstDot));
-			if (AUC) {
-				Year = ConvertAUCToAD(Year);
+			if (dateElements.Length >= 3) {
+				Year = int.Parse(dateElements[0]);
+				Month = int.Parse(dateElements[1]);
+				Day = int.Parse(dateElements[2]);
+			} else if (dateElements.Length == 2) {
+				Year = int.Parse(dateElements[0]);
+				Month = int.Parse(dateElements[1]);
+			} else if (dateElements.Length == 1) {
+				Year = int.Parse(dateElements[0]);
+			} else {
+				Logger.Warn("Problem constructing date: at least a year should be provided!");
 			}
-			Month = int.Parse(init.Substring(firstDot + 1, lastDot - firstDot - 1));
-			Day = int.Parse(init.Substring(lastDot + 1));
 		} catch (Exception e) {
-			Logger.Warn("Problem inputting date: " + e);
-			Year = 1;
-			Month = 1;
-			Day = 1;
+			Logger.Warn($"Problem constructing date from string \"{init}\": {e.Message}!");
+		}
+		if (AUC) {
+			Year = ConvertAUCToAD(Year);
 		}
 	}
 	public Date(DateTimeOffset dateTimeOffset) {
@@ -159,10 +162,6 @@ public class Date : IComparable<Date>, IPDXSerializable {
 		years += (double)(CalculateDayInYear() - rhs.CalculateDayInYear()) / 365;
 
 		return years;
-	}
-
-	public bool IsSet() {
-		return !Equals(new Date());
 	}
 
 	public override string ToString() {

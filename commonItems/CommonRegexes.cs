@@ -38,7 +38,7 @@ public static partial class CommonRegexes {
 	private static partial Regex GetFloatRegex();
 	[GeneratedRegex("^\"-?\\d+(.\\d+)?\"$")]
 	private static partial Regex GetQuotedFloatRegex();
-	[GeneratedRegex("^\\-?\\d+[.]\\d+[.]\\d+$")]
+	[GeneratedRegex("^-?\\d+([.]\\d+)?([.]\\d+)?\\.?$")]
 	private static partial Regex GetDateRegex();
 	[GeneratedRegex(@"^""[^\n\""]+""$")]
 	private static partial Regex GetQuotedStringRegex();

@@ -227,10 +227,16 @@ public class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void DateRegexRequiresThreeSections() {
-		Assert.DoesNotMatch(CommonRegexes.Date, "1918.11");
-		Assert.DoesNotMatch(CommonRegexes.Date, "1918");
-		Assert.DoesNotMatch(CommonRegexes.Date, "");
+	public void DateRegexMatchesIncompleteDates() {
+		Assert.Matches(CommonRegexes.Date, "1918.11.");
+		Assert.Matches(CommonRegexes.Date, "1918.11");
+		Assert.Matches(CommonRegexes.Date, "1918.");
+		Assert.Matches(CommonRegexes.Date, "1918");
+
+		Assert.Matches(CommonRegexes.Date, "-1918.11.");
+		Assert.Matches(CommonRegexes.Date, "-1918.11");
+		Assert.Matches(CommonRegexes.Date, "-1918.");
+		Assert.Matches(CommonRegexes.Date, "-1918");
 	}
 	
 	[Fact]

@@ -11,10 +11,11 @@ public class DateTests {
 	private const int DecimalPlaces = 4;
 
 	[Fact]
-	public void DefaultDateIsNotSet() {
+	public void DateDefaultsToFirstJanuaryFirst() {
 		var date = new Date();
-		Assert.False(date.IsSet());
+		Assert.Equal("1.1.1", date.ToString());
 	}
+
 	[Fact]
 	public void DateCanBeCopyConstructed() {
 		var baseDate = new Date(500, 1, 1);
@@ -38,23 +39,19 @@ public class DateTests {
 	}
 
 	[Fact]
-	public void DateLogsBadInitialization() {
+	public void DateLogsBadInitializationFromEmptyString() {
 		var output = new StringWriter();
 		Console.SetOut(output);
-		_ = new Date("2020.4");
-		Assert.Contains("[WARN] Problem inputting date: System.ArgumentOutOfRangeException", output.ToString());
+		_ = new Date("");
+		Assert.Contains("[WARN] Problem constructing date: at least a year should be provided!", output.ToString());
 	}
 
 	[Fact]
-	public void DateIsNotSetOnBadInitialization() {
-		var date = new Date("2020.4");
-		Assert.False(date.IsSet());
-	}
-
-	[Fact]
-	public void DateIsOneJanuaryFirstOnBadInitialization() {
-		var date = new Date("2020.4");
-		Assert.Equal("1.1.1", date.ToString());
+	public void DateLogsBadInitializationFromBadString() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		_ = new Date("2020.january.32");
+		Assert.Contains("[WARN] Problem constructing date from string \"2020.january.32\": The input string 'january' was not in a correct format.", output.ToString());
 	}
 
 	[Fact]
@@ -330,5 +327,17 @@ public class DateTests {
 		Assert.Equal(expectedYear, dateTimeOffset.Year);
 		Assert.Equal(expectedMonth, dateTimeOffset.Month);
 		Assert.Equal(expectedDay, dateTimeOffset.Day);
+	}
+
+	[Theory]
+	[InlineData("1450.10.", 1450, 10, 1)]
+	[InlineData("1450.10", 1450, 10, 1)]
+	[InlineData("1450.", 1450, 1, 1)]
+	[InlineData("1450", 1450, 1, 1)]
+	public void IncompleteDateElementsDefaultTo1(string dateStr, int expectedYear, int expectedMonth, int expectedDay) {
+		Date pdxDate = dateStr;
+		Assert.Equal(expectedYear, pdxDate.Year);
+		Assert.Equal(expectedMonth, pdxDate.Month);
+		Assert.Equal(expectedDay, pdxDate.Day);
 	}
 }
