@@ -7,6 +7,7 @@ using Xunit;
 
 namespace commonItems.UnitTests.Colors; 
 
+[Collection("Sequential")]
 public class ColorTests {
 	private const int decimalPlaces = 2;
 
