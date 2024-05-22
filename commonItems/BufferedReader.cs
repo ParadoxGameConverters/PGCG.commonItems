@@ -1,4 +1,5 @@
 ﻿using NCalc;
+using NCalc.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -304,8 +305,8 @@ public class BufferedReader {
 		}
 
 		try {
-			return expression.Evaluate();
-		} catch (EvaluationException e) {
+			return expression.Evaluate() ?? lexeme;
+		} catch (NCalcParserException e) {
 			Logger.Warn($"Failed to evaluate expression \"{lexeme}\": {e.Message}");
 			return lexeme;
 		}
