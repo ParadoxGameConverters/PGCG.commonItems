@@ -80,6 +80,8 @@ public static class PDXSerializer {
 			sb.Append(indent).Append('}');
 		}
 
+		return;
+
 		static IEnumerable<DictionaryEntry> CastDict(IDictionary dictionary) {
 			foreach (DictionaryEntry entry in dictionary) {
 				yield return entry;

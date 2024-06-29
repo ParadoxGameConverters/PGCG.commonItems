@@ -6,12 +6,14 @@ public class StringOfItemTests {
 	[Fact]
 	public void StringOfItemConvertsBracedObjectsToStrings() {
 		const string input =
-			@"= {\n
-                \t{\n
-                \t\tid = 180\n
-                \t\ttype = 46\n
-                \t}\n
-                }";
+			"""
+			= {
+			                \t{
+			                \t\tid = 180
+			                \t\ttype = 46
+			                \t}
+			                }
+			""";
 		var reader = new BufferedReader(input);
 
 		var theItem = reader.GetStringOfItem();

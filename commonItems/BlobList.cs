@@ -4,7 +4,7 @@ using System.Text;
 namespace commonItems;
 
 public class BlobList {
-	public List<string> Blobs { get; } = new();
+	public List<string> Blobs { get; } = [];
 	public BlobList(BufferedReader reader) {
 		var next = Parser.GetNextLexeme(reader);
 		if (next == "=") {

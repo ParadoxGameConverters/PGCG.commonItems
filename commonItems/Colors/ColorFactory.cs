@@ -9,7 +9,7 @@ namespace commonItems.Colors;
 public class ColorFactory {
 	public Dictionary<string, Color> NamedColors { get; } = new();
 
-	private Color GetRgbColor(BufferedReader reader) {
+	private static Color GetRgbColor(BufferedReader reader) {
 		var rgbDoubles = reader.GetDoubles();
 		if (rgbDoubles.Count != 3) {
 			Logger.Warn($"Color has wrong number of components for RGB: " +
@@ -18,7 +18,7 @@ public class ColorFactory {
 		var rgbInts = rgbDoubles.Select(d => (int)d).ToArray();
 		return GetRgbColorFromAnyNumberOfComponents(rgbInts);
 	}
-	private Color GetHexColor(BufferedReader reader) {
+	private static Color GetHexColor(BufferedReader reader) {
 		var hex = reader.GetStrings()[0];
 		if (hex.Length != 6) {
 			throw new FormatException("Color has wrong number of digits");

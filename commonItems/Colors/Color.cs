@@ -242,13 +242,13 @@ public class Color : IPDXSerializable {
 		RgbComponents[2] = (int)b;
 	}
 
-	public int[] RgbComponents { get; } = {
-		0, 0, 0
-	};
+	public int[] RgbComponents { get; } = [
+		0, 0, 0,
+	];
 
-	public double[] HsvComponents { get; } = {
-		0, 0, 0
-	};
+	public double[] HsvComponents { get; } = [
+		0, 0, 0,
+	];
 
 	public override string ToString() => OutputRgb();
 }

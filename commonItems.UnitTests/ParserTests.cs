@@ -326,7 +326,7 @@ public class ParserTests {
 		var country = new TestCountry(reader);
 		Assert.Equal(35, country.Prestige);
 	}
-	
+
 	[Fact]
 	public void InterpolatedExpressionsCanBeUsedInVariableValues() {
 		var reader = new BufferedReader(
@@ -334,10 +334,10 @@ public class ParserTests {
 			"@cheap_cost_base = 100\n" + // 100
 			"@cheap_cost_tier_1 = @[cheap_cost_base]\n" + // 100
 			"@cheap_cost_tier_2 = @[cheap_cost_tier_1 + cheap_cost_scale_addition_per_tier]"); // 150
-		
+
 		var parser = new Parser();
 		parser.ParseStream(reader);
-		
+
 		Assert.Collection(reader.Variables,
 			kvp => {
 				Assert.Equal("cheap_cost_scale_addition_per_tier", kvp.Key);
@@ -415,11 +415,11 @@ public class ParserTests {
 			foundAreas.Add(areaName);
 			ParserHelpers.IgnoreItem(reader);
 		});
-		
+
 		parser.ParseGameFile("map_data/areas.txt", modFS);
 		// File exists in game and mod1. Mod's version takes precedence.
 		foundAreas.Should().Equal("themod_area");
-		
+
 		foundAreas.Clear();
 		parser.ParseGameFile("map_data/areas2.txt", modFS);
 		// File exists only in game.

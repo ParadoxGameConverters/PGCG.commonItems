@@ -1,10 +1,10 @@
 ﻿using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests;
 
 public class CommonRegexesTests {
-	private class TestParser : Parser { }
-	
+	private class TestParser : Parser;
+
 	[Fact]
 	public void VariableRegexMatchesVariables() {
 		var reader = new BufferedReader("@ai_aggressiveness = 70");
@@ -201,13 +201,13 @@ public class CommonRegexesTests {
 	[Fact]
 	public void QuotedStringRegexMatchesCurlyBrackets() {
 		Assert.Matches(CommonRegexes.QuotedString, @"""1234-abcd{""");
-		Assert.DoesNotMatch(CommonRegexes.QuotedString, @"1234-abcd}");
+		Assert.DoesNotMatch(CommonRegexes.QuotedString, "1234-abcd}");
 	}
 
 	[Fact]
 	public void QuotedStringRegexMatchesBrackets() {
 		Assert.Matches(CommonRegexes.QuotedString, @"""1234-abcd[""");
-		Assert.DoesNotMatch(CommonRegexes.QuotedString, @"1234-abcd]");
+		Assert.DoesNotMatch(CommonRegexes.QuotedString, "1234-abcd]");
 	}
 
 	[Fact]

@@ -24,7 +24,7 @@ public static partial class StringExtensions {
 			string consonant = string.Empty;
 			string vowel = string.Empty;
 
-			var asteriskOrClosingBracketPos = ending.LastIndexOfAny(new[] {'*', ']'});
+			var asteriskOrClosingBracketPos = ending.LastIndexOfAny(['*', ']']);
 			string literalEnding = ending[(asteriskOrClosingBracketPos + 1)..];
 			if (!str.EndsWith(literalEnding, StringComparison.Ordinal)) {
 				continue;

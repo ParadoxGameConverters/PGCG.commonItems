@@ -10,7 +10,7 @@ namespace commonItems.UnitTests;
 public class BufferedReaderTests {
 	[Fact]
 	public void BufferedReaderReadsCorrectly() {
-		var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
+		var stream = new MemoryStream("12345"u8.ToArray());
 		var reader = new BufferedReader(stream);
 		var read = reader.Read(2);
 		Assert.Equal("12", read);
@@ -18,7 +18,7 @@ public class BufferedReaderTests {
 	}
 	[Fact]
 	public void BufferedReaderAllowsPushBackOfOneChar() {
-		var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
+		var stream = new MemoryStream("12345"u8.ToArray());
 		var reader = new BufferedReader(stream);
 		reader.Read(); // in stream: 2345
 		reader.Read(); // in stream: 345
@@ -27,7 +27,7 @@ public class BufferedReaderTests {
 	}
 	[Fact]
 	public void BufferedReaderAllowsPushBackOfMultipleChars() {
-		var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
+		var stream = new MemoryStream("12345"u8.ToArray());
 		var reader = new BufferedReader(stream);
 		reader.Read(2); // in stream: 345
 		reader.PushBack('2'); // in stream: 2345
@@ -37,7 +37,7 @@ public class BufferedReaderTests {
 	}
 	[Fact]
 	public void BufferedReaderBreaksReadingOnStreamEnd() {
-		var stream = new MemoryStream(Encoding.UTF8.GetBytes("12345"));
+		var stream = new MemoryStream("12345"u8.ToArray());
 		var reader = new BufferedReader(stream);
 		var read = reader.Read(7);
 		Assert.Equal("12345", read);
@@ -108,7 +108,7 @@ public class BufferedReaderTests {
 
 		var reader = new BufferedReader();
 		reader.Variables.Add("a", 3);
-		var expressionStr = "@[@a-2]"; // should be @[a-2]
+		const string expressionStr = "@[@a-2]"; // should be @[a-2]
 		var value = new BufferedReader().EvaluateExpression("@[@a-2]"); // should be @[a-2]
 
 		Assert.Contains("[WARN] Failed to evaluate expression \"@[@a-2]\"", output.ToString());

@@ -1,10 +1,9 @@
 ﻿using commonItems.Collections;
 using FluentAssertions;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
-namespace commonItems.UnitTests.Collections; 
+namespace commonItems.UnitTests.Collections;
 
 public class OrderedSetTests {
 	[Fact]
@@ -41,8 +40,7 @@ public class OrderedSetTests {
 
 	[Fact]
 	public void RemoveReturnsFalseOnElementNotFound() {
-		var set = new OrderedSet<int>();
-		Assert.False(set.Remove(3));
+		Assert.False(new OrderedSet<int>().Remove(3));
 	}
 
 	[Fact]
