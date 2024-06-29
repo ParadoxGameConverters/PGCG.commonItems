@@ -27,7 +27,7 @@ public class ModFilesystem {
 	}
 	
 	private class DefaultFilePrecedenceComparer : IComparer<string> {
-		public int Compare(String? x, String? y) {
+		public int Compare(string? x, string? y) {
 			if (x is null && y is null) {
 				return 0;
 			}
@@ -49,10 +49,10 @@ public class ModFilesystem {
 			return string.Compare(x, y, StringComparison.Ordinal);
 		}
 	}
-	private static readonly DefaultFilePrecedenceComparer PrecedenceComparer = new();
+	private static readonly DefaultFilePrecedenceComparer precedenceComparer = new();
 
 	private readonly string gameRoot;
-	private readonly List<Mod> mods;
+	private readonly Mod[] mods;
 
 	/// <summary>
 	/// The constructor establishes the root of the filesystem.
@@ -65,12 +65,12 @@ public class ModFilesystem {
 	/// </param>
 	public ModFilesystem(string gameRoot, IEnumerable<Mod> mods) {
 		this.gameRoot = gameRoot;
-		this.mods = mods.ToList();
+		this.mods = mods.ToArray();
 	}
 
 	#region lookup functions
 	public string? GetActualFileLocation(string path) {
-		foreach (var mod in Enumerable.Reverse(mods)) {
+		foreach (var mod in mods.Reverse()) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			if (File.Exists(pathInMod)) {
 				return pathInMod;
@@ -86,7 +86,7 @@ public class ModFilesystem {
 	}
 	
 	public string? GetActualFolderLocation(string path) {
-		foreach (var mod in Enumerable.Reverse(mods)) {
+		foreach (var mod in mods.Reverse()) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			if (Directory.Exists(pathInMod)) {
 				return pathInMod;
@@ -104,7 +104,7 @@ public class ModFilesystem {
 	public OrderedSet<string> GetAllFilesInFolder(string path, IComparer<string> filePrecedenceComparer) {
 		var foundFiles = new SortedDictionary<string, string>(filePrecedenceComparer); // <relative path, full path>
 
-		foreach (var mod in Enumerable.Reverse(mods)) {
+		foreach (var mod in mods.Reverse()) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			foreach (var newFile in SystemUtils.GetAllFilesInFolder(pathInMod)) {
 				if (foundFiles.ContainsKey(newFile)) {
@@ -133,13 +133,13 @@ public class ModFilesystem {
 		return foundFiles.Values.ToOrderedSet();
 	}
 	public OrderedSet<string> GetAllFilesInFolder(string path) {
-		return GetAllFilesInFolder(path, PrecedenceComparer);
+		return GetAllFilesInFolder(path, precedenceComparer);
 	}
 	
 	public OrderedSet<string> GetAllSubfolders(string path, IComparer<string> folderPrecedenceComparer) {
 		var foundFolders = new SortedDictionary<string, string>(folderPrecedenceComparer); // <relative path, full path>
 
-		foreach (var mod in Enumerable.Reverse(mods)) {
+		foreach (var mod in mods.Reverse()) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			foreach (var newFolder in SystemUtils.GetAllSubfolders(pathInMod)) {
 				if (foundFolders.ContainsKey(newFolder)) {
@@ -169,13 +169,13 @@ public class ModFilesystem {
 	}
 
 	public OrderedSet<string> GetAllSubfolders(string path) {
-		return GetAllSubfolders(path, PrecedenceComparer);
+		return GetAllSubfolders(path, precedenceComparer);
 	}
 
 	public OrderedSet<string> GetAllFilesInFolderRecursive(string path, IComparer<string> filePrecedenceComparer) {
 		var foundFiles = new SortedDictionary<string, string>(filePrecedenceComparer); // <relative path, full path>
 
-		foreach (var mod in Enumerable.Reverse(mods)) {
+		foreach (var mod in mods.Reverse()) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
 			foreach (var newFile in SystemUtils.GetAllFilesInFolderRecursive(pathInMod)) {
 				if (foundFiles.ContainsKey(newFile)) {
@@ -205,7 +205,7 @@ public class ModFilesystem {
 	}
 
 	public OrderedSet<string> GetAllFilesInFolderRecursive(string path) {
-		return GetAllFilesInFolderRecursive(path, PrecedenceComparer);
+		return GetAllFilesInFolderRecursive(path, precedenceComparer);
 	}
 	#endregion
 }

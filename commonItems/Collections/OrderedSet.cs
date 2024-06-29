@@ -10,7 +10,7 @@ namespace commonItems.Collections;
 /// https://stackoverflow.com/a/17853085/10249243
 /// </summary>
 public class OrderedSet<T> : ISet<T>, IReadOnlyCollection<T> where T : notnull {
-	private readonly IDictionary<T, LinkedListNode<T>> dictionary;
+	private readonly Dictionary<T, LinkedListNode<T>> dictionary;
 	private readonly LinkedList<T> linkedList;
 
 	public OrderedSet() : this(EqualityComparer<T>.Default) { }
@@ -22,13 +22,13 @@ public class OrderedSet<T> : ISet<T>, IReadOnlyCollection<T> where T : notnull {
 	}
 	
 	public OrderedSet(IEqualityComparer<T> comparer) {
-		dictionary = new Dictionary<T, LinkedListNode<T>>(comparer);
-		linkedList = new();
+		dictionary = new(comparer);
+		linkedList = [];
 	}
 
 	public int Count => dictionary.Count;
 
-	public virtual bool IsReadOnly => dictionary.IsReadOnly;
+	public virtual bool IsReadOnly => false;
 
 	void ICollection<T>.Add(T item) => Add(item);
 	public void ExceptWith(IEnumerable<T> other) {
@@ -39,7 +39,7 @@ public class OrderedSet<T> : ISet<T>, IReadOnlyCollection<T> where T : notnull {
 
 	public void IntersectWith(IEnumerable<T> other) {
 		IEnumerable<T> otherArray = other as T[] ?? other.ToArray();
-		foreach (T item in this.ToList().Where(item => !otherArray.Contains(item))) {
+		foreach (T item in this.ToArray().Where(item => !otherArray.Contains(item))) {
 			Remove(item);
 		}
 	}

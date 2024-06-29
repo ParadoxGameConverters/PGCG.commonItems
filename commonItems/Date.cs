@@ -60,7 +60,7 @@ public class Date : IComparable<Date>, IPDXSerializable {
 			return 31;
 		}
 
-		return DaysByMonth[month] - DaysByMonth[month - 1];
+		return daysByMonth[month] - daysByMonth[month - 1];
 	}
 
 	public Date ChangeByDays(int days) {
@@ -72,10 +72,10 @@ public class Date : IComparable<Date>, IPDXSerializable {
 			do {
 				var currentMonthIndex = newMonth - 1;
 				bool doesMonthChange;
-				var currentDayInYear = DaysByMonth[currentMonthIndex] + newDay + days;
+				var currentDayInYear = daysByMonth[currentMonthIndex] + newDay + days;
 				if (newMonth < 12) {
 					var nextMonthIndex = newMonth;
-					doesMonthChange = currentDayInYear > DaysByMonth[nextMonthIndex];
+					doesMonthChange = currentDayInYear > daysByMonth[nextMonthIndex];
 				} else {
 					doesMonthChange = currentDayInYear > 365;
 				}
@@ -100,9 +100,9 @@ public class Date : IComparable<Date>, IPDXSerializable {
 			do {
 				var currentMonthIndex = newMonth - 1;
 				bool doesMonthChange;
-				var currentDayInYear = DaysByMonth[currentMonthIndex] + newDay + days;
+				var currentDayInYear = daysByMonth[currentMonthIndex] + newDay + days;
 				if (newMonth > 1) {
-					doesMonthChange = currentDayInYear <= DaysByMonth[currentMonthIndex];
+					doesMonthChange = currentDayInYear <= daysByMonth[currentMonthIndex];
 				} else {
 					doesMonthChange = currentDayInYear <= 0;
 				}
@@ -178,7 +178,7 @@ public class Date : IComparable<Date>, IPDXSerializable {
 		return ToString();
 	}
 
-	private static readonly int[] DaysByMonth = {
+	private static readonly int[] daysByMonth = [
 		0,	// January
 		31,	// February
 		59,	// March
@@ -190,12 +190,12 @@ public class Date : IComparable<Date>, IPDXSerializable {
 		243, // September
 		273, // October
 		304, // November
-		334	// December
-	};
+		334, // December
+	];
 
 	private int CalculateDayInYear() {
 		if (Month is >= 1 and <= 12) {
-			return Day + DaysByMonth[Month - 1];
+			return Day + daysByMonth[Month - 1];
 		}
 		return Day;
 	}

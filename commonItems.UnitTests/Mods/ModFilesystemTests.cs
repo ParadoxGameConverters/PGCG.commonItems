@@ -14,7 +14,7 @@ public class ModFilesystemTests {
 		var filePath = modFS.GetActualFileLocation("test_folder/non_file.txt");
 		Assert.Null(filePath);
 	}
-	
+
 	[Fact]
 	public void FileCanBeFoundInGameRoot() {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", Array.Empty<Mod>());
@@ -23,7 +23,7 @@ public class ModFilesystemTests {
 		Assert.NotNull(filePath);
 		Assert.Equal("TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/test_file.txt", filePath);
 	}
-	
+
 	[Fact]
 	public void FileIsReplacedByMod() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -33,7 +33,7 @@ public class ModFilesystemTests {
 		Assert.NotNull(filePath);
 		Assert.Equal("TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/test_file.txt", filePath);
 	}
-	
+
 	[Fact]
 	public void LatestModDeterminesFile() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -45,7 +45,7 @@ public class ModFilesystemTests {
 		Assert.NotNull(filePath);
 		Assert.Equal("TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt", filePath);
 	}
-	
+
 	[Fact]
 	public void ModDoesNotReplaceFileIfFileNotInMod() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -58,7 +58,7 @@ public class ModFilesystemTests {
 		Assert.NotNull(filePath);
 		Assert.Equal("TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt", filePath);
 	}
-	
+
 	[Fact]
 	public void ReplacePathBlocksEarlierInstancesOfFile() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -71,7 +71,7 @@ public class ModFilesystemTests {
 		var filePath = modFS.GetActualFileLocation("test_folder/test_file.txt");
 		Assert.Null(filePath);
 	}
-	
+
 	[Fact]
 	public void ReplacePathOnlyBlocksActualPath() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -93,7 +93,7 @@ public class ModFilesystemTests {
 		var filePath = modFS.GetActualFolderLocation("test_folder/non_folder");
 		Assert.Null(filePath);
 	}
-	
+
 	[Fact]
 	public void FolderCanBeFoundInGameRoot() {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
@@ -124,7 +124,7 @@ public class ModFilesystemTests {
 		Assert.NotNull(filePath);
 		Assert.Equal("TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder", filePath);
 	}
-	
+
 	[Fact]
 	public void ModDoesNotReplaceFolderIfFolderNotInMod() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -137,7 +137,7 @@ public class ModFilesystemTests {
 		Assert.NotNull(filePath);
 		Assert.Equal("TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder", filePath);
 	}
-	
+
 	[Fact]
 	public void ReplacePathBlocksEarlierInstancesOfFolder() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -150,7 +150,7 @@ public class ModFilesystemTests {
 		var filePath = modFS.GetActualFolderLocation("test_folder/deeper_folder");
 		Assert.Null(filePath);
 	}
-	
+
 	[Fact]
 	public void NoFilesInMissingDirectory() {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
@@ -177,7 +177,7 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/test_file.txt");
 	}
-	
+
 	[Fact]
 	public void ModFilesAddToAndReplaceEarlierModFiles() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -191,12 +191,12 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
 	}
-	
+
 	[Fact]
 	public void ReplaceFolderKeepsFilesFromBeingFound() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
 		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
-			new HashSet<string>() {"test_folder"});
+			new HashSet<string> {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
 
@@ -207,7 +207,7 @@ public class ModFilesystemTests {
 
 	private class CustomPrecedenceComparer : IComparer<string> {
 		// longest path first
-		public int Compare(String? x, String? y) {
+		public int Compare(string? x, string? y) {
 			var xLength = x!.Length;
 			var yLength = y!.Length;
 			if (xLength > yLength) {
@@ -221,7 +221,7 @@ public class ModFilesystemTests {
 	public void GetAllFilesInFolderCanBeCalledWithCustomFilePrecedenceComparer() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
 		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
-			new HashSet<string>() {"test_folder"});
+			new HashSet<string> {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
 			new[] {modOne, modTwo});
 
@@ -229,7 +229,7 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
 	}
-	
+
 	[Fact]
 	public void NoFoldersInMissingDirectory() {
 		var modFileSystem =
@@ -237,7 +237,7 @@ public class ModFilesystemTests {
 
 		modFileSystem.GetAllSubfolders("/non_folder").Should().BeEmpty();
 	}
-	
+
 	[Fact]
 	public void FoldersInGameRootAreFound() {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
@@ -271,7 +271,7 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder");
 	}
-	
+
 	[Fact]
 	public void ReplaceFolderKeepsFoldersFromBeingFound() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -297,7 +297,7 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder");
 	}
-	
+
 	[Fact]
 	public void NoFilesInMissingDirectoryTree() {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
@@ -329,7 +329,7 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder/dummy.txt");
 	}
-	
+
 	[Fact]
 	public void ModFilesAndSubfoldersAddToAndReplaceEarlierModFiles() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
@@ -377,7 +377,7 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt",
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
 	}
-	
+
 	[Fact]
 	public void FilesAreFoundEvenWithTrailingSlashInPath() {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");

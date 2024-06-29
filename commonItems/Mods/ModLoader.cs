@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace commonItems.Mods; 
 
-public class ModLoader {
-	private readonly List<Mod> possibleUncompressedMods = new(); // name, absolute path to mod directory
-	private readonly List<Mod> possibleCompressedMods = new(); // name, absolute path to zip file
-	public List<Mod> UsableMods { get; } = new(); // name, absolute path for directories, relative for unpacked
+public partial class ModLoader {
+	private readonly List<Mod> possibleUncompressedMods = []; // name, absolute path to mod directory
+	private readonly List<Mod> possibleCompressedMods = []; // name, absolute path to zip file
+	public List<Mod> UsableMods { get; } = []; // name, absolute path for directories, relative for unpacked
 
 	public void LoadMods(string gameDocumentsPath, List<Mod> incomingMods) {
 		if (incomingMods.Count == 0) {
@@ -100,7 +100,7 @@ public class ModLoader {
 	private static string? GetProbableSteamName(Mod mod) {
 		// Using regex, check if mod path looks like: mod/ugc_<ID>.mod
 		// Make the ID a capture group so we can use it to retrieve the mod name.
-		var steamModPathRegex = new Regex("mod/ugc_(\\d+).mod");
+		var steamModPathRegex = GetSteamModPathRegex();
 		var match = steamModPathRegex.Match(mod.Path);
 		if (!match.Success) {
 			return null;
@@ -117,11 +117,7 @@ public class ModLoader {
 			var response = task.Result;
 			var responseContent = response.Content.ReadAsStringAsync().Result;
 		
-			var title = Regex.Match(
-				input: responseContent, 
-				pattern: @"<title\b[^>]*>\s*(?<Title>[\s\S]*?)</title>",
-				options: RegexOptions.IgnoreCase
-			).Groups["Title"].Value;
+			var title = GetModTitleRegex().Match(input: responseContent).Groups["Title"].Value;
 			const string workshopPrefix = "Steam Workshop::";
 			if (title.StartsWith(workshopPrefix)) {
 				title = title[workshopPrefix.Length..];
@@ -234,4 +230,9 @@ public class ModLoader {
 
 		return true;
 	}
+
+	[GeneratedRegex("mod/ugc_(\\d+).mod")]
+	private static partial Regex GetSteamModPathRegex();
+	[GeneratedRegex(@"<title\b[^>]*>\s*(?<Title>[\s\S]*?)</title>", RegexOptions.IgnoreCase, "pl-PL")]
+	private static partial Regex GetModTitleRegex();
 }

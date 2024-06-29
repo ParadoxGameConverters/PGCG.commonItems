@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests;
 
 public class GameVersionTests {
 	private const string TestFilesPath = "TestFiles/";
@@ -117,7 +117,7 @@ public class GameVersionTests {
 		var rhs = new GameVersion(rhsVersionString);
 		Assert.False(lhs > rhs);
 	}
-	
+
 	[Fact]
 	public void GreaterThanOrEqualsFromGreaterThan() {
 		var version = new GameVersion(2, 1, 2, 3);

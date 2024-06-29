@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
@@ -11,7 +11,7 @@ public class SystemUtilsTests {
 	private const string TestFilesPath = "TestFiles/SystemUtilsTestFiles";
 
 	[Fact]
-	public void GetAllFilesInFolderDoesntWorkRecursively() {
+	public void GetAllFilesInFolderDoesNotWorkRecursively() {
 		var files = SystemUtils.GetAllFilesInFolder(TestFilesPath);
 		var expected = new SortedSet<string>{
 			"keyValuePair.txt"

@@ -1,8 +1,7 @@
 ﻿using commonItems.Localization;
-using System;
 using Xunit;
 
-namespace commonItems.UnitTests.Localization; 
+namespace commonItems.UnitTests.Localization;
 
 public class LocBlockTests {
 	[Fact]

@@ -80,11 +80,11 @@ public class ModLoaderTests {
 	public void LoadModsLogsWhenNoMods() {
 		var output = new StringWriter();
 		Console.SetOut(output);
-		
+
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, new ModList());
+		modLoader.LoadMods(TestFilesPath, []);
 		var usableMods = modLoader.UsableMods;
-		
+
 		Assert.Empty(usableMods);
 		Assert.Contains("[INFO] No mods were detected in savegame. Skipping mod processing.", output.ToString());
 	}
@@ -93,14 +93,14 @@ public class ModLoaderTests {
 	public void SteamWorkshopNameCanBeRetrievedForModMissingFromDisk() {
 		var output = new StringWriter();
 		Console.SetOut(output);
-		
+
 		var incomingMods = new ModList {
 			new(name: string.Empty, path: "mod/ugc_2845446001.mod") // Timeline Extension for Invictus
 		};
 		var modLoader = new ModLoader();
 		modLoader.LoadMods(TestFilesPath, incomingMods);
 		var usableMods = modLoader.UsableMods;
-		
+
 		Assert.Empty(usableMods);
 		var expectedModDetails = $"mod at {incomingMods.First().Path} " +
 		                         $"(probable Steam Workshop name: Timeline Extension for Invictus)";

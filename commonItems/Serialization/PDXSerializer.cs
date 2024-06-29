@@ -71,7 +71,8 @@ public static class PDXSerializer {
 			internalIndent += '\t';
 			sb.Append(indent).Append(internalIndent);
 		}
-		var notNullEntries = CastDict(dictionary).Where(e => e.Value is not null);
+		var notNullEntries = CastDictToEnumerable(dictionary)
+			.Where(e => e.Value is not null);
 		var serializedEntries = notNullEntries.Select(e => Serialize(e, indent + internalIndent));
 		sb.AppendJoin(Environment.NewLine + indent + internalIndent, serializedEntries);
 
@@ -79,13 +80,14 @@ public static class PDXSerializer {
 			sb.AppendLine();
 			sb.Append(indent).Append('}');
 		}
+	}
 
-		static IEnumerable<DictionaryEntry> CastDict(IDictionary dictionary) {
-			foreach (DictionaryEntry entry in dictionary) {
-				yield return entry;
-			}
+	private static IEnumerable<DictionaryEntry> CastDictToEnumerable(IDictionary dictionary) {
+		foreach (DictionaryEntry entry in dictionary) {
+			yield return entry;
 		}
 	}
+
 	private static void SerializeKeyValuePair(object kvPair, StringBuilder sb, string indent) {
 		Type valueType = kvPair.GetType();
 		object? kvpKey = valueType.GetProperty("Key")?.GetValue(kvPair, null);

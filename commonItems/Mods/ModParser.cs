@@ -7,8 +7,8 @@ public class ModParser : Parser {
 	public string Path { get; set; } = "";
 
 	private bool compressed = false;
-	public SortedSet<string> Dependencies { get; } = new();
-	public SortedSet<string> ReplacedPaths { get; } = new();
+	public SortedSet<string> Dependencies { get; } = [];
+	public SortedSet<string> ReplacedPaths { get; } = [];
 
 	public void ParseMod(BufferedReader reader) {
 		RegisterKeys();

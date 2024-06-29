@@ -10,7 +10,7 @@ public static partial class CommonRegexes {
 
 	// variables and interpolated expressions
 	public static Regex Variable => new($"^@[^{NonStringCharacters}]+$");
-	public static Regex InterpolatedExpression => new(@"^@([\s\S]+)|(\[[\s\S]*\])$");
+	public static Regex InterpolatedExpression => GetInterpolatedExpressionRegex();
 
 	// numbers
 	public static Regex Integer => GetIntegerRegex();
@@ -34,12 +34,14 @@ public static partial class CommonRegexes {
 	private static partial Regex GetIntegerRegex();
 	[GeneratedRegex("^\"-?\\d+\"$")]
 	private static partial Regex GetQuotedIntegerRegex();
-	[GeneratedRegex("^-?\\d+(.\\d+)?$")]
+	[GeneratedRegex(@"^-?\d+(.\d+)?$")]
 	private static partial Regex GetFloatRegex();
 	[GeneratedRegex("^\"-?\\d+(.\\d+)?\"$")]
 	private static partial Regex GetQuotedFloatRegex();
-	[GeneratedRegex("^-?\\d+([.]\\d+)?([.]\\d+)?\\.?$")]
+	[GeneratedRegex(@"^-?\d+([.]\d+)?([.]\d+)?\.?$")]
 	private static partial Regex GetDateRegex();
 	[GeneratedRegex(@"^""[^\n\""]+""$")]
 	private static partial Regex GetQuotedStringRegex();
+	[GeneratedRegex(@"^@([\s\S]+)|(\[[\s\S]*\])$")]
+	private static partial Regex GetInterpolatedExpressionRegex();
 }

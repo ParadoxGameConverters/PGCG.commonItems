@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Name = System.String;
-using Path = System.String;
+using Name = string;
+using Path = string;
 
 namespace commonItems.Mods;
 

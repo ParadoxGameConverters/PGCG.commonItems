@@ -12,7 +12,7 @@ public class ParserHelperTests {
 	private const string GameRoot = "TestFiles/CK3/game";
 	private static readonly List<Mod> mods = [new("Cool Mod", "TestFiles/mod/themod")];
 	private readonly ModFilesystem modFS = new(GameRoot, mods);
-	
+
 	[Fact]
 	public void IgnoreItemIgnoresSimpleText() {
 		var input = new BufferedReader("ignore_me More text");
@@ -199,7 +199,7 @@ public class ParserHelperTests {
 	public void GetDoubleCanBeUsedWithExpressions() {
 		var reader = new BufferedReader("= @[variable - 2]");
 		reader.Variables.Add("variable", 42.5);
-		
+
 		Assert.Equal(40.5, reader.GetDouble());
 	}
 
@@ -267,7 +267,7 @@ public class ParserHelperTests {
 		_ = reader.GetString();
 		Assert.Contains("[ERROR] GetString: next token not found!", output.ToString());
 	}
-	
+
 	[Fact]
 	public void GetCharGetsFirstCharAfterEquals() {
 		var reader = new BufferedReader(" = foo");
@@ -537,7 +537,7 @@ public class ParserHelperTests {
 		var expectedULongs = new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
 		Assert.Equal(expectedULongs, reader.GetULongs());
 	}
-	
+
 	[Theory]
 	[InlineData("= yes", true)]
 	[InlineData("= no", false)]

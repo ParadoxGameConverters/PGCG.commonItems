@@ -1,18 +1,14 @@
 ﻿using commonItems.Collections;
 using Xunit;
 
-namespace commonItems.UnitTests.Collections; 
+namespace commonItems.UnitTests.Collections;
 
 public class IdObjectCollectionTests {
-	private class Character : IIdentifiable<string> {
-		public string Id { get; }
-		public string Culture { get; set; } = "roman";
-
-		public Character(string id) {
-			Id = id;
-		}
+	private class Character(string id) : IIdentifiable<string> {
+		public string Id { get; } = id;
+		public string Culture { get; init; } = "roman";
 	}
-	private class Characters : IdObjectCollection<string, Character> { }
+	private class Characters : IdObjectCollection<string, Character>;
 
 	[Fact]
 	public void ObjectsCanBeAddedAndRemoved() {
@@ -40,14 +36,12 @@ public class IdObjectCollectionTests {
 
 	[Fact]
 	public void ObjectsCanBeAccessedWithIndexer() {
-		var characters = new Characters();
-		characters.Add(new Character("bob"));
+		var characters = new Characters {new Character("bob")};
 		Assert.Equal("bob", characters["bob"].Id);
 	}
 	[Fact]
 	public void ObjectsCanBeAccessedWithTryGetValue() {
-		var characters = new Characters();
-		characters.Add(new Character("bob"));
+		var characters = new Characters {new Character("bob")};
 
 		Assert.True(characters.TryGetValue("bob", out var bob));
 		Assert.Equal("bob", bob.Id);

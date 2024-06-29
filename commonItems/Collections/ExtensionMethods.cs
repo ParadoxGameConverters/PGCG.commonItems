@@ -6,11 +6,11 @@ namespace commonItems.Collections;
 
 public static class ExtensionMethods {
 	public static OrderedSet<T> ToOrderedSet<T>(this IEnumerable<T> enumerable) where T : notnull {
-		return new OrderedSet<T>(enumerable);
+		return new(enumerable);
 	}
 	
 	public static void RemoveWhere<T>(this ICollection<T> collection, Func<T, bool> predicate) {
-		foreach (T item in collection.ToList().Where(predicate)) {
+		foreach (T item in collection.ToArray().Where(predicate)) {
 			collection.Remove(item);
 		}
 	}
