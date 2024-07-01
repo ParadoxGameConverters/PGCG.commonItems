@@ -185,4 +185,20 @@ public class LocDBTests {
 		Assert.Equal("Test loc 1", locDB.GetLocBlockForKey("test_key_1")!["french"]);
 		Assert.Equal("Test loc 2", locDB.GetLocBlockForKey("test_key_2")!["french"]);
 	}
+
+	[Fact]
+	public void AddLocForKeyAndLanguageCanCreateOrUpdateLocBlock() {
+		var locDB = new LocDB("english", "french");
+
+		const string testLocKey = "testLocKey";
+		Assert.Null(locDB.GetLocBlockForKey(testLocKey));
+
+		locDB.AddLocForKeyAndLanguage(testLocKey, "french", loc: "Romain");
+		Assert.Null(locDB.GetLocBlockForKey(testLocKey)!["english"]);
+		Assert.Equal("Romain", locDB.GetLocBlockForKey(testLocKey)!["french"]);
+
+		locDB.AddLocForKeyAndLanguage(testLocKey, "english", loc: "Roman");
+		Assert.Equal("Roman", locDB.GetLocBlockForKey(testLocKey)!["english"]);
+		Assert.Equal("Romain", locDB.GetLocBlockForKey(testLocKey)!["french"]);
+	}
 }
