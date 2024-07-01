@@ -121,4 +121,13 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		dict[key] = new LocBlock(key, baseLanguage);
 		return dict[key];
 	}
+	
+	public void AddLocForKeyAndLanguage(string key, string language, string loc) {
+		if (dict.TryGetValue(key, out var locBlock)) {
+			locBlock[language] = loc;
+		} else {
+			var newBlock = new LocBlock(key, baseLanguage) { [language] = loc };
+			dict.Add(key, newBlock);
+		}
+	}
 }
