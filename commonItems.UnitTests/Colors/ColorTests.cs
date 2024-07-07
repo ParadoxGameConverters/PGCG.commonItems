@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests.Colors; 
+namespace commonItems.UnitTests.Colors;
 
 [Collection("Sequential")]
 public class ColorTests {
@@ -297,7 +297,7 @@ public class ColorTests {
 	public void ColorRGBADoublesCanBeInitializedFromStream() { // Yes, unfortunately this is a thing as well.
 		var reader = new BufferedReader("= { 0.5 0.9 0.1 0.5 }");
 		var color = new ColorFactory().GetColor(reader);
-		
+
 		Assert.Equal(128, color.R);
 		Assert.Equal(230, color.G);
 		Assert.Equal(26, color.B);
@@ -330,7 +330,7 @@ public class ColorTests {
 	public void ColorInitializationLogsWarningForFewerThanThreeComponentsWhenColorFormatUnspecified() {
 		var output = new StringWriter();
 		Console.SetOut(output);
-		
+
 		var reader = new BufferedReader("= { 64 128 }");
 		var color = new ColorFactory().GetColor(reader);
 		Assert.Equal(64, color.R);
@@ -803,7 +803,7 @@ public class ColorTests {
 	public void ColorPaletteCanBeCleared() {
 		var colorDict = new Dictionary<string, Color> {
 			{"white", new Color(0, 0, 0)},
-			{"red", new Color(255, 255, 19)}
+			{"red", new Color(255, 255, 19)},
 		};
 
 		var colorFactory = new ColorFactory();
@@ -812,5 +812,19 @@ public class ColorTests {
 		Assert.Equal(2, colorFactory.NamedColors.Count);
 		colorFactory.Clear();
 		Assert.Empty(colorFactory.NamedColors);
+	}
+
+	[Theory]
+	[InlineData(-1, 10, 10, 0, 10, 10)]
+	[InlineData(300, 10, 10, 255, 10, 10)]
+	[InlineData(10, -1, 10, 10, 0, 10)]
+	[InlineData(10, 300, 10, 10, 255, 10)]
+	[InlineData(10, 10, -1, 10, 10, 0)]
+	[InlineData(10, 10, 300, 10, 10, 255)]
+	public void InvalidRgbComponentsAreClamped(int r, int g, int b, int expectedR, int expectedG, int expectedB) {
+		var color = new Color(r, g, b);
+		Assert.Equal(expectedR, color.R);
+		Assert.Equal(expectedG, color.G);
+		Assert.Equal(expectedB, color.B);
 	}
 }
