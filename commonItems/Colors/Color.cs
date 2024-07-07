@@ -41,6 +41,19 @@ namespace commonItems.Colors;
 public class Color : IPDXSerializable {
 	public Color() { }
 	public Color(int r, int g, int b) {
+		if (r is < 0 or > 255) {
+			Logger.Warn($"RGB color component R out of bounds: {r}. Clamping to 0-255.");
+			r = Math.Clamp(r, 0, 255);
+		}
+		if (g is < 0 or > 255) {
+			Logger.Warn($"RGB color component G out of bounds: {g}. Clamping to 0-255.");
+			g = Math.Clamp(g, 0, 255);
+		}
+		if (b is < 0 or > 255) {
+			Logger.Warn($"RGB color component B out of bounds: {b}. Clamping to 0-255.");
+			b = Math.Clamp(b, 0, 255);
+		}
+		
 		RgbComponents[0] = r;
 		RgbComponents[1] = g;
 		RgbComponents[2] = b;
