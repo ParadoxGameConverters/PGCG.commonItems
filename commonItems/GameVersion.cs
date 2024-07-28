@@ -349,7 +349,11 @@ public class GameVersion {
 					sr.Close();
 					return null;
 				}
-				line = line.Substring(0, pos);
+				line = line[..pos];
+				
+				if (!string.IsNullOrEmpty(line) && line[0] == 'v') {
+					line = line[1..];
+				}
 
 				try {
 					return new GameVersion(line);

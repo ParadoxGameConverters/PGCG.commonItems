@@ -328,6 +328,13 @@ public class GameVersionTests {
 	}
 
 	[Fact]
+	public void ExtractVVersionFromLauncherExtractsGameVersion() {
+		// They started adding v in front of a version, e.g. EU4 v1.37.0.0
+		var version = GameVersion.ExtractVersionFromLauncher(Path.Join(TestFilesPath, "launcher-settings-1.37.json"));
+		Assert.Equal(new GameVersion("1.37.0"), version);
+	}
+
+	[Fact]
 	public void ExtractVersionFromLauncherReturnsNullForMissingFile() {
 		var version = GameVersion.ExtractVersionFromLauncher(Path.Join(TestFilesPath, "launcher-settings.json2"));
 		Assert.Null(version);
