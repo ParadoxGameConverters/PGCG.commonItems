@@ -34,7 +34,7 @@
     <PackageReference Include="log4net" Version="2.0.17" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="Mono.TextTemplating" Version="2.3.1" />
-    <PackageReference Include="NCalcSync" Version="5.2.1" />
+    <PackageReference Include="NCalcSync" Version="5.2.2" />
     <PackageReference Include="Open.Collections" Version="3.2.0" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="System.Management" Version="8.0.0" />
