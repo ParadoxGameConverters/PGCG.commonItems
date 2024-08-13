@@ -86,7 +86,7 @@ public class ConverterVersion {
 		sb.Append(GetDescription());
 		sb.Append('\n');
 		sb.Append("* Built on ");
-		var compileTime = new DateTime(Builtin.CompileTime, DateTimeKind.Utc);
+		var compileTime = new DateTime(Builtins.Builtin.CompileTime, DateTimeKind.Utc);
 		sb.Append(compileTime.ToString("u", CultureInfo.InvariantCulture));
 		sb.Append('\n');
 
