@@ -85,7 +85,7 @@ public class ConverterVersion {
 		sb.Append("* ");
 		sb.Append(GetDescription());
 		sb.Append('\n');
-		sb.Append("* Built on ");
+		sb.Append("* Based on PGCG.commonItems built on ");
 		var compileTime = new DateTime(Builtins.Builtin.CompileTime, DateTimeKind.Utc);
 		sb.Append(compileTime.ToString("u", CultureInfo.InvariantCulture));
 		sb.Append('\n');
