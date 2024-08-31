@@ -119,7 +119,6 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 
 		if (fileNameWithoutExtension.EndsWith("l_" + baseLanguage, StringComparison.Ordinal)) {
 			return baseLanguage;
-			
 		}
 		foreach (var language in otherLanguages) {
 			if (fileNameWithoutExtension.EndsWith("l_" + language, StringComparison.Ordinal)) {
