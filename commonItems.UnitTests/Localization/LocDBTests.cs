@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests.Localization; 
+namespace commonItems.UnitTests.Localization;
 
 public class LocDBTests {
 	[Fact]
@@ -47,7 +47,7 @@ public class LocDBTests {
 		locDB.ScrapeStream(noIndentReader);
 		Assert.Equal("value 1", locDB.GetLocBlockForKey("key1")!["english"]);
 		Assert.Equal("value \"subquoted\" 2", locDB.GetLocBlockForKey("key2")!["english"]);
-		
+
 		var bigIndentReader = new BufferedReader(
 			"l_english:\n" +
 			"    key1:0 \"value 1\" # comment\n" +
@@ -125,6 +125,22 @@ public class LocDBTests {
 	}
 
 	[Fact]
+	public void LocLanguageCanBeInferredFromFileName() {
+		var locDB = new LocDB("english", "french");
+		locDB.ScrapeFile("TestFiles/Localization/test_file_without_language_key_l_french.yml"); // File is missing the language key inside.
+		Assert.Equal("Test loc 1", locDB.GetLocBlockForKey("test_key_1")!["french"]);
+		Assert.Equal("Test loc 2", locDB.GetLocBlockForKey("test_key_2")!["french"]);
+	}
+
+	[Fact]
+	public void LocLanguageIsNotInferredFromFileNameIfItDoesNotContainTheLanguageName() {
+		var locDB = new LocDB("english", "french");
+		locDB.ScrapeFile("TestFiles/Localization/test_file_without_language_key.yml"); // File is missing the language key inside.
+		Assert.Null(locDB.GetLocBlockForKey("test_key_1"));
+		Assert.Null(locDB.GetLocBlockForKey("test_key_2"));
+	}
+
+	[Fact]
 	public void UnsupportedLanguageDoesNotCauseWarningsAboutUnspecifiedLanguage() {
 		var output = new StringWriter();
 		Console.SetOut(output);
@@ -135,7 +151,7 @@ public class LocDBTests {
 			" key1:1 \"value 1\" # comment\n"
 		);
 		locDB.ScrapeStream(reader);
-		
+
 		Assert.DoesNotContain("without language specified!", output.ToString());
 		Assert.Null(locDB.GetLocBlockForKey("key1"));
 	}
@@ -165,15 +181,15 @@ public class LocDBTests {
 		var locDB = new LocDB("english", "french", "spanish");
 		var modFS = new ModFilesystem("TestFiles/CK3/game", new List<Mod>());
 		locDB.ScrapeLocalizations(modFS);
-		
+
 		Assert.Null(locDB.GetLocBlockForKey("NON_LOC_KEY"));
 	}
-	
+
 	[Fact]
 	public void LocalizationIsCorrectlyReadFromUTF8Files() {
 		var locDB = new LocDB("english", "french");
 		locDB.ScrapeFile("TestFiles/Localization/test_l_french_without_bom.yml");
-		
+
 		Assert.Equal("Test loc 1", locDB.GetLocBlockForKey("test_key_1")!["french"]);
 		Assert.Equal("Test loc 2", locDB.GetLocBlockForKey("test_key_2")!["french"]);
 	}
@@ -181,7 +197,7 @@ public class LocDBTests {
 	public void LocalizationIsCorrectlyReadFromUTF8BOMFiles() {
 		var locDB = new LocDB("english", "french");
 		locDB.ScrapeFile("TestFiles/Localization/test_l_french_with_bom.yml");
-		
+
 		Assert.Equal("Test loc 1", locDB.GetLocBlockForKey("test_key_1")!["french"]);
 		Assert.Equal("Test loc 2", locDB.GetLocBlockForKey("test_key_2")!["french"]);
 	}
