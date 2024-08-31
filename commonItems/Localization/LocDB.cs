@@ -35,16 +35,15 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		try {
 			using var stream = File.OpenText(filePath);
 			var reader = new BufferedReader(stream);
-			return ScrapeStream(reader);
+			return ScrapeStream(reader, DetermineLanguageFromFileName(filePath));
 		} catch (Exception e) {
 			Logger.Warn($"Could not parse localization file {filePath}: {e}");
 			return 0;
 		}
 	}
-	public int ScrapeStream(BufferedReader reader) {
+	public int ScrapeStream(BufferedReader reader, string? currentLanguage = null) {
 		var linesRead = 0;
-		string? currentLanguage = null;
-		bool languageSpecified = false;
+		bool languageSpecified = currentLanguage != null;
 
 		while (!reader.EndOfStream) {
 			var line = reader.ReadLine();
@@ -114,6 +113,22 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		var value = newLine.Substring(quoteIndex + 1, quote2Index - quoteIndex - 1);
 		return new(key, value);
 	}
+	
+	private string? DetermineLanguageFromFileName(string fileName) {
+		string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+
+		if (fileNameWithoutExtension.EndsWith("l_" + baseLanguage, StringComparison.Ordinal)) {
+			return baseLanguage;
+		}
+		foreach (var language in otherLanguages) {
+			if (fileNameWithoutExtension.EndsWith("l_" + language, StringComparison.Ordinal)) {
+				return language;
+			}
+		}
+		
+		return null;
+	}
+	
 	public LocBlock? GetLocBlockForKey(string key) {
 		return dict.TryGetValue(key, out var locBlock) ? locBlock : null;
 	}
