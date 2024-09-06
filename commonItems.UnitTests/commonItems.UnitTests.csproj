@@ -20,7 +20,7 @@
     </PackageReference>
     <PackageReference Include="Csv" Version="2.0.93" />
     <PackageReference Include="FluentAssertions" Version="7.0.0-alpha.4" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="Roslynator.Analyzers" Version="4.12.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
