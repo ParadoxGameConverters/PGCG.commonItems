@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace commonItems.Localization;
 
-public class LocBlock : IIdentifiable<string> {
+public class LocBlock : IIdentifiable<string>, IEnumerable<KeyValuePair<string, string?>> {
 	private readonly string baseLanguage;
 	private readonly Dictionary<string, string?> localizations;
 	
@@ -87,5 +87,13 @@ public class LocBlock : IIdentifiable<string> {
 
 	public string GetYmlLocLineForLanguage(string language) {
 		return $" {Id}: \"{this[language]}\"";
+	}
+
+	public IEnumerator<KeyValuePair<string, string?>> GetEnumerator() {
+		return localizations.GetEnumerator();
+	}
+
+	System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+		return GetEnumerator();
 	}
 }
