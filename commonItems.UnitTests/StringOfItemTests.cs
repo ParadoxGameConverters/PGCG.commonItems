@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests;
 
-public class StringOfItemTests {
+public sealed class StringOfItemTests {
 	[Fact]
 	public void StringOfItemConvertsBracedObjectsToStrings() {
 		const string input =
@@ -18,6 +18,46 @@ public class StringOfItemTests {
 
 		var theItem = reader.GetStringOfItem();
 		Assert.Equal(input[2..], theItem.ToString());
+	}
+
+	[Fact]
+	public void StringOfItemHandlesQuotedCurlyBracesInString() {
+		string input = "= \"blah { blah \"";
+		var reader = new BufferedReader(input);
+		var stringOfItem = reader.GetStringOfItem();
+		Assert.Equal(input[2..], stringOfItem.ToString());
+
+		input = "= \"blah } blah \"";
+		reader = new BufferedReader(input);
+		stringOfItem = reader.GetStringOfItem();
+		Assert.Equal(input[2..], stringOfItem.ToString());
+	}
+
+	[Fact]
+	public void StringOfItemHandlesNestedQuotedCurlyBraces() {
+		string input =
+			"""
+			= {
+				{
+					id = "{"
+					type = 46
+				} bla
+			}
+			""";
+		StringOfItem stringOfItem = new(new BufferedReader(input));
+		Assert.Equal(input[2..], stringOfItem.ToString());
+
+		input =
+			"""
+			= {
+				{
+					id = "}"
+					type = 46
+				} bla
+			}
+			""";
+		stringOfItem = new(new BufferedReader(input));
+		Assert.Equal(input[2..], stringOfItem.ToString());
 	}
 
 	[Fact]
