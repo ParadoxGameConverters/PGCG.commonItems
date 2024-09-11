@@ -92,5 +92,3 @@ public sealed class StringOfItemTests {
 		Assert.True(stringItem.IsArrayOrObject());
 	}
 }
-
-// TODO: PORT SingleStringGetsQuotedCurly)
