@@ -51,6 +51,7 @@ public class ParserHelperTests {
 	private class Test1 : Parser {
 		public string? value1;
 		public string? value2;
+
 		public Test1(BufferedReader bufferedReader) {
 			RegisterKeyword("key1", reader => value1 = reader.GetString());
 			RegisterKeyword("key2", reader => value2 = reader.GetString());
@@ -260,6 +261,19 @@ public class ParserHelperTests {
 	}
 
 	[Fact]
+	public void GetStringGetsQuotedCurly() {
+		string input = " = \"{\" ";
+		var reader = new BufferedReader(input);
+		string theString = reader.GetString();
+		Assert.Equal("{", theString);
+
+		input = " = \"}\" ";
+		reader = new BufferedReader(input);
+		theString = reader.GetString();
+		Assert.Equal("}", theString);
+	}
+
+	[Fact]
 	public void GetStringLogsErrorOnTokenNotFound() {
 		var output = new StringWriter();
 		Console.SetOut(output);
@@ -302,9 +316,7 @@ public class ParserHelperTests {
 		var assignments = reader.GetAssignments();
 
 		var expectedAssignments = new List<KeyValuePair<string, string>> {
-			new("id", "180"),
-			new("type", "46"),
-			new("type", "48")
+			new("id", "180"), new("type", "46"), new("type", "48")
 		};
 		Assert.Equal(expectedAssignments, assignments);
 	}
@@ -325,8 +337,10 @@ public class ParserHelperTests {
 				RegisterKeyword("test", reader => test = reader.GetString().Equals("yes"));
 				ParseStream(reader);
 			}
+
 			public bool test = false;
 		}
+
 		public WrapperClass(BufferedReader reader) {
 			RegisterRegex("[a-z]", (reader, theKey) => {
 				var newTest = new TestClass(reader);
@@ -334,6 +348,7 @@ public class ParserHelperTests {
 			});
 			ParseStream(reader);
 		}
+
 		public readonly Dictionary<string, bool> theMap = [];
 	}
 
@@ -478,7 +493,7 @@ public class ParserHelperTests {
 	public void GetLongsAddsLongs() {
 		var reader = new BufferedReader("123456789012345 234567890123456 345678901234567");
 
-		var expectedLongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
+		var expectedLongs = new List<long> {123456789012345, 234567890123456, 345678901234567};
 		Assert.Equal(expectedLongs, reader.GetLongs());
 	}
 
@@ -486,7 +501,7 @@ public class ParserHelperTests {
 	public void GetLongsAddsNegativeLongs() {
 		var reader = new BufferedReader("-123456789012345 -234567890123456 -345678901234567");
 
-		var expectedLongs = new List<long> { -123456789012345, -234567890123456, -345678901234567 };
+		var expectedLongs = new List<long> {-123456789012345, -234567890123456, -345678901234567};
 		Assert.Equal(expectedLongs, reader.GetLongs());
 	}
 
@@ -494,7 +509,7 @@ public class ParserHelperTests {
 	public void GetULongsAddsLongs() {
 		var reader = new BufferedReader("299792458000000000 299792458000000304 256792458000000304");
 
-		var expectedULongs = new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+		var expectedULongs = new List<ulong> {299792458000000000, 299792458000000304, 256792458000000304};
 		Assert.Equal(expectedULongs, reader.GetULongs());
 	}
 
@@ -502,7 +517,7 @@ public class ParserHelperTests {
 	public void GetLongsAddsQuotedLongs() {
 		var reader = new BufferedReader(@"""123456789012345"" ""234567890123456"" ""345678901234567""");
 
-		var expectedLongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
+		var expectedLongs = new List<long> {123456789012345, 234567890123456, 345678901234567};
 		Assert.Equal(expectedLongs, reader.GetLongs());
 	}
 
@@ -510,7 +525,7 @@ public class ParserHelperTests {
 	public void GetLongsAddsQuotedNegativeLongs() {
 		var reader = new BufferedReader(@"""-123456789012345"" ""-234567890123456"" ""-345678901234567""");
 
-		var expectedLongs = new List<long> { -123456789012345, -234567890123456, -345678901234567 };
+		var expectedLongs = new List<long> {-123456789012345, -234567890123456, -345678901234567};
 		Assert.Equal(expectedLongs, reader.GetLongs());
 	}
 
@@ -518,7 +533,7 @@ public class ParserHelperTests {
 	public void GetULongsAddsQuotedLongs() {
 		var reader = new BufferedReader(@"""299792458000000000"" ""299792458000000304"" ""256792458000000304""");
 
-		var expectedULongs = new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+		var expectedULongs = new List<ulong> {299792458000000000, 299792458000000304, 256792458000000304};
 		Assert.Equal(expectedULongs, reader.GetULongs());
 	}
 
@@ -526,15 +541,16 @@ public class ParserHelperTests {
 	public void GetLongsAddsLongsFromBracedBlock() {
 		var reader = new BufferedReader(" = {123456789012345 234567890123456 345678901234567} 456789012345678");
 
-		var expectedLongs = new List<long> { 123456789012345, 234567890123456, 345678901234567 };
+		var expectedLongs = new List<long> {123456789012345, 234567890123456, 345678901234567};
 		Assert.Equal(expectedLongs, reader.GetLongs());
 	}
 
 	[Fact]
 	public void GetULongsAddsULongsFromBracedBlock() {
-		var reader = new BufferedReader(" = {299792458000000000 299792458000000304 256792458000000304} 256796558000000304");
+		var reader =
+			new BufferedReader(" = {299792458000000000 299792458000000304 256792458000000304} 256796558000000304");
 
-		var expectedULongs = new List<ulong> { 299792458000000000, 299792458000000304, 256792458000000304 };
+		var expectedULongs = new List<ulong> {299792458000000000, 299792458000000304, 256792458000000304};
 		Assert.Equal(expectedULongs, reader.GetULongs());
 	}
 
@@ -582,6 +598,7 @@ public class ParserHelperTests {
 			ParseStream(reader);
 		}
 	}
+
 	[Fact]
 	public void CommonTypesWorkWithVariablesAndExpressions() {
 		var reader = new BufferedReader(

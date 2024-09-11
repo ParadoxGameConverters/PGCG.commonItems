@@ -3,7 +3,7 @@ using System.Text;
 
 namespace commonItems;
 
-public class StringOfItem : IPDXSerializable {
+public sealed class StringOfItem : IPDXSerializable {
 	public StringOfItem(string itemString) {
 		str = itemString;
 	}
@@ -16,14 +16,18 @@ public class StringOfItem : IPDXSerializable {
 		sb.Append(next);
 
 		if (next == "{") {
-			var braceDepth = 1;
+			bool inQuotes = false;
+			int braceDepth = 1;
 			while (!reader.EndOfStream) {
 				char inputChar = (char)reader.Read();
 				sb.Append(inputChar);
 
-				if (inputChar == '{') {
+				if (inputChar == '\"') {
+					inQuotes = !inQuotes;
+				}
+				if (inputChar == '{' && !inQuotes) {
 					++braceDepth;
-				} else if (inputChar == '}') {
+				} else if (inputChar == '}' && !inQuotes) {
 					--braceDepth;
 					if (braceDepth == 0) {
 						str = sb.ToString();
