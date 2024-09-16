@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
@@ -22,16 +22,19 @@ public class DateTests {
 		var copyDate = new Date(baseDate);
 		Assert.Equal("500.1.1", copyDate.ToString());
 	}
+
 	[Fact]
 	public void DefaultDateEqualsOneJanuaryFirst() {
 		var date = new Date();
 		Assert.Equal("1.1.1", date.ToString());
 	}
+
 	[Fact]
 	public void DateCanBeInput() {
 		var date = new Date(2020, 4, 25);
 		Assert.Equal("2020.4.25", date.ToString());
 	}
+
 	[Fact]
 	public void DateCanBeInputFromString() {
 		var date = new Date("2020.4.25");
@@ -51,7 +54,9 @@ public class DateTests {
 		var output = new StringWriter();
 		Console.SetOut(output);
 		_ = new Date("2020.january.32");
-		Assert.Contains("[WARN] Problem constructing date from string \"2020.january.32\": The input string 'january' was not in a correct format.", output.ToString());
+		Assert.Contains(
+			"[WARN] Problem constructing date from string \"2020.january.32\": The input string 'january' was not in a correct format.",
+			output.ToString());
 	}
 
 	[Fact]
@@ -185,16 +190,19 @@ public class DateTests {
 		var date = new Date(2020, 4, 25).ChangeByMonths(4);
 		Assert.Equal("2020.8.25", date.ToString());
 	}
+
 	[Fact]
 	public void MonthsCanBeIncreasedAndWrapAround() {
 		var date = new Date(2020, 4, 25).ChangeByMonths(9);
 		Assert.Equal("2021.1.25", date.ToString());
 	}
+
 	[Fact]
 	public void YearsCanBeIncreased() {
 		var date = new Date(2020, 4, 25).ChangeByYears(4);
 		Assert.Equal("2024.4.25", date.ToString());
 	}
+
 	[Fact]
 	public void YearsCanBeDecreased() {
 		var date = new Date(2020, 4, 25).ChangeByYears(-4);
@@ -206,11 +214,13 @@ public class DateTests {
 		var date = new Date(500, 1, 5).ChangeByDays(6);
 		Assert.Equal("500.1.11", date.ToString());
 	}
+
 	[Fact]
 	public void DayCanBeIncreasedWithChangingMonth() {
 		var date = new Date(500, 1, 30).ChangeByDays(28 + 6);
 		Assert.Equal("500.3.5", date.ToString());
 	}
+
 	[Fact]
 	public void DayCanBeIncreasedWithChangingYear() {
 		var date = new Date(500, 12, 31).ChangeByDays(2);
@@ -222,16 +232,19 @@ public class DateTests {
 		var date = new Date(500, 1, 29).ChangeByDays(-9);
 		Assert.Equal("500.1.20", date.ToString());
 	}
+
 	[Fact]
 	public void DayCanBeDecreasedWithChangingMonth() {
 		var date = new Date(500, 2, 5).ChangeByDays(-7);
 		Assert.Equal("500.1.29", date.ToString());
 	}
+
 	[Fact]
 	public void MonthChangesWhenDateIsDecreasedByOneDayOnTheFirstDayOfAMonth() {
 		var date = new Date(500, 2, 1).ChangeByDays(-1);
 		Assert.Equal("500.1.31", date.ToString());
 	}
+
 	[Fact]
 	public void DayCanBeDecreasedWithChangingYear() {
 		var date = new Date(501, 2, 5).ChangeByDays(-31 - 7);
@@ -246,7 +259,7 @@ public class DateTests {
 		var date = new Date(aucDateString, true);
 		Assert.Equal(expectedADDate, date.ToString());
 	}
-	
+
 	[Fact]
 	public void SeparateComponentsCanBeGotten() {
 		var testDate = new Date("450.10.7");
@@ -255,6 +268,7 @@ public class DateTests {
 		Assert.Equal(10, testDate.Month);
 		Assert.Equal(7, testDate.Day);
 	}
+
 	[Fact]
 	public void NegativeYearComponentsCanBeGotten() {
 		var testDate = new Date("-450.10.7");
@@ -269,12 +283,15 @@ public class DateTests {
 			if (y is null) {
 				return -1;
 			}
+
 			return y.CompareTo(x);
 		}
 	}
+
 	[Fact]
 	public void DateCanBeUsedByIComparer() {
-		var dates = new SortedSet<Date>(new DescendingComparer<Date>()) { // should keep dates in descending order
+		var dates = new SortedSet<Date>(new DescendingComparer<Date>()) {
+			// should keep dates in descending order
 			new Date(1000, 1, 1),
 			new Date(1000, 2, 3),
 			new Date(1000, 2, 1),
@@ -308,7 +325,7 @@ public class DateTests {
 		var dateTime = new DateTime(year, month, day);
 		var dateTimeOffset = new DateTimeOffset(dateTime, offset: TimeSpan.Zero);
 		var constructedPDXDate = new Date(dateTimeOffset);
-		
+
 		Date expectedPDXDate = expectedDateStr;
 		Assert.Equal(expectedPDXDate, constructedPDXDate);
 		Assert.Equal(year, constructedPDXDate.Year);
@@ -320,10 +337,11 @@ public class DateTests {
 	[InlineData("1.1.1", 1, 1, 1)]
 	[InlineData("1.12.31", 1, 12, 31)]
 	[InlineData("9999.1.1", 9999, 1, 1)]
-	public void DateCanBeConvertedToDateTimeOffset(string dateStr, int expectedYear, int expectedMonth, int expectedDay) {
+	public void DateCanBeConvertedToDateTimeOffset(string dateStr, int expectedYear, int expectedMonth,
+		int expectedDay) {
 		Date pdxDate = dateStr;
 		var dateTimeOffset = pdxDate.ToDateTimeOffset();
-		
+
 		Assert.Equal(expectedYear, dateTimeOffset.Year);
 		Assert.Equal(expectedMonth, dateTimeOffset.Month);
 		Assert.Equal(expectedDay, dateTimeOffset.Day);
@@ -339,5 +357,67 @@ public class DateTests {
 		Assert.Equal(expectedYear, pdxDate.Year);
 		Assert.Equal(expectedMonth, pdxDate.Month);
 		Assert.Equal(expectedDay, pdxDate.Day);
+	}
+
+	[Fact]
+	public void MonthIsClampedIfGreaterThan12() {
+		Date pdxDate = "1450.13.1"; // constructed from string
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(12, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = new Date(1450, 13, 1); // constructed from components
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(12, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+	}
+
+	[Fact]
+	public void MonthIsClampedIfLessThan1() {
+		Date pdxDate = "1450.0.1"; // constructed from string
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(1, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = "1450.-1.1";
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(1, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = new Date(1450, 0, 1); // constructed from components
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(1, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+	}
+
+	[Fact]
+	public void DayIsClampedIfGreaterThan31() {
+		Date pdxDate = "1450.10.32"; // constructed from string
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(31, pdxDate.Day);
+
+		pdxDate = new Date(1450, 10, 32); // constructed from components
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(31, pdxDate.Day);
+	}
+
+	[Fact]
+	public void DayIsClampedIfLessThan1() {
+		Date pdxDate = "1450.10.0"; // constructed from string
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = "1450.10.-1";
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = new Date(1450, 10, 0); // constructed from components
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
 	}
 }

@@ -18,8 +18,8 @@ public class Date : IComparable<Date>, IPDXSerializable {
 	}
 	public Date(int year, int month, int day, bool AUC) {
 		Year = AUC ? ConvertAUCToAD(year) : year;
-		Month = month;
-		Day = day;
+		Month = ClampMonth(month);
+		Day = ClampDay(day);
 	}
 	public Date(int year, int month, int day) : this(year, month, day, false) { }
 	public Date(string init) : this(init, false) { }
@@ -30,11 +30,11 @@ public class Date : IComparable<Date>, IPDXSerializable {
 		try {
 			if (dateElements.Length >= 3) {
 				Year = int.Parse(dateElements[0]);
-				Month = int.Parse(dateElements[1]);
-				Day = int.Parse(dateElements[2]);
+				Month = ClampMonth(int.Parse(dateElements[1]));
+				Day = ClampDay(int.Parse(dateElements[2]));
 			} else if (dateElements.Length == 2) {
 				Year = int.Parse(dateElements[0]);
-				Month = int.Parse(dateElements[1]);
+				Month = ClampMonth(int.Parse(dateElements[1]));
 			} else if (dateElements.Length == 1) {
 				Year = int.Parse(dateElements[0]);
 			} else {
@@ -51,6 +51,22 @@ public class Date : IComparable<Date>, IPDXSerializable {
 		Year = dateTimeOffset.Year;
 		Month = dateTimeOffset.Month;
 		Day = dateTimeOffset.Day;
+	}
+
+	private static int ClampMonth(int month) {
+		return month switch {
+			< 1 => 1,
+			> 12 => 12,
+			_ => month,
+		};
+	}
+	
+	private static int ClampDay(int day) {
+		return day switch {
+			< 1 => 1,
+			> 31 => 31,
+			_ => day,
+		};
 	}
 	
 	public static implicit operator Date(string dateString) => new Date(dateString);
