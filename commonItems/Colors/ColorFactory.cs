@@ -55,7 +55,11 @@ public class ColorFactory {
 			var rgb = doubleStreamReader.GetDoubles();
 			switch (rgb.Count) {
 				case 3: {
-					// This is not HSV, this is RGB doubles. Multiply by 255 and round to get normal RGB.
+					// This is not HSV, this is RGB doubles. Just convert to ints to get normal RGB.
+					if (rgb[0] > 1 || rgb[1] > 1 || rgb[2] > 1)
+						return new Color((int)rgb[0], (int)rgb[1], (int)rgb[2]);
+
+					// If all RGB values are in the range 0-1, multiply by 255 and round to get normal RGB.
 					var r = (int)Math.Round(rgb[0] * 255);
 					var g = (int)Math.Round(rgb[1] * 255);
 					var b = (int)Math.Round(rgb[2] * 255);

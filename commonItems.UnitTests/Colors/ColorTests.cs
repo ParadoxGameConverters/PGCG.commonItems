@@ -279,10 +279,24 @@ public class ColorTests {
 		Assert.Equal(0.5, testColor.S, decimalPlaces);
 		Assert.Equal(0.5, testColor.V, decimalPlaces);
 	}
+	
+	[Fact]
+	public void ColorCanBeConstructedFromRgbFloats() {
+		var reader = new BufferedReader("= { 49.0 35.0 58.0 }");
+		var color = new ColorFactory().GetColor(reader);
+
+		Assert.Equal(49, color.R);
+		Assert.Equal(35, color.G);
+		Assert.Equal(58, color.B);
+
+		Assert.Equal(0.7681f, color.H, decimalPlaces);
+		Assert.Equal(0.39655f, color.S, decimalPlaces);
+		Assert.Equal(0.22745f, color.V, decimalPlaces);
+	}
 
 	[Fact]
-	public void ColorRGBDoublesCanBeInitializedFromStream() { // Yes, this is a thing.
-		var reader = new BufferedReader("= { 0.5 0.9 0.1 }");
+	public void ColorCanBeConstructedFromRgbFloatsInRange0To1() { // Yes, this is a thing.
+		var reader = new BufferedReader("= { 0.5 0.9 0.1 }"); // All values in range 0-1.
 		var color = new ColorFactory().GetColor(reader);
 		Assert.Equal(128, color.R);
 		Assert.Equal(230, color.G);
