@@ -38,7 +38,7 @@ namespace commonItems.Colors;
 ///  equality and inequality can be checked, the color cache can be reviewed and modified,
 ///  and colors can have a random fluctuation be applied automatically.
 /// </summary>
-public class Color : IPDXSerializable {
+public sealed class Color : IPDXSerializable {
 	public Color() { }
 	public Color(int r, int g, int b) {
 		if (r is < 0 or > 255) {

@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class TrimPathTests {
+public sealed class TrimPathTests {
 	[Fact]
 	public void TrimPathTrimsSlashes() {
 		const string input = "/this/is/a/path.txt";

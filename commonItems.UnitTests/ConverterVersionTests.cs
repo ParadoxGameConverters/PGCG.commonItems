@@ -5,7 +5,7 @@ namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class ConverterVersionTests {
+public sealed class ConverterVersionTests {
 	private const string versionFilePath = "TestFiles/version.txt";
 
 	[Fact]

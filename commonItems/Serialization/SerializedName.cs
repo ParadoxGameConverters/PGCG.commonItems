@@ -3,10 +3,6 @@
 namespace commonItems.Serialization;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class SerializedName : Attribute {
-	public string Name { get; }
-
-	public SerializedName(string name) {
-		Name = name;
-	}
+public sealed class SerializedName(string name) : Attribute {
+	public string Name { get; } = name;
 }

@@ -12,15 +12,15 @@ namespace commonItems.UnitTests.Serialization;
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Local")]
 [SuppressMessage("ReSharper", "UnusedMember.Local")]
-public partial class PDXSerializerTests {
+public sealed partial class PDXSerializerTests {
 	[SerializationByProperties]
-	private partial class TestRulerInfo : IPDXSerializable {
+	private sealed partial class TestRulerInfo : IPDXSerializable {
 		public string? nickname { get; init; }
 		[SerializedName("health")] public double? Health { get; init; }
 	}
 
 	[SerializationByProperties]
-	private partial class TestTitle : IPDXSerializable {
+	private sealed partial class TestTitle : IPDXSerializable {
 		public int id { get; set; } = 20;
 		public ulong capital_prov_id { get; set; } = 420;
 		public double development { get; set; } = 50.5;
@@ -47,20 +47,20 @@ public partial class PDXSerializerTests {
 	}
 
 	[SerializationByProperties]
-	private partial class TestClass : IPDXSerializable {
+	private sealed partial class TestClass : IPDXSerializable {
 		[SerializedName("number1")] public double Number1 { get; init; }
 		[SerializedName("number2")] public double Number2 { get; init; }
 		[SerializedName("number3")] public double Number3 { get; init; }
 	}
 
 	[SerializationByProperties]
-	private partial class PascalCaseClass : IPDXSerializable {
+	private sealed partial class PascalCaseClass : IPDXSerializable {
 		[SerializedName("name")] public string Name { get; } = "Property";
 		[SerializedName("culture")] public string Culture { get; } = "roman";
 	}
 
 	[SerializationByProperties]
-	private partial class TestHistory : IPDXSerializable {
+	private sealed partial class TestHistory : IPDXSerializable {
 		[SerializeOnlyValue]
 		public Dictionary<string, object> HistoryFields { get; } = new() {
 			{ "culture", "roman" },
@@ -69,10 +69,10 @@ public partial class PDXSerializerTests {
 		};
 	}
 
-	private class TestTitleCollection : IdObjectCollection<string, TestCK3Title>;
+	private sealed class TestTitleCollection : IdObjectCollection<string, TestCK3Title>;
 
 	[SerializationByProperties]
-	private partial class TestCK3Title(string id, Color color) : IPDXSerializable, IIdentifiable<string> {
+	private sealed partial class TestCK3Title(string id, Color color) : IPDXSerializable, IIdentifiable<string> {
 		[commonItems.Serialization.NonSerialized] public string Id { get; } = id;
 		public Color? color { get; } = color;
 		[SerializeOnlyValue] public TestTitleCollection DeJureVassals { get; } = new();

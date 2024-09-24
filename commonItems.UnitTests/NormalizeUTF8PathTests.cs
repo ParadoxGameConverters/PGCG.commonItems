@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class NormalizeUTF8PathTests {
+public sealed class NormalizeUTF8PathTests {
 	[Fact]
 	public void NonAllowedCharactersAreReplaced() {
 		const string str = @"/\:*?""<>|";

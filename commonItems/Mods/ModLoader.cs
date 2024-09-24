@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace commonItems.Mods; 
 
-public partial class ModLoader {
+public sealed partial class ModLoader {
 	private readonly List<Mod> possibleUncompressedMods = []; // name, absolute path to mod directory
 	private readonly List<Mod> possibleCompressedMods = []; // name, absolute path to zip file
 	public List<Mod> UsableMods { get; } = []; // name, absolute path for directories, relative for unpacked

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace commonItems.UnitTests; 
 
-public class BlobListTests {
+public sealed class BlobListTests {
 	[Fact]
 	public void BlobListDefaultsToEmpty() {
 		var reader = new BufferedReader(string.Empty);

@@ -6,7 +6,7 @@ namespace commonItems.UnitTests.Mods;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class ModParserTests {
+public sealed class ModParserTests {
 	[Fact]
 	public void PrimitivesDefaultToBlank() {
 		var reader = new BufferedReader(string.Empty);

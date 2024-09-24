@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace commonItems.Colors; 
 
-public class NamedColorCollection : SortedDictionary<string, Color> {
+public sealed class NamedColorCollection : SortedDictionary<string, Color> {
 	public void LoadNamedColors(string relativePath, ModFilesystem modFilesystem) {
 		var colorsParser = new Parser();
 		colorsParser.RegisterRegex(CommonRegexes.String, (reader, colorName) => {

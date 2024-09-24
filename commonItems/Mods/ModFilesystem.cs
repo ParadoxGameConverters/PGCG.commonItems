@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace commonItems.Mods;
 
-public class ModFilesystem {
+public sealed class ModFilesystem {
 	private static bool PathIsReplaced(string path, IEnumerable<string> replacedPaths) {
 		var splitPath = CommonFunctions.SplitPath(path);
 
@@ -26,7 +26,7 @@ public class ModFilesystem {
 		});
 	}
 	
-	private class DefaultFilePrecedenceComparer : IComparer<string> {
+	private sealed class DefaultFilePrecedenceComparer : IComparer<string> {
 		public int Compare(string? x, string? y) {
 			if (x is null && y is null) {
 				return 0;

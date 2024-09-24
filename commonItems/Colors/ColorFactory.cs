@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace commonItems.Colors; 
 
-public class ColorFactory {
+public sealed class ColorFactory {
 	public Dictionary<string, Color> NamedColors { get; } = new();
 
 	private static Color GetRgbColor(BufferedReader reader) {

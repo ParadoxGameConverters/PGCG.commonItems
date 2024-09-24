@@ -18,7 +18,7 @@ internal abstract class AbstractDelegate {
 	public abstract void Execute(BufferedReader sr, string token);
 }
 
-internal class TwoArgDelegate : AbstractDelegate {
+internal sealed class TwoArgDelegate : AbstractDelegate {
 	private readonly Del del;
 	public TwoArgDelegate(Del del) { this.del = del; }
 	public override void Execute(BufferedReader sr, string token) {
@@ -26,7 +26,7 @@ internal class TwoArgDelegate : AbstractDelegate {
 	}
 }
 
-internal class OneArgDelegate : AbstractDelegate {
+internal sealed class OneArgDelegate : AbstractDelegate {
 	private readonly SimpleDel del;
 	public OneArgDelegate(SimpleDel del) { this.del = del; }
 	public override void Execute(BufferedReader sr, string token) {
@@ -44,7 +44,7 @@ public class Parser {
 			return Equals(obj as RegisteredKeywordOrRegex);
 		}
 	}
-	private class RegisteredKeyword : RegisteredKeywordOrRegex {
+	private sealed class RegisteredKeyword : RegisteredKeywordOrRegex {
 		private readonly string keyword;
 		public RegisteredKeyword(string keyword) {
 			this.keyword = keyword;
@@ -57,7 +57,7 @@ public class Parser {
 		}
 		public override bool Matches(string token) { return keyword == token; }
 	}
-	private class RegisteredRegex : RegisteredKeywordOrRegex {
+	private sealed class RegisteredRegex : RegisteredKeywordOrRegex {
 		private readonly Regex regex;
 		public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
 		public RegisteredRegex(Regex regex) { this.regex = regex; }

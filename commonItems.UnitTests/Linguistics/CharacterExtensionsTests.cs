@@ -6,7 +6,7 @@ using Xunit;
 namespace commonItems.UnitTests.Linguistics; 
 
 [SuppressMessage("ReSharper", "StringLiteralTypo")]
-public class CharacterExtensionsTests {
+public sealed class CharacterExtensionsTests {
 	[Theory]
 	[InlineData("aeiou", true)]
 	[InlineData("qwrtxcvb", false)]

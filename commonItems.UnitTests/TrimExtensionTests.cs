@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class TrimExtensionTests {
+public sealed class TrimExtensionTests {
 	[Fact]
 	public void TrimExtensionTrimsDot() {
 		const string input = "file.extension";

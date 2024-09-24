@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class ReplaceCharacterTests {
+public sealed class ReplaceCharacterTests {
 	[Fact]
 	public void ReplaceCharacterCanReplaceSpaces() {
 		const string input = "a file name.eu4";

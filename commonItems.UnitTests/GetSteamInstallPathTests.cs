@@ -2,7 +2,7 @@ using Xunit;
 
 namespace commonItems.UnitTests;
 
-public class GetSteamInstallPathTests {
+public sealed class GetSteamInstallPathTests {
     [Fact]
     public void NullIsReturnedWhenGameIsNotFound() {
         const int fakeSteamId = 420;

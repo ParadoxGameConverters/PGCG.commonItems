@@ -4,7 +4,7 @@ using Xunit;
 
 namespace commonItems.UnitTests;
 
-public class ParserExtensionsTests {
+public sealed class ParserExtensionsTests {
 	[Fact]
 	public void UnregisteredItemsCanBeStoredInASet() {
 		var reader = new BufferedReader("""

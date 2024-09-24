@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class GetExtensionTests {
+public sealed class GetExtensionTests {
 	[Fact]
 	public void GetExtensionGetsPostDot() {
 		const string? input = "file.extension";

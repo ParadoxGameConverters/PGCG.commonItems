@@ -9,7 +9,7 @@ namespace commonItems.UnitTests.Colors;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class NamedColorCollectionTests {
+public sealed class NamedColorCollectionTests {
 	private const string GameRoot = "TestFiles/CK3/game";
 	private static readonly List<Mod> Mods = new() { new("Cool Mod", "TestFiles/mod/themod") };
 	private readonly ModFilesystem modFS = new(GameRoot, Mods);

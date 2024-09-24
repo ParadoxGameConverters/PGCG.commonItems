@@ -4,7 +4,7 @@ namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class StringUtilsTests {
+public sealed class StringUtilsTests {
 	[Theory]
 	[InlineData("abc def", false)]
 	[InlineData("\"abc def", false)]
