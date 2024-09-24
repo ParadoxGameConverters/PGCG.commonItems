@@ -5,7 +5,7 @@ using System.Text;
 
 namespace commonItems; 
 
-public class Date : IComparable<Date>, IPDXSerializable {
+public sealed class Date : IComparable<Date>, IPDXSerializable {
 	public int Year { get; } = 1;
 	public int Month { get; } = 1;
 	public int Day { get; } = 1;

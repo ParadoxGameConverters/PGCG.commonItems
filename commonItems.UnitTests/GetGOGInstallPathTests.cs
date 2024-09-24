@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class GetGOGInstallPathTests {
+public sealed class GetGOGInstallPathTests {
 	[Fact]
 	public void NullIsReturnedWhenGameIsNotFound() {
 		const int fakeGOGId = 420;

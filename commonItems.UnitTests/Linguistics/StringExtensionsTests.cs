@@ -9,7 +9,7 @@ using Xunit;
 
 namespace commonItems.UnitTests.Linguistics;
 
-public class StringExtensionsTests {
+public sealed class StringExtensionsTests {
 	[Theory]
 	// ReSharper disable StringLiteralTypo
 	[InlineData("Verahram Qal'eh", "Verahrami")]

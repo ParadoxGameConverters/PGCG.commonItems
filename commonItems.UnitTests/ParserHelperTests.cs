@@ -8,7 +8,7 @@ namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class ParserHelperTests {
+public sealed class ParserHelperTests {
 	private const string GameRoot = "TestFiles/CK3/game";
 	private static readonly List<Mod> mods = [new("Cool Mod", "TestFiles/mod/themod")];
 	private readonly ModFilesystem modFS = new(GameRoot, mods);
@@ -48,7 +48,7 @@ public class ParserHelperTests {
 		Assert.True(reader.EndOfStream);
 	}
 
-	private class Test1 : Parser {
+	private sealed class Test1 : Parser {
 		public string? value1;
 		public string? value2;
 
@@ -331,8 +331,8 @@ public class ParserHelperTests {
 		Assert.StartsWith("System.FormatException: Cannot assign null to type!", e.ToString());
 	}
 
-	private class WrapperClass : Parser {
-		private class TestClass : Parser {
+	private sealed class WrapperClass : Parser {
+		private sealed class TestClass : Parser {
 			public TestClass(BufferedReader reader) {
 				RegisterKeyword("test", reader => test = reader.GetString().Equals("yes"));
 				ParseStream(reader);
@@ -569,7 +569,7 @@ public class ParserHelperTests {
 		Assert.Contains("Text representation of bool should be \"yes\" or \"no\", not \"perhaps\"!", e.ToString());
 	}
 
-	private class TypeClass : Parser {
+	private sealed class TypeClass : Parser {
 		public string? str;
 		public int integer;
 		public long longInt;

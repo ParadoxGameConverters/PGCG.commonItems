@@ -4,7 +4,7 @@ using System.Text;
 
 namespace commonItems; 
 
-public class ConverterVersion {
+public sealed class ConverterVersion {
 	public string? Name { get; private set; }
 	public string? Version { get; private set; }
 	public string? Source { get; private set; }

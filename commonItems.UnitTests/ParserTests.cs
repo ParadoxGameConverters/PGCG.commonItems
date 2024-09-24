@@ -10,10 +10,10 @@ namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class ParserTests {
+public sealed class ParserTests {
 	[Fact]
 	public void AbsorbBOMAbsorbsBOM() {
-		var stream = new BufferedReader("\xEF\xBB\xBFMore text");
+		var stream = new BufferedReader("\xEF\xBB\xBF" + "More text");
 		Parser.AbsorbBOM(stream);
 		Assert.Equal("More text", stream.ReadToEnd());
 	}
@@ -25,7 +25,7 @@ public class ParserTests {
 		Assert.Equal("More text", stream.ReadToEnd());
 	}
 
-	private class Test : Parser {
+	private sealed class Test : Parser {
 		public string? key;
 		public string? value;
 		public Test(BufferedReader bufferedReader) {
@@ -61,7 +61,7 @@ public class ParserTests {
 		Assert.Null(test.value);
 	}
 
-	private class Test2 : Parser {
+	private sealed class Test2 : Parser {
 		public string key = "";
 		public string? value;
 		public Test2(BufferedReader bufferedReader) {
@@ -113,7 +113,7 @@ public class ParserTests {
 		Assert.True(string.IsNullOrEmpty(test.value));
 	}
 
-	private class Test3 : Parser {
+	private sealed class Test3 : Parser {
 		public string key = "";
 		public string? value;
 		public Test3(BufferedReader bufferedReader) {
@@ -133,7 +133,7 @@ public class ParserTests {
 		Assert.Equal("value", test.value);
 	}
 
-	private class Test4 : Parser {
+	private sealed class Test4 : Parser {
 		public string key = "";
 		public string? value;
 		public Test4(BufferedReader bufferedReader) {
@@ -153,7 +153,7 @@ public class ParserTests {
 		Assert.Equal("value", test.value);
 	}
 
-	private class Test5 : Parser {
+	private sealed class Test5 : Parser {
 		public string key = "";
 		public string? value;
 		public Test5(BufferedReader bufferedReader) {
@@ -189,7 +189,7 @@ public class ParserTests {
 		Assert.Equal("value", test.value);
 	}
 
-	private class Test6 : Parser {
+	private sealed class Test6 : Parser {
 		public uint keyCount = 0;
 		public Test6(BufferedReader bufferedReader) {
 			RegisterRegex(CommonRegexes.Catchall, sr => {
@@ -245,7 +245,7 @@ public class ParserTests {
 		Assert.Contains("[ERROR] Could not open missingFile.txt for parsing", output.ToString());
 	}
 
-	private class FileTest : Parser {
+	private sealed class FileTest : Parser {
 		public string? value;
 		public FileTest(string filename) {
 			RegisterKeyword("key1", reader => value = reader.GetString());
@@ -274,7 +274,7 @@ public class ParserTests {
 		Assert.Null(value);
 	}
 
-	private class Test7 : Parser {
+	private sealed class Test7 : Parser {
 		public string? key;
 		public string? value;
 		public string? broken;
@@ -297,7 +297,7 @@ public class ParserTests {
 		Assert.Null(test.broken);
 	}
 
-	private class TestCountry : Parser {
+	private sealed class TestCountry : Parser {
 		public string Name { get; private set; } = string.Empty;
 		public double Prestige { get; private set; }
 

@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class ToOrdinalSuffixTests {
+public sealed class ToOrdinalSuffixTests {
 	[Fact]
 	public void LastDigitOneGivesSt() {
 		Assert.Equal("st", 1.ToOrdinalSuffix());

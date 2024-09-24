@@ -1,13 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using Xunit;
 
 namespace commonItems.UnitTests; 
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class BufferedReaderTests {
+public sealed class BufferedReaderTests {
 	[Fact]
 	public void BufferedReaderReadsCorrectly() {
 		var stream = new MemoryStream("12345"u8.ToArray());

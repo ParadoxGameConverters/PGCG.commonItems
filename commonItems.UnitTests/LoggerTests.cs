@@ -7,7 +7,7 @@ namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class LoggerTests {
+public sealed class LoggerTests {
 	[Fact]
 	public void ErrorMessagesLogged() {
 		var output = new StringWriter();

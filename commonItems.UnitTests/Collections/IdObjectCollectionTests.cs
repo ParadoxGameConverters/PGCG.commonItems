@@ -3,12 +3,12 @@ using Xunit;
 
 namespace commonItems.UnitTests.Collections;
 
-public class IdObjectCollectionTests {
-	private class Character(string id) : IIdentifiable<string> {
+public sealed class IdObjectCollectionTests {
+	private sealed class Character(string id) : IIdentifiable<string> {
 		public string Id { get; } = id;
 		public string Culture { get; init; } = "roman";
 	}
-	private class Characters : IdObjectCollection<string, Character>;
+	private sealed class Characters : IdObjectCollection<string, Character>;
 
 	[Fact]
 	public void ObjectsCanBeAddedAndRemoved() {

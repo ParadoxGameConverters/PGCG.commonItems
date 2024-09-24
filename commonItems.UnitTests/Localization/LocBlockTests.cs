@@ -3,7 +3,7 @@ using Xunit;
 
 namespace commonItems.UnitTests.Localization;
 
-public class LocBlockTests {
+public sealed class LocBlockTests {
 	[Fact]
 	public void LocBlockCanBeModifiedWithOtherLocBlockForEveryLanguage() {
 		var nameLocBlock = new LocBlock("key1", "english") {

@@ -8,7 +8,7 @@ using Xunit;
 namespace commonItems.UnitTests.Colors;
 
 [Collection("Sequential")]
-public class ColorTests {
+public sealed class ColorTests {
 	private const int decimalPlaces = 2;
 
 	[Fact]
@@ -589,7 +589,7 @@ public class ColorTests {
 		Assert.NotEqual(color, color3);
 	}
 
-	private class Foo : Parser {
+	private sealed class Foo : Parser {
 		public Foo(BufferedReader reader) {
 			RegisterKeyword("color", colorReader => color = new ColorFactory().GetColor(colorReader));
 			ParseStream(reader);

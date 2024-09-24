@@ -7,7 +7,7 @@ using Xunit;
 
 namespace commonItems.UnitTests.Localization;
 
-public class LocDBTests {
+public sealed class LocDBTests {
 	[Fact]
 	public void LocalizationCanBeLoadedAndMatched() {
 		var reader1 = new BufferedReader(

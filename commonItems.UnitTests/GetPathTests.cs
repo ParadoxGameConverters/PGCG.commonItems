@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class GetPathTests {
+public sealed class GetPathTests {
 	[Fact]
 	public void GetPathGetsSlashedPath() {
 		const string input = "/this/is/a/path.txt";

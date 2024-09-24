@@ -2,8 +2,8 @@
 
 namespace commonItems.UnitTests;
 
-public class CommonRegexesTests {
-	private class TestParser : Parser;
+public sealed class CommonRegexesTests {
+	private sealed class TestParser : Parser;
 
 	[Fact]
 	public void VariableRegexMatchesVariables() {

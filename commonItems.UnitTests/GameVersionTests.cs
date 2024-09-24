@@ -3,7 +3,7 @@ using Xunit;
 
 namespace commonItems.UnitTests;
 
-public class GameVersionTests {
+public sealed class GameVersionTests {
 	private const string TestFilesPath = "TestFiles/";
 
 	[Fact]

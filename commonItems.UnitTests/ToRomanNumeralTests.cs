@@ -2,7 +2,7 @@
 
 namespace commonItems.UnitTests; 
 
-public class ToRomanNumeralTests {
+public sealed class ToRomanNumeralTests {
 	[Fact]
 	public void NegativeNumberGivesEmptyString() {
 		Assert.Equal(string.Empty, (-5).ToRomanNumeral());

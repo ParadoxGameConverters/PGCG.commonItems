@@ -5,7 +5,7 @@ using Xunit;
 
 namespace commonItems.UnitTests.Collections;
 
-public class OrderedSetTests {
+public sealed class OrderedSetTests {
 	[Fact]
 	public void InsertionOrderIsPreserved() {
 		var set = new OrderedSet<int> { 1, 5, 2, 4, 3 };

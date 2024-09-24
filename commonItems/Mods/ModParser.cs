@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace commonItems.Mods;
 
-public class ModParser : Parser {
+public sealed class ModParser : Parser {
 	public string Name { get; private set; } = "";
 	public string Path { get; set; } = "";
 

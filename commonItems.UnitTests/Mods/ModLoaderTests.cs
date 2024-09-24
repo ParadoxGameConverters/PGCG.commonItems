@@ -9,7 +9,7 @@ namespace commonItems.UnitTests.Mods;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class ModLoaderTests {
+public sealed class ModLoaderTests {
 	private const string TestFilesPath = "TestFiles";
 
 	[Fact]

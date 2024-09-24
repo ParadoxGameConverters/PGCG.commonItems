@@ -6,7 +6,7 @@ using Xunit;
 
 namespace commonItems.UnitTests.Mods;
 
-public class ModFilesystemTests {
+public sealed class ModFilesystemTests {
 	[Fact]
 	public void MissingFileReturnsNull() {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", Array.Empty<Mod>());
@@ -205,7 +205,7 @@ public class ModFilesystemTests {
 			"TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt");
 	}
 
-	private class CustomPrecedenceComparer : IComparer<string> {
+	private sealed class CustomPrecedenceComparer : IComparer<string> {
 		// longest path first
 		public int Compare(string? x, string? y) {
 			var xLength = x!.Length;

@@ -7,7 +7,7 @@ namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class SystemUtilsTests {
+public sealed class SystemUtilsTests {
 	private const string TestFilesPath = "TestFiles/SystemUtilsTestFiles";
 
 	[Fact]

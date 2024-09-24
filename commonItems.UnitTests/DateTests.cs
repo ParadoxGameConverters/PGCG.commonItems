@@ -7,7 +7,7 @@ namespace commonItems.UnitTests;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
-public class DateTests {
+public sealed class DateTests {
 	private const int DecimalPlaces = 4;
 
 	[Fact]
@@ -278,7 +278,7 @@ public class DateTests {
 		Assert.Equal(7, testDate.Day);
 	}
 
-	private class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
+	private sealed class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
 		public int Compare(T? x, T? y) {
 			if (y is null) {
 				return -1;

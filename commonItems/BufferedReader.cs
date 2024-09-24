@@ -15,7 +15,7 @@ namespace commonItems;
 /// http://web.archive.org/web/20210702221522/https://stackoverflow.com/questions/7049401/c-sharp-roll-back-streamreader-1-character/7050430#7050430
 /// but later updated
 /// </summary>
-public class BufferedReader {
+public sealed class BufferedReader {
 	private readonly StreamReader streamReader;
 
 	public BufferedReader() : this(string.Empty) { }

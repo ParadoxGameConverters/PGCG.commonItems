@@ -3,7 +3,7 @@ using System.Text;
 
 namespace commonItems;
 
-public class BlobList {
+public sealed class BlobList {
 	public List<string> Blobs { get; } = [];
 	public BlobList(BufferedReader reader) {
 		var next = Parser.GetNextLexeme(reader);

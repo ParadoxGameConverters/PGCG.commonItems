@@ -5,7 +5,7 @@ using Xunit;
 
 namespace commonItems.UnitTests;
 
-public class ScriptValueCollectionTests {
+public sealed class ScriptValueCollectionTests {
 	private const string GameRoot = "TestFiles/CK3/game";
 	private static readonly List<Mod> Mods = [new("Cool Mod", "TestFiles/mod/themod")];
 	private readonly ModFilesystem modFS = new(GameRoot, Mods);
