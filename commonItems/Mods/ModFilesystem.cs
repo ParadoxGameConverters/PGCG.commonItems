@@ -102,7 +102,7 @@ public sealed class ModFilesystem {
 	}
 
 	public List<ModFSFileInfo> GetAllFilesInFolder(string path, IComparer<string> filePrecedenceComparer) {
-		var foundFiles = new SortedDictionary<string, string>(filePrecedenceComparer); // <relative path, full path>
+		var foundFiles = new SortedDictionary<string, ModFSFileInfo>(filePrecedenceComparer); // <relative path, full path>
 
 		foreach (var mod in mods.Reverse()) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
@@ -112,14 +112,13 @@ public sealed class ModFilesystem {
 				}
 
 				var fullPath = Path.Combine(pathInMod, newFile).Replace('\\', '/');
-				foundFiles.Add(newFile, fullPath);
+				foundFiles.Add(newFile, new(
+					fromMod: true, newFile.Replace('\\', '/'), fullPath)
+				);
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return foundFiles.Select(f => new ModFSFileInfo {
-					RelativePath = f.Key.Replace('\\', '/'),
-					AbsolutePath= f.Value,
-				}).ToList();
+				return foundFiles.Values.ToList();
 			}
 		}
 
@@ -130,13 +129,12 @@ public sealed class ModFilesystem {
 			}
 
 			var fullPath = Path.Combine(pathInGameRoot, newFile).Replace('\\', '/');
-			foundFiles.Add(newFile, fullPath);
+			foundFiles.Add(newFile, new(
+				fromMod: false, newFile.Replace('\\', '/'), fullPath)
+			);
 		}
 
-		return foundFiles.Select(f => new ModFSFileInfo {
-			RelativePath = f.Key.Replace('\\', '/'),
-			AbsolutePath= f.Value,
-		}).ToList();
+		return foundFiles.Values.ToList();
 	}
 	public List<ModFSFileInfo> GetAllFilesInFolder(string path) {
 		return GetAllFilesInFolder(path, precedenceComparer);
@@ -179,7 +177,7 @@ public sealed class ModFilesystem {
 	}
 
 	public List<ModFSFileInfo> GetAllFilesInFolderRecursive(string path, IComparer<string> filePrecedenceComparer) {
-		var foundFiles = new SortedDictionary<string, string>(filePrecedenceComparer); // <relative path, full path>
+		var foundFiles = new SortedDictionary<string, ModFSFileInfo>(filePrecedenceComparer); // <relative path, full path>
 
 		foreach (var mod in mods.Reverse()) {
 			var pathInMod = Path.Combine(mod.Path, path).Replace('\\', '/');
@@ -189,14 +187,13 @@ public sealed class ModFilesystem {
 				}
 
 				var fullPath = Path.Combine(pathInMod, newFile).Replace('\\', '/');
-				foundFiles.Add(newFile, fullPath);
+				foundFiles.Add(newFile, new(
+					fromMod: true, newFile.Replace('\\', '/'), fullPath)
+				);
 			}
 
 			if (PathIsReplaced(path, mod.ReplacedFolders)) {
-				return foundFiles.Select(f => new ModFSFileInfo {
-					RelativePath = f.Key.Replace('\\', '/'),
-					AbsolutePath= f.Value,
-				}).ToList();
+				return foundFiles.Select(f => f.Value).ToList();
 			}
 		}
 
@@ -207,13 +204,12 @@ public sealed class ModFilesystem {
 			}
 
 			var fullPath = Path.Combine(pathInGameRoot, newFile).Replace('\\', '/');
-			foundFiles.Add(newFile, fullPath);
+			foundFiles.Add(newFile, new(
+				fromMod: false, newFile.Replace('\\', '/'), fullPath)
+			);
 		}
 
-		return foundFiles.Select(f => new ModFSFileInfo {
-			RelativePath = f.Key.Replace('\\', '/'),
-			AbsolutePath= f.Value,
-		}).ToList();
+		return foundFiles.Values.ToList();
 	}
 
 	public List<ModFSFileInfo> GetAllFilesInFolderRecursive(string path) {
