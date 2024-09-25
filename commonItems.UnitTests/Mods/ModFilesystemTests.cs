@@ -163,8 +163,8 @@ public sealed class ModFilesystemTests {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
 
 		modFS.GetAllFilesInFolder("test_folder").Should().Equal(
-			new ModFSFileInfo("root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/test_file.txt"));
+			new ModFSFileInfo(fromMod: false, "root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
+			new ModFSFileInfo(fromMod: false, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/test_file.txt"));
 	}
 
 	[Fact]
@@ -173,9 +173,9 @@ public sealed class ModFilesystemTests {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new[] {modOne});
 
 		modFS.GetAllFilesInFolder("test_folder").Should().Equal(
-			new ModFSFileInfo("mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
-			new ModFSFileInfo("root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/test_file.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
+			new ModFSFileInfo(fromMod: false, "root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
+			new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/test_file.txt"));
 	}
 
 	[Fact]
@@ -186,10 +186,10 @@ public sealed class ModFilesystemTests {
 			new[] {modOne, modTwo});
 
 		modFS.GetAllFilesInFolder("test_folder").Should().Equal(
-			new ModFSFileInfo("mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
-				new ModFSFileInfo("mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
-				new ModFSFileInfo("root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
-				new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
+				new ModFSFileInfo(fromMod: true, "mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
+				new ModFSFileInfo(fromMod: false, "root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
+				new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"));
 	}
 
 	[Fact]
@@ -201,8 +201,8 @@ public sealed class ModFilesystemTests {
 			new[] {modOne, modTwo});
 
 		modFS.GetAllFilesInFolder("test_folder").Should().Equal(
-			new ModFSFileInfo("mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
+			new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"));
 	}
 
 	private sealed class CustomPrecedenceComparer : IComparer<string> {
@@ -226,8 +226,8 @@ public sealed class ModFilesystemTests {
 			new[] {modOne, modTwo});
 
 		modFS.GetAllFilesInFolder("test_folder", new CustomPrecedenceComparer()).Should().Equal(
-			new ModFSFileInfo("mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
+			new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"));
 	}
 
 	[Fact]
@@ -310,10 +310,10 @@ public sealed class ModFilesystemTests {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new List<Mod>());
 
 		modFS.GetAllFilesInFolderRecursive("test_folder").Should().Equal(
-			new ModFSFileInfo("root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/test_file.txt"),
-			new ModFSFileInfo("deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/deeper_folder/dummy.txt"),
-			new ModFSFileInfo("game_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt"));
+			new ModFSFileInfo(fromMod: false, "root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
+			new ModFSFileInfo(fromMod: false, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/test_file.txt"),
+			new ModFSFileInfo(fromMod: false, "deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/deeper_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: false, "game_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt"));
 	}
 
 	[Fact]
@@ -322,12 +322,12 @@ public sealed class ModFilesystemTests {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new[] {modOne});
 		
 		modFS.GetAllFilesInFolderRecursive("test_folder").Should().Equal(
-			new ModFSFileInfo("mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
-			new ModFSFileInfo("root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/test_file.txt"),
-			new ModFSFileInfo("deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/deeper_folder/dummy.txt"),
-			new ModFSFileInfo("game_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt"),
-			new ModFSFileInfo("mod_one_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder/dummy.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
+			new ModFSFileInfo(fromMod: false, "root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
+			new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/test_file.txt"),
+			new ModFSFileInfo(fromMod: true, "deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/deeper_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: false, "game_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_one_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder/dummy.txt"));
 	}
 
 	[Fact]
@@ -338,14 +338,14 @@ public sealed class ModFilesystemTests {
 			new[] {modOne, modTwo});
 
 		modFS.GetAllFilesInFolderRecursive("test_folder").Should().Equal(
-			new ModFSFileInfo("mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
-			new ModFSFileInfo("mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
-			new ModFSFileInfo("root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"),
-			new ModFSFileInfo("deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt"),
-			new ModFSFileInfo("game_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt"),
-			new ModFSFileInfo("mod_one_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder/dummy.txt"),
-			new ModFSFileInfo("mod_two_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
+			new ModFSFileInfo(fromMod: false, "root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
+			new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"),
+			new ModFSFileInfo(fromMod: true, "deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: false, "game_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_one_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_two_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt"));
 	}
 
 	[Fact]
@@ -357,10 +357,10 @@ public sealed class ModFilesystemTests {
 			new[] {modOne, modTwo});
 
 		modFS.GetAllFilesInFolderRecursive("test_folder").Should().Equal(
-			new ModFSFileInfo("mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"),
-			new ModFSFileInfo("deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt"),
-			new ModFSFileInfo("mod_two_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
+			new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"),
+			new ModFSFileInfo(fromMod: true, "deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_two_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt"));
 	}
 
 	[Fact]
@@ -372,10 +372,10 @@ public sealed class ModFilesystemTests {
 			new[] {modOne, modTwo});
 
 		modFS.GetAllFilesInFolderRecursive("test_folder", new CustomPrecedenceComparer()).Should().Equal(
-			new ModFSFileInfo("mod_two_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt"),
-			new ModFSFileInfo("deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt"),
-			new ModFSFileInfo("mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_two_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: true, "deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
+			new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"));
 	}
 
 	[Fact]
@@ -385,13 +385,13 @@ public sealed class ModFilesystemTests {
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root", new []{modOne, modTwo});
 
 		modFS.GetAllFilesInFolderRecursive("test_folder/").Should().Equal(
-			new ModFSFileInfo("mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
-			new ModFSFileInfo("mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
-			new ModFSFileInfo("root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
-			new ModFSFileInfo("test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"),
-			new ModFSFileInfo("deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt"),
-			new ModFSFileInfo("game_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt"),
-			new ModFSFileInfo("mod_one_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder/dummy.txt"),
-			new ModFSFileInfo("mod_two_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt"));
+			new ModFSFileInfo(fromMod: true, "mod_one_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_file.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
+			new ModFSFileInfo(fromMod: false, "root_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/root_file.txt"),
+			new ModFSFileInfo(fromMod: true, "test_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/test_file.txt"),
+			new ModFSFileInfo(fromMod: true, "deeper_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/deeper_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: false, "game_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/game_root/test_folder/game_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_one_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one/test_folder/mod_one_folder/dummy.txt"),
+			new ModFSFileInfo(fromMod: true, "mod_two_folder/dummy.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_folder/dummy.txt"));
 	}
 }
