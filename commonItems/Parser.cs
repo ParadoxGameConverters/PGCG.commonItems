@@ -401,15 +401,15 @@ public class Parser {
 	public void ParseGameFolder(string relativePath, ModFilesystem modFS, string extensions, bool recursive, bool logFilePaths = false, bool parallel = false) {
 		var extensionSet = extensions.Split(';');
 
-		OrderedSet<string> files;
+		List<ModFSFileInfo> files;
 		if (recursive) {
 			files = modFS.GetAllFilesInFolderRecursive(relativePath);
 		} else {
 			files = modFS.GetAllFilesInFolder(relativePath);
 		}
-		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
+		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f.RelativePath)));
 
-		files.ForEach(ProcessFile, allowParallel: parallel);
+		files.Select(f => f.AbsolutePath).ForEach(ProcessFile, allowParallel: parallel);
 
 		return;
 
