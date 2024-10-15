@@ -17,6 +17,7 @@ public sealed class ScriptValueCollectionTests {
 
 		scriptValueCollection.Keys.Should()
 			.BeEquivalentTo(
+				"value_using_value_defined_below",
 				"value1",
 				"value2",
 				"value3",
@@ -31,6 +32,7 @@ public sealed class ScriptValueCollectionTests {
 				"cheap_building_tier_1_cost"
 			);
 
+		Assert.Equal(-0.4d, scriptValueCollection["value_using_value_defined_below"]); // same as value2
 		Assert.Equal(0.4d, scriptValueCollection["value1"]);
 		Assert.Equal(-0.4d, scriptValueCollection["value2"]);
 		Assert.Equal(1d, scriptValueCollection["value3"]);
