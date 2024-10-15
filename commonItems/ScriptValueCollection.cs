@@ -38,7 +38,6 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 			parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
 			parser.ParseGameFolder("common/script_values", modFilesystem, "txt", recursive: true);
 		} while (addedValuesCount > 0);
-		
 	}
 
 	private double? ParseValue(BufferedReader reader) {
