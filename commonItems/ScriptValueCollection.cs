@@ -1,4 +1,5 @@
-﻿using commonItems.Mods;
+﻿using commonItems.Collections;
+using commonItems.Mods;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections;
@@ -21,13 +22,14 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 		//		scheme_agent_general_bonuses_contribution_score_bonus_max_value = agent_max_skill_value
 		//		agent_max_skill_value = 10
 		// To handle this, we read the script values multiple times until no new values are added.
+		OrderedSet<string> unresolvedScriptValues = [];
 		int addedValuesCount;
 		do {
 			addedValuesCount = 0;
 			
 			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.String, (reader, name) => {
-				var value = ParseValue(reader);
+				var value = ParseValue(reader, unresolvedScriptValues);
 				if (value is not null) {
 					if (!dict.ContainsKey(name)) {
 						++addedValuesCount;
@@ -38,9 +40,14 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 			parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
 			parser.ParseGameFolder("common/script_values", modFilesystem, "txt", recursive: true);
 		} while (addedValuesCount > 0);
+		
+		if (unresolvedScriptValues.Count > 0) {
+			// Log unresolvable values (excluding complex ones).
+			Logger.Warn($"The following script values were not loaded: {unresolvedScriptValues}");
+		}
 	}
 
-	private double? ParseValue(BufferedReader reader) {
+	private double? ParseValue(BufferedReader reader, OrderedSet<string> unresolvedScriptValues) {
 		var valueStringOfItem = reader.GetStringOfItem();
 		if (valueStringOfItem.IsArrayOrObject()) {
 			return null;
@@ -62,6 +69,11 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 		}
 
 		var value = GetValueForString(valueStr);
+		if (value is null) {
+			unresolvedScriptValues.Add(valueStr);
+		} else {
+			unresolvedScriptValues.Remove(valueStr);
+		}
 		return value;
 	}
 
@@ -100,7 +112,6 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 			// ignored
 		}
 
-		Logger.Warn($"No script value found for \"{valueStr}\"!");
 		return null;
 	}
 }
