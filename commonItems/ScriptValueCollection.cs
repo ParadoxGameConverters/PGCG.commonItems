@@ -16,16 +16,29 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 	/// <param name="modFilesystem">mod file system to load script values from</param>
 	public void LoadScriptValues(ModFilesystem modFilesystem) {
 		Logger.Info("Reading script values...");
-
-		var parser = new Parser();
-		parser.RegisterRegex(CommonRegexes.String, (reader, name) => {
-			var value = ParseValue(reader);
-			if (value is not null) {
-				dict[name] = (double)value;
-			}
-		});
-		parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
-		parser.ParseGameFolder("common/script_values", modFilesystem, "txt", recursive: true);
+		
+		// Some values can be used in other values before they are defined, for example:
+		//		scheme_agent_general_bonuses_contribution_score_bonus_max_value = agent_max_skill_value
+		//		agent_max_skill_value = 10
+		// To handle this, we read the script values multiple times until no new values are added.
+		int addedValuesCount;
+		do {
+			addedValuesCount = 0;
+			
+			var parser = new Parser();
+			parser.RegisterRegex(CommonRegexes.String, (reader, name) => {
+				var value = ParseValue(reader);
+				if (value is not null) {
+					if (!dict.ContainsKey(name)) {
+						++addedValuesCount;
+					}
+					dict[name] = (double)value;
+				}
+			});
+			parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
+			parser.ParseGameFolder("common/script_values", modFilesystem, "txt", recursive: true);
+		} while (addedValuesCount > 0);
+		
 	}
 
 	private double? ParseValue(BufferedReader reader) {

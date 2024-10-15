@@ -1,6 +1,8 @@
 @variable1 = 420
 @variable2 = 69
 
+value_using_value_defined_below = value2 # simple value using another simple value defined below
+
 value1 = 0.4
 value2 = -0.4
 value3 = 1
