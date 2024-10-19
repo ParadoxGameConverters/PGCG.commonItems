@@ -43,7 +43,7 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 		
 		if (unresolvedScriptValues.Count > 0) {
 			// Log unresolvable values (excluding complex ones).
-			Logger.Warn($"The following script values were not loaded: {unresolvedScriptValues}");
+			Logger.Warn($"The following script values were not loaded: {string.Join(", ", unresolvedScriptValues)}");
 		}
 	}
 
