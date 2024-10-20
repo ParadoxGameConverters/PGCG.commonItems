@@ -207,7 +207,7 @@ public sealed class ParserHelperTests {
 	[Fact]
 	public void GetDoubleCanBeUsedWithScriptValues() {
 		var scriptValues = new ScriptValueCollection();
-		scriptValues.LoadScriptValues(modFS);
+		scriptValues.LoadScriptValues(modFS, new Defines());
 		var reader = new BufferedReader(" = mod_value");
 		Assert.Equal(3.2, reader.GetDouble(scriptValues));
 	}

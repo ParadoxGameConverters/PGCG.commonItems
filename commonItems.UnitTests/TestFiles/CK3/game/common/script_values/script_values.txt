@@ -28,3 +28,5 @@ bool_value_no = no
 @cheap_cost_base = 100
 @cheap_cost_tier_1 = @[cheap_cost_base]
 cheap_building_tier_1_cost = @[cheap_cost_tier_1]
+
+value_using_define = define:NDomicile|TEMPERAMENT_THRESHOLD_LOW
