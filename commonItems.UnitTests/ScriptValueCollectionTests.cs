@@ -12,8 +12,11 @@ public sealed class ScriptValueCollectionTests {
 
 	[Fact]
 	public void SimpleScriptValuesAreReadFromGameAndMods() {
+		var defines = new Defines();
+		defines.LoadDefines(modFS);
+		
 		var scriptValueCollection = new ScriptValueCollection();
-		scriptValueCollection.LoadScriptValues(modFS);
+		scriptValueCollection.LoadScriptValues(modFS, defines);
 
 		scriptValueCollection.Keys.Should()
 			.BeEquivalentTo(
@@ -29,7 +32,8 @@ public sealed class ScriptValueCollectionTests {
 				"value_using_expression",
 				"bool_value_yes",
 				"bool_value_no",
-				"cheap_building_tier_1_cost"
+				"cheap_building_tier_1_cost",
+				"value_using_define"
 			);
 
 		Assert.Equal(-0.4d, scriptValueCollection["value_using_value_defined_below"]); // same as value2
@@ -45,12 +49,13 @@ public sealed class ScriptValueCollectionTests {
 		Assert.Equal(1, scriptValueCollection["bool_value_yes"]);
 		Assert.Equal(0, scriptValueCollection["bool_value_no"]);
 		Assert.Equal(100, scriptValueCollection["cheap_building_tier_1_cost"]);
+		Assert.Equal(-30, scriptValueCollection["value_using_define"]);
 	}
 
 	[Fact]
 	public void ComplexValuesAreIgnored() {
 		var scriptValueCollection = new ScriptValueCollection();
-		scriptValueCollection.LoadScriptValues(modFS);
+		scriptValueCollection.LoadScriptValues(modFS, new Defines());
 
 		Assert.DoesNotContain("clan_government_tax_max_possible", scriptValueCollection.Keys);
 	}
@@ -79,7 +84,7 @@ public sealed class ScriptValueCollectionTests {
 	[Fact]
 	public void GetValueForStringReturnsNumberForExistingScriptValue() {
 		var scriptValueCollection = new ScriptValueCollection();
-		scriptValueCollection.LoadScriptValues(modFS);
+		scriptValueCollection.LoadScriptValues(modFS, new Defines());
 
 		Assert.Equal(0.4d, scriptValueCollection.GetValueForString("value1"));
 	}
@@ -87,7 +92,7 @@ public sealed class ScriptValueCollectionTests {
 	[Fact]
 	public void GetValueForStringReturnsNullForUndefinedScriptValue() {
 		var scriptValueCollection = new ScriptValueCollection();
-		scriptValueCollection.LoadScriptValues(modFS);
+		scriptValueCollection.LoadScriptValues(modFS, new Defines());
 
 		Assert.Null(scriptValueCollection.GetValueForString("undefined_value"));
 	}
@@ -95,7 +100,7 @@ public sealed class ScriptValueCollectionTests {
 	[Fact]
 	public void ContainsKeyReturnsCorrectValues() {
 		var scriptValueCollection = new ScriptValueCollection();
-		scriptValueCollection.LoadScriptValues(modFS);
+		scriptValueCollection.LoadScriptValues(modFS, new Defines());
 
 		Assert.True(scriptValueCollection.ContainsKey("value1"));
 		Assert.True(scriptValueCollection.ContainsKey("mod_value"));
@@ -107,7 +112,7 @@ public sealed class ScriptValueCollectionTests {
 	[Fact]
 	public void Values() {
 		var scriptValueCollection = new ScriptValueCollection();
-		scriptValueCollection.LoadScriptValues(modFS);
+		scriptValueCollection.LoadScriptValues(modFS, new Defines());
 
 		// value4 should be found when iterating over the collection
 		bool value4Found = false;

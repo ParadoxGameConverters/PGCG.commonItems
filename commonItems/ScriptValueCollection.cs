@@ -15,7 +15,8 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 	/// Loads script values from common/script_values
 	/// </summary>
 	/// <param name="modFilesystem">mod file system to load script values from</param>
-	public void LoadScriptValues(ModFilesystem modFilesystem) {
+	/// <param name="defines">collection of defines</param>
+	public void LoadScriptValues(ModFilesystem modFilesystem, Defines defines) {
 		Logger.Info("Reading script values...");
 		
 		// Some values can be used in other values before they are defined, for example:
@@ -29,7 +30,7 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 			
 			var parser = new Parser();
 			parser.RegisterRegex(CommonRegexes.String, (reader, name) => {
-				var value = ParseValue(reader, unresolvedScriptValues);
+				var value = ParseValue(reader, defines, unresolvedScriptValues);
 				if (value is not null) {
 					if (!dict.ContainsKey(name)) {
 						++addedValuesCount;
@@ -47,13 +48,26 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 		}
 	}
 
-	private double? ParseValue(BufferedReader reader, OrderedSet<string> unresolvedScriptValues) {
+	private double? ParseValue(BufferedReader reader, Defines defines, OrderedSet<string> unresolvedScriptValues) {
 		var valueStringOfItem = reader.GetStringOfItem();
 		if (valueStringOfItem.IsArrayOrObject()) {
 			return null;
 		}
 
 		var valueStr = valueStringOfItem.ToString();
+		
+		if (valueStr.StartsWith("define:")) {
+			var defineReference = valueStr["define:".Length..].Split('|');
+			string defineCategory = defineReference[0];
+			string defineKey = defineReference[1];
+			var defineValue = defines.GetValue(defineCategory, defineKey);
+			if (defineValue is not null) {
+				if (double.TryParse(defineValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedValue)) {
+					return parsedValue;
+				}
+			}
+		}
+		
 		if (CommonRegexes.Variable.IsMatch(valueStr)) {
 			var variableValue = reader.ResolveVariable(valueStr);
 			if (Information.IsNumeric(variableValue)) {
