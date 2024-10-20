@@ -1,3 +1,8 @@
 ﻿NDomicile = {
 	TEMPERAMENT_THRESHOLD_LOW = -30		# Follower opinion of domicile owner is less than or equal to x, resulting in a negative domicile effect
 }
+
+NTest = {
+	RELIGION_SACRIFICE = "event:/SFX/UI/Actions/sfx_ui_action_sacrifice"; # The ';' character should be ignored.
+	FRONTEND_HANDLER_SNAPSHOT = "snapshot:/States/MainMenu"
+}

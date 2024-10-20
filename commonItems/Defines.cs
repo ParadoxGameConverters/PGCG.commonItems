@@ -1,4 +1,5 @@
 ﻿using commonItems.Mods;
+using System;
 using System.Collections.Generic;
 
 namespace commonItems;
@@ -16,6 +17,7 @@ public class Defines {
 			}
 			
 			var definesParser = new Parser();
+			definesParser.RegisterKeyword(";", reader => { }); // Ignore the semicolons.
 			definesParser.RegisterRegex(CommonRegexes.String, (reader, key) => {
 				var stfOfItem = reader.GetStringOfItem();
 				category[key] = stfOfItem.ToString();
