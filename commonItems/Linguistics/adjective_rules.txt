@@ -701,6 +701,7 @@
 {"*r", "*rian"}, // Ecuador
 {"*s", "*sian"},
 {"*t", "*tian"}, // Egypt
+{"*U", "*Uan"}, // Mrauk U
 {"*u", "*uan"}, // Vanuatu
 {"*v", "*vite"}, // Yonnav
 {"*w", "*wian"}, // Lukow
