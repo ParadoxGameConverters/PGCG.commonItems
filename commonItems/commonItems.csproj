@@ -33,7 +33,7 @@
     <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.3.2" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.3.2" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
-    <PackageReference Include="log4net" Version="3.0.1" />
+    <PackageReference Include="log4net" Version="3.0.2" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="Mono.TextTemplating" Version="3.0.0" />
     <PackageReference Include="NCalcSync" Version="5.2.10" />
