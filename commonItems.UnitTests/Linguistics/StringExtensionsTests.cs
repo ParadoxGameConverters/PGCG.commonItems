@@ -219,7 +219,8 @@ public sealed class StringExtensionsTests {
 	[InlineData("Woodlawn", "Woodlawnian")] // https://www.e-yearbook.com/Woodlawn_High_School_Woodlawnian_Yearbook
 	[InlineData("Kalamazoo", "Kalamazooan")] // https://en.wiktionary.org/wiki/Kalamazooan
 	[InlineData("Kannauj", "Kannaujian")] // https://www.ouddict.com/threads/after-how-much-time-i-should-expect-to-judge-the-smell-of-deer-musk-macerating-in-sandlewood.6113/
-
+	[InlineData("Mrauk U", "Mrauk Uan")] // https://en.wikipedia.org/wiki/Mrauk_U
+	
 	// adjectives mostly made up
 	[InlineData("Sidh", "Sidhian")]
 	[InlineData("Theudoburgz", "Theudoburgzian")]
