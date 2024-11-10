@@ -19,7 +19,7 @@ public static class DebugInfo {
 		HardwareInfo hardwareInfo;
 		try {
 			hardwareInfo = new();
-			hardwareInfo.RefreshCPUList();
+			hardwareInfo.RefreshCPUList(includePercentProcessorTime: false);
 		} catch (Exception e) {
 			Logger.Debug($"Exception was raised when detecting CPUs: {e.Message}");
 			return;
