@@ -40,6 +40,10 @@
     <ProjectReference Include="..\commonItems\commonItems.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+      <NoWarn>MA0002;MA0006;MA0074</NoWarn>
+  </PropertyGroup>
+
 	<ItemGroup>
 		<TestFiles Include="TestFiles/**/*.*" />
 	</ItemGroup>
