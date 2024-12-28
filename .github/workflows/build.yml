@@ -18,6 +18,8 @@ jobs:
 
     - name: "Setup Dotnet for use with actions"
       uses: actions/setup-dotnet@v4
+      # don't run on self-hosted Windows
+      if: ${{ !contains(toJSON(matrix.os), 'windows') || !contains(toJSON(matrix.os), 'self-hosted') }}
       with:
         global-json-file: 'global.json'
 
