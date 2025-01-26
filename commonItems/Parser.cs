@@ -379,7 +379,7 @@ public class Parser {
 	public void ParseFolder(string path, string extensions, bool recursive, bool logFilePaths = false) {
 		var searchPattern = recursive ? "*" : "*.*";
 		var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-		var files = Directory.GetFiles(path, searchPattern, searchOption);
+		var files = Directory.GetFiles(path, searchPattern, searchOption).ToList();
 
 		var validExtensions = extensions.Split(';');
 		files.RemoveWhere(f => !validExtensions.Contains(CommonFunctions.GetExtension(f)));
