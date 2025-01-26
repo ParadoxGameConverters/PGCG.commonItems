@@ -425,4 +425,25 @@ public sealed class ParserTests {
 		// File exists only in game.
 		foundAreas.Should().Equal("vanilla1_area2");
 	}
+
+	[Fact]
+	public void ParseFolderParsesOnlyFilesWithMatchingExtensions() {
+		var parser = new Parser();
+
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		parser.ParseFolder("TestFiles/mod", "mod", recursive: false, logFilePaths: true);
+		string outputStr = output.ToString();
+
+		string[] expectedFiles = ["brokenmod.mod", "brokenpacked.mod", "empty_mod_file.mod", "missingmod.mod", "packedmod.mod", "parseable_mod_file.mod", "themod.mod"];
+		foreach (var expectedFile in expectedFiles) {
+			Assert.Contains(expectedFile, outputStr);
+		}
+
+		string[] unexpectedFiles = ["brokenpacked.zip", "packedmod.zip"];
+		foreach (var unexpectedFile in unexpectedFiles) {
+			Assert.DoesNotContain(unexpectedFile, outputStr);
+		}
+	}
 }
