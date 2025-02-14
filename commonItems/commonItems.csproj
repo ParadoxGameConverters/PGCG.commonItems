@@ -6,7 +6,7 @@
 
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageId>PGCG.$(AssemblyName)</PackageId>
-    <Version>15.1.5</Version>
+    <Version>15.1.6</Version>
     <Authors>PGCG</Authors>
     <PackageProjectUrl>https://github.com/ParadoxGameConverters/commonItems.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ParadoxGameConverters/commonItems.NET</RepositoryUrl>
@@ -32,7 +32,7 @@
     <PackageReference Include="ColorHashSharp" Version="1.0.0" />
     <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.4.0" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.4.0" />
-    <PackageReference Include="Hardware.Info" Version="101.0.0" />
+    <PackageReference Include="Hardware.Info" Version="101.0.0.1" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
     <PackageReference Include="log4net" Version="3.0.3" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />

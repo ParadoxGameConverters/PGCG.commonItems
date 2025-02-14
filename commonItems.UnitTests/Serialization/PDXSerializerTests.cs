@@ -165,10 +165,10 @@ public sealed partial class PDXSerializerTests {
 	public void EnumerableCanBeSerializedWithoutBraces() {
 		var list = new List<string> { "veni", "vidi", "vici" };
 		var expectedStr =
-			"veni" + Environment.NewLine +
-			"vidi" + Environment.NewLine +
-			"vici";
-		Assert.Equal(expectedStr, PDXSerializer.Serialize(list, string.Empty, withBraces: false));
+			"\tveni" + Environment.NewLine +
+			"\tvidi" + Environment.NewLine +
+			"\tvici";
+		Assert.Equal(expectedStr, PDXSerializer.Serialize(list, "\t", withBraces: false));
 	}
 
 	[Fact]

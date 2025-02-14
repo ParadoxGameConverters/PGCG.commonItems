@@ -57,7 +57,7 @@ public static class PDXSerializer {
 			}
 			sb.Append('}');
 		} else {
-			sb.AppendJoin(Environment.NewLine, serializedEntries);
+			sb.AppendJoin(Environment.NewLine, serializedEntries.Select(e => indent + e));
 		}
 	}
 
