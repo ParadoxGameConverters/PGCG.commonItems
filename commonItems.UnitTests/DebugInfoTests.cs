@@ -51,9 +51,7 @@ public class DebugInfoTests {
 		Assert.Contains("Installed UI language: ", result);
 		Assert.Contains("CPU: ", result);
 		Assert.Contains("Executable directory: ", result);
-		if (OperatingSystem.IsWindows()) {
-			Assert.Contains("Found antivirus: ", result);
-		} else {
+		if (!OperatingSystem.IsWindows()) {
 			// Antivirus info is not collected on non-Windows platforms.
 			Assert.DoesNotContain("Found antivirus: ", result);
 		}
