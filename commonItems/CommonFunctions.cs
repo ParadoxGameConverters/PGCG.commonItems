@@ -16,8 +16,10 @@ namespace commonItems;
 
 public static class CommonFunctions {
 	public static string[] SplitPath(string path) {
-		return path.Split(new[]{Path.AltDirectorySeparatorChar,
-			Path.DirectorySeparatorChar}, StringSplitOptions.RemoveEmptyEntries);
+		return path.Split([
+			Path.AltDirectorySeparatorChar,
+			Path.DirectorySeparatorChar
+		], StringSplitOptions.RemoveEmptyEntries);
 	}
 	
 	public static string TrimPath(string fileName) {
