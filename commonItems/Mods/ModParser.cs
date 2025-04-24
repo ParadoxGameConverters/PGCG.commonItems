@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace commonItems.Mods;
 
-public sealed class ModParser : Parser {
+public sealed partial class ModParser : Parser {
 	public string Name { get; private set; } = "";
 	public string Path { get; set; } = "";
 
@@ -39,9 +40,12 @@ public sealed class ModParser : Parser {
 
 	private void RegisterKeys() {
 		RegisterKeyword("name", reader => Name = reader.GetString());
-		RegisterRegex("path|archive", reader => Path = reader.GetString());
+		RegisterRegex(GetPathOrArchiveRegex(), reader => Path = reader.GetString());
 		RegisterKeyword("dependencies", reader => Dependencies.UnionWith(reader.GetStrings()));
 		RegisterKeyword("replace_path", reader => ReplacedPaths.Add(reader.GetString()));
 		this.IgnoreUnregisteredItems();
 	}
+
+	[GeneratedRegex("path|archive")]
+	private static partial Regex GetPathOrArchiveRegex();
 }
