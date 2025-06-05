@@ -30,9 +30,9 @@
   <ItemGroup>
     <PackageReference Include="AnyAscii" Version="0.3.2" />
     <PackageReference Include="ColorHashSharp" Version="1.0.0" />
-    <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.6.3" />
-    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.6.3" />
-    <PackageReference Include="Hardware.Info" Version="101.0.1" />
+    <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.7.2" />
+    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.7.2" />
+    <PackageReference Include="Hardware.Info" Version="101.0.1.1" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
     <PackageReference Include="log4net" Version="3.1.0" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
@@ -40,7 +40,7 @@
     <PackageReference Include="NCalcSync" Version="5.4.2" />
     <PackageReference Include="Open.Collections" Version="4.1.1" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="System.Management" Version="9.0.4" />
+    <PackageReference Include="System.Management" Version="9.0.5" />
     <TextTemplate Include="**\*.tt" />
     <Generated Include="**\*.Generated.cs" />
   </ItemGroup>
