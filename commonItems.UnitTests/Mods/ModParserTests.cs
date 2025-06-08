@@ -1,5 +1,5 @@
 ﻿using commonItems.Mods;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit;
 
 namespace commonItems.UnitTests.Mods;
