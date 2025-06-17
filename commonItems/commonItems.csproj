@@ -30,8 +30,8 @@
   <ItemGroup>
     <PackageReference Include="AnyAscii" Version="0.3.2" />
     <PackageReference Include="ColorHashSharp" Version="1.0.0" />
-    <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.7.2" />
-    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.7.2" />
+    <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.7.3" />
+    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.7.3" />
     <PackageReference Include="Hardware.Info" Version="101.0.1.1" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
     <PackageReference Include="log4net" Version="3.1.0" />
