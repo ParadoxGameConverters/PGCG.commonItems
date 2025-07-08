@@ -89,7 +89,7 @@ public sealed class BufferedReader {
 	public string GetString() {
 		// Remove equals if necessary.
 		var token = Parser.GetNextTokenWithoutMatching(this);
-		if (token is not null && token == "=") {
+		if (token is "=" or "?=") {
 			token = Parser.GetNextTokenWithoutMatching(this);
 		}
 

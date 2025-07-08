@@ -182,7 +182,7 @@ public class Parser {
 			}
 			return true; // break loop
 		} else if (!inLiteralQuote && inputChar == '=') {
-			if (sb.Length == 0) {
+			if (sb.Length == 0 || sb.ToString() == "?") {
 				sb.Append(inputChar);
 			} else {
 				reader.PushBack('=');
