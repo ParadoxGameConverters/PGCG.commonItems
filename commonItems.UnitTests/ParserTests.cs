@@ -46,6 +46,22 @@ public sealed class ParserTests {
 	}
 
 	[Fact]
+	public void KeywordsAreMatchedForExistsEquals() {
+		var bufferedReader = new BufferedReader("key ?= value");
+		var test = new Test(bufferedReader);
+		Assert.Equal("key", test.key);
+		Assert.Equal("value", test.value);
+	}
+
+	[Fact]
+	public void KeywordsAreMatchedForExistsEqualsWithoutPrecedingWhitespace() {
+		var bufferedReader = new BufferedReader("key?= value");
+		var test = new Test(bufferedReader);
+		Assert.Equal("key", test.key);
+		Assert.Equal("value", test.value);
+	}
+
+	[Fact]
 	public void QuotedKeywordsAreMatched() {
 		var bufferedReader = new BufferedReader("\"key\" = value");
 		var test = new Test(bufferedReader);
@@ -123,6 +139,25 @@ public sealed class ParserTests {
 			});
 			ParseStream(bufferedReader);
 		}
+	}
+
+	[Fact]
+	public void RegexesAreMatched() {
+		var bufferedReader = new BufferedReader("key = value");
+		var test = new Test3(bufferedReader);
+		Assert.Equal("key", test.key);
+		Assert.Equal("value", test.value);
+	}
+
+	[Theory]
+	[InlineData("key ?= value")]
+	[InlineData("key?= value")] // no whitespace before ?=
+	[InlineData("key ?=value")] // no whitespace after ?=
+	public void RegexesAreMatchedOnExistsEquals(string input) {
+		var bufferedReader = new BufferedReader(input);
+		var test = new Test3(bufferedReader);
+		Assert.Equal("key", test.key);
+		Assert.Equal("value", test.value);
 	}
 
 	[Fact]

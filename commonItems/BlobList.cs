@@ -7,7 +7,7 @@ public sealed class BlobList {
 	public List<string> Blobs { get; } = [];
 	public BlobList(BufferedReader reader) {
 		var next = Parser.GetNextLexeme(reader);
-		if (next == "=") {
+		if (next is "=" or "?=") {
 			next = Parser.GetNextLexeme(reader);
 		}
 		if (next != "{") {

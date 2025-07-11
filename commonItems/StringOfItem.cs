@@ -10,7 +10,7 @@ public sealed class StringOfItem : IPDXSerializable {
 	public StringOfItem(BufferedReader reader) {
 		var next = Parser.GetNextLexeme(reader);
 		var sb = new StringBuilder();
-		if (next == "=") {
+		if (next is "=" or "?=") {
 			next = Parser.GetNextLexeme(reader);
 		}
 		sb.Append(next);

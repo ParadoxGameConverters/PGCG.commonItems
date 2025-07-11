@@ -22,6 +22,15 @@ public sealed class BlobListTests {
 	}
 
 	[Fact]
+	public void BlobListAddsBlobsOnExistsEquals() {
+		var reader = new BufferedReader("?= { {foo} {bar} {baz} }");
+		var theBlobs = new BlobList(reader);
+
+		var expectedBlobs = new List<string> { "foo", "bar", "baz" };
+		Assert.Equal(expectedBlobs, theBlobs.Blobs);
+	}
+
+	[Fact]
 	public void BlobListAddsComplicatedBlobs() {
 		var reader = new BufferedReader("= { {foo=bar bar=baz} {bar=baz baz=foo} {baz=foo foo=bar} }");
 		var theBlobs = new BlobList(reader);
