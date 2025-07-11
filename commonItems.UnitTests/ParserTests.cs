@@ -55,7 +55,6 @@ public sealed class ParserTests {
 
 	[Fact]
 	public void KeywordsAreMatchedForExistsEqualsWithoutPrecedingWhitespace() {
-		
 		var bufferedReader = new BufferedReader("key?= value");
 		var test = new Test(bufferedReader);
 		Assert.Equal("key", test.key);
