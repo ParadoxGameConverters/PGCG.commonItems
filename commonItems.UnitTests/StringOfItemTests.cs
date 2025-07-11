@@ -21,6 +21,23 @@ public sealed class StringOfItemTests {
 	}
 
 	[Fact]
+	public void StringOfItemConvertsBracedObjectsToStringsOnExistsEquals() {
+		const string input =
+			"""
+			?= {
+			                \t{
+			                \t\tid = 180
+			                \t\ttype = 46
+			                \t}
+			                }
+			""";
+		var reader = new BufferedReader(input);
+
+		var theItem = reader.GetStringOfItem();
+		Assert.Equal(input[3..], theItem.ToString()); // without the "?= " at the start
+	}
+
+	[Fact]
 	public void StringOfItemHandlesQuotedCurlyBracesInString() {
 		string input = "= \"blah { blah \"";
 		var reader = new BufferedReader(input);

@@ -4,7 +4,7 @@ namespace commonItems;
 
 public static partial class CommonRegexes {
 	// catchall:
-	//		We grab everything that's NOT =, { or }, OR we grab everything within quotes, except newlines, which we already drop
+	//		We grab everything that's NOT ?, =, { or }, OR we grab everything within quotes, except newlines, which we already drop
 	//		in the parser.
 	public static Regex Catchall => GetCatchallRegex();
 
@@ -27,7 +27,7 @@ public static partial class CommonRegexes {
 	public static Regex Date => GetDateRegex();
 
 
-	[GeneratedRegex("^\".+\"|[^={}]+$")]
+	[GeneratedRegex("^\".+\"|[^?={}]+$")]
 	private static partial Regex GetCatchallRegex();
 	[GeneratedRegex("^-?\\d+$")]
 	private static partial Regex GetIntegerRegex();

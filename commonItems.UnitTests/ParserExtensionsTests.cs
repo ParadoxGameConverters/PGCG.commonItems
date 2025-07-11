@@ -25,4 +25,25 @@ public sealed class ParserExtensionsTests {
 		parser.ParseStream(reader);
 		ignoredTokens.Should().BeEquivalentTo("ignore_me_1", "ignore_me_2");
 	}
+
+	[Fact]
+	public void IgnoreAndStoreUnregisteredItemsIgnoresUnregisteredItemsOnExistsEquals() {
+		var reader = new BufferedReader("""
+		                                			a?={}
+		                                			1 ?= {}
+		                                			ignore_me_1?={}
+		                                			ignore_me_2 ?= {}
+		                                """);
+		var ignoredTokens = new HashSet<string>();
+
+		Assert.Empty(ignoredTokens);
+
+		var parser = new Parser();
+		parser.RegisterKeyword("a", ParserHelpers.IgnoreItem);
+		parser.RegisterRegex(CommonRegexes.Integer, ParserHelpers.IgnoreItem);
+		parser.IgnoreAndStoreUnregisteredItems(ignoredTokens);
+
+		parser.ParseStream(reader);
+		ignoredTokens.Should().BeEquivalentTo("ignore_me_1", "ignore_me_2");
+	}
 }

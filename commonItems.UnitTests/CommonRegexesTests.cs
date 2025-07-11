@@ -68,6 +68,11 @@ public sealed class CommonRegexesTests {
 	}
 
 	[Fact]
+	public void CatchallRegexDoesntMatchQuestionSign() {
+		Assert.DoesNotMatch(CommonRegexes.Catchall, "1234-abcd?");
+	}
+
+	[Fact]
 	public void CatchallRegexDoesntMatchEquals() {
 		Assert.DoesNotMatch(CommonRegexes.Catchall, "1234-abcd=");
 	}

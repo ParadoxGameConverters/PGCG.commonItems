@@ -42,6 +42,13 @@ public sealed class ParserHelperTests {
 	}
 
 	[Fact]
+	public void IgnoreItemIgnoresAssignedBracedItemOnExistsEquals() {
+		var input = new BufferedReader("?= { { ignore_me } } More text");
+		ParserHelpers.IgnoreItem(input);
+		Assert.Equal(" More text", input.ReadToEnd());
+	}
+
+	[Fact]
 	public void IgnoreItemIgnoresUnclosedBlockInTheEnd() {
 		var reader = new BufferedReader("= { ignore_me=");
 		ParserHelpers.IgnoreItem(reader);
@@ -61,11 +68,23 @@ public sealed class ParserHelperTests {
 	}
 
 	[Fact]
-	public void IgnoreAndLogItemLogsIgnoredKeyword() {
+	public void IgnoreAndLogUnregisteredItemsLogsIgnoredKeyword() {
 		var output = new StringWriter();
 		Console.SetOut(output);
 
 		var input = new BufferedReader("key1=val1 key2=val2 key3=mess");
+		var test = new Test1(input);
+		Assert.Equal("val1", test.value1);
+		Assert.Equal("val2", test.value2);
+		Assert.Contains("[DEBUG] Ignoring keyword: key3", output.ToString());
+	}
+
+	[Fact]
+	public void IgnoreAndLogUnregisteredItemsIgnoresAndLogsUnregisteredItemsOnExistsEquals() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		var input = new BufferedReader("key1?=val1 key2?=val2 key3?=mess");
 		var test = new Test1(input);
 		Assert.Equal("val1", test.value1);
 		Assert.Equal("val2", test.value2);
