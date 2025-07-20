@@ -181,8 +181,16 @@ public class Parser {
 				reader.PushBack('}');
 			}
 			return true; // break loop
-		} else if (!inLiteralQuote && inputChar == '=') {
+		} else if (!inLiteralQuote && inputChar == '?') {
+			// We've likely encountered the beginning of an ExistEquals operator.
 			if (sb.Length == 0) {
+				sb.Append(inputChar);
+			} else {
+				reader.PushBack('?');
+				return true; // break loop
+			}
+		} else if (!inLiteralQuote && inputChar == '=') {
+			if (sb.Length == 0 || sb.ToString() == "?") {
 				sb.Append(inputChar);
 			} else {
 				reader.PushBack('=');
@@ -310,7 +318,7 @@ public class Parser {
 			var token = GetNextToken(reader);
 			if (token is not null) {
 				tokensSoFar.Append(token);
-				if (token == "=") {
+				if (token is "=" or "?=") {
 					// swapping to value part.
 					if (!value) {
 						value = true;

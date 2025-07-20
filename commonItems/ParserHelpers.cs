@@ -3,7 +3,7 @@
 public static class ParserHelpers {
 	public static void IgnoreItem(BufferedReader reader) {
 		var next = Parser.GetNextLexeme(reader);
-		if (next == "=") {
+		if (next is "=" or "?=") {
 			next = Parser.GetNextLexeme(reader);
 		}
 		if (next is "rgb" or "hsv") { // Needed for ignoring color. Example: "color = rgb { 2 4 8 }"
