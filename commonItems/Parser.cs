@@ -378,7 +378,7 @@ public class Parser {
 		}
 		
 		// Open file without locking it.
-		var streamReader = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+		using var streamReader = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 		var bufferedReader = new BufferedReader(streamReader);
 		AbsorbBOM(bufferedReader);
 		ParseStream(bufferedReader);
