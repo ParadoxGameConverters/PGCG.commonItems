@@ -296,6 +296,15 @@ public sealed class ParserTests {
 	}
 
 	[Fact]
+	public void ParseFileFreesUpFileRightAfterwards() {
+		const string filePath = "TestFiles/ParseFileFreesUpFileRightAfterwards.txt";
+		File.WriteAllText(filePath, "key1 = value1");
+		var parser = new Parser();
+		parser.ParseFile(filePath);
+		File.Delete(filePath); // should not throw
+	}
+
+	[Fact]
 	public void RegisteredRulesCanBeCleared() {
 		const string filename = "TestFiles/keyValuePair.txt";
 		var parser = new FileTest(filename);
