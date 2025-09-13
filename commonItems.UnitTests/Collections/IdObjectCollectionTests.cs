@@ -36,12 +36,12 @@ public sealed class IdObjectCollectionTests {
 
 	[Fact]
 	public void ObjectsCanBeAccessedWithIndexer() {
-		var characters = new Characters {new Character("bob")};
+		var characters = new Characters { new Character("bob") };
 		Assert.Equal("bob", characters["bob"].Id);
 	}
 	[Fact]
 	public void ObjectsCanBeAccessedWithTryGetValue() {
-		var characters = new Characters {new Character("bob")};
+		var characters = new Characters { new Character("bob") };
 
 		Assert.True(characters.TryGetValue("bob", out var bob));
 		Assert.Equal("bob", bob.Id);
@@ -72,10 +72,68 @@ public sealed class IdObjectCollectionTests {
 
 	[Fact]
 	public void CollectionCanBeCleared() {
-		var characters = new Characters {new Character("bob"), new Character("frank")};
+		var characters = new Characters { new Character("bob"), new Character("frank") };
 		Assert.Equal(2, characters.Count);
 
 		characters.Clear();
 		Assert.Empty(characters);
 	}
+
+    private class TestObj(int id, string name) : IIdentifiable<int> {
+		public int Id { get; } = id;
+		public string Name { get; } = name;
+	}
+
+    [Fact]
+    public void RemoveAll_RemovesMatchingObjects_ReturnsCorrectCount() {
+        var collection = new IdObjectCollection<int, TestObj> {
+			new TestObj(1, "A"),
+			new TestObj(2, "B"),
+			new TestObj(3, "C"),
+		};
+
+        int removed = collection.RemoveAll(obj => obj.Name == "B" || obj.Id == 3);
+
+        Assert.Equal(2, removed);
+        Assert.False(collection.ContainsKey(2));
+        Assert.False(collection.ContainsKey(3));
+        Assert.True(collection.ContainsKey(1));
+    }
+
+    [Fact]
+    public void RemoveAll_NoObjectsMatch_RemovesNone() {
+        var collection = new IdObjectCollection<int, TestObj> {
+			new TestObj(1, "A"),
+			new TestObj(2, "B"),
+		};
+
+        int removed = collection.RemoveAll(obj => obj.Name == "Z");
+
+        Assert.Equal(0, removed);
+        Assert.True(collection.ContainsKey(1));
+        Assert.True(collection.ContainsKey(2));
+    }
+
+    [Fact]
+    public void RemoveAll_AllObjectsMatch_RemovesAll() {
+        var collection = new IdObjectCollection<int, TestObj> {
+			new TestObj(1, "A"),
+			new TestObj(2, "B"),
+		};
+
+        int removed = collection.RemoveAll(obj => true);
+
+        Assert.Equal(2, removed);
+        Assert.Empty(collection);
+    }
+
+    [Fact]
+    public void RemoveAll_EmptyCollection_ReturnsZero() {
+        var collection = new IdObjectCollection<int, TestObj>();
+
+        int removed = collection.RemoveAll(obj => true);
+
+        Assert.Equal(0, removed);
+        Assert.Empty(collection);
+    }
 }

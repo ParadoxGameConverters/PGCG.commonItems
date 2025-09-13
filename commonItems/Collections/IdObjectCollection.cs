@@ -28,4 +28,17 @@ public class IdObjectCollection<TKey, T> : IReadOnlyCollection<T> where TKey : I
 	public virtual void Add(T obj) => dict.Add(obj.Id, obj);
 	public virtual void AddOrReplace(T obj) => dict[obj.Id] = obj;
 	public virtual void Remove(TKey key) => dict.Remove(key);
+
+	public int RemoveAll(Func<T, bool> predicate) {
+		var toRemove = new List<TKey>();
+		foreach (var obj in dict.Values) {
+			if (predicate(obj)) {
+				toRemove.Add(obj.Id);
+			}
+		}
+		foreach (var key in toRemove) {
+			dict.Remove(key);
+		}
+		return toRemove.Count;
+	}
 }
