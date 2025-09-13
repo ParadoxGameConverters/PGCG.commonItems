@@ -152,7 +152,7 @@ public class Parser {
 		} else if (inputChar == '\"' && sb.Length == 0) {
 			inQuotes = true;
 			sb.Append(inputChar);
-		} else if (inputChar == '\"' && sb.Length == 1 && sb.ToString().Last() == 'R') {
+		} else if (inputChar == '\"' && sb.Length == 1 && sb[0] == 'R') {
 			inLiteralQuote = true;
 			--sb.Length;
 			sb.Append(inputChar);
@@ -190,7 +190,7 @@ public class Parser {
 				return true; // break loop
 			}
 		} else if (!inLiteralQuote && inputChar == '=') {
-			if (sb.Length == 0 || sb.ToString() == "?") {
+			if (sb.Length == 0 || (sb.Length == 1 && sb[0] == '?')) {
 				sb.Append(inputChar);
 			} else {
 				reader.PushBack('=');

@@ -23,16 +23,16 @@ public static class CommonFunctions {
 	}
 	
 	public static string TrimPath(string fileName) {
-		string trimmedFileName = fileName;
-		var lastSlash = trimmedFileName.LastIndexOf('\\');
-		if (lastSlash != -1) {
-			trimmedFileName = trimmedFileName.Substring(lastSlash + 1);
+		ReadOnlySpan<char> span = fileName.AsSpan();
+		int lastSlash = span.LastIndexOf('\\');
+		if (lastSlash >= 0) {
+			span = span[(lastSlash + 1)..];
 		}
-		lastSlash = trimmedFileName.LastIndexOf('/');
-		if (lastSlash != -1) {
-			trimmedFileName = trimmedFileName.Substring(lastSlash + 1);
+		int lastSlash2 = span.LastIndexOf('/');
+		if (lastSlash2 >= 0) {
+			span = span[(lastSlash2 + 1)..];
 		}
-		return trimmedFileName;
+		return span.ToString();
 	}
 
 	public static string GetPath(string fileName) {

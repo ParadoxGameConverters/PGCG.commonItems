@@ -1,17 +1,26 @@
 ﻿using Open.Collections;
 using System;
-using System.Linq;
 
 namespace commonItems.Linguistics;
 
 public static partial class StringExtensions {
 	public static string TrimNonAlphanumericEnding(this string str) {
-		return new string(str.Reverse().SkipWhile(c => !char.IsLetterOrDigit(c)).Reverse().ToArray());
+		if (string.IsNullOrEmpty(str)) return str;
+		int end = str.Length - 1;
+		while (end >= 0 && !char.IsLetterOrDigit(str[end])) {
+			end--;
+		}
+		return end < 0 ? string.Empty : str[..(end + 1)];
 	}
 
 	// Function for trimming non-letter characters from the end.
 	public static string TrimNonLetterEnding(this string str) {
-		return new string(str.Reverse().SkipWhile(c => !char.IsLetter(c)).Reverse().ToArray());
+		if (string.IsNullOrEmpty(str)) return str;
+		int end = str.Length - 1;
+		while (end >= 0 && !char.IsLetter(str[end])) {
+			end--;
+		}
+		return end < 0 ? string.Empty : str[..(end + 1)];
 	}
 
 	private static string ApplyAdjectiveRules(this string str, OrderedDictionary<string, string> rules, bool multipleIterations = false) {
