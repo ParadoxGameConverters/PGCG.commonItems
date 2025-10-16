@@ -1,14 +1,17 @@
 ﻿using commonItems.Serialization;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace commonItems; 
 
+/// <summary>Slim immutable calendar date stored in 32 bits.</summary>
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializable {
-	public int Year { get; }
-	public int Month { get; }
-	public int Day { get; }
+	public short Year { get; }
+	public byte Month { get; }
+	public byte Day { get; }
 
 	public Date() {
 		Year = 1;
@@ -17,7 +20,7 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 	}
 	public Date(Date otherDate) : this(otherDate.Year, otherDate.Month, otherDate.Day) { }
 	public Date(int year, int month, int day, bool AUC) : this() {
-		Year = AUC ? ConvertAUCToAD(year) : year;
+		Year = ConvertYear(AUC ? ConvertAUCToAD(year) : year);
 		Month = ClampMonth(month);
 		Day = ClampDay(day);
 	}
@@ -27,16 +30,17 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		init = init.RemQuotes();
 
 		var dateElements = init.Split('.').Where(x => !string.IsNullOrEmpty(x)).ToArray();
+		var parsedYear = (int)Year;
 		try {
 			if (dateElements.Length >= 3) {
-				Year = int.Parse(dateElements[0]);
+				parsedYear = int.Parse(dateElements[0]);
 				Month = ClampMonth(int.Parse(dateElements[1]));
 				Day = ClampDay(int.Parse(dateElements[2]));
 			} else if (dateElements.Length == 2) {
-				Year = int.Parse(dateElements[0]);
+				parsedYear = int.Parse(dateElements[0]);
 				Month = ClampMonth(int.Parse(dateElements[1]));
 			} else if (dateElements.Length == 1) {
-				Year = int.Parse(dateElements[0]);
+				parsedYear = int.Parse(dateElements[0]);
 			} else {
 				Logger.Warn("Problem constructing date: at least a year should be provided!");
 			}
@@ -44,26 +48,29 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 			Logger.Warn($"Problem constructing date from string \"{init}\": {e.Message}!");
 		}
 		if (AUC) {
-			Year = ConvertAUCToAD(Year);
+			parsedYear = ConvertAUCToAD(parsedYear);
 		}
+		Year = ConvertYear(parsedYear);
 	}
 	public Date(DateTimeOffset dateTimeOffset) : this(dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day) {
 	}
 
-	private static int ClampMonth(int month) {
-		return month switch {
+	private static byte ClampMonth(int month) {
+		var clampedMonth = month switch {
 			< 1 => 1,
 			> 12 => 12,
 			_ => month,
 		};
+		return (byte)clampedMonth;
 	}
 	
-	private static int ClampDay(int day) {
-		return day switch {
+	private static byte ClampDay(int day) {
+		var clampedDay = day switch {
 			< 1 => 1,
 			> 31 => 31,
 			_ => day,
 		};
+		return (byte)clampedDay;
 	}
 	
 	public static implicit operator Date(string dateString) => new Date(dateString);
@@ -168,6 +175,13 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 			--yearAD;
 		}
 		return yearAD;
+	}
+
+	private static short ConvertYear(int year) {
+		if (year is < short.MinValue or > short.MaxValue) {
+			throw new ArgumentOutOfRangeException(nameof(year), year, "Year must fit into 16 bits.");
+		}
+		return (short)year;
 	}
 
 	public readonly double DiffInYears(Date rhs) {
