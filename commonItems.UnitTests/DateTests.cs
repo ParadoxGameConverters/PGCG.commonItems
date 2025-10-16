@@ -420,4 +420,9 @@ public sealed class DateTests {
 		Assert.Equal(10, pdxDate.Month);
 		Assert.Equal(1, pdxDate.Day);
 	}
+
+	[Fact]
+	public void DateUses4BytesOfMemory() {
+		Assert.Equal(4, System.Runtime.InteropServices.Marshal.SizeOf<Date>());
+	}
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace commonItems.Colors; 
@@ -38,7 +39,8 @@ namespace commonItems.Colors;
 ///  equality and inequality can be checked, the color cache can be reviewed and modified,
 ///  and colors can have a random fluctuation be applied automatically.
 /// </summary>
-public sealed class Color : IPDXSerializable {
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public readonly struct Color : IPDXSerializable, IEquatable<Color> {
 	public Color() { }
 	public Color(int r, int g, int b) {
 		if (r is < 0 or > 255) {
@@ -54,50 +56,65 @@ public sealed class Color : IPDXSerializable {
 			b = Math.Clamp(b, 0, 255);
 		}
 		
-		RgbComponents[0] = r;
-		RgbComponents[1] = g;
-		RgbComponents[2] = b;
-		DeriveHsvFromRgb();
+		R = (byte)r;
+		G = (byte)g;
+		B = (byte)b;
+		
+		var (h, s, v) = DeriveHsvFromRgb();
+		H = h;
+		S = s;
+		V = v;
 	}
 
-	public Color(int r, int g, int b, double alpha) : this(r, g, b) {
-		A = alpha;
+	public Color(int r, int g, int b, float alpha) : this(r, g, b) {
+		a = (byte)Math.Round(alpha * 255);
 	}
 	public Color(double h, double s, double v) {
-		HsvComponents[0] = h;
-		HsvComponents[1] = s;
-		HsvComponents[2] = v;
-		DeriveRgbFromHsv();
+		H = (float)h;
+		S = (float)s;
+		V = (float)v;
+		
+		var (r, g, b) = DeriveRgbFromHsv();
+		R = r;
+		G = g;
+		B = b;
 	}
 
-	public Color(double h, double s, double v, double alpha) : this(h, s, v) {
-		A = alpha;
+	public Color(double h, double s, double v, float alpha) : this(h, s, v) {
+		a = (byte)Math.Round(alpha * 255);
 	}
 	
 	public Color(System.Drawing.Color color) {
-		RgbComponents[0] = color.R;
-		RgbComponents[1] = color.G;
-		RgbComponents[2] = color.B;
-		DeriveHsvFromRgb();
+		R = color.R;
+		G = color.G;
+		B = color.B;
+		a = color.A;
+		
+		var (h, s, v) = DeriveHsvFromRgb();
+		H = h;
+		S = s;
+		V = v;
 	}
 
 	public override bool Equals(object? obj) {
-		return obj is Color color && RgbComponents.SequenceEqual(color.RgbComponents);
+		return obj is Color color && R == color.R && G == color.G && B == color.B && a == color.a;
 	}
 
 	public override int GetHashCode() {
-		return (R * 1000000) + (G * 1000) + B;
+		return HashCode.Combine(R, G, B, a);
 	}
 
-	public int R => RgbComponents[0];
-	public int G => RgbComponents[1];
-	public int B => RgbComponents[2];
+	public byte R { get; } = 0;
+	public byte G { get; } = 0;
+	public byte B { get; } = 0;
+	
 
-	public double H => HsvComponents[0];
-	public double S => HsvComponents[1];
-	public double V => HsvComponents[2];
+	private readonly byte a = 255;
+	public float A => (float)a / 255;
 
-	public double A { get; } = 1;
+	public float H { get; } = 0;
+	public float S { get; } = 0;
+	public float V { get; } = 0;
 
 	public string Serialize(string indent, bool withBraces) {
 		return Output();
@@ -105,29 +122,29 @@ public sealed class Color : IPDXSerializable {
 
 	public string Output() {
 		var sb = new StringBuilder("{ ");
-		sb.Append(RgbComponents[0]);
+		sb.Append(R);
 		sb.Append(' ');
-		sb.Append(RgbComponents[1]);
+		sb.Append(G);
 		sb.Append(' ');
-		sb.Append(RgbComponents[2]);
+		sb.Append(B);
 		sb.Append(" }");
 		return sb.ToString();
 	}
 
 	public string OutputRgb() {
 		var sb = new StringBuilder("rgb { ");
-		sb.Append(RgbComponents[0]);
+		sb.Append(R);
 		sb.Append(' ');
-		sb.Append(RgbComponents[1]);
+		sb.Append(G);
 		sb.Append(' ');
-		sb.Append(RgbComponents[2]);
+		sb.Append(B);
 		sb.Append(" }");
 		return sb.ToString();
 	}
 
 	public string OutputHex() {
 		var sb = new StringBuilder("hex { ");
-		sb.Append($"{RgbComponents[0]:X2}{RgbComponents[1]:X2}{RgbComponents[2]:X2}");
+		sb.Append($"{R:X2}{G:X2}{B:X2}");
 		sb.Append(" }");
 		return sb.ToString();
 	}
@@ -135,14 +152,14 @@ public sealed class Color : IPDXSerializable {
 	public string OutputHsv() {
 		var cultureInfo = CultureInfo.InvariantCulture;
 		var sb = new StringBuilder("hsv { ");
-		sb.Append(HsvComponents[0].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+		sb.Append(H.ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
 		sb.Append(' ');
-		sb.Append(HsvComponents[1].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+		sb.Append(S.ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
 		sb.Append(' ');
-		sb.Append(HsvComponents[2].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
-		if (A != 1.0d) {
+		sb.Append(V.ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+		if (a != 255) {
 			sb.Append(' ');
-			sb.Append(HsvComponents[2].ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
+			sb.Append(A.ToString("0.00", cultureInfo).TrimEnd('0').TrimEnd('.'));
 		}
 		sb.Append(" }");
 		return sb.ToString();
@@ -150,19 +167,19 @@ public sealed class Color : IPDXSerializable {
 
 	public string OutputHsv360() {
 		var sb = new StringBuilder("hsv360 { ");
-		sb.Append(Math.Round(HsvComponents[0] * 360));
+		sb.Append(Math.Round(H * 360));
 		sb.Append(' ');
-		sb.Append(Math.Round(HsvComponents[1] * 100));
+		sb.Append(Math.Round(S * 100));
 		sb.Append(' ');
-		sb.Append(Math.Round(HsvComponents[2] * 100));
+		sb.Append(Math.Round(V * 100));
 		sb.Append(" }");
 		return sb.ToString();
 	}
 
-	private void DeriveHsvFromRgb() {
-		var r = (double)RgbComponents[0] / 255;
-		var g = (double)RgbComponents[1] / 255;
-		var b = (double)RgbComponents[2] / 255;
+	private Tuple<float, float, float> DeriveHsvFromRgb() {
+		var r = (double)R / 255;
+		var g = (double)G / 255;
+		var b = (double)B / 255;
 		var xMax = new[] { r, g, b }.Max();
 		var xMin = new[] { r, g, b }.Min();
 		var chroma = xMax - xMin;
@@ -183,20 +200,18 @@ public sealed class Color : IPDXSerializable {
 		if (h < 0) {
 			h += 1.0f;
 		}
-		HsvComponents[0] = h;
-
-		if (xMax == 0.0f) {
-			HsvComponents[1] = 0.0f;
-		} else {
-			HsvComponents[1] = chroma / xMax;
-		}
-		HsvComponents[2] = xMax;
+		
+		return new(
+			(float)h,
+			xMax == 0.0f ? 0f : (float)(chroma / xMax),
+			(float)xMax
+		);
 	}
 
-	private void DeriveRgbFromHsv() {
-		var h = HsvComponents[0];
-		var s = HsvComponents[1];
-		var v = HsvComponents[2];
+	private Tuple<byte, byte, byte> DeriveRgbFromHsv() {
+		var h = (double)H;
+		var s = (double)S;
+		var v = (double)V;
 
 		double r, g, b;
 		if (s == 0.0f) { // achromatic (grey)
@@ -249,19 +264,24 @@ public sealed class Color : IPDXSerializable {
 		r *= 255;
 		g *= 255;
 		b *= 255;
-
-		RgbComponents[0] = (int)r;
-		RgbComponents[1] = (int)g;
-		RgbComponents[2] = (int)b;
+		
+		return new(
+			(byte)Math.Clamp((int)r, 0, 255),
+			(byte)Math.Clamp((int)g, 0, 255),
+			(byte)Math.Clamp((int)b, 0, 255)
+		);
 	}
 
-	public int[] RgbComponents { get; } = [
-		0, 0, 0,
-	];
-
-	public double[] HsvComponents { get; } = [
-		0, 0, 0,
-	];
-
 	public override string ToString() => OutputRgb();
+	public static bool operator ==(Color left, Color right) {
+		return left.Equals(right);
+	}
+
+	public static bool operator !=(Color left, Color right) {
+		return !(left == right);
+	}
+
+	public bool Equals(Color other) {
+		return R == other.R && G == other.G && B == other.B && a == other.a;
+	}
 }

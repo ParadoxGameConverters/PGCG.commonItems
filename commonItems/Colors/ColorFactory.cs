@@ -10,12 +10,12 @@ public sealed class ColorFactory {
 	public Dictionary<string, Color> NamedColors { get; } = new();
 
 	private static Color GetRgbColor(BufferedReader reader) {
-		var rgbDoubles = reader.GetDoubles();
-		if (rgbDoubles.Count != 3) {
+		var rgbFloats = reader.GetFloats();
+		if (rgbFloats.Count != 3) {
 			Logger.Warn($"Color has wrong number of components for RGB: " +
-			            $"{string.Join(',', rgbDoubles)}.");
+			            $"{string.Join(',', rgbFloats)}.");
 		}
-		var rgbInts = rgbDoubles.Select(d => (int)d).ToArray();
+		var rgbInts = rgbFloats.Select(d => (int)d).ToArray();
 		return GetRgbColorFromAnyNumberOfComponents(rgbInts);
 	}
 	private static Color GetHexColor(BufferedReader reader) {
@@ -29,7 +29,7 @@ public sealed class ColorFactory {
 		return new Color(r, g, b);
 	}
 	private static Color GetHsvColor(BufferedReader reader) {
-		var hsv = reader.GetDoubles();
+		var hsv = reader.GetFloats();
 		var elementsCount = hsv.Count;
 		return elementsCount switch {
 			3 => new Color(hsv[0], hsv[1], hsv[2]),
@@ -39,7 +39,7 @@ public sealed class ColorFactory {
 		};
 	}
 	private static Color GetHsv360Color(BufferedReader reader) {
-		var hsv = reader.GetDoubles();
+		var hsv = reader.GetFloats();
 		if (hsv.Count != 3) {
 			throw new FormatException("Color has wrong number of components for HSV 360: " +
 			                          $"{string.Join(',', hsv)}");
@@ -50,12 +50,12 @@ public sealed class ColorFactory {
 	private static Color GetUnprefixedColor(BufferedReader reader) {
 		var questionableList = reader.GetStringOfItem().ToString();
 		if (questionableList.Contains('.')) {
-			// This is a double list.
-			var doubleStreamReader = new BufferedReader(questionableList);
-			var rgb = doubleStreamReader.GetDoubles();
+			// This is a float list.
+			var floatStreamReader = new BufferedReader(questionableList);
+			var rgb = floatStreamReader.GetFloats();
 			switch (rgb.Count) {
 				case 3: {
-					// This is not HSV, this is RGB doubles. Just convert to ints to get normal RGB.
+					// This is not HSV, this is RGB floats. Just convert to ints to get normal RGB.
 					if (rgb[0] > 1 || rgb[1] > 1 || rgb[2] > 1)
 						return new Color((int)rgb[0], (int)rgb[1], (int)rgb[2]);
 
@@ -66,7 +66,7 @@ public sealed class ColorFactory {
 					return new Color(r, g, b);
 				}
 				case 4: {
-					// This is an RGBA double situation. We shouldn't touch alpha.
+					// This is an RGBA float situation. We shouldn't touch alpha.
 					var r = (int)Math.Round(rgb[0] * 255);
 					var g = (int)Math.Round(rgb[1] * 255);
 					var b = (int)Math.Round(rgb[2] * 255);
