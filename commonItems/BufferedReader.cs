@@ -156,6 +156,24 @@ public sealed class BufferedReader {
 		return 0;
 	}
 	
+	public float GetFloat() {
+		var floatStr = GetString().RemQuotes();
+		if (float.TryParse(floatStr, NumberStyles.Any, CultureInfo.InvariantCulture, out float theFloat)) {
+			return theFloat;
+		}
+
+		Logger.Warn($"Could not convert string {floatStr} to float!");
+		return 0;
+	}
+	public float GetFloat(ScriptValueCollection scriptValues) {
+		var valueStr = GetString().RemQuotes();
+		if (scriptValues.GetValueForString(valueStr) is double value) {
+			return (float) value;
+		}
+		Logger.Warn($"Could not convert string {valueStr} to float!");
+		return 0;
+	}
+	
 	public List<string> GetStrings() {
 		var strings = new List<string>();
 		var parser = new Parser();
@@ -257,6 +275,27 @@ public sealed class BufferedReader {
 
 		parser.ParseStream(this);
 		return doubles;
+	}
+	public List<float> GetFloats() {
+		var floats = new List<float>();
+		var parser = new Parser();
+		parser.RegisterRegex(CommonRegexes.Float, (_, floatString) =>
+			floats.Add(float.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture))
+		);
+		parser.RegisterRegex(CommonRegexes.QuotedFloat, (_, floatString) => {
+			// remove quotes
+			floatString = floatString[1..^1];
+			floats.Add(float.Parse(floatString, NumberStyles.Any, CultureInfo.InvariantCulture));
+		});
+		if (Variables.Count > 0) {
+			parser.RegisterRegex(CommonRegexes.InterpolatedExpression, (reader, expr) => {
+				var value = (double)reader.EvaluateExpression(expr);
+				floats.Add((float)value);
+			});
+		}
+
+		parser.ParseStream(this);
+		return floats;
 	}
 	public StringOfItem GetStringOfItem() {
 		return new StringOfItem(this);

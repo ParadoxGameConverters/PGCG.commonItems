@@ -193,6 +193,42 @@ public sealed class ParserHelperTests {
 	}
 
 	[Fact]
+	public void GetFloatsDefaultsToEmpty() {
+		var reader = new BufferedReader(string.Empty);
+		Assert.Empty(reader.GetFloats());
+	}
+
+	[Fact]
+	public void GetFloatsAddsFloats() {
+		var reader = new BufferedReader("1.25 2.5 3.75");
+		Assert.Equal(new[] {1.25f, 2.5f, 3.75f}, reader.GetFloats());
+	}
+
+	[Fact]
+	public void GetFloatsAddsNegativeFloats() {
+		var reader = new BufferedReader("1.25 -2.5 -3.75");
+		Assert.Equal(new[] {1.25f, -2.5f, -3.75f}, reader.GetFloats());
+	}
+
+	[Fact]
+	public void GetFloatsAddsQuotedFloats() {
+		var reader = new BufferedReader("\"1.25\" \"2.5\" \"3.75\"");
+		Assert.Equal(new[] {1.25f, 2.5f, 3.75f}, reader.GetFloats());
+	}
+
+	[Fact]
+	public void GetFloatsAddsQuotedNegativeFloats() {
+		var reader = new BufferedReader("\"1.25\" \"-2.5\" \"-3.75\"");
+		Assert.Equal(new[] {1.25f, -2.5f, -3.75f}, reader.GetFloats());
+	}
+
+	[Fact]
+	public void GetFloatsAddsFloatsFromBracedBlock() {
+		var reader = new BufferedReader(" = {1.25 2.5 3.75} 4.5");
+		Assert.Equal(new[] {1.25f, 2.5f, 3.75f}, reader.GetFloats());
+	}
+
+	[Fact]
 	public void GetDoubleGetsDoubleAfterEquals() {
 		var reader = new BufferedReader(" = 1.25");
 		Assert.Equal(1.25, reader.GetDouble());
@@ -229,6 +265,45 @@ public sealed class ParserHelperTests {
 		scriptValues.LoadScriptValues(modFS, new Defines());
 		var reader = new BufferedReader(" = mod_value");
 		Assert.Equal(3.2, reader.GetDouble(scriptValues));
+	}
+
+	[Fact]
+	public void GetFloatGetsFloatAfterEquals() {
+		var reader = new BufferedReader(" = 1.25");
+		Assert.Equal(1.25f, reader.GetFloat());
+	}
+
+	[Fact]
+	public void GetFloatGetsQuotedFloatAfterEquals() {
+		var reader = new BufferedReader(" = \"1.25\"");
+		Assert.Equal(1.25f, reader.GetFloat());
+	}
+
+	[Fact]
+	public void GetFloatLogsNotMatchingInput() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		var reader = new BufferedReader("= \"345.345 foo\"");
+		var theFloat = reader.GetFloat();
+		Assert.Contains("[WARN] Could not convert string 345.345 foo to float!", output.ToString());
+		Assert.Equal(0, theFloat);
+	}
+
+	[Fact]
+	public void GetFloatCanBeUsedWithExpressions() {
+		var reader = new BufferedReader("= @[variable - 2]");
+		reader.Variables.Add("variable", 42.5);
+
+		Assert.Equal(40.5f, reader.GetFloat());
+	}
+
+	[Fact]
+	public void GetFloatCanBeUsedWithScriptValues() {
+		var scriptValues = new ScriptValueCollection();
+		scriptValues.LoadScriptValues(modFS, new Defines());
+		var reader = new BufferedReader(" = mod_value");
+		Assert.Equal(3.2f, reader.GetFloat(scriptValues));
 	}
 
 	[Fact]
