@@ -1,42 +1,46 @@
 ﻿using commonItems.Serialization;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace commonItems; 
 
-public sealed class Date : IComparable<Date>, IPDXSerializable {
-	public int Year { get; } = 1;
-	public int Month { get; } = 1;
-	public int Day { get; } = 1;
+/// <summary>Slim immutable calendar date stored in 32 bits.</summary>
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializable {
+	public short Year { get; }
+	public byte Month { get; }
+	public byte Day { get; }
 
-	public Date() { }
-	public Date(Date otherDate) {
-		Year = otherDate.Year;
-		Month = otherDate.Month;
-		Day = otherDate.Day;
+	public Date() {
+		Year = 1;
+		Month = 1;
+		Day = 1;
 	}
-	public Date(int year, int month, int day, bool AUC) {
-		Year = AUC ? ConvertAUCToAD(year) : year;
+	public Date(Date otherDate) : this(otherDate.Year, otherDate.Month, otherDate.Day) { }
+	public Date(int year, int month, int day, bool AUC) : this() {
+		Year = ConvertYear(AUC ? ConvertAUCToAD(year) : year);
 		Month = ClampMonth(month);
 		Day = ClampDay(day);
 	}
 	public Date(int year, int month, int day) : this(year, month, day, false) { }
 	public Date(string init) : this(init, false) { }
-	public Date(string init, bool AUC) {
+	public Date(string init, bool AUC) : this() {
 		init = init.RemQuotes();
 
 		var dateElements = init.Split('.').Where(x => !string.IsNullOrEmpty(x)).ToArray();
+		var parsedYear = (int)Year;
 		try {
 			if (dateElements.Length >= 3) {
-				Year = int.Parse(dateElements[0]);
+				parsedYear = int.Parse(dateElements[0]);
 				Month = ClampMonth(int.Parse(dateElements[1]));
 				Day = ClampDay(int.Parse(dateElements[2]));
 			} else if (dateElements.Length == 2) {
-				Year = int.Parse(dateElements[0]);
+				parsedYear = int.Parse(dateElements[0]);
 				Month = ClampMonth(int.Parse(dateElements[1]));
 			} else if (dateElements.Length == 1) {
-				Year = int.Parse(dateElements[0]);
+				parsedYear = int.Parse(dateElements[0]);
 			} else {
 				Logger.Warn("Problem constructing date: at least a year should be provided!");
 			}
@@ -44,29 +48,29 @@ public sealed class Date : IComparable<Date>, IPDXSerializable {
 			Logger.Warn($"Problem constructing date from string \"{init}\": {e.Message}!");
 		}
 		if (AUC) {
-			Year = ConvertAUCToAD(Year);
+			parsedYear = ConvertAUCToAD(parsedYear);
 		}
+		Year = ConvertYear(parsedYear);
 	}
-	public Date(DateTimeOffset dateTimeOffset) {
-		Year = dateTimeOffset.Year;
-		Month = dateTimeOffset.Month;
-		Day = dateTimeOffset.Day;
+	public Date(DateTimeOffset dateTimeOffset) : this(dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day) {
 	}
 
-	private static int ClampMonth(int month) {
-		return month switch {
+	private static byte ClampMonth(int month) {
+		var clampedMonth = month switch {
 			< 1 => 1,
 			> 12 => 12,
 			_ => month,
 		};
+		return (byte)clampedMonth;
 	}
 	
-	private static int ClampDay(int day) {
-		return day switch {
+	private static byte ClampDay(int day) {
+		var clampedDay = day switch {
 			< 1 => 1,
 			> 31 => 31,
 			_ => day,
 		};
+		return (byte)clampedDay;
 	}
 	
 	public static implicit operator Date(string dateString) => new Date(dateString);
@@ -79,7 +83,7 @@ public sealed class Date : IComparable<Date>, IPDXSerializable {
 		return daysByMonth[month] - daysByMonth[month - 1];
 	}
 
-	public Date ChangeByDays(int days) {
+	public readonly Date ChangeByDays(int days) {
 		int newYear = Year;
 		int newMonth = Month;
 		int newDay = Day;
@@ -144,7 +148,7 @@ public sealed class Date : IComparable<Date>, IPDXSerializable {
 		return new Date(newYear, newMonth, newDay);
 	}
 
-	public Date ChangeByMonths(int months) {
+	public readonly Date ChangeByMonths(int months) {
 		int newYear = Year;
 		int newMonth = Month;
 		
@@ -161,7 +165,7 @@ public sealed class Date : IComparable<Date>, IPDXSerializable {
 		return new Date(newYear, newMonth, Day);
 	}
 
-	public Date ChangeByYears(int years) {
+	public readonly Date ChangeByYears(int years) {
 		return new Date(Year + years, Month, Day);
 	}
 
@@ -173,14 +177,21 @@ public sealed class Date : IComparable<Date>, IPDXSerializable {
 		return yearAD;
 	}
 
-	public double DiffInYears(Date rhs) {
+	private static short ConvertYear(int year) {
+		if (year is < short.MinValue or > short.MaxValue) {
+			throw new ArgumentOutOfRangeException(nameof(year), year, "Year must fit into 16 bits.");
+		}
+		return (short)year;
+	}
+
+	public readonly double DiffInYears(Date rhs) {
 		double years = Year - rhs.Year;
 		years += (double)(CalculateDayInYear() - rhs.CalculateDayInYear()) / 365;
 
 		return years;
 	}
 
-	public override string ToString() {
+	public override readonly string ToString() {
 		var sb = new StringBuilder();
 		sb.Append(Year);
 		sb.Append('.');
@@ -190,7 +201,7 @@ public sealed class Date : IComparable<Date>, IPDXSerializable {
 		return sb.ToString();
 	}
 
-	public string Serialize(string indent, bool withBraces) {
+	public readonly string Serialize(string indent, bool withBraces) {
 		return ToString();
 	}
 
@@ -209,21 +220,24 @@ public sealed class Date : IComparable<Date>, IPDXSerializable {
 		334, // December
 	];
 
-	private int CalculateDayInYear() {
+	private readonly int CalculateDayInYear() {
 		if (Month is >= 1 and <= 12) {
 			return Day + daysByMonth[Month - 1];
 		}
 		return Day;
 	}
 	
-	public override bool Equals(object? obj) {
-		return obj is Date date &&
-		       Year == date.Year &&
-		       Month == date.Month &&
-		       Day == date.Day;
+	public readonly bool Equals(Date other) {
+		return Year == other.Year &&
+		       Month == other.Month &&
+		       Day == other.Day;
 	}
 
-	public override int GetHashCode() {
+	public override readonly bool Equals(object? obj) {
+		return obj is Date date && Equals(date);
+	}
+
+	public override readonly int GetHashCode() {
 		return HashCode.Combine(Year, Month, Day);
 	}
 
@@ -242,33 +256,26 @@ public sealed class Date : IComparable<Date>, IPDXSerializable {
 		return (lhs.Equals(rhs) || (lhs > rhs));
 	}
 
-	public int CompareTo(Date? obj) {
-		if (obj is null) {
-			return 1;
-		}
-
-		var result = Year.CompareTo(obj.Year);
+	public readonly int CompareTo(Date other) {
+		var result = Year.CompareTo(other.Year);
 		if (result != 0) {
 			return result;
 		}
-		result = Month.CompareTo(obj.Month);
+		result = Month.CompareTo(other.Month);
 		if (result != 0) {
 			return result;
 		}
-		return Day.CompareTo(obj.Day);
+		return Day.CompareTo(other.Day);
 	}
 	
-	public static bool operator ==(Date? left, Date? right) {
-		if (left is null) {
-			return right is null;
-		}
+	public static bool operator ==(Date left, Date right) {
 		return left.Equals(right);
 	}
-	public static bool operator !=(Date? left, Date? right) {
-		return !(left == right);
+	public static bool operator !=(Date left, Date right) {
+		return !left.Equals(right);
 	}
 
-	public DateTimeOffset ToDateTimeOffset() {
+	public readonly DateTimeOffset ToDateTimeOffset() {
 		return new DateTimeOffset(new DateTime(Year, Month, Day), offset: TimeSpan.Zero);
 	}
 }
