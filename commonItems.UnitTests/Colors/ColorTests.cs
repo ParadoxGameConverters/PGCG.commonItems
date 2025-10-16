@@ -14,15 +14,13 @@ public sealed class ColorTests {
 	[Fact]
 	public void ColorDefaultToBlack() {
 		var testColor = new Color();
-		var rgbComponents = testColor.RgbComponents;
-		Assert.Equal(0, rgbComponents[0]);
-		Assert.Equal(0, rgbComponents[1]);
-		Assert.Equal(0, rgbComponents[2]);
+		Assert.Equal(0, testColor.R);
+		Assert.Equal(0, testColor.G);
+		Assert.Equal(0, testColor.B);
 
-		var hsvComponents = testColor.HsvComponents;
-		Assert.Equal(0, hsvComponents[0]);
-		Assert.Equal(0, hsvComponents[1]);
-		Assert.Equal(0, hsvComponents[2]);
+		Assert.Equal(0, testColor.H);
+		Assert.Equal(0, testColor.S);
+		Assert.Equal(0, testColor.V);
 	}
 
 	[Fact]
@@ -45,7 +43,7 @@ public sealed class ColorTests {
 		Assert.Equal(64, testColor.R);
 		Assert.Equal(128, testColor.G);
 		Assert.Equal(128, testColor.B);
-		Assert.Equal(0.5, testColor.A);
+		Assert.Equal(0.5, testColor.A, precision: decimalPlaces);
 
 		Assert.Equal(0.5, testColor.H, decimalPlaces);
 		Assert.Equal(0.5, testColor.S, decimalPlaces);
@@ -72,7 +70,7 @@ public sealed class ColorTests {
 		Assert.Equal(63, testColor.R);
 		Assert.Equal(127, testColor.G);
 		Assert.Equal(127, testColor.B);
-		Assert.Equal(0.5, testColor.A);
+		Assert.Equal(0.5, testColor.A, precision: decimalPlaces);
 
 		Assert.Equal(0.5, testColor.H, decimalPlaces);
 		Assert.Equal(0.5, testColor.S, decimalPlaces);
@@ -315,7 +313,7 @@ public sealed class ColorTests {
 		Assert.Equal(128, color.R);
 		Assert.Equal(230, color.G);
 		Assert.Equal(26, color.B);
-		Assert.Equal(0.5, color.A);
+		Assert.Equal(0.5, color.A, precision: decimalPlaces);
 
 		Assert.Equal(0.25, color.H, decimalPlaces);
 		Assert.Equal(0.89, color.S, decimalPlaces);
@@ -428,7 +426,7 @@ public sealed class ColorTests {
 		Assert.Equal(63, color.R);
 		Assert.Equal(127, color.G);
 		Assert.Equal(127, color.B);
-		Assert.Equal(0.5, color.A);
+		Assert.Equal(0.5, color.A, precision: decimalPlaces);
 
 		Assert.Equal(0.5, color.H, decimalPlaces);
 		Assert.Equal(0.5, color.S, decimalPlaces);
@@ -840,5 +838,12 @@ public sealed class ColorTests {
 		Assert.Equal(expectedR, color.R);
 		Assert.Equal(expectedG, color.G);
 		Assert.Equal(expectedB, color.B);
+	}
+
+	[Fact]
+	public void ColorUses16BytesOfMemory() {
+		var color = new Color(10, 20, 30, 0.5f);
+		var size = System.Runtime.InteropServices.Marshal.SizeOf(color);
+		Assert.Equal(16, size);
 	}
 }
