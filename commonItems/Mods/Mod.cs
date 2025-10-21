@@ -22,13 +22,13 @@ public class Mod {
 		SupportedGameVersion = supportedGameVersion;
 	}
 	public Mod(Name name, Path path, GameVersion? supportedGameVersion, IEnumerable<string> dependencies) : this(name, path, supportedGameVersion) {
-		Dependencies = dependencies.ToHashSet();
+		Dependencies = new OrderedSet<string>(dependencies);
 	}
 	public Mod(Name name, Path path, GameVersion? supportedGameVersion, IEnumerable<string> dependencies, ISet<string> replacedFolders) : this(name, path, supportedGameVersion, dependencies) {
 		ReplacedFolders = replacedFolders;
 	}
 	public Mod(Name name, Path path, IEnumerable<string> dependencies) : this(name, path) {
-		Dependencies = dependencies.ToHashSet();
+		Dependencies = new OrderedSet<string>(dependencies);
 	}
 	public Mod(Name name, Path path, IEnumerable<string> dependencies, ISet<string> replacedFolders) : this(name, path, dependencies) {
 		ReplacedFolders = replacedFolders;
