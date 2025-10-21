@@ -119,7 +119,7 @@ public sealed partial class PDXSerializerTests {
 		var expectedString =
 			"{" + Environment.NewLine +
 			"\tnumber1 = 60.8" + Environment.NewLine +
-			"\tnumber2 = 60.123457" + Environment.NewLine +
+			"\tnumber2 = 60.12346" + Environment.NewLine +
 			"\tnumber3 = 60" + Environment.NewLine +
 			"}";
 		Assert.Equal(expectedString, PDXSerializer.Serialize(testObj));
