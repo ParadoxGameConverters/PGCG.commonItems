@@ -1,6 +1,5 @@
 ﻿using commonItems.Serialization;
 using System;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -27,21 +26,33 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 	public Date(int year, int month, int day) : this(year, month, day, false) { }
 	public Date(string init) : this(init, false) { }
 	public Date(string init, bool AUC) : this() {
-		init = init.RemQuotes();
-
-		var dateElements = init.Split('.').Where(x => !string.IsNullOrEmpty(x)).ToArray();
+		var dateSpan = init.RemQuotes().AsSpan();
 		var parsedYear = (int)Year;
 		try {
-			if (dateElements.Length >= 3) {
-				parsedYear = int.Parse(dateElements[0]);
-				Month = ClampMonth(int.Parse(dateElements[1]));
-				Day = ClampDay(int.Parse(dateElements[2]));
-			} else if (dateElements.Length == 2) {
-				parsedYear = int.Parse(dateElements[0]);
-				Month = ClampMonth(int.Parse(dateElements[1]));
-			} else if (dateElements.Length == 1) {
-				parsedYear = int.Parse(dateElements[0]);
-			} else {
+			var componentIndex = 0;
+			var segmentStart = 0;
+			for (var i = 0; i <= dateSpan.Length && componentIndex < 3; ++i) {
+				if (i == dateSpan.Length || dateSpan[i] == '.') {
+					var segmentLength = i - segmentStart;
+					if (segmentLength > 0) {
+						var segment = dateSpan.Slice(segmentStart, segmentLength);
+						switch (componentIndex) {
+							case 0:
+								parsedYear = int.Parse(segment);
+								break;
+							case 1:
+								Month = ClampMonth(int.Parse(segment));
+								break;
+							case 2:
+								Day = ClampDay(int.Parse(segment));
+								break;
+						}
+						++componentIndex;
+					}
+					segmentStart = i + 1;
+				}
+			}
+			if (componentIndex == 0) {
 				Logger.Warn("Problem constructing date: at least a year should be provided!");
 			}
 		} catch (Exception e) {
