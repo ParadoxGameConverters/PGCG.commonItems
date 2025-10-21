@@ -44,7 +44,7 @@ public sealed partial class ModParser : Parser {
 		RegisterRegex(GetPathOrArchiveRegex(), reader => Path = reader.GetString());
 		RegisterKeyword("dependencies", reader => Dependencies.UnionWith(reader.GetStrings()));
 		RegisterKeyword("replace_path", reader => ReplacedPaths.Add(reader.GetString()));
-		RegisterKeyword("supported_version", reader => SupportedGameVersion = new(reader.GetString())); // TODO: ADD UNIT TESTS FOR THIS
+		RegisterKeyword("supported_version", reader => SupportedGameVersion = new(reader.GetString()));
 		this.IgnoreUnregisteredItems();
 	}
 

@@ -45,14 +45,14 @@ public sealed partial class ModLoader {
 				continue;
 			}
 
-			if (mod.SupportedGameVersion is not null && gameVersion.IsLargerishThan(mod.SupportedGameVersion)) { // TODO: add unit tests for this
+			if (mod.SupportedGameVersion is not null && gameVersion.IsLargerishThan(mod.SupportedGameVersion)) {
+				string problemStr = $"\t\tMod [{mod.Name}] supports game version {mod.SupportedGameVersion.ToWildCard()}, " +
+				                    $"but the installed version is {gameVersion.ToShortString()}.";
 				if (throwForOutOfDateMods) {
-					throw new UserErrorException($"\t\tMod [{mod.Name}] supports game version {mod.SupportedGameVersion}, " +
-					                             $"but the installed version is {gameVersion}. Cannot continue.");
+					throw new UserErrorException($"{problemStr} Cannot continue.");
 				}
 
-				Logger.Warn($"\t\tMod [{mod.Name}] supports game version {mod.SupportedGameVersion}, " +
-				            $"but the installed version is {gameVersion}. Proceeding anyway, but this can cause issues.");
+				Logger.Warn($"{problemStr} Proceeding anyway, but this can cause issues.");
 			}
 
 			// All verified mods go into usableMods.
