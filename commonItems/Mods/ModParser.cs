@@ -6,7 +6,7 @@ namespace commonItems.Mods;
 public sealed partial class ModParser : Parser {
 	public string Name { get; private set; } = "";
 	public string Path { get; set; } = "";
-	public GameVersion? SupportedGameVersion { get; private set; } = null;
+	public GameVersion? SupportedGameVersion { get; private set; }
 
 	private bool compressed = false;
 	public OrderedSet<string> Dependencies { get; } = [];
