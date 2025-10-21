@@ -11,6 +11,7 @@ namespace commonItems.UnitTests.Mods;
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public sealed class ModLoaderTests {
 	private const string TestFilesPath = "TestFiles";
+	private readonly GameVersion installedGameVersion = new("1.31");
 
 	[Fact]
 	public void ModsCanBeLocatedUnpackedAndUpdated() {
@@ -19,7 +20,7 @@ public sealed class ModLoaderTests {
 		};
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
 		Assert.Collection(mods,
@@ -39,7 +40,7 @@ public sealed class ModLoaderTests {
 		};
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
 		Assert.Collection(mods,
@@ -52,7 +53,7 @@ public sealed class ModLoaderTests {
 		};
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
 		Assert.Collection(mods,
@@ -69,7 +70,7 @@ public sealed class ModLoaderTests {
 		};
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var usableMods = modLoader.UsableMods;
 
 		Assert.Empty(usableMods);
@@ -82,7 +83,7 @@ public sealed class ModLoaderTests {
 		Console.SetOut(output);
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, []);
+		modLoader.LoadMods(TestFilesPath, [], installedGameVersion, throwForOutOfDateMods: false);
 		var usableMods = modLoader.UsableMods;
 
 		Assert.Empty(usableMods);
@@ -98,7 +99,7 @@ public sealed class ModLoaderTests {
 			new(name: string.Empty, path: "mod/ugc_2845446001.mod") // Timeline Extension for Invictus
 		};
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var usableMods = modLoader.UsableMods;
 
 		Assert.Empty(usableMods);

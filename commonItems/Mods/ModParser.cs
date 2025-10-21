@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using commonItems.Collections;
 using System.Text.RegularExpressions;
 
 namespace commonItems.Mods;
@@ -6,10 +6,11 @@ namespace commonItems.Mods;
 public sealed partial class ModParser : Parser {
 	public string Name { get; private set; } = "";
 	public string Path { get; set; } = "";
+	public GameVersion? SupportedGameVersion { get; private set; } = null;
 
 	private bool compressed = false;
-	public SortedSet<string> Dependencies { get; } = [];
-	public SortedSet<string> ReplacedPaths { get; } = [];
+	public OrderedSet<string> Dependencies { get; } = [];
+	public OrderedSet<string> ReplacedPaths { get; } = [];
 
 	public void ParseMod(BufferedReader reader) {
 		RegisterKeys();
@@ -43,6 +44,7 @@ public sealed partial class ModParser : Parser {
 		RegisterRegex(GetPathOrArchiveRegex(), reader => Path = reader.GetString());
 		RegisterKeyword("dependencies", reader => Dependencies.UnionWith(reader.GetStrings()));
 		RegisterKeyword("replace_path", reader => ReplacedPaths.Add(reader.GetString()));
+		RegisterKeyword("supported_version", reader => SupportedGameVersion = new(reader.GetString())); // TODO: ADD UNIT TESTS FOR THIS
 		this.IgnoreUnregisteredItems();
 	}
 
