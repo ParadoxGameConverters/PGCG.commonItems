@@ -26,8 +26,8 @@ public sealed class ModLoaderTests {
 		Assert.Collection(mods,
 			item => Assert.Equal(new Mod("The Mod", Path.Combine(TestFilesPath, "mod", "themod")), item));
 		Assert.Collection(mods[0].Dependencies,
-			item => Assert.Equal("Missing Mod", item),
-			item => Assert.Equal("Packed Mod", item)
+			item => Assert.Equal("Packed Mod", item),
+			item => Assert.Equal("Missing Mod", item)
 		);
 	}
 	[Fact]
