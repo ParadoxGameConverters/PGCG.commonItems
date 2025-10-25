@@ -1,16 +1,18 @@
-﻿using commonItems.Mods;
+﻿using commonItems.Exceptions;
+using commonItems.Mods;
 using System;
 using System.IO;
 using System.Linq;
 using Xunit;
 using ModList = System.Collections.Generic.List<commonItems.Mods.Mod>;
 
-namespace commonItems.UnitTests.Mods; 
+namespace commonItems.UnitTests.Mods;
 
 [Collection("Sequential")]
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public sealed class ModLoaderTests {
 	private const string TestFilesPath = "TestFiles";
+	private readonly GameVersion installedGameVersion = new("1.31");
 
 	[Fact]
 	public void ModsCanBeLocatedUnpackedAndUpdated() {
@@ -19,14 +21,14 @@ public sealed class ModLoaderTests {
 		};
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
 		Assert.Collection(mods,
 			item => Assert.Equal(new Mod("The Mod", Path.Combine(TestFilesPath, "mod", "themod")), item));
 		Assert.Collection(mods[0].Dependencies,
-			item => Assert.Equal("Missing Mod", item),
-			item => Assert.Equal("Packed Mod", item)
+			item => Assert.Equal("Packed Mod", item),
+			item => Assert.Equal("Missing Mod", item)
 		);
 	}
 	[Fact]
@@ -39,7 +41,7 @@ public sealed class ModLoaderTests {
 		};
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
 		Assert.Collection(mods,
@@ -52,7 +54,7 @@ public sealed class ModLoaderTests {
 		};
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
 		Assert.Collection(mods,
@@ -69,7 +71,7 @@ public sealed class ModLoaderTests {
 		};
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var usableMods = modLoader.UsableMods;
 
 		Assert.Empty(usableMods);
@@ -82,11 +84,44 @@ public sealed class ModLoaderTests {
 		Console.SetOut(output);
 
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, []);
+		modLoader.LoadMods(TestFilesPath, [], installedGameVersion, throwForOutOfDateMods: false);
 		var usableMods = modLoader.UsableMods;
 
 		Assert.Empty(usableMods);
 		Assert.Contains("[INFO] No mods were detected in savegame. Skipping mod processing.", output.ToString());
+	}
+
+	[Fact]
+	public void LoadModsLogsWarningForOutOfDateMods() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		var incomingMods = new ModList {
+			new("Outdated Mod", "mod/outdated.mod") // supports up to 1.30
+		};
+		var modLoader = new ModLoader();
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
+		var usableMods = modLoader.UsableMods;
+
+		// Should still be added to usable mods.
+		Assert.Collection(usableMods,
+			item => Assert.Equal(new("Outdated Mod", Path.Combine(TestFilesPath, "mod", "outdated")), item));
+		var consoleOutput = output.ToString();
+		Assert.Contains("[WARN] \t\tMod [Outdated Mod] supports game version 1.30.*, but the installed version is 1.31. " +
+		                "Proceeding anyway, but this can cause issues.", consoleOutput);
+	}
+	
+	[Fact]
+	public void LoadModsThrowsForOutOfDateModsWhenConfigured() {
+		var incomingMods = new ModList {
+			new("Outdated Mod", "mod/outdated.mod") // supports up to 1.30
+		};
+		var modLoader = new ModLoader();
+		var exception = Assert.Throws<UserErrorException>(() =>
+			modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: true)
+		);
+
+		Assert.Equal("\t\tMod [Outdated Mod] supports game version 1.30.*, but the installed version is 1.31. Cannot continue.", exception.Message);
 	}
 
 	[Fact]
@@ -98,7 +133,7 @@ public sealed class ModLoaderTests {
 			new(name: string.Empty, path: "mod/ugc_2845446001.mod") // Timeline Extension for Invictus
 		};
 		var modLoader = new ModLoader();
-		modLoader.LoadMods(TestFilesPath, incomingMods);
+		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var usableMods = modLoader.UsableMods;
 
 		Assert.Empty(usableMods);

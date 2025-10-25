@@ -28,22 +28,22 @@ public class GameVersion {
 		var parts = version.Split('.');
 
 		if (parts.Length > 0) {
-			FirstPart = int.Parse(parts[0]);
+			FirstPart = parts[0] == "*" ? null : int.Parse(parts[0]);
 		} else {
 			return;
 		}
 		if (parts.Length > 1) {
-			SecondPart = int.Parse(parts[1]);
+			SecondPart = parts[1] == "*" ? null : int.Parse(parts[1]);
 		} else {
 			return;
 		}
 		if (parts.Length > 2) {
-			ThirdPart = int.Parse(parts[2]);
+			ThirdPart = parts[2] == "*" ? null : int.Parse(parts[2]);
 		} else {
 			return;
 		}
 		if (parts.Length > 3) {
-			FourthPart = int.Parse(parts[3]);
+			FourthPart = parts[3] == "*" ? null : int.Parse(parts[3]);
 		}
 	}
 

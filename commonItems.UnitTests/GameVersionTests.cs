@@ -321,6 +321,40 @@ public sealed class GameVersionTests {
 		Assert.False(requiredVersion.IsLargerishThan(new GameVersion("1.9.1")));
 	}
 
+	[Theory]
+	[InlineData("1.2.3.*", "1.2.3.*", true)]
+	[InlineData("1.2.3.*", "1.2.4", false)]
+	[InlineData("1.2.3.*", "1.2.3", true)]
+	[InlineData("1.2.3.*", "1.2.2", true)]
+	[InlineData("1.2.3.*", "1.3.0", false)]
+	[InlineData("1.2.3.*", "1.1.9", true)]
+	[InlineData("1.2.3", "1.2.3.*", true)]
+	[InlineData("1.2.4", "1.2.3.*", true)]
+	[InlineData("1.2.2", "1.2.3.*", false)]
+	[InlineData("1.3.0", "1.2.3.*", true)]
+	[InlineData("1.1.9", "1.2.3.*", false)]
+	[InlineData("1.2.*", "1.2.3", true)]
+	[InlineData("1.2.*", "1.3.0", false)]
+	[InlineData("1.2.*", "1.2.0", true)]
+	[InlineData("1.2.*", "1.1.9", true)]
+	[InlineData("1.*", "1.3.4", true)]
+	[InlineData("1.*", "2.0.0", false)]
+	[InlineData("*", "0.0.0", true)]
+	[InlineData("*", "9.9.9", true)]
+	[InlineData("1.2.3", "1.2.*", true)]
+	[InlineData("1.3.0", "1.2.*", true)]
+	[InlineData("1.2.0", "1.2.*", true)]
+	[InlineData("1.1.9", "1.2.*", false)]
+	[InlineData("1.3.4", "1.*", true)]
+	[InlineData("2.0.0", "1.*", true)]
+	[InlineData("0.0.0", "*", true)]
+	[InlineData("9.9.9", "*", true)]
+	public void LargerishWorksCorrectlyForVersionsWithWildcard(string lhs, string rhs, bool expectedResult) {
+		var leftVersion = new GameVersion(lhs);
+		var rightVersion = new GameVersion(rhs);
+		Assert.Equal(expectedResult, leftVersion.IsLargerishThan(rightVersion));
+	}
+
 	[Fact]
 	public void ExtractVersionFromLauncherExtractsGameVersion() {
 		var version = GameVersion.ExtractVersionFromLauncher(Path.Join(TestFilesPath, "launcher-settings.json"));

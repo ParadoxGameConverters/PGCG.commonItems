@@ -11,8 +11,9 @@ namespace commonItems.UnitTests.Colors;
 [CollectionDefinition("Sequential", DisableParallelization = true)]
 public sealed class NamedColorCollectionTests {
 	private const string GameRoot = "TestFiles/CK3/game";
-	private static readonly List<Mod> Mods = new() { new("Cool Mod", "TestFiles/mod/themod") };
-	private readonly ModFilesystem modFS = new(GameRoot, Mods);
+	private static readonly GameVersion supportedGameVersion = new("1.31.*");
+	private static readonly List<Mod> mods = [new("Cool Mod", "TestFiles/mod/themod", supportedGameVersion)];
+	private readonly ModFilesystem modFS = new(GameRoot, mods);
 	private readonly ColorFactory referenceColorFactory = new();
 
 	[Fact]
@@ -29,8 +30,8 @@ public sealed class NamedColorCollectionTests {
 		Console.SetOut(output);
 
 		var namedColors = new NamedColorCollection();
-		var mods = new List<Mod> {new("broken mod", "TestFiles/mod/mod_with_broken_colors")};
-		var modFSWithBrokenColors = new ModFilesystem(GameRoot, mods);
+		var modsWithBrokenMod = new List<Mod> {new("broken mod", "TestFiles/mod/mod_with_broken_colors", supportedGameVersion)};
+		var modFSWithBrokenColors = new ModFilesystem(GameRoot, modsWithBrokenMod);
 		namedColors.LoadNamedColors("common/named_colors", modFSWithBrokenColors);
 
 		var outStr = output.ToString();

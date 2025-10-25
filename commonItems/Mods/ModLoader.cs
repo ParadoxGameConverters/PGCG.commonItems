@@ -1,4 +1,5 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿using commonItems.Exceptions;
+using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,7 @@ public sealed partial class ModLoader {
 	private readonly List<Mod> possibleCompressedMods = []; // name, absolute path to zip file
 	public List<Mod> UsableMods { get; } = []; // name, absolute path for directories, relative for unpacked
 
-	public void LoadMods(string gameDocumentsPath, List<Mod> incomingMods) {
+	public void LoadMods(string gameDocumentsPath, List<Mod> incomingMods, GameVersion gameVersion, bool throwForOutOfDateMods) {
 		if (incomingMods.Count == 0) {
 			// We shouldn't even be here if the save didn't have mods! Why were Mods called?
 			Logger.Info("No mods were detected in savegame. Skipping mod processing.");
@@ -44,9 +45,19 @@ public sealed partial class ModLoader {
 				continue;
 			}
 
-			// All verified mods go into usableMods
+			if (mod.SupportedGameVersion is not null && gameVersion.IsLargerishThan(mod.SupportedGameVersion)) {
+				string problemStr = $"\t\tMod [{mod.Name}] supports game version {mod.SupportedGameVersion.ToWildCard()}, " +
+				                    $"but the installed version is {gameVersion.ToShortString()}.";
+				if (throwForOutOfDateMods) {
+					throw new UserErrorException($"{problemStr} Cannot continue.");
+				}
+
+				Logger.Warn($"{problemStr} Proceeding anyway, but this can cause issues.");
+			}
+
+			// All verified mods go into usableMods.
 			Logger.Info($"\t\t->> Found potentially useful [{mod.Name}]: {possibleModPath}/");
-			UsableMods.Add(new Mod(mod.Name, possibleModPath, mod.Dependencies, mod.ReplacedFolders));
+			UsableMods.Add(new Mod(mod.Name, possibleModPath, mod.SupportedGameVersion, mod.Dependencies, mod.ReplacedFolders));
 		}
 	}
 	private void LoadModDirectory(string gameDocumentsPath, List<Mod> incomingMods) {
@@ -174,11 +185,11 @@ public sealed partial class ModLoader {
 
 	private void FileUnderCategory(ModParser theMod, string path) {
 		if (!theMod.IsCompressed()) {
-			possibleUncompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies, theMod.ReplacedPaths));
+			possibleUncompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.SupportedGameVersion, theMod.Dependencies, theMod.ReplacedPaths));
 			Logger.Info(
 				$"\t\tFound a potential mod [{theMod.Name}] with a mod file at {path} and itself at {theMod.Path}");
 		} else {
-			possibleCompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.Dependencies, theMod.ReplacedPaths));
+			possibleCompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.SupportedGameVersion, theMod.Dependencies, theMod.ReplacedPaths));
 			Logger.Info(
 				$"\t\tFound a compressed mod [{theMod.Name}] with a mod file at {path} and itself at {theMod.Path}");
 		}
