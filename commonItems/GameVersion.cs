@@ -302,6 +302,27 @@ public class GameVersion {
 		return true;
 	}
 
+	public static bool IsModCompatibleWithGame(GameVersion modSupportedVersion, GameVersion installedGameVersion) {
+		// for cases like 1.2.3 vs 1.2.3
+		if (modSupportedVersion.Equals(installedGameVersion)) {
+			return true;
+		}
+		
+		// for cases like 1.2 vs 1.1
+		bool modLargerish = modSupportedVersion.IsLargerishThan(installedGameVersion);
+		bool gameLargerish = installedGameVersion.IsLargerishThan(modSupportedVersion);
+		if (modSupportedVersion > installedGameVersion && modLargerish  && !gameLargerish) {
+			return false;
+		}
+		
+		// for cases like 1.1 vs 1.2
+		if (installedGameVersion > modSupportedVersion && gameLargerish && !modLargerish) {
+			return false;
+		}
+		
+		return true;
+	}
+
 	public static GameVersion? ExtractVersionFromLauncher(string filePath) {
 		// use this for modern PDX games, point filePath to launcher-settings.json to get installation version.
 
