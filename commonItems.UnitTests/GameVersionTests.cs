@@ -349,6 +349,11 @@ public sealed class GameVersionTests {
 	[InlineData("2.0.0", "1.*", true)]
 	[InlineData("0.0.0", "*", true)]
 	[InlineData("9.9.9", "*", true)]
+	// cases found in IRToCK3
+	[InlineData("2.0.5", "2.0.4.*", true)]
+	[InlineData("2.0.5", "2.0.5.*", true)]
+	[InlineData("2.0.5", "2.0.*", true)]
+	[InlineData("2.0.5", "2.*", true)]
 	public void LargerishWorksCorrectlyForVersionsWithWildcard(string lhs, string rhs, bool expectedResult) {
 		var leftVersion = new GameVersion(lhs);
 		var rightVersion = new GameVersion(rhs);
@@ -402,5 +407,44 @@ public sealed class GameVersionTests {
 	public void ExtractVersionFromLauncherReturnsVersionForRome() {
 		var version = GameVersion.ExtractVersionFromLauncher(Path.Join(TestFilesPath, "rome-settings.json"));
 		Assert.Equal(new GameVersion("2.0.3"), version);
+	}
+
+	[Theory]
+	[InlineData("1.2.3.*", "1.2.3.*", true)]
+	[InlineData("1.2.3.*", "1.2.4", false)]
+	[InlineData("1.2.3.*", "1.2.3", true)]
+	[InlineData("1.2.3.*", "1.2.2", false)]
+	[InlineData("1.2.3.*", "1.3.0", false)]
+	[InlineData("1.2.3.*", "1.1.9", false)]
+	[InlineData("1.2.3", "1.2.3.*", true)]
+	[InlineData("1.2.4", "1.2.3.*", false)]
+	[InlineData("1.2.2", "1.2.3.*", false)]
+	[InlineData("1.3.0", "1.2.3.*", false)]
+	[InlineData("1.1.9", "1.2.3.*", false)]
+	[InlineData("1.2.*", "1.2.3", true)]
+	[InlineData("1.2.*", "1.3.0", false)]
+	[InlineData("1.2.*", "1.2.0", true)]
+	[InlineData("1.2.*", "1.1.9", false)]
+	[InlineData("1.*", "1.3.4", true)]
+	[InlineData("1.*", "2.0.0", false)]
+	[InlineData("*", "0.0.0", true)]
+	[InlineData("*", "9.9.9", true)]
+	[InlineData("1.2.3", "1.2.*", true)]
+	[InlineData("1.3.0", "1.2.*", false)]
+	[InlineData("1.2.0", "1.2.*", true)]
+	[InlineData("1.1.9", "1.2.*", false)]
+	[InlineData("1.3.4", "1.*", true)]
+	[InlineData("2.0.0", "1.*", false)]
+	[InlineData("0.0.0", "*", true)]
+	[InlineData("9.9.9", "*", true)]
+	// cases found in IRToCK3
+	[InlineData("2.0.4.*", "2.0.5", false)]
+	[InlineData("2.0.5.*", "2.0.5", true)]
+	[InlineData("2.0.*", "2.0.5", true)]
+	[InlineData("2.*", "2.0.5", true)]
+	public void IsModCompatibleWithGameReturnsCorrectValue(string modSupportedVersionStr, string installedGameVersionStr, bool expectedResult) {
+		var modSupportedVersion = new GameVersion(modSupportedVersionStr);
+		var installedGameVersion = new GameVersion(installedGameVersionStr);
+		Assert.Equal(expectedResult, GameVersion.IsModCompatibleWithGame(modSupportedVersion, installedGameVersion));
 	}
 }
