@@ -188,6 +188,26 @@ public sealed class ParserTests {
 		Assert.Equal("value", test.value);
 	}
 
+	private sealed class TestMisquotedRegex : Parser {
+		public string key = "";
+		public string? value;
+		public TestMisquotedRegex(BufferedReader bufferedReader) {
+			RegisterRegex("[k\\\"\\\\ey]+", (reader, k) => {
+				key = k;
+				value = reader.GetString();
+			});
+			ParseStream(bufferedReader);
+		}
+	}
+
+	[Fact]
+	public void MisquotedRegexesAreQuotedlyMatched() {
+		var bufferedReader = new BufferedReader("\"\\\"key\" = value");
+		var test = new TestMisquotedRegex(bufferedReader);
+		Assert.Equal("\"\\\"key\"", test.key);
+		Assert.Equal("value", test.value);
+	}
+
 	private sealed class Test5 : Parser {
 		public string key = "";
 		public string? value;

@@ -85,6 +85,20 @@ public sealed class StringOfItemTests {
 	}
 
 	[Fact]
+	public void StringOfItemHandlesItemContainingStringWithEscapedQuote() {
+		const string input =
+			"""
+			= {
+				foo = "some junk\"}"
+				bar = baz
+			}
+			""";
+		var reader = new BufferedReader(input);
+		var theItem = reader.GetStringOfItem();
+		Assert.Equal(input[2..], theItem.ToString());
+	}
+
+	[Fact]
 	public void StringOfItemCanBeConstructedFromString() {
 		const string str = "{ key=value }";
 		Assert.Equal(str, new StringOfItem(str).ToString());
