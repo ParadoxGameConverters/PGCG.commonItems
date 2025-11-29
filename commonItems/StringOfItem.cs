@@ -22,7 +22,7 @@ public sealed class StringOfItem : IPDXSerializable {
 				char inputChar = (char)reader.Read();
 				sb.Append(inputChar);
 
-				if (inputChar == '\"') {
+				if (inputChar == '\"' && (sb.Length < 2 || sb[^2] != '\\')) {
 					inQuotes = !inQuotes;
 				}
 				if (inputChar == '{' && !inQuotes) {
