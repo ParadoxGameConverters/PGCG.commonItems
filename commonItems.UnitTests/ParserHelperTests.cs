@@ -42,14 +42,14 @@ public sealed class ParserHelperTests {
 	}
 
 	[Fact]
-	public void IgnoreItemIgnoresMisquotedItem() {
+	public void IgnoreItemIgnoresItemWithEscapedQuote() {
 		var input = new BufferedReader("= \\\"ignore_me\" More text");
 		ParserHelpers.IgnoreItem(input);
 		Assert.Equal("More text", input.ReadToEnd());
 	}
 
 	[Fact]
-	public void IgnoreItemIgnoresMisquotedBracedItem() {
+	public void IgnoreItemIgnoresBracedItemWithEscapedQuote() {
 		var input = new BufferedReader("= { \\\"ignore_me\" } More text");
 		ParserHelpers.IgnoreItem(input);
 		Assert.Equal(" More text", input.ReadToEnd());
