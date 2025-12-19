@@ -47,7 +47,7 @@ public sealed class ModParserTests {
 
 		var theModFile = new ModParser();
 		theModFile.ParseMod("TestFiles/mod/parseable_mod_file.mod");
-		
+
 		Assert.Equal("modName", theModFile.Name);
 		Assert.Equal("modPath", theModFile.Path);
 		theModFile.Dependencies.Should().Equal("dep1", "dep2");
@@ -115,7 +115,7 @@ public sealed class ModParserTests {
 		var theModFile = new ModParser();
 		theModFile.ParseMod(reader);
 		theModFile.Path = "updated_path";
-		
+
 		Assert.Equal("updated_path", theModFile.Path);
 	}
 }
