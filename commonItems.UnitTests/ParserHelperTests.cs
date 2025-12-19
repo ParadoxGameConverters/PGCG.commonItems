@@ -215,19 +215,19 @@ public sealed class ParserHelperTests {
 	[Fact]
 	public void GetFloatsAddsFloats() {
 		var reader = new BufferedReader("1.25 2.5 3.75");
-		Assert.Equal(new[] {1.25f, 2.5f, 3.75f}, reader.GetFloats());
+		Assert.Equal([1.25f, 2.5f, 3.75f], reader.GetFloats());
 	}
 
 	[Fact]
 	public void GetFloatsAddsNegativeFloats() {
 		var reader = new BufferedReader("1.25 -2.5 -3.75");
-		Assert.Equal(new[] {1.25f, -2.5f, -3.75f}, reader.GetFloats());
+		Assert.Equal([1.25f, -2.5f, -3.75f], reader.GetFloats());
 	}
 
 	[Fact]
 	public void GetFloatsAddsQuotedFloats() {
 		var reader = new BufferedReader("\"1.25\" \"2.5\" \"3.75\"");
-		Assert.Equal(new[] {1.25f, 2.5f, 3.75f}, reader.GetFloats());
+		Assert.Equal([1.25f, 2.5f, 3.75f], reader.GetFloats());
 	}
 
 	[Fact]

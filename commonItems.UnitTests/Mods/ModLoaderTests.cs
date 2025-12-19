@@ -137,10 +137,10 @@ public sealed class ModLoaderTests {
 		var usableMods = modLoader.UsableMods;
 
 		Assert.Empty(usableMods);
-		var expectedModDetails = $"mod at {incomingMods.First().Path} " +
-		                         $"(probable Steam Workshop name: Timeline Extension for Invictus)";
+		var expectedModDetails = $"mod at {incomingMods[0].Path} " +
+		                         "(probable Steam Workshop name: Timeline Extension for Invictus)";
 		var consoleOutput = output.ToString();
 		Assert.Contains($"Savegame uses {expectedModDetails}, which is not present on disk. " +
-		                $"Skipping at your risk, but this can greatly affect conversion.", consoleOutput);
+		                "Skipping at your risk, but this can greatly affect conversion.", consoleOutput);
 	}
 }

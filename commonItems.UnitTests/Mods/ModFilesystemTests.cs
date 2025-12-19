@@ -79,7 +79,7 @@ public sealed class ModFilesystemTests {
 		var modThree = new Mod("Mod Three", "TestFiles/ModFilesystem/GetActualFileLocation/mod_three", Array.Empty<string>(),
 			new HashSet<string> {"test_fold"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
-			new[] {modOne, modTwo, modThree});
+			[modOne, modTwo, modThree]);
 
 		var filePath = modFS.GetActualFileLocation("test_folder/test_file.txt");
 		Assert.NotNull(filePath);
@@ -118,7 +118,7 @@ public sealed class ModFilesystemTests {
 		var modOne = new Mod("Mod One", "TestFiles/ModFilesystem/GetActualFileLocation/mod_one");
 		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two");
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
-			new[] {modOne, modTwo});
+			[modOne, modTwo]);
 
 		var filePath = modFS.GetActualFolderLocation("test_folder/deeper_folder");
 		Assert.NotNull(filePath);
@@ -198,7 +198,7 @@ public sealed class ModFilesystemTests {
 		var modTwo = new Mod("Mod Two", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two", Array.Empty<string>(),
 			new HashSet<string> {"test_folder"});
 		var modFS = new ModFilesystem("TestFiles/ModFilesystem/GetActualFileLocation/game_root",
-			new[] {modOne, modTwo});
+			[modOne, modTwo]);
 
 		modFS.GetAllFilesInFolder("test_folder").Should().Equal(
 			new ModFSFileInfo(fromMod: true, "mod_two_file.txt", "TestFiles/ModFilesystem/GetActualFileLocation/mod_two/test_folder/mod_two_file.txt"),
