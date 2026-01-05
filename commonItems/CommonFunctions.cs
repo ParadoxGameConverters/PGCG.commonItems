@@ -58,7 +58,7 @@ public static class CommonFunctions {
 			return string.Empty;
 		}
 
-		return rawFile.Substring(dotPos + 1);
+		return rawFile[(dotPos + 1)..];
 	}
 	public static string ReplaceCharacter(string fileName, char character) {
 		return fileName.Replace(character, '_');
