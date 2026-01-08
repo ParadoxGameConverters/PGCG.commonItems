@@ -89,7 +89,7 @@ public sealed class ColorFactory {
 					return new Color(rgb[0], rgb[1], rgb[2]);
 				case 4:
 					// RGBA
-					return new Color(rgb[0], rgb[1], rgb[2], (float)rgb[3]);
+					return new Color(rgb[0], rgb[1], rgb[2], rgb[3]);
 				default: {
 					Logger.Warn("Color has wrong number of components for unprefixed color: " +
 					            $"{string.Join(',', rgb)}.");
