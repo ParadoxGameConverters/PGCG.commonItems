@@ -3,25 +3,42 @@ using commonItems.Mods;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace commonItems.Localization;
 
 public class LocDB : IdObjectCollection<string, LocBlock> {
 	private readonly string baseLanguage;
 	private readonly string[] otherLanguages;
+	private readonly string baseLanguageHeader;
+	private readonly string[] otherLanguageHeaders;
+	private readonly string baseLanguageFileSuffix;
+	private readonly string[] otherLanguageFileSuffixes;
 
 	public LocDB(string baseLanguage, params string[] otherLanguages) {
 		this.baseLanguage = baseLanguage;
 		this.otherLanguages = otherLanguages;
+		baseLanguageHeader = $"l_{baseLanguage}:";
+		otherLanguageHeaders = new string[otherLanguages.Length];
+		for (var i = 0; i < otherLanguages.Length; ++i) {
+			otherLanguageHeaders[i] = $"l_{otherLanguages[i]}:";
+		}
+		baseLanguageFileSuffix = $"l_{baseLanguage}";
+		otherLanguageFileSuffixes = new string[otherLanguages.Length];
+		for (var i = 0; i < otherLanguages.Length; ++i) {
+			otherLanguageFileSuffixes[i] = $"l_{otherLanguages[i]}";
+		}
 	}
 
 	public void ScrapeLocalizations(ModFilesystem modFS) {
 		Logger.Info("Reading Localization...");
 
-		var locFiles = modFS.GetAllFilesInFolderRecursive("localization")
-			.Where(f => CommonFunctions.GetExtension(f.RelativePath) == "yml");
-		var locLinesCount = locFiles.Select(f => f.AbsolutePath).Sum(ScrapeFile);
+		var locLinesCount = 0;
+		foreach (var file in modFS.GetAllFilesInFolderRecursive("localization")) {
+			if (!"yml".Equals(CommonFunctions.GetExtension(file.RelativePath), StringComparison.Ordinal)) {
+				continue;
+			}
+			locLinesCount += ScrapeFile(file.AbsolutePath);
+		}
 		
 		Logger.Info($"{locLinesCount} localization lines read.");
 	}
@@ -71,26 +88,46 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		ref string? currentLanguage,
 		ref bool languageSpecified
 	) {
-		if (line == null || line.Length < 4 || line.TrimStart().StartsWith('#')) {
+		if (line == null || line.Length < 4) {
 			return new(null, null);
 		}
 
-		line = line.TrimEnd();
+		ReadOnlySpan<char> span = line.AsSpan();
+		var end = span.Length;
+		while (end > 0 && char.IsWhiteSpace(span[end - 1])) {
+			--end;
+		}
+		if (end == 0) {
+			return new(null, null);
+		}
+		span = span.Slice(0, end);
 
-		var separatorIndex = line.IndexOf(':');
+		var start = 0;
+		while (start < span.Length && char.IsWhiteSpace(span[start])) {
+			++start;
+		}
+		if (start >= span.Length) {
+			return new(null, null);
+		}
+		if (span[start] == '#') {
+			return new(null, null);
+		}
+
+		var separatorIndex = span.Slice(start).IndexOf(':');
 		if (separatorIndex == -1) {
 			return new(null, null);
 		}
+		separatorIndex += start;
 
-		if (line.StartsWith("l_", StringComparison.Ordinal)) {
-			if (line == $"l_{baseLanguage}:") {
+		if (start == 0 && span.StartsWith("l_", StringComparison.Ordinal)) {
+			if (span.SequenceEqual(baseLanguageHeader.AsSpan())) {
 				currentLanguage = baseLanguage;
 			}
-			foreach (var language in otherLanguages) {
-				if (line != $"l_{language}:") {
+			for (var i = 0; i < otherLanguageHeaders.Length; ++i) {
+				if (!span.SequenceEqual(otherLanguageHeaders[i].AsSpan())) {
 					continue;
 				}
-				currentLanguage = language;
+				currentLanguage = otherLanguages[i];
 			}
 			languageSpecified = true;
 
@@ -102,27 +139,36 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 			return new(null, null);
 		}
 
-		var key = line.Substring(0, separatorIndex).TrimStart();
-		var newLine = line.Substring(separatorIndex + 1);
-		var quoteIndex = newLine.IndexOf('\"');
-		var quote2Index = newLine.LastIndexOf('\"');
+		var keySpan = span.Slice(0, separatorIndex);
+		var keyStart = 0;
+		while (keyStart < keySpan.Length && char.IsWhiteSpace(keySpan[keyStart])) {
+			++keyStart;
+		}
+		if (keyStart >= keySpan.Length) {
+			return new(null, null);
+		}
+		var key = new string(keySpan.Slice(keyStart));
+
+		var valueSpan = span.Slice(separatorIndex + 1);
+		var quoteIndex = valueSpan.IndexOf('"');
+		var quote2Index = valueSpan.LastIndexOf('"');
 		if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) {
 			return new(key, null);
 		}
 
-		var value = newLine.Substring(quoteIndex + 1, quote2Index - quoteIndex - 1);
+		var value = new string(valueSpan.Slice(quoteIndex + 1, quote2Index - quoteIndex - 1));
 		return new(key, value);
 	}
 	
 	private string? DetermineLanguageFromFileName(string fileName) {
 		string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
 
-		if (fileNameWithoutExtension.EndsWith("l_" + baseLanguage, StringComparison.Ordinal)) {
+		if (fileNameWithoutExtension.EndsWith(baseLanguageFileSuffix, StringComparison.Ordinal)) {
 			return baseLanguage;
 		}
-		foreach (var language in otherLanguages) {
-			if (fileNameWithoutExtension.EndsWith("l_" + language, StringComparison.Ordinal)) {
-				return language;
+		for (var i = 0; i < otherLanguageFileSuffixes.Length; ++i) {
+			if (fileNameWithoutExtension.EndsWith(otherLanguageFileSuffixes[i], StringComparison.Ordinal)) {
+				return otherLanguages[i];
 			}
 		}
 		
