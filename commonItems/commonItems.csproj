@@ -32,7 +32,7 @@
     <PackageReference Include="ColorHashSharp" Version="1.1.0" />
     <PackageReference Include="GameFinder.StoreHandlers.GOG" Version="4.9.0" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.9.0" />
-    <PackageReference Include="Hardware.Info" Version="101.1.0.1" />
+    <PackageReference Include="Hardware.Info" Version="101.1.1" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
     <PackageReference Include="log4net" Version="3.2.0" />
     <PackageReference Include="Mono.TextTemplating" Version="3.0.0" />
