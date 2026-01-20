@@ -1,4 +1,4 @@
-﻿using Hardware.Info;
+using Hardware.Info;
 using System;
 using System.Globalization;
 
@@ -30,7 +30,6 @@ public static class DebugInfo {
 	public static void LogExecutableDirectory() {
 		Logger.Debug($"Executable directory: {AppDomain.CurrentDomain.BaseDirectory}");
 	}
-
 
 	public static void LogEverything() {
 		LogSystemInfo();
