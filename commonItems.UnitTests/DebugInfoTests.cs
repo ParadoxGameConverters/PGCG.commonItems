@@ -27,7 +27,7 @@ public class DebugInfoTests {
 		Assert.Contains("CPU: ", result);
 	}
 
-	[Fact]
+	[SkippableFact]
 	public void LogAntivirusInfoLogsAntivirusNameOnWindows() {
 		Skip.IfNot(OperatingSystem.IsWindows(), "This test is only for Windows platforms.");
 
