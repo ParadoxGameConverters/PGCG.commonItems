@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace commonItems.UnitTests;
@@ -30,6 +31,8 @@ public class DebugInfoTests {
 	[SkippableFact]
 	public void LogAntivirusInfoLogsAntivirusNameOnWindows() {
 		Skip.IfNot(OperatingSystem.IsWindows(), "This test is only for Windows platforms.");
+		Skip.If(RuntimeInformation.OSDescription.Contains("Windows Server", StringComparison.OrdinalIgnoreCase),
+			"This test is skipped on Windows Server platforms.");
 
 		var output = new StringWriter();
 		Console.SetOut(output);
