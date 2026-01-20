@@ -100,7 +100,7 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		if (end == 0) {
 			return new(null, null);
 		}
-		span = span.Slice(0, end);
+		span = span[..end];
 
 		var start = 0;
 		while (start < span.Length && char.IsWhiteSpace(span[start])) {
@@ -113,7 +113,6 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 			return new(null, null);
 		}
 
-		var separatorIndex = span.Slice(start).IndexOf(':');
 		var separatorIndex = span[start..].IndexOf(':');
 		if (separatorIndex == -1) {
 			return new(null, null);
@@ -148,7 +147,7 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 			return new(null, null);
 		}
 
-		var keySpan = span.Slice(0, separatorIndex);
+		var keySpan = span[..separatorIndex];
 		var keyStart = 0;
 		while (keyStart < keySpan.Length && char.IsWhiteSpace(keySpan[keyStart])) {
 			++keyStart;
