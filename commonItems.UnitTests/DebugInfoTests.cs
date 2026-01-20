@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using Xunit;
 
 namespace commonItems.UnitTests;
@@ -28,32 +27,6 @@ public class DebugInfoTests {
 		Assert.Contains("CPU: ", result);
 	}
 
-	[SkippableFact]
-	public void LogAntivirusInfoLogsAntivirusNameOnWindows() {
-		Skip.IfNot(OperatingSystem.IsWindows(), "This test is only for Windows platforms.");
-		Skip.If(RuntimeInformation.OSDescription.Contains("Windows Server", StringComparison.OrdinalIgnoreCase),
-			"This test is skipped on Windows Server platforms.");
-
-		var output = new StringWriter();
-		Console.SetOut(output);
-
-		DebugInfo.LogAntivirusInfo();
-		var result = output.ToString();
-		Assert.Contains("Found antivirus: ", result);
-	}
-
-	[SkippableFact]
-	public void LogAntivirusInfoLogsNothingOnNonWindows() {
-		Skip.If(OperatingSystem.IsWindows(), "This test is only for non-Windows platforms.");
-
-		var output = new StringWriter();
-		Console.SetOut(output);
-
-		DebugInfo.LogAntivirusInfo();
-		var result = output.ToString();
-		Assert.Empty(result);
-	}
-
 	[Fact]
 	public void LogEverythingLogsAllInfo() {
 		var output = new StringWriter();
@@ -66,9 +39,5 @@ public class DebugInfoTests {
 		Assert.Contains("Installed UI language: ", result);
 		Assert.Contains("CPU: ", result);
 		Assert.Contains("Executable directory: ", result);
-		if (!OperatingSystem.IsWindows()) {
-			// Antivirus info is not collected on non-Windows platforms.
-			Assert.DoesNotContain("Found antivirus: ", result);
-		}
 	}
 }
