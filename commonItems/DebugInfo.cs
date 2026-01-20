@@ -1,13 +1,9 @@
 ﻿using Hardware.Info;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-#if !NATIVEAOT
-using System.Management;
-#else
-using System.Collections.Generic;
 using Microsoft.Win32;
-#endif
 using System.Runtime.InteropServices;
 
 namespace commonItems; 
@@ -47,43 +43,17 @@ public static class DebugInfo {
 			return;
 		}
 
-#if NATIVEAOT
 		try {
 			var installedAntiviruses = GetAntivirusNamesFromRegistry().ToArray();
-			foreach (var antivirusName in installedAntiviruses) {
-				Console.WriteLine($"Found antivirus: {antivirusName}");
-			}
-		} catch (Exception e) {
-			Console.WriteLine($"Exception was raised when locating antiviruses: {e.Message}");
-		}
-#else
-		try {
-			var searcherPreVista = new ManagementObjectSearcher($@"\\{Environment.MachineName}\root\SecurityCenter", "SELECT * FROM AntivirusProduct");
-			var searcherPostVista = new ManagementObjectSearcher($@"\\{Environment.MachineName}\root\SecurityCenter2", "SELECT * FROM AntivirusProduct");
-			var preVistaResult = searcherPreVista.Get().OfType<ManagementObject>();
-			var postVistaResult = searcherPostVista.Get().OfType<ManagementObject>();
-
-			var instances = preVistaResult.Concat(postVistaResult);
-
-#pragma warning disable CA1416
-			var installedAntiviruses = instances
-				.Select(i => i.Properties.OfType<PropertyData>())
-				.Where(pd => pd.Any(p => p.Name == "displayName"))
-				.Select(pd => pd.Single(p => p.Name == "displayName").Value.ToString())
-				.ToArray();
-#pragma warning restore CA1416
-
 			foreach (var antivirusName in installedAntiviruses) {
 				Logger.Debug($"Found antivirus: {antivirusName}");
 			}
 		} catch (Exception e) {
 			Logger.Debug($"Exception was raised when locating antiviruses: {e.Message}");
 		}
-#endif
 	}
 
-#if NATIVEAOT
-	private static IEnumerable<string> GetAntivirusNamesFromRegistry() {
+	private static HashSet<string> GetAntivirusNamesFromRegistry() {
 		var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 		foreach (var view in new[] { RegistryView.Registry32, RegistryView.Registry64 }) {
@@ -123,7 +93,6 @@ public static class DebugInfo {
 			// Best-effort registry read; ignore failures.
 		}
 	}
-#endif
 
 	public static void LogEverything() {
 		LogSystemInfo();
