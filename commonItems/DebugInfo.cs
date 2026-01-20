@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace commonItems; 
 
@@ -53,6 +54,7 @@ public static class DebugInfo {
 		}
 	}
 
+	[SupportedOSPlatform("windows")]
 	private static HashSet<string> GetAntivirusNamesFromRegistry() {
 		var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -64,6 +66,7 @@ public static class DebugInfo {
 		return names;
 	}
 
+	[SupportedOSPlatform("windows")]
 	private static void TryReadSecurityCenterKey(RegistryView view, string subKeyPath, HashSet<string> names) {
 		try {
 			using var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view);
