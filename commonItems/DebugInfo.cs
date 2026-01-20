@@ -2,7 +2,12 @@
 using System;
 using System.Globalization;
 using System.Linq;
+#if !NATIVEAOT
 using System.Management;
+#else
+using System.Collections.Generic;
+using Microsoft.Win32;
+#endif
 using System.Runtime.InteropServices;
 
 namespace commonItems; 
@@ -42,6 +47,16 @@ public static class DebugInfo {
 			return;
 		}
 
+#if NATIVEAOT
+		try {
+			var installedAntiviruses = GetAntivirusNamesFromRegistry().ToArray();
+			foreach (var antivirusName in installedAntiviruses) {
+				Console.WriteLine($"Found antivirus: {antivirusName}");
+			}
+		} catch (Exception e) {
+			Console.WriteLine($"Exception was raised when locating antiviruses: {e.Message}");
+		}
+#else
 		try {
 			var searcherPreVista = new ManagementObjectSearcher($@"\\{Environment.MachineName}\root\SecurityCenter", "SELECT * FROM AntivirusProduct");
 			var searcherPostVista = new ManagementObjectSearcher($@"\\{Environment.MachineName}\root\SecurityCenter2", "SELECT * FROM AntivirusProduct");
@@ -64,7 +79,51 @@ public static class DebugInfo {
 		} catch (Exception e) {
 			Logger.Debug($"Exception was raised when locating antiviruses: {e.Message}");
 		}
+#endif
 	}
+
+#if NATIVEAOT
+	private static IEnumerable<string> GetAntivirusNamesFromRegistry() {
+		var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+		foreach (var view in new[] { RegistryView.Registry32, RegistryView.Registry64 }) {
+			TryReadSecurityCenterKey(view, @"SOFTWARE\Microsoft\Security Center\Provider\Av", names);
+			TryReadSecurityCenterKey(view, @"SOFTWARE\Microsoft\Security Center2\Provider\Av", names);
+		}
+
+		return names;
+	}
+
+	private static void TryReadSecurityCenterKey(RegistryView view, string subKeyPath, HashSet<string> names) {
+		try {
+			using var baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view);
+			using var avKey = baseKey.OpenSubKey(subKeyPath, writable: false);
+			if (avKey == null) {
+				return;
+			}
+
+			foreach (var subKeyName in avKey.GetSubKeyNames()) {
+				using var productKey = avKey.OpenSubKey(subKeyName, writable: false);
+				if (productKey == null) {
+					continue;
+				}
+
+				var displayName = productKey.GetValue("DisplayName") as string;
+				if (!string.IsNullOrWhiteSpace(displayName)) {
+					names.Add(displayName);
+					continue;
+				}
+
+				var productName = productKey.GetValue("ProductName") as string;
+				if (!string.IsNullOrWhiteSpace(productName)) {
+					names.Add(productName);
+				}
+			}
+		} catch {
+			// Best-effort registry read; ignore failures.
+		}
+	}
+#endif
 
 	public static void LogEverything() {
 		LogSystemInfo();
