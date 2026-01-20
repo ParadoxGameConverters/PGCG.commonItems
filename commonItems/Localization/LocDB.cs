@@ -114,6 +114,7 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		}
 
 		var separatorIndex = span.Slice(start).IndexOf(':');
+		var separatorIndex = span[start..].IndexOf(':');
 		if (separatorIndex == -1) {
 			return new(null, null);
 		}
@@ -139,6 +140,14 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 			return new(null, null);
 		}
 
+		// Fail fast when line is malformed, to avoid allocating the key string.
+		var valueSpan = span[(separatorIndex + 1)..];
+		var quoteIndex = valueSpan.IndexOf('"');
+		var quote2Index = valueSpan.LastIndexOf('"');
+		if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) {
+			return new(null, null);
+		}
+
 		var keySpan = span.Slice(0, separatorIndex);
 		var keyStart = 0;
 		while (keyStart < keySpan.Length && char.IsWhiteSpace(keySpan[keyStart])) {
@@ -147,16 +156,9 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		if (keyStart >= keySpan.Length) {
 			return new(null, null);
 		}
-		var key = new string(keySpan.Slice(keyStart));
+		var key = new string(keySpan[keyStart..]);
 
-		var valueSpan = span.Slice(separatorIndex + 1);
-		var quoteIndex = valueSpan.IndexOf('"');
-		var quote2Index = valueSpan.LastIndexOf('"');
-		if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) {
-			return new(key, null);
-		}
-
-		var value = new string(valueSpan.Slice(quoteIndex + 1, quote2Index - quoteIndex - 1));
+		var value = new string(valueSpan[(quoteIndex + 1)..(quote2Index)]);
 		return new(key, value);
 	}
 	
