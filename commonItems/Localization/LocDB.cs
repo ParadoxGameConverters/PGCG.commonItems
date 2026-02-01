@@ -1,12 +1,16 @@
 ﻿using commonItems.Collections;
 using commonItems.Mods;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace commonItems.Localization;
 
 public class LocDB : IdObjectCollection<string, LocBlock> {
+	private const int EstimatedKeysPerFile = 100;
 	private readonly string baseLanguage;
 	private readonly string[] otherLanguages;
 	private readonly string baseLanguageHeader;
@@ -32,15 +36,93 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 	public void ScrapeLocalizations(ModFilesystem modFS) {
 		Logger.Info("Reading Localization...");
 
-		var locLinesCount = 0;
-		foreach (var file in modFS.GetAllFilesInFolderRecursive("localization")) {
-			if (!"yml".Equals(CommonFunctions.GetExtension(file.RelativePath), StringComparison.Ordinal)) {
-				continue;
-			}
-			locLinesCount += ScrapeFile(file.AbsolutePath);
+		var files = modFS.GetAllFilesInFolderRecursive("localization")
+			.Where(file => "yml".Equals(CommonFunctions.GetExtension(file.RelativePath), StringComparison.Ordinal))
+			.ToList();
+
+		// Pre-allocate dictionary capacity based on estimated keys per file
+		var estimatedTotalKeys = files.Count * EstimatedKeysPerFile;
+		if (dict is Dictionary<string, LocBlock> dictionary && dictionary.Count == 0) {
+			dictionary.EnsureCapacity(estimatedTotalKeys);
 		}
+
+		var locLinesCount = ScrapeFilesParallel(files);
 		
 		Logger.Info($"{locLinesCount} localization lines read.");
+	}
+
+	private int ScrapeFilesParallel(List<ModFSFileInfo> files) {
+		if (files.Count == 0) {
+			return 0;
+		}
+
+		// Read all files in parallel into temporary dictionaries
+		var fileResults = new ConcurrentDictionary<int, (Dictionary<string, Dictionary<string, string>> keyLangLocs, int lineCount)>();
+		
+		Parallel.For(0, files.Count, i => {
+			var filePath = files[i].AbsolutePath;
+			try {
+				using var stream = File.OpenText(filePath);
+				var reader = new BufferedReader(stream);
+				var currentLanguage = DetermineLanguageFromFileName(filePath);
+				var result = ScrapeStreamToTempDict(reader, currentLanguage);
+				fileResults[i] = result;
+			} catch (Exception e) {
+				Logger.Warn($"Could not parse localization file {filePath}: {e}");
+				fileResults[i] = (new Dictionary<string, Dictionary<string, string>>(), 0);
+			}
+		});
+
+		// Merge results in the correct order (later files override earlier ones)
+		var totalLines = 0;
+		for (int i = 0; i < files.Count; i++) {
+			if (!fileResults.TryGetValue(i, out var result)) {
+				continue;
+			}
+
+			foreach (var (key, langLocs) in result.keyLangLocs) {
+				if (dict.TryGetValue(key, out var locBlock)) {
+					foreach (var (language, loc) in langLocs) {
+						locBlock[language] = loc;
+					}
+				} else {
+					var newBlock = new LocBlock(key, baseLanguage);
+					foreach (var (language, loc) in langLocs) {
+						newBlock[language] = loc;
+					}
+					dict.Add(key, newBlock);
+				}
+			}
+			totalLines += result.lineCount;
+		}
+
+		return totalLines;
+	}
+
+	private (Dictionary<string, Dictionary<string, string>> keyLangLocs, int lineCount) ScrapeStreamToTempDict(
+		BufferedReader reader,
+		string? currentLanguage = null
+	) {
+		var keyLangLocs = new Dictionary<string, Dictionary<string, string>>(capacity: EstimatedKeysPerFile);
+		var linesRead = 0;
+		bool languageSpecified = currentLanguage != null;
+
+		while (!reader.EndOfStream) {
+			var line = reader.ReadLine();
+			var (key, loc) = DetermineKeyLocalizationPair(line, ref currentLanguage, ref languageSpecified);
+			if (currentLanguage is null || key is null || loc is null) {
+				continue;
+			}
+
+			if (!keyLangLocs.TryGetValue(key, out var langLocs)) {
+				langLocs = [];
+				keyLangLocs[key] = langLocs;
+			}
+			langLocs[currentLanguage] = loc;
+			++linesRead;
+		}
+
+		return (keyLangLocs, linesRead);
 	}
 	
 	/// <summary>
@@ -157,7 +239,7 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		}
 		var key = new string(keySpan[keyStart..]);
 
-		var value = new string(valueSpan[(quoteIndex + 1)..(quote2Index)]);
+		var value = new string(valueSpan[(quoteIndex + 1)..quote2Index]);
 		return new(key, value);
 	}
 	
