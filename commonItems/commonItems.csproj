@@ -38,7 +38,7 @@
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.9.0" />
     <PackageReference Include="Hardware.Info.Aot" Version="101.1.1.1" />
     <PackageReference Include="IcgSoftware.IntToOrdinalNumber" Version="1.0.0" />
-    <PackageReference Include="log4net" Version="3.2.0" />
+    <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Mono.TextTemplating" Version="3.0.0" />
     <PackageReference Include="NCalcSync" Version="5.12.0" />
     <PackageReference Include="Open.Collections" Version="4.2.0" />
