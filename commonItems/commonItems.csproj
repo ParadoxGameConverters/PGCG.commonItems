@@ -20,7 +20,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- prevent default SDK glob from pulling in everything under commonItems, including generated sources -->
     <Compile Remove="commonItems\**" />
+    <Compile Remove="**\*.Generated.cs" />
     <EmbeddedResource Remove="commonItems\**" />
     <None Remove="commonItems\**" />
   </ItemGroup>
