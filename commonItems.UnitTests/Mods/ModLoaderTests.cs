@@ -2,7 +2,6 @@
 using commonItems.Mods;
 using System;
 using System.IO;
-using System.Linq;
 using Xunit;
 using ModList = System.Collections.Generic.List<commonItems.Mods.Mod>;
 

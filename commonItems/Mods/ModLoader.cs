@@ -45,8 +45,9 @@ public sealed partial class ModLoader {
 				continue;
 			}
 
-			if (mod.SupportedGameVersion is not null && !GameVersion.IsModCompatibleWithGame(mod.SupportedGameVersion, gameVersion)) {
-				string problemStr = $"\t\tMod [{mod.Name}] supports game version {mod.SupportedGameVersion.ToWildCard()}, " +
+			if (mod.SupportedGameVersion.HasValue && !GameVersion.IsModCompatibleWithGame(mod.SupportedGameVersion.Value, gameVersion)) {
+				var supported = mod.SupportedGameVersion.Value;
+				string problemStr = $"\t\tMod [{mod.Name}] supports game version {supported.ToWildCard()}, " +
 				                    $"but the installed version is {gameVersion.ToShortString()}.";
 				if (throwForOutOfDateMods) {
 					throw new UserErrorException($"{problemStr} Cannot continue.");

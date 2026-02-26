@@ -5,13 +5,11 @@ using System.Text;
 
 namespace commonItems; 
 
-public class GameVersion {
+public readonly struct GameVersion : IEquatable<GameVersion> {
 	public int? FirstPart { get; }
 	public int? SecondPart { get; }
 	public int? ThirdPart { get; }
 	public int? FourthPart { get; }
-
-	public GameVersion() { }
 
 	public GameVersion(int? theFirstPart, int? theSecondPart, int? theThirdPart, int? theFourthPart) {
 		FirstPart = theFirstPart;
@@ -64,18 +62,15 @@ public class GameVersion {
 		FourthPart = fourthPart;
 	}
 
-	public override bool Equals(object? obj) {
-		if (obj is not GameVersion rhs) {
-			return false;
-		}
+	public bool Equals(GameVersion other) {
 		var testL = 0;
 		var testR = 0;
 		if (FirstPart is not null) {
 			testL = FirstPart.Value;
 		}
 
-		if (rhs.FirstPart is not null) {
-			testR = rhs.FirstPart.Value;
+		if (other.FirstPart is not null) {
+			testR = other.FirstPart.Value;
 		}
 
 		if (testL != testR) {
@@ -88,8 +83,8 @@ public class GameVersion {
 			testL = SecondPart.Value;
 		}
 
-		if (rhs.SecondPart is not null) {
-			testR = rhs.SecondPart.Value;
+		if (other.SecondPart is not null) {
+			testR = other.SecondPart.Value;
 		}
 
 		if (testL != testR) {
@@ -102,8 +97,8 @@ public class GameVersion {
 			testL = ThirdPart.Value;
 		}
 
-		if (rhs.ThirdPart is not null) {
-			testR = rhs.ThirdPart.Value;
+		if (other.ThirdPart is not null) {
+			testR = other.ThirdPart.Value;
 		}
 
 		if (testL != testR) {
@@ -116,16 +111,26 @@ public class GameVersion {
 			testL = FourthPart.Value;
 		}
 
-		if (rhs.FourthPart is not null) {
-			testR = rhs.FourthPart.Value;
+		if (other.FourthPart is not null) {
+			testR = other.FourthPart.Value;
 		}
 
 		return testL == testR;
 	}
 
+	public override bool Equals(object? obj) {
+		if (obj is not GameVersion other) {
+			return false;
+		}
+		return Equals(other);
+	}
+
 	public override int GetHashCode() {
 		return HashCode.Combine(FirstPart, SecondPart, ThirdPart, FourthPart);
 	}
+
+	public static bool operator ==(GameVersion lhs, GameVersion rhs) => lhs.Equals(rhs);
+	public static bool operator !=(GameVersion lhs, GameVersion rhs) => !lhs.Equals(rhs);
 
 	public static bool operator >=(GameVersion lhs, GameVersion rhs) {
 		return lhs > rhs || lhs.Equals(rhs);
