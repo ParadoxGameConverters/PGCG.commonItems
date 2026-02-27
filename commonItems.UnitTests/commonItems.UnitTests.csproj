@@ -4,8 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
-	  
-	<Nullable>enable</Nullable>
+    
+    <Nullable>enable</Nullable>
+
+    <!-- The new xUnit.net v3/Microsoft Testing Platform model requires test projects to be executable rather than libraries. -->
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,21 +23,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Csv" Version="2.0.217" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageReference Include="Roslynator.Analyzers" Version="4.15.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
     <PackageReference Include="coverlet.collector" Version="8.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Xunit.SkippableFact" Version="1.5.61" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,5 +48,11 @@
 	<Target Name="CopyCustomContent" AfterTargets="Build">
 		<Copy SourceFiles="@(TestFiles)" DestinationFolder="$(OutDir)\TestFiles\%(RecursiveDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" Retries="3" RetryDelayMilliseconds="300" />
 	</Target>
+
+  <!-- enable the Microsoft Testing Platform runner and make sure `dotnet test` uses MTP instead of the legacy VSTest driver -->
+  <PropertyGroup>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
 
 </Project>
