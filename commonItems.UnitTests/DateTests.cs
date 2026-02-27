@@ -256,7 +256,7 @@ public sealed class DateTests {
 	[InlineData("954.3.1", "201.3.1")]
 	[InlineData("1306.3.1", "553.3.1")]
 	public void AUCCanBeConvertedToAD(string aucDateString, string expectedADDate) {
-		var date = new Date(aucDateString, true);
+		var date = new Date(aucDateString, AUC: true);
 		Assert.Equal(expectedADDate, date.ToString());
 	}
 
@@ -292,20 +292,20 @@ public sealed class DateTests {
 	public void DateCanBeUsedByIComparer() {
 		var dates = new SortedSet<Date>(new DescendingComparer<Date>()) {
 			// should keep dates in descending order
-			new Date(1000, 1, 1),
-			new Date(1000, 2, 3),
-			new Date(1000, 2, 1),
-			new Date(900, 1, 1),
-			new Date(5000, 1, 1),
-			new Date(4, 1, 1)
+			new(1000, 1, 1),
+			new(1000, 2, 3),
+			new(1000, 2, 1),
+			new(900, 1, 1),
+			new(5000, 1, 1),
+			new(4, 1, 1)
 		};
 		Assert.Collection(dates,
-			item => Assert.Equal(new Date(5000, 1, 1), item),
-			item => Assert.Equal(new Date(1000, 2, 3), item),
-			item => Assert.Equal(new Date(1000, 2, 1), item),
-			item => Assert.Equal(new Date(1000, 1, 1), item),
-			item => Assert.Equal(new Date(900, 1, 1), item),
-			item => Assert.Equal(new Date(4, 1, 1), item)
+			item => Assert.Equal(new(5000, 1, 1), item),
+			item => Assert.Equal(new(1000, 2, 3), item),
+			item => Assert.Equal(new(1000, 2, 1), item),
+			item => Assert.Equal(new(1000, 1, 1), item),
+			item => Assert.Equal(new(900, 1, 1), item),
+			item => Assert.Equal(new(4, 1, 1), item)
 		);
 	}
 

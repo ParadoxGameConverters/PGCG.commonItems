@@ -34,7 +34,7 @@ public sealed class OrderedSetTests {
 			item => Assert.Equal(3, item));
 
 		set.Add(5);
-		
+
 		set.Should().Equal(1, 2, 4, 3, 5);
 	}
 
@@ -73,7 +73,7 @@ public sealed class OrderedSetTests {
 	public void IsProperSubsetOfReturnsCorrectValue() {
 		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
 		var superset = new OrderedSet<int> {1, 2, 3, 4, 5, 6};
-		
+
 		Assert.True(set.IsProperSubsetOf(superset));
 		Assert.False(set.IsProperSubsetOf(set));
 	}
@@ -82,7 +82,7 @@ public sealed class OrderedSetTests {
 	public void IsProperSupersetOfReturnsCorrectValue() {
 		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
 		var subset = new OrderedSet<int> {1, 2, 3};
-		
+
 		Assert.True(set.IsProperSupersetOf(subset));
 		Assert.False(set.IsProperSupersetOf(set));
 	}
@@ -92,7 +92,7 @@ public sealed class OrderedSetTests {
 		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
 		var superset = new OrderedSet<int> {1, 2, 3, 4, 5, 6};
 		var otherSet = new HashSet<int> {4, 5, 6};
-		
+
 		Assert.True(set.IsSubsetOf(superset));
 		Assert.True(set.IsSubsetOf(set));
 		Assert.False(set.IsSubsetOf(otherSet));
@@ -103,7 +103,7 @@ public sealed class OrderedSetTests {
 		var set = new OrderedSet<int> {1, 2, 3, 4, 5};
 		var subset = new OrderedSet<int> {1, 2, 3};
 		var otherSet = new HashSet<int> {4, 5, 6};
-		
+
 		Assert.True(set.IsSupersetOf(subset));
 		Assert.True(set.IsSupersetOf(set));
 		Assert.False(set.IsSupersetOf(otherSet));
@@ -114,7 +114,7 @@ public sealed class OrderedSetTests {
 		var set = new OrderedSet<int> {1, 2, 3};
 		var overlappingSet = new OrderedSet<int> {1, 2, 4};
 		var nonOverlappingSet = new OrderedSet<int> {4, 5, 6};
-		
+
 		Assert.True(set.Overlaps(overlappingSet));
 		Assert.False(set.Overlaps(nonOverlappingSet));
 	}
@@ -124,7 +124,7 @@ public sealed class OrderedSetTests {
 		var set = new OrderedSet<int> {1, 2, 3};
 		var equalArray = new[] {1, 2, 3};
 		var unequalList = new List<int> {1, 2, 3, 4};
-		
+
 		Assert.True(set.SetEquals(equalArray));
 		Assert.False(set.SetEquals(unequalList));
 	}

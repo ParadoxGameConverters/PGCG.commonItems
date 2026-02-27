@@ -75,7 +75,7 @@ public sealed partial class PDXSerializerTests {
 	private sealed partial class TestCK3Title(string id, Color color) : IPDXSerializable, IIdentifiable<string> {
 		[commonItems.Serialization.NonSerialized] public string Id { get; } = id;
 		public Color? color { get; } = color;
-		[SerializeOnlyValue] public TestTitleCollection DeJureVassals { get; } = new();
+		[SerializeOnlyValue] public TestTitleCollection DeJureVassals { get; } = [];
 	}
 
 	[Fact]
@@ -137,7 +137,7 @@ public sealed partial class PDXSerializerTests {
 		var i3 = new TestRulerInfo { Health = 100 };
 		Assert.Contains("health = 100", PDXSerializer.Serialize(i3, string.Empty));
 		var i4 = new TestRulerInfo { Health = null };
-		Assert.DoesNotContain("health", PDXSerializer.Serialize(i4, string.Empty));	
+		Assert.DoesNotContain("health", PDXSerializer.Serialize(i4, string.Empty));
 	}
 
 	[Fact]
@@ -205,7 +205,7 @@ public sealed partial class PDXSerializerTests {
 	public void QuotedStringsAreNotSerializedWithAdditionalQuotes() {
 		const string unquotedString = "unquoted";
 		const string quotedString = "\"quoted\"";
-		
+
 		Assert.Equal("unquoted", PDXSerializer.Serialize(unquotedString));
 		Assert.Equal("\"quoted\"", PDXSerializer.Serialize(quotedString));
 	}
