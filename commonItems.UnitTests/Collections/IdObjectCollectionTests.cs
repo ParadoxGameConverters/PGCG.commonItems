@@ -12,6 +12,7 @@ public sealed class IdObjectCollectionTests {
 
 	[Fact]
 	public void ObjectsCanBeAddedAndRemoved() {
+		// ReSharper disable once UseObjectOrCollectionInitializer
 		var characters = new Characters();
 
 		characters.Add(new Character("bob"));
@@ -25,9 +26,8 @@ public sealed class IdObjectCollectionTests {
 		Assert.Equal(2, characters.Count);
 
 		characters.Remove("bob");
-		Assert.Collection(characters,
-			ch2 => Assert.Equal("frank", ch2.Id)
-		);
+		var ch2 = Assert.Single(characters);
+		Assert.Equal("frank", ch2.Id);
 		Assert.False(characters.ContainsKey("bob"));
 #pragma warning disable xUnit2013 // Do not use equality check to check for collection size.
 		Assert.Equal(1, characters.Count);
