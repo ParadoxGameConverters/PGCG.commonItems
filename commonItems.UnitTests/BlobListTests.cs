@@ -51,7 +51,7 @@ public sealed class BlobListTests {
 		var expectedBlobs = new List<string> {
 			"foo\t=\nbar\n \n{bar\t=\tbaz\n\n}",
 			"BROKEN\t\t\tbar\n=\nbaz\n \t\tbaz\t=\nfoo\t",
-			"\t\nbaz\n\t=\t\n\tfoo\n {} \n\tfoo\t=\tbar\t"
+			"\t\nbaz\n\t=\t\n\tfoo\n {} \n\tfoo\t=\tbar\t",
 		};
 		Assert.Equal(expectedBlobs, theBlobs.Blobs);
 	}

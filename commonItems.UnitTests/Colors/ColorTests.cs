@@ -709,7 +709,7 @@ public sealed class ColorTests {
 	public void ColorPaletteCanBeInitializedByDict() {
 		var dict = new Dictionary<string, Color> {
 			{"white", new Color(255, 255, 255)},
-			{"gray", new Color(50, 50, 50)}
+			{"gray", new Color(50, 50, 50)},
 		};
 		var colorFactory = new ColorFactory();
 		colorFactory.AddNamedColorDict(dict);
@@ -777,7 +777,7 @@ public sealed class ColorTests {
 	public void ColorPaletteCanBeAlteredByDict() {
 		var wrongDict = new Dictionary<string, Color> {
 			{"white", new Color(0, 0, 0)},
-			{"red", new Color(255, 255, 19)}
+			{"red", new Color(255, 255, 19)},
 		};
 
 		var colorFactory = new ColorFactory();
@@ -785,7 +785,7 @@ public sealed class ColorTests {
 
 		var correctDict = new Dictionary<string, Color> {
 			{"white", new Color(255, 255, 255)},
-			{"red", new Color(255, 0, 0)}
+			{"red", new Color(255, 0, 0)},
 		};
 		colorFactory.AddNamedColorDict(correctDict);
 

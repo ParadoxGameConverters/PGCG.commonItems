@@ -297,7 +297,7 @@ public sealed class DateTests {
 			new(1000, 2, 1),
 			new(900, 1, 1),
 			new(5000, 1, 1),
-			new(4, 1, 1)
+			new(4, 1, 1),
 		};
 		Assert.Collection(dates,
 			item => Assert.Equal(new(5000, 1, 1), item),

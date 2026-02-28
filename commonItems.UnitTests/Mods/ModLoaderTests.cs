@@ -16,15 +16,15 @@ public sealed class ModLoaderTests {
 	[Fact]
 	public void ModsCanBeLocatedUnpackedAndUpdated() {
 		var incomingMods = new ModList {
-			new("Some mod", "mod/themod.mod") // mod's in fact named "The Mod" in the file
+			new("Some mod", "mod/themod.mod"), // mod's in fact named "The Mod" in the file
 		};
 
 		var modLoader = new ModLoader();
 		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
-		Assert.Collection(mods,
-			item => Assert.Equal(new Mod("The Mod", Path.Combine(TestFilesPath, "mod", "themod")), item));
+		var mod = Assert.Single(mods);
+		Assert.Equal(new Mod("The Mod", Path.Combine(TestFilesPath, "mod", "themod")), mod);
 		Assert.Collection(mods[0].Dependencies,
 			item => Assert.Equal("Packed Mod", item),
 			item => Assert.Equal("Missing Mod", item)
@@ -36,28 +36,28 @@ public sealed class ModLoaderTests {
 			new("", "mod/themod.mod"), // no name given
 			new("Broken mod", "mod/brokenmod.mod"), // no path
 			new("Missing mod", "mod/missingmod.mod"), // missing directory
-			new("Nonexistent mod", "mod/nonexistentmod.mod") // doesn't exist.
+			new("Nonexistent mod", "mod/nonexistentmod.mod"), // doesn't exist.
 		};
 
 		var modLoader = new ModLoader();
 		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
-		Assert.Collection(mods,
-			item => Assert.Equal(new Mod("The Mod", Path.Combine(TestFilesPath, "mod", "themod")), item));
+		var mod = Assert.Single(mods);
+		Assert.Equal(new Mod("The Mod", Path.Combine(TestFilesPath, "mod", "themod")), mod);
 	}
 	[Fact]
 	public void CompressedModsCanBeUnpacked() {
 		var incomingMods = new ModList {
-			new("some packed mod", "mod/packedmod.mod")
+			new("some packed mod", "mod/packedmod.mod"),
 		};
 
 		var modLoader = new ModLoader();
 		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var mods = modLoader.UsableMods;
 
-		Assert.Collection(mods,
-			item => Assert.Equal(new Mod("Packed Mod", Path.Combine("mods", "packedmod")), item));
+		var mod = Assert.Single(mods);
+		Assert.Equal(new Mod("Packed Mod", Path.Combine("mods", "packedmod")), mod);
 		Assert.True(Directory.Exists(Path.Combine("mods", "packedmod")));
 	}
 	[Fact]
@@ -66,7 +66,7 @@ public sealed class ModLoaderTests {
 		Console.SetOut(output);
 
 		var incomingMods = new ModList {
-			new("broken packed mod", "mod/brokenpacked.mod")
+			new("broken packed mod", "mod/brokenpacked.mod"),
 		};
 
 		var modLoader = new ModLoader();
@@ -96,24 +96,24 @@ public sealed class ModLoaderTests {
 		Console.SetOut(output);
 
 		var incomingMods = new ModList {
-			new("Outdated Mod", "mod/outdated.mod") // supports up to 1.30
+			new("Outdated Mod", "mod/outdated.mod"), // supports up to 1.30
 		};
 		var modLoader = new ModLoader();
 		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
 		var usableMods = modLoader.UsableMods;
 
 		// Should still be added to usable mods.
-		Assert.Collection(usableMods,
-			item => Assert.Equal(new("Outdated Mod", Path.Combine(TestFilesPath, "mod", "outdated")), item));
+		var mod = Assert.Single(usableMods);
+		Assert.Equal(new("Outdated Mod", Path.Combine(TestFilesPath, "mod", "outdated")), mod);
 		var consoleOutput = output.ToString();
 		Assert.Contains("[WARN] \t\tMod [Outdated Mod] supports game version 1.30.*, but the installed version is 1.31. " +
 		                "Proceeding anyway, but this can cause issues.", consoleOutput);
 	}
-	
+
 	[Fact]
 	public void LoadModsThrowsForOutOfDateModsWhenConfigured() {
 		var incomingMods = new ModList {
-			new("Outdated Mod", "mod/outdated.mod") // supports up to 1.30
+			new("Outdated Mod", "mod/outdated.mod"), // supports up to 1.30
 		};
 		var modLoader = new ModLoader();
 		var exception = Assert.Throws<UserErrorException>(() =>
@@ -129,7 +129,7 @@ public sealed class ModLoaderTests {
 		Console.SetOut(output);
 
 		var incomingMods = new ModList {
-			new(name: string.Empty, path: "mod/ugc_2845446001.mod") // Timeline Extension for Invictus
+			new(name: string.Empty, path: "mod/ugc_2845446001.mod"), // Timeline Extension for Invictus
 		};
 		var modLoader = new ModLoader();
 		modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: false);
