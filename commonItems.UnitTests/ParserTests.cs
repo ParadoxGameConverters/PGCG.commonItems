@@ -469,7 +469,7 @@ public sealed class ParserTests {
 		const string gameRoot = "TestFiles/CK3/game";
 		var mods = new List<Mod> {
 			new("mod1", "TestFiles/mod/themod"),
-			new("mod2", "TestFiles/mod/mod2")
+			new("mod2", "TestFiles/mod/mod2"),
 		};
 		var modFS = new ModFilesystem(gameRoot, mods);
 

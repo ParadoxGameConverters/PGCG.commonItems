@@ -424,7 +424,7 @@ public sealed class ParserHelperTests {
 		var assignments = reader.GetAssignments();
 
 		var expectedAssignments = new List<KeyValuePair<string, string>> {
-			new("id", "180"), new("type", "46"), new("type", "48")
+			new("id", "180"), new("type", "46"), new("type", "48"),
 		};
 		Assert.Equal(expectedAssignments, assignments);
 	}
@@ -750,12 +750,8 @@ public sealed class ParserHelperTests {
 		Assert.Collection(instance.doubles,
 			item => Assert.Equal(5, item),
 			item => Assert.Equal(0.7, item, 8));
-		Assert.Collection(instance.assignments,
-			item => {
-				var (key, value) = item;
-				Assert.Equal("beep", key);
-				Assert.Equal("peep", value);
-			}
-		);
+		var assignment = Assert.Single(instance.assignments);
+		Assert.Equal("beep", assignment.Key);
+		Assert.Equal("peep", assignment.Value);
 	}
 }

@@ -21,24 +21,24 @@ public sealed partial class PDXSerializerTests {
 
 	[SerializationByProperties]
 	private sealed partial class TestTitle : IPDXSerializable {
-		public int id { get; set; } = 20;
-		public ulong capital_prov_id { get; set; } = 420;
-		public double development { get; set; } = 50.5;
+		public int id => 20;
+		public ulong capital_prov_id => 420;
+		public double development => 50.5;
 		[commonItems.Serialization.NonSerialized] public int priority { get; set; } = 50;
-		public string name { get; set; } = "\"Papal States\"";
-		public List<string> pope_names_list { get; set; } = ["Peter", "John", "Hadrian"];
+		public string name => "\"Papal States\"";
+		public List<string> pope_names_list { get; } = ["Peter", "John", "Hadrian"];
 		public List<short> empty_list { get; } = [];
-		public Color color1 { get; set; } = new(2, 4, 6);
+		public Color color1 { get; } = new(2, 4, 6);
 		public bool definite_form { get; }
 		public bool landless => true;
 		public Date creation_date { get; } = new(600, 4, 5);
 		public Dictionary<string, string> textures { get; } = new() {
 			{ "diffuse", "\"gfx/models/diffuse.dds\"" },
-			{ "normal", "\"gfx/models/normal.dds\"" }
+			{ "normal", "\"gfx/models/normal.dds\"" },
 		};
 		public Dictionary<int, string> weights { get; } = new() {
 			{ 10, "roman_gfx" },
-			{ 5, "italian_gfx" }
+			{ 5, "italian_gfx" },
 		};
 		public HashSet<string> greetings { get; } = ["\"hi\"", "\"salutations\"", "\"greetings\""];
 		[SerializeOnlyValue] public KeyValuePair<string, string> kvPair { get; } = new("key", "value");
@@ -55,8 +55,8 @@ public sealed partial class PDXSerializerTests {
 
 	[SerializationByProperties]
 	private sealed partial class PascalCaseClass : IPDXSerializable {
-		[SerializedName("name")] public string Name { get; } = "Property";
-		[SerializedName("culture")] public string Culture { get; } = "roman";
+		[SerializedName("name")] public string Name => "Property";
+		[SerializedName("culture")] public string Culture => "roman";
 	}
 
 	[SerializationByProperties]
@@ -65,7 +65,7 @@ public sealed partial class PDXSerializerTests {
 		public Dictionary<string, object> HistoryFields { get; } = new() {
 			{ "culture", "roman" },
 			{ "development", 3.14 },
-			{ "buildings", new List<string> { "baths", "aqueduct" } }
+			{ "buildings", new List<string> { "baths", "aqueduct" } },
 		};
 	}
 

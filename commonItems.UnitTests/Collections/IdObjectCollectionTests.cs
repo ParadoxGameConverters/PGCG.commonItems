@@ -50,7 +50,7 @@ public sealed class IdObjectCollectionTests {
 	[Fact]
 	public void ObjectsCanBeAddedWithTryAdd() {
 		var characters = new Characters {
-			new Character("bob")
+			new Character("bob"),
 		};
 
 		Assert.False(characters.TryAdd(new Character("bob")));
@@ -79,7 +79,7 @@ public sealed class IdObjectCollectionTests {
 		Assert.Empty(characters);
 	}
 
-    private class TestObj(int id, string name) : IIdentifiable<int> {
+    private sealed class TestObj(int id, string name) : IIdentifiable<int> {
 		public int Id { get; } = id;
 		public string Name { get; } = name;
 	}
