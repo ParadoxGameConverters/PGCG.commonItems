@@ -22,8 +22,15 @@ public sealed class StringOfItem : IPDXSerializable {
 				char inputChar = (char)reader.Read();
 				sb.Append(inputChar);
 
-				if (inputChar == '\"' && (sb.Length < 2 || sb[^2] != '\\')) {
-					inQuotes = !inQuotes;
+				if (inputChar == '\"') {
+					// Count consecutive backslashes before the quote
+					int backslashCount = 0;
+					for (int i = sb.Length - 2; i >= 0 && sb[i] == '\\'; i--) {
+						backslashCount++;
+					}
+					if (backslashCount % 2 == 0) { // even number of backslashes means quote is not escaped
+						inQuotes = !inQuotes;
+					}
 				}
 				if (inputChar == '{' && !inQuotes) {
 					++braceDepth;
