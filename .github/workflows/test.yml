@@ -26,15 +26,15 @@ jobs:
       working-directory: commonItems.UnitTests
       shell: pwsh
       run: |
-       $env:CoverletOutput='./TestResults/coverage.info'
-       $env:CoverletOutputFormat='lcov'
-       dotnet test /p:CollectCoverage=true /p:IncludeTestAssembly=true /p:ExcludeByFile=**/Microsoft.NET.Test.Sdk.Program.cs /p:Exclude=[commonItems.UnitTests]*
+       dotnet test --no-build --coverlet \
+         --coverlet-output-format lcov \
+         --coverlet-exclude "[commonItems.UnitTests]*"
 
     - name: "Publish coverage report to coveralls.io"
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: commonItems.UnitTests/TestResults/coverage.info
+        path-to-lcov: commonItems.UnitTests/bin/Debug/net10.0/TestResults/coverage.info
 
   test:
     strategy:
