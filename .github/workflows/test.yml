@@ -26,9 +26,7 @@ jobs:
       working-directory: commonItems.UnitTests
       shell: pwsh
       run: |
-       dotnet test --no-build --coverlet \
-         --coverlet-output-format lcov \
-         --coverlet-exclude "[commonItems.UnitTests]*"
+       dotnet test --no-build --coverlet --coverlet-output-format lcov --coverlet-exclude "[commonItems.UnitTests]*"
 
     - name: "Publish coverage report to coveralls.io"
       uses: coverallsapp/github-action@master
