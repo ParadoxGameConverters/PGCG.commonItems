@@ -23,10 +23,29 @@ public sealed class ColorFactory {
 		if (hex.Length != 6) {
 			throw new FormatException("Color has wrong number of digits");
 		}
-		var r = int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber);
-		var g = int.Parse(hex.Substring(2, 2), NumberStyles.HexNumber);
-		var b = int.Parse(hex.Substring(4, 2), NumberStyles.HexNumber);
+		var span = hex.AsSpan();
+		var r = ParseHexByte(span[0], span[1]);
+		var g = ParseHexByte(span[2], span[3]);
+		var b = ParseHexByte(span[4], span[5]);
 		return new Color(r, g, b);
+	}
+
+	private static int ParseHexByte(char high, char low) {
+		return (HexDigitToInt(high) << 4) | HexDigitToInt(low);
+	}
+
+	private static int HexDigitToInt(char c) {
+		if (c is >= '0' and <= '9') {
+			return c - '0';
+		}
+		if (c is >= 'A' and <= 'F') {
+			return c - 'A' + 10;
+		}
+		if (c is >= 'a' and <= 'f') {
+			return c - 'a' + 10;
+		}
+
+		throw new FormatException("Color has invalid hex digits");
 	}
 	private static Color GetHsvColor(BufferedReader reader) {
 		var hsv = reader.GetFloats();
@@ -128,8 +147,8 @@ public sealed class ColorFactory {
 					return GetColorByName(token);
 				}
 
-				foreach (var ch in token.ToCharArray().Reverse()) {
-					reader.PushBack(ch);
+				for (var i = token.Length - 1; i >= 0; --i) {
+					reader.PushBack(token[i]);
 				}
 
 				return GetUnprefixedColor(reader);
