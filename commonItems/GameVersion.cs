@@ -19,29 +19,41 @@ public readonly struct GameVersion : IEquatable<GameVersion> {
 	}
 
 	public GameVersion(string version) {
-		version = version.Trim();
-		if (string.IsNullOrEmpty(version)) {
+		var span = version.AsSpan().Trim();
+		if (span.IsEmpty) {
 			return;
 		}
-		var parts = version.Split('.');
 
-		if (parts.Length > 0) {
-			FirstPart = parts[0] == "*" ? null : int.Parse(parts[0]);
-		} else {
-			return;
-		}
-		if (parts.Length > 1) {
-			SecondPart = parts[1] == "*" ? null : int.Parse(parts[1]);
-		} else {
-			return;
-		}
-		if (parts.Length > 2) {
-			ThirdPart = parts[2] == "*" ? null : int.Parse(parts[2]);
-		} else {
-			return;
-		}
-		if (parts.Length > 3) {
-			FourthPart = parts[3] == "*" ? null : int.Parse(parts[3]);
+		var partIndex = 0;
+		var segmentStart = 0;
+		for (var i = 0; i <= span.Length; ++i) {
+			if (i < span.Length && span[i] != '.') {
+				continue;
+			}
+
+			var segment = span[segmentStart..i];
+			int? parsedPart = segment is ['*'] ? null : int.Parse(segment);
+			switch (partIndex) {
+				case 0:
+					FirstPart = parsedPart;
+					break;
+				case 1:
+					SecondPart = parsedPart;
+					break;
+				case 2:
+					ThirdPart = parsedPart;
+					break;
+				case 3:
+					FourthPart = parsedPart;
+					break;
+			}
+
+			partIndex++;
+			if (partIndex > 3) {
+				break;
+			}
+
+			segmentStart = i + 1;
 		}
 	}
 
@@ -195,21 +207,21 @@ public readonly struct GameVersion : IEquatable<GameVersion> {
 	}
 
 	public string ToShortString() {
-		var sb = new StringBuilder();
+		var sb = new StringBuilder(16);
+		if (FirstPart is not null) {
+			sb.Append(FirstPart.Value);
+		}
+		if (SecondPart is not null) {
+			sb.Append('.');
+			sb.Append(SecondPart.Value);
+		}
+		if (ThirdPart is not null) {
+			sb.Append('.');
+			sb.Append(ThirdPart.Value);
+		}
 		if (FourthPart is not null) {
 			sb.Append('.');
 			sb.Append(FourthPart.Value);
-		}
-		if (ThirdPart is not null) {
-			sb.Insert(0, ThirdPart.Value);
-			sb.Insert(0, '.');
-		}
-		if (SecondPart is not null) {
-			sb.Insert(0, SecondPart.Value);
-			sb.Insert(0, '.');
-		}
-		if (FirstPart is not null) {
-			sb.Insert(0, FirstPart.Value);
 		}
 		return sb.ToString();
 	}
