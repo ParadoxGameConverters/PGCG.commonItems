@@ -126,18 +126,27 @@ public static class CommonFunctions {
 	// from C++ commonItems version's OSCommonLayer
 	public static string NormalizeUTF8Path(string utf8Path) {
 		string asciiPath = EncodingConversions.ConvertUTF8ToASCII(utf8Path);
-		asciiPath = asciiPath.Replace('/', '_');
-		asciiPath = asciiPath.Replace('\\', '_');
-		asciiPath = asciiPath.Replace(':', '_');
-		asciiPath = asciiPath.Replace('*', '_');
-		asciiPath = asciiPath.Replace('?', '_');
-		asciiPath = asciiPath.Replace('\"', '_');
-		asciiPath = asciiPath.Replace('<', '_');
-		asciiPath = asciiPath.Replace('>', '_');
-		asciiPath = asciiPath.Replace('|', '_');
-		asciiPath = asciiPath.Replace("\t", string.Empty);
 
-		return asciiPath;
+		var normalizedLength = asciiPath.Length;
+		foreach (var c in asciiPath) {
+			if (c == '\t') {
+				normalizedLength--;
+			}
+		}
+
+		return string.Create(normalizedLength, asciiPath, static (destination, source) => {
+			var writeIndex = 0;
+			foreach (var c in source) {
+				if (c == '\t') {
+					continue;
+				}
+
+				destination[writeIndex++] = c switch {
+					'/' or '\\' or ':' or '*' or '?' or '"' or '<' or '>' or '|' => '_',
+					_ => c,
+				};
+			}
+		});
 	}
 
 	/// <summary>

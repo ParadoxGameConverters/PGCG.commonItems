@@ -38,34 +38,100 @@ public class OrderedSet<T> : ISet<T>, IReadOnlyCollection<T> where T : notnull {
 	}
 
 	public void IntersectWith(IEnumerable<T> other) {
-		IEnumerable<T> otherArray = other as T[] ?? other.ToArray();
-		foreach (T item in this.ToArray().Where(item => !otherArray.Contains(item))) {
-			Remove(item);
+		if (Count == 0) {
+			return;
+		}
+
+		var otherSet = other as HashSet<T> ?? new HashSet<T>(other, dictionary.Comparer);
+		var node = linkedList.First;
+		while (node is not null) {
+			var next = node.Next;
+			if (!otherSet.Contains(node.Value)) {
+				dictionary.Remove(node.Value);
+				linkedList.Remove(node);
+			}
+			node = next;
 		}
 	}
 
 	public bool IsProperSubsetOf(IEnumerable<T> other) {
-		return this.ToHashSet().IsProperSubsetOf(other);
+		var otherSet = other as HashSet<T> ?? new HashSet<T>(other, dictionary.Comparer);
+		if (Count >= otherSet.Count) {
+			return false;
+		}
+
+		foreach (var item in linkedList) {
+			if (!otherSet.Contains(item)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public bool IsProperSupersetOf(IEnumerable<T> other) {
-		return this.ToHashSet().IsProperSupersetOf(other);
+		var otherSet = other as HashSet<T> ?? new HashSet<T>(other, dictionary.Comparer);
+		if (Count <= otherSet.Count) {
+			return false;
+		}
+
+		foreach (var item in otherSet) {
+			if (!Contains(item)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public bool IsSubsetOf(IEnumerable<T> other) {
-		return this.ToHashSet().IsSubsetOf(other);
+		var otherSet = other as HashSet<T> ?? new HashSet<T>(other, dictionary.Comparer);
+		if (Count > otherSet.Count) {
+			return false;
+		}
+
+		foreach (var item in linkedList) {
+			if (!otherSet.Contains(item)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public bool IsSupersetOf(IEnumerable<T> other) {
-		return this.ToHashSet().IsSupersetOf(other);
+		foreach (var item in other) {
+			if (!Contains(item)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public bool Overlaps(IEnumerable<T> other) {
-		return this.ToHashSet().Overlaps(other);
+		foreach (var item in other) {
+			if (Contains(item)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public bool SetEquals(IEnumerable<T> other) {
-		return this.ToHashSet().SetEquals(other);
+		var otherSet = other as HashSet<T> ?? new HashSet<T>(other, dictionary.Comparer);
+		if (Count != otherSet.Count) {
+			return false;
+		}
+
+		foreach (var item in linkedList) {
+			if (!otherSet.Contains(item)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public void SymmetricExceptWith(IEnumerable<T> other) {

@@ -204,7 +204,7 @@ public class Parser {
 	}
 
 	public static string GetNextLexeme(BufferedReader reader) {
-		var sb = new StringBuilder();
+		var sb = new StringBuilder(32);
 
 		var inQuotes = false;
 		var inLiteralQuote = false;
@@ -237,11 +237,9 @@ public class Parser {
 				sb.Append(inputChar);
 				break;
 			} else if (inQuotes) {
+				sb.Append(inputChar);
 				if (inputChar == '\"' && previousChar != '\\') {
-					sb.Append(inputChar);
 					break;
-				} else {
-					sb.Append(inputChar);
 				}
 			} else { // not in quotes
 				if (HandleCharOutsideQuotes(reader, sb, ref previousChar, ref inQuotes, ref inLiteralQuote, ref inInterpolatedExpression, inputChar)) {

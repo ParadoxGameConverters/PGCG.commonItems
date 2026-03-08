@@ -128,8 +128,8 @@ public sealed class ColorFactory {
 					return GetColorByName(token);
 				}
 
-				foreach (var ch in token.ToCharArray().Reverse()) {
-					reader.PushBack(ch);
+				for (var i = token.Length - 1; i >= 0; --i) {
+					reader.PushBack(token[i]);
 				}
 
 				return GetUnprefixedColor(reader);
