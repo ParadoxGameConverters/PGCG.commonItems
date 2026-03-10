@@ -137,7 +137,7 @@ public sealed class ModLoaderTests {
 		modLoader.LoadMods(TestFilesPath, incomingMods, gameVersion, throwForOutOfDateMods: true);
 		var usableMods = modLoader.UsableMods;
 		// Should still be added to usable mods.
-		var mod = Assert.Single(usableMods);
+		Assert.Single(usableMods);
 
 		// Check if the warning is logged, but should not throw as it's only slightly out of date.
 		var consoleOutput = output.ToString();
