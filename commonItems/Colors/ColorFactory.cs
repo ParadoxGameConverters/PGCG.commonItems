@@ -15,8 +15,15 @@ public sealed class ColorFactory {
 			Logger.Warn($"Color has wrong number of components for RGB: " +
 			            $"{string.Join(',', rgbFloats)}.");
 		}
-		var rgbInts = rgbFloats.Select(d => (int)d).ToArray();
-		return GetRgbColorFromAnyNumberOfComponents(rgbInts);
+
+		if (rgbFloats.Count >= 3) {
+			return new Color((int)rgbFloats[0], (int)rgbFloats[1], (int)rgbFloats[2]);
+		}
+
+		var r = rgbFloats.Count > 0 ? (int)rgbFloats[0] : 0;
+		var g = rgbFloats.Count > 1 ? (int)rgbFloats[1] : 0;
+		var b = rgbFloats.Count > 2 ? (int)rgbFloats[2] : 0;
+		return new Color(r, g, b);
 	}
 	private static Color GetHexColor(BufferedReader reader) {
 		var hex = reader.GetStrings()[0];
@@ -188,6 +195,16 @@ public sealed class ColorFactory {
 		}
 		
 		// Split the color name into words and try to find a color that matches each word.
+		if (!colorName.Contains('_')) {
+			var wordToUse = colorName == "grey" ? "gray" : colorName;
+			var colorFromWord = GetSystemDrawingColorByName(wordToUse);
+			if (colorFromWord is not null) {
+				var color = new Color(colorFromWord.Value);
+				NamedColors[colorName] = color;
+				return color;
+			}
+		}
+
 		foreach (string word in colorName.Split('_')) {
 			string wordToUse = word;
 			if (wordToUse == "grey") {
