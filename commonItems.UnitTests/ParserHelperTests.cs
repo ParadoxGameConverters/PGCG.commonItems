@@ -405,6 +405,14 @@ public sealed class ParserHelperTests {
 	}
 
 	[Fact]
+	public void GetStringHandlesEscapedQuotesCorrectly() {
+		const string input = @"= ""Predrag \""Peja\"" Stojaković""";
+		var reader = new BufferedReader(input);
+		string theString = reader.GetString();
+		Assert.Equal("Predrag \\\"Peja\\\" Stojaković", theString);
+	}
+
+	[Fact]
 	public void GetCharGetsFirstCharAfterEquals() {
 		var reader = new BufferedReader(" = foo");
 		Assert.Equal('f', reader.GetChar());
