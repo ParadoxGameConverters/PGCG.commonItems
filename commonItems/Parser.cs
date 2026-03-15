@@ -169,9 +169,13 @@ public class Parser {
 			// We've likely encountered the beginning of an ExistEquals operator.
 			if (sb.Length == 0) {
 				sb.Append(inputChar);
-			} else {
+			} else if (reader.Peek() == '=') {
+				// The '?' is followed by '=', so this is the '?=' operator, not part of the string.
 				reader.PushBack('?');
 				return true; // break loop
+			} else {
+				// The '?' is part of the string (e.g. "var:foo?75").
+				sb.Append(inputChar);
 			}
 		} else if (!inLiteralQuote && inputChar == '=') {
 			if (sb.Length == 0 || sb is ['?']) {

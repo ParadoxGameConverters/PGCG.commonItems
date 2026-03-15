@@ -413,6 +413,12 @@ public sealed class ParserHelperTests {
 	}
 
 	[Fact]
+	public void GetStringGetsStringWithQuestionMark() {
+		var reader = new BufferedReader("= var:war_propaganda_cost?75");
+		Assert.Equal("var:war_propaganda_cost?75", reader.GetString());
+	}
+
+	[Fact]
 	public void GetCharGetsFirstCharAfterEquals() {
 		var reader = new BufferedReader(" = foo");
 		Assert.Equal('f', reader.GetChar());
