@@ -69,6 +69,20 @@ public sealed class ParserHelperTests {
 		Assert.True(reader.EndOfStream);
 	}
 
+	[Fact]
+	public void IgnoreItemIgnoresBracedItemWithQuotedBraces() {
+		var reader = new BufferedReader("= { text = \"ignore { these } braces\" nested = { value = 1 } } More text");
+		ParserHelpers.IgnoreItem(reader);
+		Assert.Equal(" More text", reader.ReadToEnd());
+	}
+
+	[Fact]
+	public void IgnoreItemIgnoresBracedItemWithCommentedBraces() {
+		var reader = new BufferedReader("= { text = value # } { comment braces\n nested = { value = 1 } } More text");
+		ParserHelpers.IgnoreItem(reader);
+		Assert.Equal(" More text", reader.ReadToEnd());
+	}
+
 	private sealed class Test1 : Parser {
 		public string? value1;
 		public string? value2;
