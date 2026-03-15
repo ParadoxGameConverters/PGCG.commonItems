@@ -35,46 +35,8 @@ internal sealed class OneArgDelegate : AbstractDelegate {
 }
 
 public class Parser {
-	private abstract class RegisteredKeywordOrRegex : IEquatable<RegisteredKeywordOrRegex> {
-		public abstract bool Equals(RegisteredKeywordOrRegex? other);
-		public abstract bool Matches(string token);
-		public abstract override int GetHashCode();
-
-		public override bool Equals(object? obj) {
-			return Equals(obj as RegisteredKeywordOrRegex);
-		}
-	}
-	private sealed class RegisteredKeyword : RegisteredKeywordOrRegex {
-		private readonly string keyword;
-		public RegisteredKeyword(string keyword) {
-			this.keyword = keyword;
-		}
-		public override bool Equals(RegisteredKeywordOrRegex? other) {
-			return other is RegisteredKeyword rk && rk.keyword.Equals(keyword);
-		}
-		public override int GetHashCode() {
-			return keyword.GetHashCode();
-		}
-		public override bool Matches(string token) { return keyword == token; }
-	}
-	private sealed class RegisteredRegex : RegisteredKeywordOrRegex {
-		private readonly Regex regex;
-		public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
-		public RegisteredRegex(Regex regex) { this.regex = regex; }
-		public override bool Equals(RegisteredKeywordOrRegex? other) {
-			return other is RegisteredRegex rr && rr.regex.ToString().Equals(regex.ToString());
-		}
-		public override int GetHashCode() {
-			return regex.ToString().GetHashCode();
-		}
-		public override bool Matches(string token) {
-			var match = regex.Match(token);
-			return match.Success && match.Length == token.Length;
-		}
-	}
-
 	public Parser() {
-		registeredRules[new RegisteredRegex(CommonRegexes.Variable)] = new TwoArgDelegate((reader, varStr) => {
+		RegisterRegex(CommonRegexes.Variable, (reader, varStr) => {
 			var value = reader.GetString();
 			var variableName = varStr[1..];
 			if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
@@ -97,48 +59,70 @@ public class Parser {
 	}
 
 	public void RegisterKeyword(string keyword, Del del) {
-		registeredRules[new RegisteredKeyword(keyword)] = new TwoArgDelegate(del);
+		keywordRules[keyword] = new TwoArgDelegate(del);
 	}
 	public void RegisterKeyword(string keyword, SimpleDel del) {
-		registeredRules[new RegisteredKeyword(keyword)] = new OneArgDelegate(del);
+		keywordRules[keyword] = new OneArgDelegate(del);
 	}
 	public void RegisterRegex(string keyword, Del del) {
-		registeredRules[new RegisteredRegex(keyword)] = new TwoArgDelegate(del);
+		AddOrReplaceRegexRule(new Regex(keyword), new TwoArgDelegate(del));
 	}
 	public void RegisterRegex(string keyword, SimpleDel del) {
-		registeredRules[new RegisteredRegex(keyword)] = new OneArgDelegate(del);
+		AddOrReplaceRegexRule(new Regex(keyword), new OneArgDelegate(del));
 	}
 	public void RegisterRegex(Regex regex, Del del) {
-		registeredRules[new RegisteredRegex(regex)] = new TwoArgDelegate(del);
+		AddOrReplaceRegexRule(regex, new TwoArgDelegate(del));
 	}
 	public void RegisterRegex(Regex regex, SimpleDel del) {
-		registeredRules[new RegisteredRegex(regex)] = new OneArgDelegate(del);
+		AddOrReplaceRegexRule(regex, new OneArgDelegate(del));
+	}
+
+	private void AddOrReplaceRegexRule(Regex regex, AbstractDelegate del) {
+		var regexStr = regex.ToString();
+		for (int i = 0; i < regexRules.Count; i++) {
+			if (regexRules[i].regex.ToString() == regexStr) {
+				regexRules[i] = (regex, del);
+				return;
+			}
+		}
+
+		regexRules.Add((regex, del));
 	}
 
 	public void ClearRegisteredRules() {
-		registeredRules.Clear();
+		keywordRules.Clear();
+		regexRules.Clear();
 	}
 
-	private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
-		foreach (var (rule, fun) in registeredRules) {
-			if (!rule.Matches(token)) {
-				continue;
-			}
-
-			fun.Execute(reader, token);
+	private bool TryToMatch(string token, BufferedReader reader) {
+		// O(1) keyword lookup.
+		if (keywordRules.TryGetValue(token, out var keywordFun)) {
+			keywordFun.Execute(reader, token);
 			return true;
 		}
-		if (isTokenQuoted) {
-			foreach (var (rule, fun) in registeredRules) {
-				if (!rule.Matches(strippedToken)) {
-					continue;
-				}
-
+		// Linear scan over regex rules (typically 1-5 entries).
+		foreach (var (regex, fun) in regexRules) {
+			var match = regex.Match(token);
+			if (match.Success && match.Length == token.Length) {
 				fun.Execute(reader, token);
 				return true;
 			}
 		}
-
+		// Lazy RemQuotes: only strip and retry if token is quoted.
+		if (token.Length >= 2 && token[0] == '"' && token[^1] == '"') {
+			var strippedToken = token[1..^1];
+			if (keywordRules.TryGetValue(strippedToken, out var strippedFun)) {
+				strippedFun.Execute(reader, token);
+				return true;
+			}
+			foreach (var (regex, fun) in regexRules) {
+				var match = regex.Match(strippedToken);
+				if (match.Success && match.Length == strippedToken.Length) {
+					fun.Execute(reader, token);
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -152,7 +136,7 @@ public class Parser {
 		} else if (inputChar == '\"' && sb.Length == 0) {
 			inQuotes = true;
 			sb.Append(inputChar);
-		} else if (inputChar == '\"' && sb.Length == 1 && sb[0] == 'R') {
+		} else if (inputChar == '\"' && sb is ['R']) {
 			inLiteralQuote = true;
 			--sb.Length;
 			sb.Append(inputChar);
@@ -190,7 +174,7 @@ public class Parser {
 				return true; // break loop
 			}
 		} else if (!inLiteralQuote && inputChar == '=') {
-			if (sb.Length == 0 || (sb.Length == 1 && sb[0] == '?')) {
+			if (sb.Length == 0 || sb is ['?']) {
 				sb.Append(inputChar);
 			} else {
 				reader.PushBack('=');
@@ -203,8 +187,20 @@ public class Parser {
 		return false;
 	}
 
+	[ThreadStatic]
+	private static StringBuilder? t_lexemeBuilder;
+
 	public static string GetNextLexeme(BufferedReader reader) {
-		var sb = new StringBuilder();
+		var sb = t_lexemeBuilder;
+		if (sb is null) {
+			sb = new StringBuilder(64);
+			t_lexemeBuilder = sb;
+		} else {
+			sb.Clear();
+			if (sb.Capacity > 1024) {
+				sb.Capacity = 64;
+			}
+		}
 
 		var inQuotes = false;
 		var inLiteralQuote = false;
@@ -237,11 +233,9 @@ public class Parser {
 				sb.Append(inputChar);
 				break;
 			} else if (inQuotes) {
+				sb.Append(inputChar);
 				if (inputChar == '\"' && previousChar != '\\') {
-					sb.Append(inputChar);
 					break;
-				} else {
-					sb.Append(inputChar);
 				}
 			} else { // not in quotes
 				if (HandleCharOutsideQuotes(reader, sb, ref previousChar, ref inQuotes, ref inLiteralQuote, ref inInterpolatedExpression, inputChar)) {
@@ -250,6 +244,9 @@ public class Parser {
 			}
 
 			previousChar = inputChar;
+		}
+		if (sb.Length == 1) { // Optimization for single-char tokens, which are very common (e.g. =, {, }, etc.)
+			return sb[0].ToString();
 		}
 		return sb.ToString();
 	}
@@ -293,10 +290,7 @@ public class Parser {
 
 			token = GetNextLexeme(reader);
 
-			var strippedToken = token.RemQuotes();
-			var isTokenQuoted = strippedToken.Length < token.Length;
-
-			var matched = TryToMatch(token, strippedToken, isTokenQuoted, reader);
+			var matched = TryToMatch(token, reader);
 
 			if (!matched) {
 				gotToken = true;
@@ -442,5 +436,6 @@ public class Parser {
 		}
 	}
 
-	private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();
+	private readonly Dictionary<string, AbstractDelegate> keywordRules = new();
+	private readonly List<(Regex regex, AbstractDelegate fun)> regexRules = [];
 }

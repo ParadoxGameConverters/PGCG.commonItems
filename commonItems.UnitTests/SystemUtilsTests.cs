@@ -14,7 +14,7 @@ public sealed class SystemUtilsTests {
 	public void GetAllFilesInFolderDoesNotWorkRecursively() {
 		var files = SystemUtils.GetAllFilesInFolder(TestFilesPath);
 		var expected = new SortedSet<string>{
-			"keyValuePair.txt"
+			"keyValuePair.txt",
 		};
 		Assert.Equal(expected, files);
 	}
@@ -30,7 +30,7 @@ public sealed class SystemUtilsTests {
 			"keyValuePair.txt",
 			Path.Combine("subfolder", "subfolder_file.txt"),
 			Path.Combine("subfolder", "subfolder_file2.txt"),
-			Path.Combine("subfolder2", "subfolder2_file.txt")
+			Path.Combine("subfolder2", "subfolder2_file.txt"),
 		};
 		Assert.Equal(expected, files);
 	}
@@ -44,7 +44,7 @@ public sealed class SystemUtilsTests {
 		var subfolders = SystemUtils.GetAllSubfolders(TestFilesPath);
 		var expected = new SortedSet<string>{
 			"subfolder",
-			"subfolder2"
+			"subfolder2",
 		};
 		Assert.Equal(expected, subfolders);
 	}

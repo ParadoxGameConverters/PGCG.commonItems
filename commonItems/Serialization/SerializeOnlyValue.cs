@@ -3,4 +3,4 @@
 namespace commonItems.Serialization;
 
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class SerializeOnlyValue : Attribute { }
+public sealed class SerializeOnlyValue : Attribute;

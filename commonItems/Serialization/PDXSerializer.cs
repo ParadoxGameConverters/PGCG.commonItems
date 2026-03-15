@@ -49,15 +49,21 @@ public static class PDXSerializer {
 	}
 
 	private static void SerializeEnumerable(IEnumerable enumerable, bool withBraces, StringBuilder sb, string indent) {
-		var serializedEntries = enumerable.Cast<object>().Select(e => Serialize(e, indent));
 		if (withBraces) {
 			sb.Append("{ ");
-			foreach (var entry in serializedEntries) {
-				sb.Append(entry).Append(' ');
+			foreach (var entry in enumerable) {
+				sb.Append(Serialize(entry, indent)).Append(' ');
 			}
 			sb.Append('}');
 		} else {
-			sb.AppendJoin(Environment.NewLine, serializedEntries.Select(e => indent + e));
+			var first = true;
+			foreach (var entry in enumerable) {
+				if (!first) {
+					sb.Append(Environment.NewLine);
+				}
+				sb.Append(indent).Append(Serialize(entry, indent));
+				first = false;
+			}
 		}
 	}
 
@@ -71,20 +77,22 @@ public static class PDXSerializer {
 			internalIndent += '\t';
 			sb.Append(indent).Append(internalIndent);
 		}
-		var notNullEntries = CastDictToEnumerable(dictionary)
-			.Where(e => e.Value is not null);
-		var serializedEntries = notNullEntries.Select(e => Serialize(e, indent + internalIndent));
-		sb.AppendJoin(Environment.NewLine + indent + internalIndent, serializedEntries);
+		var first = true;
+		foreach (DictionaryEntry entry in dictionary) {
+			if (entry.Value is null) {
+				continue;
+			}
+
+			if (!first) {
+				sb.Append(Environment.NewLine).Append(indent).Append(internalIndent);
+			}
+			sb.Append(Serialize(entry, indent + internalIndent));
+			first = false;
+		}
 
 		if (withBraces) {
 			sb.AppendLine();
 			sb.Append(indent).Append('}');
-		}
-	}
-
-	private static IEnumerable<DictionaryEntry> CastDictToEnumerable(IDictionary dictionary) {
-		foreach (DictionaryEntry entry in dictionary) {
-			yield return entry;
 		}
 	}
 

@@ -15,18 +15,44 @@ public sealed class ColorFactory {
 			Logger.Warn($"Color has wrong number of components for RGB: " +
 			            $"{string.Join(',', rgbFloats)}.");
 		}
-		var rgbInts = rgbFloats.Select(d => (int)d).ToArray();
-		return GetRgbColorFromAnyNumberOfComponents(rgbInts);
+
+		if (rgbFloats.Count >= 3) {
+			return new Color((int)rgbFloats[0], (int)rgbFloats[1], (int)rgbFloats[2]);
+		}
+
+		var r = rgbFloats.Count > 0 ? (int)rgbFloats[0] : 0;
+		var g = rgbFloats.Count > 1 ? (int)rgbFloats[1] : 0;
+		var b = rgbFloats.Count > 2 ? (int)rgbFloats[2] : 0;
+		return new Color(r, g, b);
 	}
 	private static Color GetHexColor(BufferedReader reader) {
 		var hex = reader.GetStrings()[0];
 		if (hex.Length != 6) {
 			throw new FormatException("Color has wrong number of digits");
 		}
-		var r = int.Parse(hex.Substring(0, 2), NumberStyles.HexNumber);
-		var g = int.Parse(hex.Substring(2, 2), NumberStyles.HexNumber);
-		var b = int.Parse(hex.Substring(4, 2), NumberStyles.HexNumber);
+		var span = hex.AsSpan();
+		var r = ParseHexByte(span[0], span[1]);
+		var g = ParseHexByte(span[2], span[3]);
+		var b = ParseHexByte(span[4], span[5]);
 		return new Color(r, g, b);
+	}
+
+	private static int ParseHexByte(char high, char low) {
+		return (HexDigitToInt(high) << 4) | HexDigitToInt(low);
+	}
+
+	private static int HexDigitToInt(char c) {
+		if (c is >= '0' and <= '9') {
+			return c - '0';
+		}
+		if (c is >= 'A' and <= 'F') {
+			return c - 'A' + 10;
+		}
+		if (c is >= 'a' and <= 'f') {
+			return c - 'a' + 10;
+		}
+
+		throw new FormatException("Color has invalid hex digits");
 	}
 	private static Color GetHsvColor(BufferedReader reader) {
 		var hsv = reader.GetFloats();
@@ -89,7 +115,7 @@ public sealed class ColorFactory {
 					return new Color(rgb[0], rgb[1], rgb[2]);
 				case 4:
 					// RGBA
-					return new Color(rgb[0], rgb[1], rgb[2], (float)rgb[3]);
+					return new Color(rgb[0], rgb[1], rgb[2], rgb[3]);
 				default: {
 					Logger.Warn("Color has wrong number of components for unprefixed color: " +
 					            $"{string.Join(',', rgb)}.");
@@ -128,8 +154,8 @@ public sealed class ColorFactory {
 					return GetColorByName(token);
 				}
 
-				foreach (var ch in token.ToCharArray().Reverse()) {
-					reader.PushBack(ch);
+				for (var i = token.Length - 1; i >= 0; --i) {
+					reader.PushBack(token[i]);
 				}
 
 				return GetUnprefixedColor(reader);
@@ -169,6 +195,16 @@ public sealed class ColorFactory {
 		}
 		
 		// Split the color name into words and try to find a color that matches each word.
+		if (!colorName.Contains('_')) {
+			var wordToUse = colorName == "grey" ? "gray" : colorName;
+			var colorFromWord = GetSystemDrawingColorByName(wordToUse);
+			if (colorFromWord is not null) {
+				var color = new Color(colorFromWord.Value);
+				NamedColors[colorName] = color;
+				return color;
+			}
+		}
+
 		foreach (string word in colorName.Split('_')) {
 			string wordToUse = word;
 			if (wordToUse == "grey") {

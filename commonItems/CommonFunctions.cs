@@ -15,50 +15,44 @@ using System.Text;
 namespace commonItems;
 
 public static class CommonFunctions {
+	private static readonly char[] PathSeparators = ['/', '\\'];
+
 	public static string[] SplitPath(string path) {
-		return path.Split([
-			Path.AltDirectorySeparatorChar,
-			Path.DirectorySeparatorChar
-		], StringSplitOptions.RemoveEmptyEntries);
+		return path.Split(PathSeparators, StringSplitOptions.RemoveEmptyEntries);
 	}
 	
 	public static string TrimPath(string fileName) {
 		ReadOnlySpan<char> span = fileName.AsSpan();
-		int lastSlash = span.LastIndexOf('\\');
-		if (lastSlash >= 0) {
-			span = span[(lastSlash + 1)..];
-		}
-		int lastSlash2 = span.LastIndexOf('/');
-		if (lastSlash2 >= 0) {
-			span = span[(lastSlash2 + 1)..];
-		}
-		return span.ToString();
+		int lastSlash = Math.Max(span.LastIndexOf('/'), span.LastIndexOf('\\'));
+		return lastSlash >= 0 ? span[(lastSlash + 1)..].ToString() : fileName;
 	}
 
 	public static string GetPath(string fileName) {
-		var rawFile = TrimPath(fileName);
-		var filePos = fileName.IndexOf(rawFile, StringComparison.Ordinal);
-		return fileName.Substring(0, filePos);
+		ReadOnlySpan<char> span = fileName.AsSpan();
+		int lastSlash = Math.Max(span.LastIndexOf('/'), span.LastIndexOf('\\'));
+		return lastSlash >= 0 ? fileName[..(lastSlash + 1)] : string.Empty;
 	}
 
 	public static string TrimExtension(string fileName) {
-		var rawFile = TrimPath(fileName);
-		var dotPos = rawFile.LastIndexOf('.');
-		if (dotPos == -1) {
+		ReadOnlySpan<char> span = fileName.AsSpan();
+		int lastSlash = Math.Max(span.LastIndexOf('/'), span.LastIndexOf('\\'));
+		int dotPos = span.LastIndexOf('.');
+		if (dotPos == -1 || dotPos < lastSlash) {
 			return fileName;
 		}
 
-		return fileName.Substring(0, fileName.IndexOf(rawFile, StringComparison.Ordinal) + dotPos);
+		return fileName[..dotPos];
 	}
 
 	public static string GetExtension(string fileName) {
-		var rawFile = TrimPath(fileName);
-		var dotPos = rawFile.LastIndexOf('.');
-		if (dotPos == -1) {
+		ReadOnlySpan<char> span = fileName.AsSpan();
+		int lastSlash = Math.Max(span.LastIndexOf('/'), span.LastIndexOf('\\'));
+		int dotPos = span.LastIndexOf('.');
+		if (dotPos == -1 || dotPos < lastSlash || dotPos == span.Length - 1) {
 			return string.Empty;
 		}
 
-		return rawFile.Substring(dotPos + 1);
+		return span[(dotPos + 1)..].ToString();
 	}
 	public static string ReplaceCharacter(string fileName, char character) {
 		return fileName.Replace(character, '_');
@@ -126,18 +120,27 @@ public static class CommonFunctions {
 	// from C++ commonItems version's OSCommonLayer
 	public static string NormalizeUTF8Path(string utf8Path) {
 		string asciiPath = EncodingConversions.ConvertUTF8ToASCII(utf8Path);
-		asciiPath = asciiPath.Replace('/', '_');
-		asciiPath = asciiPath.Replace('\\', '_');
-		asciiPath = asciiPath.Replace(':', '_');
-		asciiPath = asciiPath.Replace('*', '_');
-		asciiPath = asciiPath.Replace('?', '_');
-		asciiPath = asciiPath.Replace('\"', '_');
-		asciiPath = asciiPath.Replace('<', '_');
-		asciiPath = asciiPath.Replace('>', '_');
-		asciiPath = asciiPath.Replace('|', '_');
-		asciiPath = asciiPath.Replace("\t", string.Empty);
 
-		return asciiPath;
+		var normalizedLength = asciiPath.Length;
+		foreach (var c in asciiPath) {
+			if (c == '\t') {
+				normalizedLength--;
+			}
+		}
+
+		return string.Create(normalizedLength, asciiPath, static (destination, source) => {
+			var writeIndex = 0;
+			foreach (var c in source) {
+				if (c == '\t') {
+					continue;
+				}
+
+				destination[writeIndex++] = c switch {
+					'/' or '\\' or ':' or '*' or '?' or '"' or '<' or '>' or '|' => '_',
+					_ => c,
+				};
+			}
+		});
 	}
 
 	/// <summary>

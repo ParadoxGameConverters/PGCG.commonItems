@@ -5,13 +5,11 @@ using System.Text;
 
 namespace commonItems; 
 
-public class GameVersion {
+public readonly struct GameVersion : IEquatable<GameVersion> {
 	public int? FirstPart { get; }
 	public int? SecondPart { get; }
 	public int? ThirdPart { get; }
 	public int? FourthPart { get; }
-
-	public GameVersion() { }
 
 	public GameVersion(int? theFirstPart, int? theSecondPart, int? theThirdPart, int? theFourthPart) {
 		FirstPart = theFirstPart;
@@ -21,29 +19,41 @@ public class GameVersion {
 	}
 
 	public GameVersion(string version) {
-		version = version.Trim();
-		if (string.IsNullOrEmpty(version)) {
+		var span = version.AsSpan().Trim();
+		if (span.IsEmpty) {
 			return;
 		}
-		var parts = version.Split('.');
 
-		if (parts.Length > 0) {
-			FirstPart = parts[0] == "*" ? null : int.Parse(parts[0]);
-		} else {
-			return;
-		}
-		if (parts.Length > 1) {
-			SecondPart = parts[1] == "*" ? null : int.Parse(parts[1]);
-		} else {
-			return;
-		}
-		if (parts.Length > 2) {
-			ThirdPart = parts[2] == "*" ? null : int.Parse(parts[2]);
-		} else {
-			return;
-		}
-		if (parts.Length > 3) {
-			FourthPart = parts[3] == "*" ? null : int.Parse(parts[3]);
+		var partIndex = 0;
+		var segmentStart = 0;
+		for (var i = 0; i <= span.Length; ++i) {
+			if (i < span.Length && span[i] != '.') {
+				continue;
+			}
+
+			var segment = span[segmentStart..i];
+			int? parsedPart = segment is ['*'] ? null : int.Parse(segment);
+			switch (partIndex) {
+				case 0:
+					FirstPart = parsedPart;
+					break;
+				case 1:
+					SecondPart = parsedPart;
+					break;
+				case 2:
+					ThirdPart = parsedPart;
+					break;
+				case 3:
+					FourthPart = parsedPart;
+					break;
+			}
+
+			partIndex++;
+			if (partIndex > 3) {
+				break;
+			}
+
+			segmentStart = i + 1;
 		}
 	}
 
@@ -64,95 +74,52 @@ public class GameVersion {
 		FourthPart = fourthPart;
 	}
 
+	public bool Equals(GameVersion other) {
+		return FirstPart.GetValueOrDefault() == other.FirstPart.GetValueOrDefault()
+		       && SecondPart.GetValueOrDefault() == other.SecondPart.GetValueOrDefault()
+		       && ThirdPart.GetValueOrDefault() == other.ThirdPart.GetValueOrDefault()
+		       && FourthPart.GetValueOrDefault() == other.FourthPart.GetValueOrDefault();
+	}
+
 	public override bool Equals(object? obj) {
-		if (obj is not GameVersion rhs) {
+		if (obj is not GameVersion other) {
 			return false;
 		}
-		var testL = 0;
-		var testR = 0;
-		if (FirstPart is not null) {
-			testL = FirstPart.Value;
-		}
-
-		if (rhs.FirstPart is not null) {
-			testR = rhs.FirstPart.Value;
-		}
-
-		if (testL != testR) {
-			return false;
-		}
-
-		testL = 0;
-		testR = 0;
-		if (SecondPart is not null) {
-			testL = SecondPart.Value;
-		}
-
-		if (rhs.SecondPart is not null) {
-			testR = rhs.SecondPart.Value;
-		}
-
-		if (testL != testR) {
-			return false;
-		}
-
-		testL = 0;
-		testR = 0;
-		if (ThirdPart is not null) {
-			testL = ThirdPart.Value;
-		}
-
-		if (rhs.ThirdPart is not null) {
-			testR = rhs.ThirdPart.Value;
-		}
-
-		if (testL != testR) {
-			return false;
-		}
-
-		testL = 0;
-		testR = 0;
-		if (FourthPart is not null) {
-			testL = FourthPart.Value;
-		}
-
-		if (rhs.FourthPart is not null) {
-			testR = rhs.FourthPart.Value;
-		}
-
-		return testL == testR;
+		return Equals(other);
 	}
 
 	public override int GetHashCode() {
 		return HashCode.Combine(FirstPart, SecondPart, ThirdPart, FourthPart);
 	}
 
+	public static bool operator ==(GameVersion lhs, GameVersion rhs) => lhs.Equals(rhs);
+	public static bool operator !=(GameVersion lhs, GameVersion rhs) => !lhs.Equals(rhs);
+
 	public static bool operator >=(GameVersion lhs, GameVersion rhs) {
 		return lhs > rhs || lhs.Equals(rhs);
 	}
 	public static bool operator >(GameVersion lhs, GameVersion rhs) {
-		var lhsParts = new[] {lhs.FirstPart, lhs.SecondPart, lhs.ThirdPart, lhs.FourthPart};
-		var rhsParts = new[] {rhs.FirstPart, rhs.SecondPart, rhs.ThirdPart, rhs.FourthPart};
-
-		foreach (var (lhsPart, rhsPart) in lhsParts.Zip(rhsParts, Tuple.Create)) {
-			int testL = 0;
-			int testR = 0;
-			if (lhsPart is not null) {
-				testL = lhsPart.Value;
-			}
-			if (rhsPart is not null) {
-				testR = rhsPart.Value;
-			}
-
-			if (testL > testR) {
-				return true;
-			}
-			if (testL < testR) {
-				return false;
-			}
+		int testL = lhs.FirstPart.GetValueOrDefault();
+		int testR = rhs.FirstPart.GetValueOrDefault();
+		if (testL != testR) {
+			return testL > testR;
 		}
 
-		return false;
+		testL = lhs.SecondPart.GetValueOrDefault();
+		testR = rhs.SecondPart.GetValueOrDefault();
+		if (testL != testR) {
+			return testL > testR;
+		}
+
+		testL = lhs.ThirdPart.GetValueOrDefault();
+		testR = rhs.ThirdPart.GetValueOrDefault();
+		if (testL != testR) {
+			return testL > testR;
+		}
+
+		testL = lhs.FourthPart.GetValueOrDefault();
+		testR = rhs.FourthPart.GetValueOrDefault();
+		return testL > testR;
 	}
 
 	public static bool operator <(GameVersion lhs, GameVersion rhs) => !(lhs > rhs) && !lhs.Equals(rhs);
@@ -190,57 +157,53 @@ public class GameVersion {
 	}
 
 	public string ToShortString() {
-		var sb = new StringBuilder();
+		var sb = new StringBuilder(16);
+		if (FirstPart is not null) {
+			sb.Append(FirstPart.Value);
+		}
+		if (SecondPart is not null) {
+			sb.Append('.');
+			sb.Append(SecondPart.Value);
+		}
+		if (ThirdPart is not null) {
+			sb.Append('.');
+			sb.Append(ThirdPart.Value);
+		}
 		if (FourthPart is not null) {
 			sb.Append('.');
 			sb.Append(FourthPart.Value);
-		}
-		if (ThirdPart is not null) {
-			sb.Insert(0, ThirdPart.Value);
-			sb.Insert(0, '.');
-		}
-		if (SecondPart is not null) {
-			sb.Insert(0, SecondPart.Value);
-			sb.Insert(0, '.');
-		}
-		if (FirstPart is not null) {
-			sb.Insert(0, FirstPart.Value);
 		}
 		return sb.ToString();
 	}
 
 	public string ToWildCard() {
-		var sb = new StringBuilder();
-		if (FourthPart != null) {
-			sb.Append('.');
-			sb.Append(FourthPart.Value);
-		} else if (ThirdPart != null) {
+		if (FirstPart is null) {
+			return "*";
+		}
+
+		var sb = new StringBuilder(16);
+		sb.Append(FirstPart.Value);
+		if (SecondPart is null) {
 			sb.Append(".*");
+			return sb.ToString();
 		}
 
-		if (ThirdPart != null) {
-			sb.Insert(0, ThirdPart.Value);
-			sb.Insert(0, '.');
-		} else if (SecondPart != null) {
-			sb.Clear();
+		sb.Append('.');
+		sb.Append(SecondPart.Value);
+		if (ThirdPart is null) {
 			sb.Append(".*");
+			return sb.ToString();
 		}
 
-		if (SecondPart != null) {
-			sb.Insert(0, SecondPart.Value);
-			sb.Insert(0, '.');
-		} else if (FirstPart != null) {
-			sb.Clear();
+		sb.Append('.');
+		sb.Append(ThirdPart.Value);
+		if (FourthPart is null) {
 			sb.Append(".*");
+			return sb.ToString();
 		}
 
-		if (FirstPart != null) {
-			sb.Insert(0, FirstPart.Value);
-		} else {
-			sb.Clear();
-			sb.Append('*');
-		}
-
+		sb.Append('.');
+		sb.Append(FourthPart.Value);
 		return sb.ToString();
 	}
 

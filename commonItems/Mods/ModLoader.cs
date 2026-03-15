@@ -45,14 +45,19 @@ public sealed partial class ModLoader {
 				continue;
 			}
 
-			if (mod.SupportedGameVersion is not null && !GameVersion.IsModCompatibleWithGame(mod.SupportedGameVersion, gameVersion)) {
-				string problemStr = $"\t\tMod [{mod.Name}] supports game version {mod.SupportedGameVersion.ToWildCard()}, " +
-				                    $"but the installed version is {gameVersion.ToShortString()}.";
-				if (throwForOutOfDateMods) {
-					throw new UserErrorException($"{problemStr} Cannot continue.");
-				}
+			if (mod.SupportedGameVersion.HasValue) {
+				var supported = mod.SupportedGameVersion.Value;
+				var isSlightlyOutOfDate = IsSlightlyOutOfDateModVersion(supported, gameVersion);
+				var isIncompatible = !GameVersion.IsModCompatibleWithGame(supported, gameVersion);
+				if (isIncompatible || isSlightlyOutOfDate) {
+					string problemStr = $"\t\tMod [{mod.Name}] supports game version {supported.ToWildCard()}, " +
+					                    $"but the installed version is {gameVersion.ToShortString()}.";
+					if (throwForOutOfDateMods && isIncompatible && !isSlightlyOutOfDate) {
+						throw new UserErrorException($"{problemStr} Cannot continue.");
+					}
 
-				Logger.Warn($"{problemStr} Proceeding anyway, but this can cause issues.");
+					Logger.Warn($"{problemStr} Proceeding anyway, but this can cause issues.");
+				}
 			}
 
 			// All verified mods go into usableMods.
@@ -60,6 +65,19 @@ public sealed partial class ModLoader {
 			UsableMods.Add(new Mod(mod.Name, possibleModPath, mod.SupportedGameVersion, mod.Dependencies, mod.ReplacedFolders));
 		}
 	}
+
+	private static bool IsSlightlyOutOfDateModVersion(GameVersion modSupportedVersion, GameVersion installedGameVersion) {
+		return modSupportedVersion.FirstPart is not null
+		       && modSupportedVersion.SecondPart is not null
+		       && modSupportedVersion.ThirdPart is not null
+		       && installedGameVersion.FirstPart is not null
+		       && installedGameVersion.SecondPart is not null
+		       && installedGameVersion.ThirdPart is not null
+		       && modSupportedVersion.FirstPart == installedGameVersion.FirstPart
+		       && modSupportedVersion.SecondPart == installedGameVersion.SecondPart
+		       && installedGameVersion.ThirdPart > modSupportedVersion.ThirdPart;
+	}
+
 	private void LoadModDirectory(string gameDocumentsPath, List<Mod> incomingMods) {
 		var modsPath = Path.Combine(gameDocumentsPath, "mod");
 		if (!Directory.Exists(modsPath)) {

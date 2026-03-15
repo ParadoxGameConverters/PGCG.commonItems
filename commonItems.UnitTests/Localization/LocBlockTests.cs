@@ -12,7 +12,7 @@ public sealed class LocBlockTests {
 			["german"] = "$ADJ$ Revolte",
 			["russian"] = "$ADJ$ бунт",
 			["simp_chinese"] = "$ADJ$ 反叛",
-			["spanish"] = "$ADJ$ revuelta"
+			["spanish"] = "$ADJ$ revuelta",
 		};
 
 		var adjLocBlock = new LocBlock("key2", "english") {
@@ -21,11 +21,11 @@ public sealed class LocBlockTests {
 			["german"] = "römisch",
 			["russian"] = "Роман",
 			["simp_chinese"] = "罗马",
-			["spanish"] = "Romana"
+			["spanish"] = "Romana",
 		};
 
 		nameLocBlock.ModifyForEveryLanguage(adjLocBlock, (baseLoc, modifyingLoc, _) =>
-			baseLoc?.Replace("$ADJ$", modifyingLoc)
+			baseLoc?.Replace("$ADJ$", modifyingLoc, System.StringComparison.Ordinal)
 		);
 		Assert.Equal("Roman Revolt", nameLocBlock["english"]);
 		Assert.Equal("Romain révolte", nameLocBlock["french"]);
@@ -43,11 +43,11 @@ public sealed class LocBlockTests {
 			["german"] = "$NUM$ Revolte",
 			["russian"] = "$NUM$ бунт",
 			["simp_chinese"] = "$NUM$ 反叛",
-			["spanish"] = "$NUM$ revuelta"
+			["spanish"] = "$NUM$ revuelta",
 		};
-		
+
 		const int number = 2;
-		nameLocBlock.ModifyForEveryLanguage((loc, _) => loc?.Replace("$NUM$", number.ToString()));
+		nameLocBlock.ModifyForEveryLanguage((loc, _) => loc?.Replace("$NUM$", number.ToString(), System.StringComparison.Ordinal));
 		Assert.Equal("2 Revolt", nameLocBlock["english"]);
 		Assert.Equal("2 révolte", nameLocBlock["french"]);
 		Assert.Equal("2 Revolte", nameLocBlock["german"]);
@@ -60,12 +60,12 @@ public sealed class LocBlockTests {
 	public void BaseLanguageIsAlwaysIncludedInModifyForEveryLanguageWithOtherBlock() {
 		var locBlock = new LocBlock("locBlock", "english") {
 			// Base language (English) loc not defined.
-			["french"] = "frLocValue"
+			["french"] = "frLocValue",
 		};
 
 		var otherLocBlock = new LocBlock("locBlock", "english") {
 			["english"] = "enLocValue-2",
-			["french"] = "frLocValue-2"
+			["french"] = "frLocValue-2",
 		};
 
 		locBlock.ModifyForEveryLanguage(otherLocBlock, (loc, otherLoc, language) => {
@@ -80,15 +80,10 @@ public sealed class LocBlockTests {
 	public void BaseLanguageIsAlwaysIncludedInModifyForEveryLanguageWithoutOtherBlock() {
 		var locBlock = new LocBlock("locBlock", "english") {
 			// Base language (English) loc not defined.
-			["french"] = "frLocValue"
+			["french"] = "frLocValue",
 		};
 
-		locBlock.ModifyForEveryLanguage((loc, language) => {
-			if (string.IsNullOrEmpty(loc)) {
-				return $"new loc for language {language}";
-			}
-			return $"{loc} updated";
-		});
+		locBlock.ModifyForEveryLanguage((loc, language) => string.IsNullOrEmpty(loc) ? $"new loc for language {language}" : $"{loc} updated");
 		Assert.Equal("new loc for language english", locBlock["english"]);
 		Assert.Equal("frLocValue updated", locBlock["french"]);
 	}
@@ -101,7 +96,7 @@ public sealed class LocBlockTests {
 			["german"] = "c",
 			["russian"] = "d",
 			["simp_chinese"] = "e",
-			["spanish"] = "f"
+			["spanish"] = "f",
 		};
 
 		var copyLocBlock = new LocBlock("key2", origLocBlock);
@@ -121,7 +116,7 @@ public sealed class LocBlockTests {
 			["german"] = "c",
 			["russian"] = "d",
 			["simp_chinese"] = "e",
-			["spanish"] = "f"
+			["spanish"] = "f",
 		};
 
 		var copyingLocBlock = new LocBlock("key2", "english");
@@ -138,11 +133,11 @@ public sealed class LocBlockTests {
 	[Fact]
 	public void LocForNonBaseLanguageDefaultsToBaseLanguageLoc() {
 		var locBlock = new LocBlock("key1", "english") {
-			["english"] = "Key 1 loc"
+			["english"] = "Key 1 loc",
 		};
 		Assert.False(locBlock.HasLocForLanguage("italian"));
 		Assert.True(locBlock.HasLocForLanguage("english"));
-		
+
 		Assert.Equal("Key 1 loc", locBlock["italian"]);
 	}
 
@@ -151,7 +146,7 @@ public sealed class LocBlockTests {
 		var locBlock = new LocBlock("key1", "english");
 		Assert.False(locBlock.HasLocForLanguage("italian"));
 		Assert.False(locBlock.HasLocForLanguage("english"));
-		
+
 		Assert.Null(locBlock["italian"]);
 	}
 
@@ -161,10 +156,10 @@ public sealed class LocBlockTests {
 			["english"] = "Key 1 loc",
 			["french"] = "frLoc",
 			["german"] = "",
-			["italian"] = null // will use base language loc
+			["italian"] = null, // will use base language loc
 			// korean not defined, will use base language loc
 		};
-		
+
 		Assert.Equal(" key1: \"Key 1 loc\"", locBlock.GetYmlLocLineForLanguage("english"));
 		Assert.Equal(" key1: \"frLoc\"", locBlock.GetYmlLocLineForLanguage("french"));
 		Assert.Equal(" key1: \"\"", locBlock.GetYmlLocLineForLanguage("german"));

@@ -3,4 +3,4 @@
 namespace commonItems.Serialization; 
 
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class NonSerialized : Attribute { }
+public sealed class NonSerialized : Attribute;

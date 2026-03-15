@@ -162,7 +162,7 @@ public sealed class LocDBTests {
 		Console.SetOut(output);
 
 		var locDB = new LocDB("english", "french", "spanish");
-		var mods = new List<Mod> { new Mod("themod", "TestFiles/mod/themod") };
+		var mods = new List<Mod> { new("themod", "TestFiles/mod/themod") };
 		var modFS = new ModFilesystem("TestFiles/CK3/game", mods);
 		locDB.ScrapeLocalizations(modFS);
 

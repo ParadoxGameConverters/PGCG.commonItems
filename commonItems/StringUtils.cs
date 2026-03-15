@@ -7,8 +7,7 @@ public static class StringUtils {
 	}
 	
 	public static string RemQuotes(this string str) {
-		var length = str.Length;
-		if (length < 2) {
+		if (str.Length < 2) {
 			return str;
 		}
 		if (str[0] != '"' || str[^1] != '"') {

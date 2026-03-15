@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests;
 
 public sealed class TrimPathTests {
 	[Fact]

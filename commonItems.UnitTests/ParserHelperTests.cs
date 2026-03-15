@@ -69,6 +69,20 @@ public sealed class ParserHelperTests {
 		Assert.True(reader.EndOfStream);
 	}
 
+	[Fact]
+	public void IgnoreItemIgnoresBracedItemWithQuotedBraces() {
+		var reader = new BufferedReader("= { text = \"ignore { these } braces\" nested = { value = 1 } } More text");
+		ParserHelpers.IgnoreItem(reader);
+		Assert.Equal(" More text", reader.ReadToEnd());
+	}
+
+	[Fact]
+	public void IgnoreItemIgnoresBracedItemWithCommentedBraces() {
+		var reader = new BufferedReader("= { text = value # } { comment braces\n nested = { value = 1 } } More text");
+		ParserHelpers.IgnoreItem(reader);
+		Assert.Equal(" More text", reader.ReadToEnd());
+	}
+
 	private sealed class Test1 : Parser {
 		public string? value1;
 		public string? value2;
@@ -215,19 +229,19 @@ public sealed class ParserHelperTests {
 	[Fact]
 	public void GetFloatsAddsFloats() {
 		var reader = new BufferedReader("1.25 2.5 3.75");
-		Assert.Equal(new[] {1.25f, 2.5f, 3.75f}, reader.GetFloats());
+		Assert.Equal([1.25f, 2.5f, 3.75f], reader.GetFloats());
 	}
 
 	[Fact]
 	public void GetFloatsAddsNegativeFloats() {
 		var reader = new BufferedReader("1.25 -2.5 -3.75");
-		Assert.Equal(new[] {1.25f, -2.5f, -3.75f}, reader.GetFloats());
+		Assert.Equal([1.25f, -2.5f, -3.75f], reader.GetFloats());
 	}
 
 	[Fact]
 	public void GetFloatsAddsQuotedFloats() {
 		var reader = new BufferedReader("\"1.25\" \"2.5\" \"3.75\"");
-		Assert.Equal(new[] {1.25f, 2.5f, 3.75f}, reader.GetFloats());
+		Assert.Equal([1.25f, 2.5f, 3.75f], reader.GetFloats());
 	}
 
 	[Fact]
@@ -424,7 +438,7 @@ public sealed class ParserHelperTests {
 		var assignments = reader.GetAssignments();
 
 		var expectedAssignments = new List<KeyValuePair<string, string>> {
-			new("id", "180"), new("type", "46"), new("type", "48")
+			new("id", "180"), new("type", "46"), new("type", "48"),
 		};
 		Assert.Equal(expectedAssignments, assignments);
 	}
@@ -750,12 +764,8 @@ public sealed class ParserHelperTests {
 		Assert.Collection(instance.doubles,
 			item => Assert.Equal(5, item),
 			item => Assert.Equal(0.7, item, 8));
-		Assert.Collection(instance.assignments,
-			item => {
-				var (key, value) = item;
-				Assert.Equal("beep", key);
-				Assert.Equal("peep", value);
-			}
-		);
+		var assignment = Assert.Single(instance.assignments);
+		Assert.Equal("beep", assignment.Key);
+		Assert.Equal("peep", assignment.Value);
 	}
 }

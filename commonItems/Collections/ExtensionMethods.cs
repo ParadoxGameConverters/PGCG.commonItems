@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace commonItems.Collections; 
 
@@ -10,8 +9,16 @@ public static class ExtensionMethods {
 	}
 	
 	public static void RemoveWhere<T>(this ICollection<T> collection, Func<T, bool> predicate) {
-		foreach (T item in collection.ToArray().Where(predicate)) {
-			collection.Remove(item);
+		if (collection is List<T> list) {
+			list.RemoveAll(item => predicate(item));
+			return;
+		}
+
+		var snapshot = new List<T>(collection);
+		foreach (T item in snapshot) {
+			if (predicate(item)) {
+				collection.Remove(item);
+			}
 		}
 	}
 }

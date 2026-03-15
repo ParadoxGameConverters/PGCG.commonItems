@@ -94,7 +94,7 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		return daysByMonth[month] - daysByMonth[month - 1];
 	}
 
-	public readonly Date ChangeByDays(int days) {
+	public Date ChangeByDays(int days) {
 		int newYear = Year;
 		int newMonth = Month;
 		int newDay = Day;
@@ -159,7 +159,7 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		return new Date(newYear, newMonth, newDay);
 	}
 
-	public readonly Date ChangeByMonths(int months) {
+	public Date ChangeByMonths(int months) {
 		int newYear = Year;
 		int newMonth = Month;
 		
@@ -176,7 +176,7 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		return new Date(newYear, newMonth, Day);
 	}
 
-	public readonly Date ChangeByYears(int years) {
+	public Date ChangeByYears(int years) {
 		return new Date(Year + years, Month, Day);
 	}
 
@@ -195,14 +195,14 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		return (short)year;
 	}
 
-	public readonly double DiffInYears(Date rhs) {
+	public double DiffInYears(Date rhs) {
 		double years = Year - rhs.Year;
 		years += (double)(CalculateDayInYear() - rhs.CalculateDayInYear()) / 365;
 
 		return years;
 	}
 
-	public override readonly string ToString() {
+	public override string ToString() {
 		var sb = new StringBuilder();
 		sb.Append(Year);
 		sb.Append('.');
@@ -212,7 +212,7 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		return sb.ToString();
 	}
 
-	public readonly string Serialize(string indent, bool withBraces) {
+	public string Serialize(string indent, bool withBraces) {
 		return ToString();
 	}
 
@@ -231,24 +231,24 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		334, // December
 	];
 
-	private readonly int CalculateDayInYear() {
+	private int CalculateDayInYear() {
 		if (Month is >= 1 and <= 12) {
 			return Day + daysByMonth[Month - 1];
 		}
 		return Day;
 	}
 	
-	public readonly bool Equals(Date other) {
+	public bool Equals(Date other) {
 		return Year == other.Year &&
 		       Month == other.Month &&
 		       Day == other.Day;
 	}
 
-	public override readonly bool Equals(object? obj) {
+	public override bool Equals(object? obj) {
 		return obj is Date date && Equals(date);
 	}
 
-	public override readonly int GetHashCode() {
+	public override int GetHashCode() {
 		return HashCode.Combine(Year, Month, Day);
 	}
 
@@ -267,7 +267,7 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		return (lhs.Equals(rhs) || (lhs > rhs));
 	}
 
-	public readonly int CompareTo(Date other) {
+	public int CompareTo(Date other) {
 		var result = Year.CompareTo(other.Year);
 		if (result != 0) {
 			return result;
@@ -286,7 +286,7 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		return !left.Equals(right);
 	}
 
-	public readonly DateTimeOffset ToDateTimeOffset() {
+	public DateTimeOffset ToDateTimeOffset() {
 		return new DateTimeOffset(new DateTime(Year, Month, Day), offset: TimeSpan.Zero);
 	}
 }

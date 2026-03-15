@@ -220,7 +220,7 @@ public sealed class StringExtensionsTests {
 	[InlineData("Kalamazoo", "Kalamazooan")] // https://en.wiktionary.org/wiki/Kalamazooan
 	[InlineData("Kannauj", "Kannaujian")] // https://www.ouddict.com/threads/after-how-much-time-i-should-expect-to-judge-the-smell-of-deer-musk-macerating-in-sandlewood.6113/
 	[InlineData("Mrauk U", "Mrauk Uan")] // https://en.wikipedia.org/wiki/Mrauk_U
-	
+
 	// adjectives mostly made up
 	[InlineData("Sidh", "Sidhian")]
 	[InlineData("Theudoburgz", "Theudoburgzian")]
@@ -231,7 +231,7 @@ public sealed class StringExtensionsTests {
 	[InlineData("Taastrup", "Taastrupian")]
 	[InlineData("Batangafo", "Batangafoan")]
 	[InlineData("Bordj Bou Arreridj", "Bordj Bou Arreridjian")]
-	
+
 	// adjectives relying on rewrite rules
 	[InlineData("Armenia Maioris", "Greater Armenian")]
 	[InlineData("Armenia Minoris", "Lesser Armenian")]
@@ -457,7 +457,7 @@ public sealed class StringExtensionsTests {
 	[InlineData("Umbria", "Umbrian")]
 	[InlineData("Xanthi", "Xanthian")]
 	[InlineData("Zakynthos", "Zakynthian")]
-	
+
 	// from https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Indian_states_and_territories
 	[InlineData("Andhra Pradesh", "Andhrulu")]
 	[InlineData("Arunachal Pradesh", "Arunachali")]
@@ -528,26 +528,26 @@ public sealed class StringExtensionsTests {
 
 		using var httpClient = new HttpClient();
 		var request = new HttpRequestMessage(HttpMethod.Get, csvUrl);
-		var response = httpClient.Send(request);
-		using var reader = new StreamReader(response.Content.ReadAsStream());
+		var response = httpClient.Send(request, TestContext.Current.CancellationToken);
+		using var reader = new StreamReader(response.Content.ReadAsStream(TestContext.Current.CancellationToken));
 		var csv = reader.ReadToEnd();
-		
+
 		var cities = CsvReader.ReadFromText(csv)
 			.Select(line => line[0])
-			.Where(city => !string.IsNullOrEmpty(city))
-			.Where(city => !city.Contains(" in der "))
-			.Where(city => !city.Contains(" an der "))
-			.Where(city => !city.Contains(" am "))
-			.Where(city => !city.StartsWith("Zürich (Kreis"))
-			.Where(city => !city.StartsWith("Sector "))
-			.Where(city => !city.EndsWith(" TDA"))
-			.Where(city => !city.EndsWith(" I"))
-			.Where(city => !city.EndsWith(" II"))
-			.Where(city => !city.EndsWith(" VI"))
-			.Where(city => !city.EndsWith(" XXI"))
+			.Where(city => !string.IsNullOrEmpty(city) &&
+			               !city.Contains(" in der ", StringComparison.Ordinal) &&
+			               !city.Contains(" an der ", StringComparison.Ordinal) &&
+			               !city.Contains(" am ", StringComparison.Ordinal) &&
+			               !city.StartsWith("Zürich (Kreis") &&
+			               !city.StartsWith("Sector ") &&
+			               !city.EndsWith(" TDA") &&
+			               !city.EndsWith(" I") &&
+			               !city.EndsWith(" II") &&
+			               !city.EndsWith(" VI") &&
+			               !city.EndsWith(" XXI"))
 			.Distinct()
 			.ToList();
-		
+
 		var countries = CsvReader.ReadFromText(csv)
 			.Select(line => line[1])
 			.Where(country => !string.IsNullOrEmpty(country))
@@ -575,7 +575,7 @@ public sealed class StringExtensionsTests {
 	public void GetAdjectiveHandlesStringsWithNonAlphanumericEndings(string noun, string expectedAdjective) {
 		Assert.Equal(expectedAdjective, noun.GetAdjective());
 	}
-	
+
 	[Theory]
 	// ReSharper disable StringLiteralTypo
 	[InlineData("Rome", "Rome")]

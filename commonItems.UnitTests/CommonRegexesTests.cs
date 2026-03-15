@@ -10,13 +10,9 @@ public sealed class CommonRegexesTests {
 		var reader = new BufferedReader("@ai_aggressiveness = 70");
 		var instance = new TestParser();
 		instance.ParseStream(reader);
-		Assert.Collection(reader.Variables,
-			pair => {
-				var (key, value) = pair;
-				Assert.Equal("ai_aggressiveness", key);
-				Assert.Equal(70, value);
-			}
-		);
+		var variable = Assert.Single(reader.Variables);
+		Assert.Equal("ai_aggressiveness", variable.Key);
+		Assert.Equal(70, variable.Value);
 	}
 	[Fact]
 	public void VariableRegexDoesNotMatchInterpolatedExpressions() {
@@ -46,11 +42,11 @@ public sealed class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void CatchallRegexDoesntMatchCurlyBrackets() {
+	public void CatchallRegexDoesNotMatchCurlyBrackets() {
 		Assert.DoesNotMatch(CommonRegexes.Catchall, "1234-abcd{");
 		Assert.DoesNotMatch(CommonRegexes.Catchall, "1234-abcd}");
 	}
-	
+
 	[Fact]
 	public void CatchallRegexMatchesQuotedCurlyBrackets() {
 		Assert.Matches(CommonRegexes.Catchall, "\"1234-abcd{\"");
@@ -224,7 +220,7 @@ public sealed class CommonRegexesTests {
 	public void QuotedStringRegexMatchesQuotedEquals() {
 		Assert.Matches(CommonRegexes.QuotedString, @"""1234-abcd=""");
 	}
-	
+
 	[Fact]
 	public void DateRegexMatchesDates() {
 		Assert.Matches(CommonRegexes.Date, "1918.11.11");
@@ -243,7 +239,7 @@ public sealed class CommonRegexesTests {
 		Assert.Matches(CommonRegexes.Date, "-1918.");
 		Assert.Matches(CommonRegexes.Date, "-1918");
 	}
-	
+
 	[Fact]
 	public void DateRegexDoesNotMatchDatesWithCharacters() {
 		Assert.DoesNotMatch(CommonRegexes.Date, "1918a.11.11");

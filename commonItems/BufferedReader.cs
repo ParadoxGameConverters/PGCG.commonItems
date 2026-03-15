@@ -1,6 +1,7 @@
 ﻿using NCalc;
 using NCalc.Exceptions;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -38,7 +39,22 @@ public sealed class BufferedReader {
 	}
 
 	public string Read(uint numberOfChars) {
-		var sb = new StringBuilder();
+		if (numberOfChars == 0) {
+			return string.Empty;
+		}
+
+		if (characterStack.Count == 0 && numberOfChars <= int.MaxValue) {
+			var maxCharsToRead = (int)numberOfChars;
+			var buffer = ArrayPool<char>.Shared.Rent(maxCharsToRead);
+			try {
+				var read = streamReader.Read(buffer, 0, maxCharsToRead);
+				return new string(buffer, 0, read);
+			} finally {
+				ArrayPool<char>.Shared.Return(buffer);
+			}
+		}
+
+		var sb = new StringBuilder((int)Math.Min(numberOfChars, int.MaxValue));
 		for (uint i = 0; i < numberOfChars; ++i) {
 			var ch = Read();
 			if (ch == -1) {
@@ -55,7 +71,11 @@ public sealed class BufferedReader {
 	}
 
 	public string ReadToEnd() {
-		var sb = new StringBuilder();
+		if (characterStack.Count == 0) {
+			return streamReader.ReadToEnd();
+		}
+
+		var sb = new StringBuilder(characterStack.Count + 32);
 		while (characterStack.TryPop(out int character)) {
 			sb.Append((char)character);
 		}

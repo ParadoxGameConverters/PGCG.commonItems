@@ -1,18 +1,18 @@
 ﻿using Xunit;
 
-namespace commonItems.UnitTests; 
+namespace commonItems.UnitTests;
 
 public sealed class ToOrdinalSuffixTests {
 	[Fact]
 	public void LastDigitOneGivesSt() {
 		Assert.Equal("st", 1.ToOrdinalSuffix());
 	}
-	
+
 	[Fact]
 	public void LastDigitTwoGivesNd() {
 		Assert.Equal("nd", 2.ToOrdinalSuffix());
 	}
-	
+
 	[Fact]
 	public void LastDigitThreeGivesRd() {
 		Assert.Equal("rd", 3.ToOrdinalSuffix());
@@ -29,7 +29,7 @@ public sealed class ToOrdinalSuffixTests {
 	public void RemainingDigitsGiveTh(int number) {
 		Assert.Equal("th", number.ToOrdinalSuffix());
 	}
-	
+
 	[Theory]
 	[InlineData(10)]
 	[InlineData(11)]

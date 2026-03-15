@@ -8,22 +8,56 @@ namespace commonItems.Mods;
 
 public sealed class ModFilesystem {
 	private static bool PathIsReplaced(string path, IEnumerable<string> replacedPaths) {
-		var splitPath = CommonFunctions.SplitPath(path);
+		foreach (var replacedPath in replacedPaths) {
+			if (PathStartsWithPathComponents(path, replacedPath)) {
+				return true;
+			}
+		}
 
-		return replacedPaths.Any(replacedPath => {
-			var splitReplacedPath = CommonFunctions.SplitPath(replacedPath);
-			for (int i = 0; i < splitReplacedPath.Length; ++i) {
-				if (i >= splitPath.Length) {
-					return false;
-				}
+		return false;
+	}
 
-				if (splitPath[i] != splitReplacedPath[i]) {
-					return false;
-				}
+	private static bool PathStartsWithPathComponents(string path, string prefixPath) {
+		var pathSpan = path.AsSpan();
+		var prefixSpan = prefixPath.AsSpan();
+		var pathIndex = 0;
+		var prefixIndex = 0;
+
+		while (true) {
+			SkipSeparators(pathSpan, ref pathIndex);
+			SkipSeparators(prefixSpan, ref prefixIndex);
+
+			if (prefixIndex >= prefixSpan.Length) {
+				return true;
+			}
+			if (pathIndex >= pathSpan.Length) {
+				return false;
 			}
 
-			return true;
-		});
+			var pathComponentStart = pathIndex;
+			while (pathIndex < pathSpan.Length && !IsPathSeparator(pathSpan[pathIndex])) {
+				++pathIndex;
+			}
+
+			var prefixComponentStart = prefixIndex;
+			while (prefixIndex < prefixSpan.Length && !IsPathSeparator(prefixSpan[prefixIndex])) {
+				++prefixIndex;
+			}
+
+			if (!pathSpan[pathComponentStart..pathIndex].SequenceEqual(prefixSpan[prefixComponentStart..prefixIndex])) {
+				return false;
+			}
+		}
+	}
+
+	private static bool IsPathSeparator(char c) {
+		return c is '/' or '\\';
+	}
+
+	private static void SkipSeparators(ReadOnlySpan<char> span, ref int index) {
+		while (index < span.Length && IsPathSeparator(span[index])) {
+			++index;
+		}
 	}
 	
 	private sealed class DefaultFilePrecedenceComparer : IComparer<string> {
@@ -38,8 +72,8 @@ public sealed class ModFilesystem {
 				return 1;
 			}
 
-			var xSlashCount = x.Count(c => c is '/' or '\\');
-			var ySlashCount = y.Count(c => c is '/' or '\\');
+			var xSlashCount = CountPathSeparators(x);
+			var ySlashCount = CountPathSeparators(y);
 			if (xSlashCount < ySlashCount) {
 				return -1;
 			}
@@ -47,6 +81,16 @@ public sealed class ModFilesystem {
 				return 1;
 			}
 			return string.Compare(x, y, StringComparison.Ordinal);
+		}
+
+		private static int CountPathSeparators(string path) {
+			var count = 0;
+			foreach (var c in path) {
+				if (c is '/' or '\\') {
+					++count;
+				}
+			}
+			return count;
 		}
 	}
 	private static readonly DefaultFilePrecedenceComparer precedenceComparer = new();
