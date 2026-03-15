@@ -85,7 +85,8 @@ public class Parser {
 				return;
 			}
 		}
-		
+
+		regexRules.Add((regex, del));
 	}
 
 	public void ClearRegisteredRules() {
