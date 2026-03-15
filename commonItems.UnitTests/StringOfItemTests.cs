@@ -99,6 +99,22 @@ public sealed class StringOfItemTests {
 	}
 
 	[Fact]
+	public void StringOfItemHandlesItemContainingStringWithEscapedBackslash() {
+		// Test case for escaped backslash followed by closing quote: "test\\"
+		// The backslash is escaped, so the quote should close the string.
+		const string input =
+			"""
+			= {
+				foo = "test\\"
+				bar = baz
+			}
+			""";
+		var reader = new BufferedReader(input);
+		var theItem = reader.GetStringOfItem();
+		Assert.Equal(input[2..], theItem.ToString());
+	}
+
+	[Fact]
 	public void StringOfItemCanBeConstructedFromString() {
 		const string str = "{ key=value }";
 		Assert.Equal(str, new StringOfItem(str).ToString());
