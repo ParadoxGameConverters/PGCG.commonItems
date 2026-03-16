@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 
 namespace commonItems.Collections;
 
@@ -9,7 +8,7 @@ namespace commonItems.Collections;
 /// A set that preserves insertion order
 /// https://stackoverflow.com/a/17853085/10249243
 /// </summary>
-public class OrderedSet<T> : ISet<T>, IReadOnlyCollection<T> where T : notnull {
+public class OrderedSet<T> : ISet<T>, IReadOnlySet<T>, IReadOnlyCollection<T> where T : notnull {
 	private readonly Dictionary<T, LinkedListNode<T>> dictionary;
 	private readonly LinkedList<T> linkedList;
 
