@@ -26,7 +26,7 @@ public sealed class OrderedSetTests {
 		var set = new OrderedSet<int> { 1, 5, 2, 4, 3 };
 
 		set.Remove(5);
-		Assert.DoesNotContain(5, set);
+		Assert.DoesNotContain(set, item => item == 5);
 		Assert.Collection(set,
 			item => Assert.Equal(1, item),
 			item => Assert.Equal(2, item),
