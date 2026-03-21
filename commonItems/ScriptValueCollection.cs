@@ -24,21 +24,20 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 		//		agent_max_skill_value = 10
 		// To handle this, we read the script values multiple times until no new values are added.
 		OrderedSet<string> unresolvedScriptValues = [];
-		int addedValuesCount;
+		int addedValuesCount = 0;
+		var parser = new Parser();
+		parser.RegisterRegex(CommonRegexes.String, (reader, name) => {
+			var value = ParseValue(reader, defines, unresolvedScriptValues);
+			if (value is not null) {
+				if (!dict.ContainsKey(name)) {
+					++addedValuesCount;
+				}
+				dict[name] = (double)value;
+			}
+		});
+		parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
 		do {
 			addedValuesCount = 0;
-			
-			var parser = new Parser();
-			parser.RegisterRegex(CommonRegexes.String, (reader, name) => {
-				var value = ParseValue(reader, defines, unresolvedScriptValues);
-				if (value is not null) {
-					if (!dict.ContainsKey(name)) {
-						++addedValuesCount;
-					}
-					dict[name] = (double)value;
-				}
-			});
-			parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
 			parser.ParseGameFolder("common/script_values", modFilesystem, "txt", recursive: true);
 		} while (addedValuesCount > 0);
 		
