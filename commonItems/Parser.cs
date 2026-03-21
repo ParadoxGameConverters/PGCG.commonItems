@@ -1,5 +1,4 @@
-﻿using commonItems.Collections;
-using commonItems.Mods;
+﻿using commonItems.Mods;
 using Open.Collections;
 using System;
 using System.Collections.Generic;
@@ -17,25 +16,31 @@ internal abstract class AbstractDelegate {
 	public abstract void Execute(BufferedReader sr, string token);
 }
 
-internal sealed class TwoArgDelegate : AbstractDelegate {
-	private readonly Del del;
-	public TwoArgDelegate(Del del) { this.del = del; }
+internal sealed class TwoArgDelegate(Del del) : AbstractDelegate {
+	private readonly Del del = del;
+
 	public override void Execute(BufferedReader sr, string token) {
 		del(sr, token);
 	}
 }
 
-internal sealed class OneArgDelegate : AbstractDelegate {
-	private readonly SimpleDel del;
-	public OneArgDelegate(SimpleDel del) { this.del = del; }
+internal sealed class OneArgDelegate(SimpleDel del) : AbstractDelegate {
+	private readonly SimpleDel del = del;
+
 	public override void Execute(BufferedReader sr, string token) {
 		del(sr);
 	}
 }
 
 public class Parser {
-	public Parser() {
-		RegisterRegex(CommonRegexes.Variable, (reader, varStr) => {
+	private bool variableRegexRegistered = false;
+
+	private void EnsureVariableRegexIsRegistered() {
+		if (variableRegexRegistered) {
+			return;
+		}
+
+		regexRules.Add((CommonRegexes.Variable, new TwoArgDelegate((reader, varStr) => {
 			var value = reader.GetString();
 			var variableName = varStr[1..];
 			if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
@@ -47,7 +52,8 @@ public class Parser {
 				return;
 			}
 			reader.Variables[variableName] = value;
-		});
+		})));
+		variableRegexRegistered = true;
 	}
 
 	public static void AbsorbBOM(BufferedReader reader) {
@@ -64,33 +70,22 @@ public class Parser {
 		keywordRules[keyword] = new OneArgDelegate(del);
 	}
 	public void RegisterRegex(string keyword, Del del) {
-		AddOrReplaceRegexRule(new Regex(keyword), new TwoArgDelegate(del));
+		regexRules.Add((new Regex(keyword), new TwoArgDelegate(del)));
 	}
 	public void RegisterRegex(string keyword, SimpleDel del) {
-		AddOrReplaceRegexRule(new Regex(keyword), new OneArgDelegate(del));
+		regexRules.Add((new Regex(keyword), new OneArgDelegate(del)));
 	}
 	public void RegisterRegex(Regex regex, Del del) {
-		AddOrReplaceRegexRule(regex, new TwoArgDelegate(del));
+		regexRules.Add((regex, new TwoArgDelegate(del)));
 	}
 	public void RegisterRegex(Regex regex, SimpleDel del) {
-		AddOrReplaceRegexRule(regex, new OneArgDelegate(del));
-	}
-
-	private void AddOrReplaceRegexRule(Regex regex, AbstractDelegate del) {
-		var regexStr = regex.ToString();
-		if (regexRuleIndices.TryGetValue(regexStr, out int index)) {
-			regexRules[index] = (regex, del);
-			return;
-		}
-
-		regexRuleIndices[regexStr] = regexRules.Count;
-		regexRules.Add((regex, del));
+		regexRules.Add((regex, new OneArgDelegate(del)));
 	}
 
 	public void ClearRegisteredRules() {
 		keywordRules.Clear();
 		regexRules.Clear();
-		regexRuleIndices.Clear();
+		variableRegexRegistered = false;
 	}
 
 	private bool TryToMatch(string token, BufferedReader reader) {
@@ -317,6 +312,7 @@ public class Parser {
 	///  Parses a stream in a buffered reader, does not absorb UTF8-BOM.
 	/// </summary>
 	public void ParseStream(BufferedReader reader) {
+		EnsureVariableRegexIsRegistered();
 		var braceDepth = 0;
 		var value = false; // tracker to indicate whether we reached the value part of key=value pair
 
@@ -457,5 +453,4 @@ public class Parser {
 
 	private readonly Dictionary<string, AbstractDelegate> keywordRules = new();
 	private readonly List<(Regex regex, AbstractDelegate fun)> regexRules = [];
-	private readonly Dictionary<string, int> regexRuleIndices = new(StringComparer.Ordinal);
 }
