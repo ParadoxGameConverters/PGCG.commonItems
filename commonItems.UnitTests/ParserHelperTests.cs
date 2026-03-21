@@ -718,18 +718,18 @@ public sealed class ParserHelperTests {
 		public List<double> doubles = [];
 		public List<KeyValuePair<string, string>> assignments = [];
 
-		public TypeClass(BufferedReader reader) {
-			RegisterKeyword("str", reader => str = reader.GetString());
-			RegisterKeyword("integer", reader => integer = reader.GetInt());
-			RegisterKeyword("longInt", reader => longInt = reader.GetLong());
-			RegisterKeyword("ulongInt", reader => ulongInt = reader.GetULong());
-			RegisterKeyword("d", reader => d = reader.GetDouble());
-			RegisterKeyword("strings", reader => strings = reader.GetStrings());
-			RegisterKeyword("ints", reader => ints = reader.GetInts());
-			RegisterKeyword("longs", reader => longs = reader.GetLongs());
-			RegisterKeyword("ulongs", reader => ulongs = reader.GetULongs());
-			RegisterKeyword("doubles", reader => doubles = reader.GetDoubles());
-			RegisterKeyword("assignments", reader => assignments = reader.GetAssignments());
+		public TypeClass(BufferedReader reader) : base(implicitVariableHandling: true) {
+			RegisterKeyword("str", r => str = r.GetString());
+			RegisterKeyword("integer", r => integer = r.GetInt());
+			RegisterKeyword("longInt", r => longInt = r.GetLong());
+			RegisterKeyword("ulongInt", r => ulongInt = r.GetULong());
+			RegisterKeyword("d", r => d = r.GetDouble());
+			RegisterKeyword("strings", r => strings = r.GetStrings());
+			RegisterKeyword("ints", r => ints = r.GetInts());
+			RegisterKeyword("longs", r => longs = r.GetLongs());
+			RegisterKeyword("ulongs", r => ulongs = r.GetULongs());
+			RegisterKeyword("doubles", r => doubles = r.GetDoubles());
+			RegisterKeyword("assignments", r => assignments = r.GetAssignments());
 
 			ParseStream(reader);
 		}

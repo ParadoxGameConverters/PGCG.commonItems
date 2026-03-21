@@ -17,43 +17,34 @@ internal abstract class AbstractDelegate {
 }
 
 internal sealed class TwoArgDelegate(Del del) : AbstractDelegate {
-	private readonly Del del = del;
-
 	public override void Execute(BufferedReader sr, string token) {
 		del(sr, token);
 	}
 }
 
 internal sealed class OneArgDelegate(SimpleDel del) : AbstractDelegate {
-	private readonly SimpleDel del = del;
-
 	public override void Execute(BufferedReader sr, string token) {
 		del(sr);
 	}
 }
 
 public class Parser {
-	private bool variableRegexRegistered = false;
-
-	private void EnsureVariableRegexIsRegistered() {
-		if (variableRegexRegistered) {
-			return;
+	public Parser(bool implicitVariableHandling = false) {
+		if (implicitVariableHandling) {
+			regexRules.Add((CommonRegexes.Variable, new TwoArgDelegate((reader, varStr) => {
+				var value = reader.GetString();
+				var variableName = varStr[1..];
+				if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
+					reader.Variables[variableName] = intValue;
+					return;
+				}
+				if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
+					reader.Variables[variableName] = doubleValue;
+					return;
+				}
+				reader.Variables[variableName] = value;
+			})));
 		}
-
-		regexRules.Add((CommonRegexes.Variable, new TwoArgDelegate((reader, varStr) => {
-			var value = reader.GetString();
-			var variableName = varStr[1..];
-			if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-				reader.Variables[variableName] = intValue;
-				return;
-			}
-			if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
-				reader.Variables[variableName] = doubleValue;
-				return;
-			}
-			reader.Variables[variableName] = value;
-		})));
-		variableRegexRegistered = true;
 	}
 
 	public static void AbsorbBOM(BufferedReader reader) {
@@ -85,7 +76,6 @@ public class Parser {
 	public void ClearRegisteredRules() {
 		keywordRules.Clear();
 		regexRules.Clear();
-		variableRegexRegistered = false;
 	}
 
 	private bool TryToMatch(string token, BufferedReader reader) {
@@ -312,7 +302,6 @@ public class Parser {
 	///  Parses a stream in a buffered reader, does not absorb UTF8-BOM.
 	/// </summary>
 	public void ParseStream(BufferedReader reader) {
-		EnsureVariableRegexIsRegistered();
 		var braceDepth = 0;
 		var value = false; // tracker to indicate whether we reached the value part of key=value pair
 

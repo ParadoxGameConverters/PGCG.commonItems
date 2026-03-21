@@ -367,6 +367,11 @@ public sealed class BufferedReader {
 	}
 
 	public object EvaluateExpression(string lexeme) {
+		// If the expression doesn't contain brackets, it's a simple variable reference.
+		if (!lexeme.Contains('[')) {
+			return ResolveVariable(lexeme) ?? lexeme;
+		}
+		
 		var expression = new Expression(lexeme[2..^1]);
 		foreach (var (name, value) in Variables) {
 			expression.Parameters[name] = value;

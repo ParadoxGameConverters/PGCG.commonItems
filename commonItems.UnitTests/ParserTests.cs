@@ -361,13 +361,13 @@ public sealed class ParserTests {
 		Assert.Null(test.broken);
 	}
 
-	private sealed class TestCountry : Parser {
+	private sealed class TestCountry(bool implicitVariableHandling = true) : Parser(implicitVariableHandling) {
 		public string Name { get; private set; } = string.Empty;
 		public double Prestige { get; private set; }
 
-		public TestCountry(BufferedReader reader) {
-			RegisterKeyword("name", reader => Name = reader.GetString());
-			RegisterKeyword("prestige", reader => Prestige = reader.GetDouble());
+		public TestCountry(BufferedReader reader) : this(implicitVariableHandling: true) {
+			RegisterKeyword("name", r => Name = r.GetString());
+			RegisterKeyword("prestige", r => Prestige = r.GetDouble());
 			ParseStream(reader);
 		}
 	}
@@ -399,7 +399,7 @@ public sealed class ParserTests {
 			"@cheap_cost_tier_1 = @[cheap_cost_base]\n" + // 100
 			"@cheap_cost_tier_2 = @[cheap_cost_tier_1 + cheap_cost_scale_addition_per_tier]"); // 150
 
-		var parser = new Parser();
+		var parser = new Parser(implicitVariableHandling: true);
 		parser.ParseStream(reader);
 
 		Assert.Collection(reader.Variables,

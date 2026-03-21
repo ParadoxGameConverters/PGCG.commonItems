@@ -25,7 +25,7 @@ public class ScriptValueCollection : IReadOnlyDictionary<string, double> {
 		// To handle this, we read the script values multiple times until no new values are added.
 		OrderedSet<string> unresolvedScriptValues = [];
 		int addedValuesCount = 0;
-		var parser = new Parser();
+		var parser = new Parser(implicitVariableHandling: true);
 		parser.RegisterRegex(CommonRegexes.String, (reader, name) => {
 			var value = ParseValue(reader, defines, unresolvedScriptValues);
 			if (value is not null) {
