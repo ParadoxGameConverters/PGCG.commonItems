@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -79,19 +78,19 @@ public class Parser {
 
 	private void AddOrReplaceRegexRule(Regex regex, AbstractDelegate del) {
 		var regexStr = regex.ToString();
-		for (int i = 0; i < regexRules.Count; i++) {
-			if (regexRules[i].regex.ToString() == regexStr) {
-				regexRules[i] = (regex, del);
-				return;
-			}
+		if (regexRuleIndices.TryGetValue(regexStr, out int index)) {
+			regexRules[index] = (regex, del);
+			return;
 		}
 
+		regexRuleIndices[regexStr] = regexRules.Count;
 		regexRules.Add((regex, del));
 	}
 
 	public void ClearRegisteredRules() {
 		keywordRules.Clear();
 		regexRules.Clear();
+		regexRuleIndices.Clear();
 	}
 
 	private bool TryToMatch(string token, BufferedReader reader) {
@@ -129,7 +128,7 @@ public class Parser {
 	// Returned value indicates whether the lexeme-building loop should be broken
 	private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref char previousChar, ref bool inQuotes, ref bool inLiteralQuote, ref bool inInterpolatedExpression, char inputChar) {
 		if (inputChar == '#') {
-			reader.ReadLine();
+			reader.SkipRestOfLine();
 			if (sb.Length != 0) {
 				return true; // break loop
 			}
@@ -193,6 +192,10 @@ public class Parser {
 
 	[ThreadStatic]
 	private static StringBuilder? t_lexemeBuilder;
+	private static readonly string EqToken = "=";
+	private static readonly string OpenBraceToken = "{";
+	private static readonly string CloseBraceToken = "}";
+	private static readonly string QuestionToken = "?";
 
 	public static string GetNextLexeme(BufferedReader reader) {
 		var sb = t_lexemeBuilder;
@@ -250,7 +253,13 @@ public class Parser {
 			previousChar = inputChar;
 		}
 		if (sb.Length == 1) { // Optimization for single-char tokens, which are very common (e.g. =, {, }, etc.)
-			return sb[0].ToString();
+			return sb[0] switch {
+				'=' => EqToken,
+				'{' => OpenBraceToken,
+				'}' => CloseBraceToken,
+				'?' => QuestionToken,
+				_ => sb[0].ToString()
+			};
 		}
 		return sb.ToString();
 	}
@@ -310,12 +319,10 @@ public class Parser {
 	public void ParseStream(BufferedReader reader) {
 		var braceDepth = 0;
 		var value = false; // tracker to indicate whether we reached the value part of key=value pair
-		var tokensSoFar = new StringBuilder();
 
 		while (true) {
 			var token = GetNextToken(reader);
 			if (token is not null) {
-				tokensSoFar.Append(token);
 				if (token is "=" or "?=") {
 					// swapping to value part.
 					if (!value) {
@@ -326,6 +333,7 @@ public class Parser {
 					else {
 						// value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
 						// manually fast-forward to brace-lvl 0 and die.
+						var tokensSoFar = new StringBuilder(token, 64);
 						FastForwardTo0Depth(reader, ref braceDepth, tokensSoFar);
 						Logger.Warn($"Broken token syntax at {tokensSoFar}");
 						return;
@@ -385,12 +393,13 @@ public class Parser {
 	public void ParseFolder(string path, string extensions, bool recursive, bool logFilePaths = false) {
 		var searchPattern = recursive ? "*" : "*.*";
 		var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-		var files = Directory.GetFiles(path, searchPattern, searchOption).ToList();
+		var extensionSet = new HashSet<string>(extensions.Split(';'), StringComparer.OrdinalIgnoreCase);
 
-		var validExtensions = extensions.Split(';');
-		files.RemoveWhere(f => !validExtensions.Contains(CommonFunctions.GetExtension(f)));
+		foreach (var file in Directory.EnumerateFiles(path, searchPattern, searchOption)) {
+			if (!extensionSet.Contains(CommonFunctions.GetExtension(file))) {
+				continue;
+			}
 
-		foreach (var file in files) {
 			if (logFilePaths) {
 				Logger.Debug($"Parsing file: {file}");
 			}
@@ -405,7 +414,7 @@ public class Parser {
 	///		extensions may be "txt;text" (a list separated by semicolon)
 	/// </summary>
 	public void ParseGameFolder(string relativePath, ModFilesystem modFS, string extensions, bool recursive, bool logFilePaths = false, bool parallel = false) {
-		var extensionSet = extensions.Split(';');
+		var extensionSet = new HashSet<string>(extensions.Split(';'), StringComparer.OrdinalIgnoreCase);
 
 		List<ModFSFileInfo> files;
 		if (recursive) {
@@ -413,9 +422,15 @@ public class Parser {
 		} else {
 			files = modFS.GetAllFilesInFolder(relativePath);
 		}
-		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f.RelativePath)));
+		var parseTargets = new List<string>(files.Count);
+		foreach (var file in files) {
+			if (!extensionSet.Contains(CommonFunctions.GetExtension(file.RelativePath))) {
+				continue;
+			}
+			parseTargets.Add(file.AbsolutePath);
+		}
 
-		files.Select(f => f.AbsolutePath).ForEach(ProcessFile, allowParallel: parallel);
+		parseTargets.ForEach(ProcessFile, allowParallel: parallel);
 
 		return;
 
@@ -442,4 +457,5 @@ public class Parser {
 
 	private readonly Dictionary<string, AbstractDelegate> keywordRules = new();
 	private readonly List<(Regex regex, AbstractDelegate fun)> regexRules = [];
+	private readonly Dictionary<string, int> regexRuleIndices = new(StringComparer.Ordinal);
 }

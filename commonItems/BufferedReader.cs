@@ -70,6 +70,15 @@ public sealed class BufferedReader {
 		return streamReader.ReadLine();
 	}
 
+	public void SkipRestOfLine() {
+		while (!EndOfStream) {
+			var character = Read();
+			if (character is '\n' or -1) {
+				return;
+			}
+		}
+	}
+
 	public string ReadToEnd() {
 		if (characterStack.Count == 0) {
 			return streamReader.ReadToEnd();
