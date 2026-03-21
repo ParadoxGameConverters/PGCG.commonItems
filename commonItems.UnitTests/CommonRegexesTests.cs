@@ -3,7 +3,7 @@
 namespace commonItems.UnitTests;
 
 public sealed class CommonRegexesTests {
-	private sealed class TestParser : Parser;
+	private sealed class TestParser(bool implicitVariableHandling = true) : Parser(implicitVariableHandling);
 
 	[Fact]
 	public void VariableRegexMatchesVariables() {
@@ -64,12 +64,12 @@ public sealed class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void CatchallRegexDoesntMatchQuestionSign() {
+	public void CatchallRegexDoesNotMatchQuestionSign() {
 		Assert.DoesNotMatch(CommonRegexes.Catchall, "1234-abcd?");
 	}
 
 	[Fact]
-	public void CatchallRegexDoesntMatchEquals() {
+	public void CatchallRegexDoesNotMatchEquals() {
 		Assert.DoesNotMatch(CommonRegexes.Catchall, "1234-abcd=");
 	}
 
@@ -89,17 +89,17 @@ public sealed class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void IntegerRegexDoesntMatchQuotedIntegers() {
+	public void IntegerRegexDoesNotMatchQuotedIntegers() {
 		Assert.DoesNotMatch(CommonRegexes.Integer, "\"123456\"");
 	}
 
 	[Fact]
-	public void IntegerRegexDoesntMatchFloats() {
+	public void IntegerRegexDoesNotMatchFloats() {
 		Assert.DoesNotMatch(CommonRegexes.Integer, "123.456");
 	}
 
 	[Fact]
-	public void IntegerRegexDoesntMatchStrings() {
+	public void IntegerRegexDoesNotMatchStrings() {
 		Assert.DoesNotMatch(CommonRegexes.Integer, "a123456");
 		Assert.DoesNotMatch(CommonRegexes.Integer, "123456a");
 	}
@@ -115,17 +115,17 @@ public sealed class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void QuotedIntegerRegexDoesntMatchUnquotedIntegers() {
+	public void QuotedIntegerRegexDoesNotMatchUnquotedIntegers() {
 		Assert.DoesNotMatch(CommonRegexes.QuotedInteger, "123456");
 	}
 
 	[Fact]
-	public void QuotedIntegerRegexesDoesntMatchFloats() {
+	public void QuotedIntegerRegexesDoesNotMatchFloats() {
 		Assert.DoesNotMatch(CommonRegexes.QuotedInteger, "\"123.456\"");
 	}
 
 	[Fact]
-	public void QuotedIntegerRegexDoesntMatchStrings() {
+	public void QuotedIntegerRegexDoesNotMatchStrings() {
 		Assert.DoesNotMatch(CommonRegexes.QuotedInteger, "\"a123456\"");
 		Assert.DoesNotMatch(CommonRegexes.QuotedInteger, "\"123456a\"");
 	}
@@ -146,12 +146,12 @@ public sealed class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void FloatRegexDoesntMatchQuotedFloats() {
+	public void FloatRegexDoesNotMatchQuotedFloats() {
 		Assert.DoesNotMatch(CommonRegexes.Float, "\"123.456\"");
 	}
 
 	[Fact]
-	public void FloatRegexDoesntMatchStrings() {
+	public void FloatRegexDoesNotMatchStrings() {
 		Assert.DoesNotMatch(CommonRegexes.Float, "a12345");
 		Assert.DoesNotMatch(CommonRegexes.Float, "123456a");
 	}
@@ -162,29 +162,29 @@ public sealed class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void StringRegexDoesntMatchQuotedStrings() {
+	public void StringRegexDoesNotMatchQuotedStrings() {
 		Assert.DoesNotMatch(CommonRegexes.String, "\"1234-abcd\"");
 	}
 
 	[Fact]
-	public void StringRegexDoesntMatchCurlyBrackets() {
+	public void StringRegexDoesNotMatchCurlyBrackets() {
 		Assert.DoesNotMatch(CommonRegexes.String, "1234-abcd{");
 		Assert.DoesNotMatch(CommonRegexes.String, "1234-abcd}");
 	}
 
 	[Fact]
-	public void StringRegexDoesntMatchBrackets() {
+	public void StringRegexDoesNotMatchBrackets() {
 		Assert.DoesNotMatch(CommonRegexes.String, "1234-abcd[");
 		Assert.DoesNotMatch(CommonRegexes.String, "1234-abcd]");
 	}
 
 	[Fact]
-	public void StringRegexDoesntMatchInternalQuotes() {
+	public void StringRegexDoesNotMatchInternalQuotes() {
 		Assert.DoesNotMatch(CommonRegexes.String, @"1234-abcd""");
 	}
 
 	[Fact]
-	public void StringRegexDoesntMatchEquals() {
+	public void StringRegexDoesNotMatchEquals() {
 		Assert.DoesNotMatch(CommonRegexes.String, "1234-abcd=");
 	}
 
@@ -192,6 +192,11 @@ public sealed class CommonRegexesTests {
 	public void StringRegexMatchesSingleCharacters() {
 		Assert.Matches(CommonRegexes.String, "a");
 		Assert.Matches(CommonRegexes.String, "1");
+	}
+
+	[Fact]
+	public void StringRegexDoesNotMatchVariables() {
+		Assert.DoesNotMatch(CommonRegexes.String, "@variable");
 	}
 
 	[Fact]
@@ -212,7 +217,7 @@ public sealed class CommonRegexesTests {
 	}
 
 	[Fact]
-	public void QuotedStringRegexDoesntMatchInternalQuotes() {
+	public void QuotedStringRegexDoesNotMatchInternalQuotes() {
 		Assert.DoesNotMatch(CommonRegexes.QuotedString, @"1234-abcd""");
 	}
 

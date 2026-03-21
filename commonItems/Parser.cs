@@ -1,11 +1,9 @@
-﻿using commonItems.Collections;
-using commonItems.Mods;
+﻿using commonItems.Mods;
 using Open.Collections;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -18,37 +16,35 @@ internal abstract class AbstractDelegate {
 	public abstract void Execute(BufferedReader sr, string token);
 }
 
-internal sealed class TwoArgDelegate : AbstractDelegate {
-	private readonly Del del;
-	public TwoArgDelegate(Del del) { this.del = del; }
+internal sealed class TwoArgDelegate(Del del) : AbstractDelegate {
 	public override void Execute(BufferedReader sr, string token) {
 		del(sr, token);
 	}
 }
 
-internal sealed class OneArgDelegate : AbstractDelegate {
-	private readonly SimpleDel del;
-	public OneArgDelegate(SimpleDel del) { this.del = del; }
+internal sealed class OneArgDelegate(SimpleDel del) : AbstractDelegate {
 	public override void Execute(BufferedReader sr, string token) {
 		del(sr);
 	}
 }
 
 public class Parser {
-	public Parser() {
-		RegisterRegex(CommonRegexes.Variable, (reader, varStr) => {
-			var value = reader.GetString();
-			var variableName = varStr[1..];
-			if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-				reader.Variables[variableName] = intValue;
-				return;
-			}
-			if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
-				reader.Variables[variableName] = doubleValue;
-				return;
-			}
-			reader.Variables[variableName] = value;
-		});
+	public Parser(bool implicitVariableHandling = false) {
+		if (implicitVariableHandling) {
+			regexRules.Add((CommonRegexes.Variable, new TwoArgDelegate((reader, varStr) => {
+				var value = reader.GetString();
+				var variableName = varStr[1..];
+				if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
+					reader.Variables[variableName] = intValue;
+					return;
+				}
+				if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
+					reader.Variables[variableName] = doubleValue;
+					return;
+				}
+				reader.Variables[variableName] = value;
+			})));
+		}
 	}
 
 	public static void AbsorbBOM(BufferedReader reader) {
@@ -65,28 +61,16 @@ public class Parser {
 		keywordRules[keyword] = new OneArgDelegate(del);
 	}
 	public void RegisterRegex(string keyword, Del del) {
-		AddOrReplaceRegexRule(new Regex(keyword), new TwoArgDelegate(del));
+		regexRules.Add((new Regex(keyword), new TwoArgDelegate(del)));
 	}
 	public void RegisterRegex(string keyword, SimpleDel del) {
-		AddOrReplaceRegexRule(new Regex(keyword), new OneArgDelegate(del));
+		regexRules.Add((new Regex(keyword), new OneArgDelegate(del)));
 	}
 	public void RegisterRegex(Regex regex, Del del) {
-		AddOrReplaceRegexRule(regex, new TwoArgDelegate(del));
+		regexRules.Add((regex, new TwoArgDelegate(del)));
 	}
 	public void RegisterRegex(Regex regex, SimpleDel del) {
-		AddOrReplaceRegexRule(regex, new OneArgDelegate(del));
-	}
-
-	private void AddOrReplaceRegexRule(Regex regex, AbstractDelegate del) {
-		var regexStr = regex.ToString();
-		for (int i = 0; i < regexRules.Count; i++) {
-			if (regexRules[i].regex.ToString() == regexStr) {
-				regexRules[i] = (regex, del);
-				return;
-			}
-		}
-
-		regexRules.Add((regex, del));
+		regexRules.Add((regex, new OneArgDelegate(del)));
 	}
 
 	public void ClearRegisteredRules() {
@@ -129,7 +113,7 @@ public class Parser {
 	// Returned value indicates whether the lexeme-building loop should be broken
 	private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref char previousChar, ref bool inQuotes, ref bool inLiteralQuote, ref bool inInterpolatedExpression, char inputChar) {
 		if (inputChar == '#') {
-			reader.ReadLine();
+			reader.SkipRestOfLine();
 			if (sb.Length != 0) {
 				return true; // break loop
 			}
@@ -193,6 +177,10 @@ public class Parser {
 
 	[ThreadStatic]
 	private static StringBuilder? t_lexemeBuilder;
+	private static readonly string EqToken = "=";
+	private static readonly string OpenBraceToken = "{";
+	private static readonly string CloseBraceToken = "}";
+	private static readonly string QuestionToken = "?";
 
 	public static string GetNextLexeme(BufferedReader reader) {
 		var sb = t_lexemeBuilder;
@@ -250,7 +238,13 @@ public class Parser {
 			previousChar = inputChar;
 		}
 		if (sb.Length == 1) { // Optimization for single-char tokens, which are very common (e.g. =, {, }, etc.)
-			return sb[0].ToString();
+			return sb[0] switch {
+				'=' => EqToken,
+				'{' => OpenBraceToken,
+				'}' => CloseBraceToken,
+				'?' => QuestionToken,
+				_ => sb[0].ToString()
+			};
 		}
 		return sb.ToString();
 	}
@@ -310,12 +304,10 @@ public class Parser {
 	public void ParseStream(BufferedReader reader) {
 		var braceDepth = 0;
 		var value = false; // tracker to indicate whether we reached the value part of key=value pair
-		var tokensSoFar = new StringBuilder();
 
 		while (true) {
 			var token = GetNextToken(reader);
 			if (token is not null) {
-				tokensSoFar.Append(token);
 				if (token is "=" or "?=") {
 					// swapping to value part.
 					if (!value) {
@@ -326,6 +318,7 @@ public class Parser {
 					else {
 						// value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
 						// manually fast-forward to brace-lvl 0 and die.
+						var tokensSoFar = new StringBuilder(token, 64);
 						FastForwardTo0Depth(reader, ref braceDepth, tokensSoFar);
 						Logger.Warn($"Broken token syntax at {tokensSoFar}");
 						return;
@@ -385,12 +378,13 @@ public class Parser {
 	public void ParseFolder(string path, string extensions, bool recursive, bool logFilePaths = false) {
 		var searchPattern = recursive ? "*" : "*.*";
 		var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-		var files = Directory.GetFiles(path, searchPattern, searchOption).ToList();
+		var extensionSet = new HashSet<string>(extensions.Split(';'), StringComparer.OrdinalIgnoreCase);
 
-		var validExtensions = extensions.Split(';');
-		files.RemoveWhere(f => !validExtensions.Contains(CommonFunctions.GetExtension(f)));
+		foreach (var file in Directory.EnumerateFiles(path, searchPattern, searchOption)) {
+			if (!extensionSet.Contains(CommonFunctions.GetExtension(file))) {
+				continue;
+			}
 
-		foreach (var file in files) {
 			if (logFilePaths) {
 				Logger.Debug($"Parsing file: {file}");
 			}
@@ -405,7 +399,7 @@ public class Parser {
 	///		extensions may be "txt;text" (a list separated by semicolon)
 	/// </summary>
 	public void ParseGameFolder(string relativePath, ModFilesystem modFS, string extensions, bool recursive, bool logFilePaths = false, bool parallel = false) {
-		var extensionSet = extensions.Split(';');
+		var extensionSet = new HashSet<string>(extensions.Split(';'), StringComparer.OrdinalIgnoreCase);
 
 		List<ModFSFileInfo> files;
 		if (recursive) {
@@ -413,9 +407,15 @@ public class Parser {
 		} else {
 			files = modFS.GetAllFilesInFolder(relativePath);
 		}
-		files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f.RelativePath)));
+		var parseTargets = new List<string>(files.Count);
+		foreach (var file in files) {
+			if (!extensionSet.Contains(CommonFunctions.GetExtension(file.RelativePath))) {
+				continue;
+			}
+			parseTargets.Add(file.AbsolutePath);
+		}
 
-		files.Select(f => f.AbsolutePath).ForEach(ProcessFile, allowParallel: parallel);
+		parseTargets.ForEach(ProcessFile, allowParallel: parallel);
 
 		return;
 

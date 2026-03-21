@@ -388,3 +388,6 @@ FodyWeavers.xsd
 
 # Generated code
 *.Generated.cs
+
+# Benchmarks project
+/commonItems.Benchmarks/

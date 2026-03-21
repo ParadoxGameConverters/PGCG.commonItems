@@ -57,7 +57,7 @@ public static class ParserHelpers {
 			}
 
 			if (currentChar == '#') {
-				reader.ReadLine();
+				reader.SkipRestOfLine();
 				previousChar = '\n';
 				tokenLength = 0;
 				continue;

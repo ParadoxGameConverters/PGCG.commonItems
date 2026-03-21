@@ -66,7 +66,7 @@ public sealed class BufferedReaderTests {
 		var a = new BufferedReader("@x=1 @y=2 @c=3");
 		var b = new BufferedReader("@a=3 @b=4 @c=5");
 
-		var parser = new Parser();
+		var parser = new Parser(implicitVariableHandling: true);
 		parser.ParseStream(a);
 		parser.ParseStream(b);
 		b.CopyVariables(a);
