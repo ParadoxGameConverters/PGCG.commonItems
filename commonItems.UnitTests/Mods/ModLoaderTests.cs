@@ -106,7 +106,7 @@ public sealed class ModLoaderTests {
 		var mod = Assert.Single(usableMods);
 		Assert.Equal(new("Outdated Mod", Path.Combine(TestFilesPath, "mod", "outdated")), mod);
 		var consoleOutput = output.ToString();
-		Assert.Contains("[WARN] \t\tMod [Outdated Mod] supports game version 1.30.*, but the installed version is 1.31. " +
+		Assert.Contains("[WARN] \t\tMod [Outdated Mod] supports game version 1.30.*, but your game version is 1.31. " +
 		                "Proceeding anyway, but this can cause issues.", consoleOutput);
 	}
 
@@ -120,7 +120,7 @@ public sealed class ModLoaderTests {
 			modLoader.LoadMods(TestFilesPath, incomingMods, installedGameVersion, throwForOutOfDateMods: true)
 		);
 
-		Assert.Equal("\t\tMod [Outdated Mod] supports game version 1.30.*, but the installed version is 1.31. Cannot continue.", exception.Message);
+		Assert.Equal("\t\tMod [Outdated Mod] supports game version 1.30.*, but your game version is 1.31. Cannot continue.", exception.Message);
 	}
 
 	[Fact]
@@ -141,7 +141,7 @@ public sealed class ModLoaderTests {
 
 		// Check if the warning is logged, but should not throw as it's only slightly out of date.
 		var consoleOutput = output.ToString();
-		Assert.Contains("[WARN] \t\tMod [Slightly Outdated Mod] supports game version 1.31.0.*, but the installed version is 1.31.1. " +
+		Assert.Contains("[WARN] \t\tMod [Slightly Outdated Mod] supports game version 1.31.0.*, but your game version is 1.31.1. " +
 		                "Proceeding anyway, but this can cause issues.", consoleOutput);
 	}
 
