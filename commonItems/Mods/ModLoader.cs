@@ -51,7 +51,7 @@ public sealed partial class ModLoader {
 				var isIncompatible = !GameVersion.IsModCompatibleWithGame(supported, gameVersion);
 				if (isIncompatible || isSlightlyOutOfDate) {
 					string problemStr = $"\t\tMod [{mod.Name}] supports game version {supported.ToWildCard()}, " +
-					                    $"but the installed version is {gameVersion.ToShortString()}.";
+					                    $"but your game version is {gameVersion.ToShortString()}.";
 					if (throwForOutOfDateMods && isIncompatible && !isSlightlyOutOfDate) {
 						throw new UserErrorException($"{problemStr} Cannot continue.");
 					}
