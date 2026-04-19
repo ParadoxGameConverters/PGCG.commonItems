@@ -22,11 +22,14 @@ jobs:
     - name: "Restore tools"
       run: dotnet tool restore
 
+    - name: "Restore projects"
+      run: dotnet restore
+
     - name: "Run tests"
       working-directory: commonItems.UnitTests
       shell: pwsh
       run: |
-       dotnet test --coverlet --coverlet-output-format lcov --coverlet-exclude "[commonItems.UnitTests]*"
+       dotnet test --no-restore --coverlet --coverlet-output-format lcov --coverlet-exclude "[commonItems.UnitTests]*"
 
     - name: "Locate coverage report"
       id: coverage_report
