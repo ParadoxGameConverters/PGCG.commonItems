@@ -7,8 +7,6 @@ using GameFinder.Wine;
 using NexusMods.Paths;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -75,13 +73,13 @@ public static class CommonFunctions {
 	}
 	
 	// Ordinal suffix lookup table by language
-	private static readonly Dictionary<string, Func<int, string>> OrdinalSuffixRules = new() {
+	private static readonly Dictionary<string, Func<int, string>> OrdinalSuffixRules = new(StringComparer.OrdinalIgnoreCase) {
 		{ "english", GetEnglishOrdinalSuffix },
 		{ "catalan", _ => "n" },
 		{ "chinese", _ => "." },
 		{ "simp_chinese", _ => "." },
 		{ "dutch", _ => "e" },
-		{ "french", _ => "e" },
+		{ "french", GetFrenchOrdinalSuffix },
 		{ "italian", _ => "º" },
 		{ "japanese", _ => "番" },
 		{ "portuguese", _ => "º" },
@@ -108,6 +106,11 @@ public static class CommonFunctions {
 	private static string GetSpanishOrdinalSuffix(int number) {
 		// Spanish uses "º" for masculine and "ª" for feminine. Default to masculine.
 		return "º";
+	}
+
+	private static string GetFrenchOrdinalSuffix(int number) {
+		// Keep API gender-neutral: use masculine form for 1st (1er), then "e" for 2+
+		return number == 1 ? "er" : "e";
 	}
 
 	public static string ToOrdinalSuffix(this int number) {
