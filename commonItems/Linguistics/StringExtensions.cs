@@ -1,5 +1,5 @@
-﻿using Open.Collections;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace commonItems.Linguistics;
 

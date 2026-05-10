@@ -4,9 +4,9 @@ using GameFinder.StoreHandlers.Steam;
 using GameFinder.StoreHandlers.GOG;
 using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
 using GameFinder.Wine;
-using IcgSoftware.IntToOrdinalNumber;
 using NexusMods.Paths;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -74,20 +74,53 @@ public static class CommonFunctions {
 		};
 	}
 	
+	// Ordinal suffix lookup table by language
+	private static readonly Dictionary<string, Func<int, string>> OrdinalSuffixRules = new() {
+		{ "english", GetEnglishOrdinalSuffix },
+		{ "catalan", _ => "n" },
+		{ "chinese", _ => "." },
+		{ "simp_chinese", _ => "." },
+		{ "dutch", _ => "e" },
+		{ "french", _ => "e" },
+		{ "italian", _ => "º" },
+		{ "japanese", _ => "番" },
+		{ "portuguese", _ => "º" },
+		{ "spanish", GetSpanishOrdinalSuffix },
+	};
+
+	private static string GetEnglishOrdinalSuffix(int number) {
+		var lastDigit = number % 10;
+		var lastTwoDigits = number % 100;
+
+		// Handle teens (11-13) which use "th"
+		if (lastTwoDigits is >= 11 and <= 13) {
+			return "th";
+		}
+
+		return lastDigit switch {
+			1 => "st",
+			2 => "nd",
+			3 => "rd",
+			_ => "th"
+		};
+	}
+
+	private static string GetSpanishOrdinalSuffix(int number) {
+		// Spanish uses "º" for masculine and "ª" for feminine. Default to masculine.
+		return "º";
+	}
+
 	public static string ToOrdinalSuffix(this int number) {
 		return number.ToOrdinalSuffix("english");
 	}
+
 	public static string ToOrdinalSuffix(this int number, string languageName) {
-		var languageTag = LanguageNameToIetfTag(languageName);
-		CultureInfo cultureInfo;
-		try {
-			cultureInfo = CultureInfo.GetCultureInfo(languageTag);
-		} catch(CultureNotFoundException e) {
-			Logger.Warn($"Failed to get ordinal number suffix for culture {languageTag}, defaulting to English. Details: {e.Message}");
-			cultureInfo = CultureInfo.GetCultureInfo(LanguageNameToIetfTag("english"));
+		if (OrdinalSuffixRules.TryGetValue(languageName, out var suffixRule)) {
+			return suffixRule(number);
 		}
-		
-		return number.ToOrdinalNumber(cultureInfo).Replace(number.ToString(CultureInfo.InvariantCulture), "");
+
+		Logger.Warn($"Language '{languageName}' not supported for ordinal suffixes, defaulting to English.");
+		return GetEnglishOrdinalSuffix(number);
 	}
 	
 	[Obsolete($"Use {nameof(ToRomanNumeral)}() extension method instead")]
