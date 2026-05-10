@@ -53,6 +53,19 @@ public sealed class ToOrdinalSuffixTests {
 		Assert.Equal(expectedSuffix, 2.ToOrdinalSuffix(languageName));
 	}
 
+	[Theory]
+	[InlineData(1, "ENGLISH", "st")]
+	[InlineData(2, "French", "e")]
+	[InlineData(2, "PoRtUgUeSe", "º")]
+	public void ToOrdinalSuffixLanguageLookupIsCaseInsensitive(int number, string languageName, string expectedSuffix) {
+		Assert.Equal(expectedSuffix, number.ToOrdinalSuffix(languageName));
+	}
+
+	[Fact]
+	public void FrenchOneGivesEr() {
+		Assert.Equal("er", 1.ToOrdinalSuffix("french"));
+	}
+
 	[Fact]
 	public void SuffixForUnsupportedLanguageDefaultsToEnglish() {
 		Assert.Equal("th", 5.ToOrdinalSuffix("zoomer"));

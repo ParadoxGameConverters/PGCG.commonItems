@@ -1,17 +1,17 @@
 ﻿<#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ output extension=".Generated.cs" #>
 
-using Open.Collections;
+using System.Collections.Generic;
 
 namespace commonItems.Linguistics;
 
 public static partial class StringExtensions {
-	private static readonly OrderedDictionary<string, string> AdjectiveRules = new() {
+	private static readonly System.Collections.Generic.OrderedDictionary<string, string> AdjectiveRules = new() {
 		<#@ include file="adjective_rules.txt" #>
 
 	};
 	// Same as adjective rules, but are matched multiple times.
-	private static readonly OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
+	private static readonly System.Collections.Generic.OrderedDictionary<string, string> AdjectiveRewriteRules = new() {
 		<#@ include file="adjective_rewrite_rules.txt" #>
 
 	};

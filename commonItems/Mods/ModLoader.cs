@@ -1,8 +1,8 @@
 ﻿using commonItems.Exceptions;
-using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -251,7 +251,7 @@ public sealed partial class ModLoader {
 
 	private static bool ExtractZip(string archive, string path) {
 		try {
-			new FastZip().ExtractZip(archive, path, ".*");
+			ZipFile.ExtractToDirectory(archive, path, overwriteFiles: true);
 		} catch (Exception e) {
 			Logger.Error($"Extracting zip failed: {e}");
 			return false;
