@@ -80,9 +80,11 @@ public static class CommonFunctions {
 		{ "simp_chinese", _ => "." },
 		{ "dutch", _ => "e" },
 		{ "french", GetFrenchOrdinalSuffix },
+		{ "german", _ => "." },
 		{ "italian", _ => "º" },
 		{ "japanese", _ => "番" },
 		{ "portuguese", _ => "º" },
+		{ "russian", _ => "-й" },
 		{ "spanish", GetSpanishOrdinalSuffix },
 	};
 

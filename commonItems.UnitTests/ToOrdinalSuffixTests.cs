@@ -45,9 +45,11 @@ public sealed class ToOrdinalSuffixTests {
 	[InlineData("simp_chinese", ".")]
 	[InlineData("dutch", "e")]
 	[InlineData("french", "e")]
+	[InlineData("german", ".")]
 	[InlineData("italian", "º")]
 	[InlineData("japanese", "番")]
 	[InlineData("portuguese", "º")]
+	[InlineData("russian", "-й")]
 	[InlineData("spanish", "º")]
 	public void ToOrdinalSuffixSupportsOtherLanguages(string languageName, string expectedSuffix) {
 		Assert.Equal(expectedSuffix, 2.ToOrdinalSuffix(languageName));
@@ -56,7 +58,9 @@ public sealed class ToOrdinalSuffixTests {
 	[Theory]
 	[InlineData(1, "ENGLISH", "st")]
 	[InlineData(2, "French", "e")]
+	[InlineData(2, "GeRmAn", ".")]
 	[InlineData(2, "PoRtUgUeSe", "º")]
+	[InlineData(2, "RuSsIaN", "-й")]
 	public void ToOrdinalSuffixLanguageLookupIsCaseInsensitive(int number, string languageName, string expectedSuffix) {
 		Assert.Equal(expectedSuffix, number.ToOrdinalSuffix(languageName));
 	}
