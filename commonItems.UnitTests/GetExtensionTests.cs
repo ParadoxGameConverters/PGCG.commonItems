@@ -28,4 +28,10 @@ public sealed class GetExtensionTests {
 		const string? input = @"c:\path/with.extension/filename.mod";
 		Assert.Equal("mod", CommonFunctions.GetExtension(input));
 	}
+
+	[Fact]
+	public void GetExtensionReturnsEmptyStringForTrailingDot() {
+		const string? input = "filename.";
+		Assert.Empty(CommonFunctions.GetExtension(input));
+	}
 }

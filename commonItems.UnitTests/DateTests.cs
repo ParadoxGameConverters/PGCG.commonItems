@@ -255,9 +255,25 @@ public sealed class DateTests {
 	[InlineData("450.10.1", "-304.10.1")] // Imperator start date
 	[InlineData("954.3.1", "201.3.1")]
 	[InlineData("1306.3.1", "553.3.1")]
+	[InlineData("753.1.1", "-1.1.1")]
 	public void AUCCanBeConvertedToAD(string aucDateString, string expectedADDate) {
 		var date = new Date(aucDateString, AUC: true);
 		Assert.Equal(expectedADDate, date.ToString());
+	}
+
+	[Fact]
+	public void YearAboveShortMaxThrows() {
+		Assert.Throws<ArgumentOutOfRangeException>(() => new Date(short.MaxValue + 1, 1, 1));
+	}
+
+	[Fact]
+	public void YearBelowShortMinThrows() {
+		Assert.Throws<ArgumentOutOfRangeException>(() => new Date(short.MinValue - 1, 1, 1));
+	}
+
+	[Fact]
+	public void OutOfRangeYearFromStringThrows() {
+		Assert.Throws<ArgumentOutOfRangeException>(() => new Date("40000.1.1"));
 	}
 
 	[Fact]

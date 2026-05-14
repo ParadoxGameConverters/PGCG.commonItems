@@ -83,6 +83,32 @@ public sealed class ParserHelperTests {
 		Assert.Equal(" More text", reader.ReadToEnd());
 	}
 
+	[Fact]
+	public void IgnoreItemIgnoresBracedItemWithRawLiteralContainingBraces() {
+		var reader = new BufferedReader("= { text = R\"(ignore { these } braces)\" nested = { value = 1 } } More text");
+		ParserHelpers.IgnoreItem(reader);
+		Assert.Equal(" More text", reader.ReadToEnd());
+	}
+
+	[Fact]
+	public void IgnoreItemIgnoresBracedItemWithInterpolatedExpressionContainingBraces() {
+		var reader = new BufferedReader("= { value = @[GetValue({ 1 2 3 })] nested = { value = 1 } } More text");
+		ParserHelpers.IgnoreItem(reader);
+		Assert.Equal(" More text", reader.ReadToEnd());
+	}
+
+	[Fact]
+	public void IgnoreAndLogItemIgnoresAndLogsKeyword() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		var reader = new BufferedReader("= { ignore_me = yes } More text");
+		ParserHelpers.IgnoreAndLogItem(reader, "foo");
+
+		Assert.Equal(" More text", reader.ReadToEnd());
+		Assert.Contains("[DEBUG] Ignoring keyword: foo", output.ToString());
+	}
+
 	private sealed class Test1 : Parser {
 		public string? value1;
 		public string? value2;
