@@ -33,8 +33,16 @@ public sealed class ToRomanNumeralTests {
 	[InlineData(511, "DXI")]
 	[InlineData(950, "CML")]
 	[InlineData(1001, "MI")]
+	[InlineData(1994, "MCMXCIV")]
 	[InlineData(3005, "MMMV")]
 	public void PositiveNumbersAreCorrectlyConverted(int number, string expectedNumeral) {
 		Assert.Equal(expectedNumeral, number.ToRomanNumeral());
+	}
+
+	[Fact]
+	public void CardinalToRomanDelegatesToToRomanNumeral() {
+#pragma warning disable CS0618
+		Assert.Equal("XIV", CommonFunctions.CardinalToRoman(14));
+#pragma warning restore CS0618
 	}
 }

@@ -387,6 +387,19 @@ public sealed class ColorTests {
 	}
 
 	[Fact]
+	public void ColorInitializationLogsWarningWhenRgbHasMoreThan3Components() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		var reader = new BufferedReader("= rgb { 64 128 32 16 }");
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(64, color.R);
+		Assert.Equal(128, color.G);
+		Assert.Equal(32, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for RGB: 64,128,32,16.", output.ToString());
+	}
+
+	[Fact]
 	public void ColorCanBeInitializedFromStreamInHex() {
 		var reader = new BufferedReader("= hex { 408080 }");
 		var color = new ColorFactory().GetColor(reader);
@@ -402,6 +415,21 @@ public sealed class ColorTests {
 	[Fact]
 	public void ColorInitializationRequiresSixDigitsWhenHex() {
 		var reader = new BufferedReader("= hex { 12345 }");
+		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
+	}
+
+	[Fact]
+	public void ColorCanBeInitializedFromLowercaseHex() {
+		var reader = new BufferedReader("= hex { ff00aa }");
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(255, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(170, color.B);
+	}
+
+	[Fact]
+	public void ColorInitializationThrowsOnInvalidHexDigit() {
+		var reader = new BufferedReader("= hex { FG0080 }");
 		Assert.Throws<FormatException>(() => new ColorFactory().GetColor(reader));
 	}
 
