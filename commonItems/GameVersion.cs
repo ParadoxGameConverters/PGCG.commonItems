@@ -94,38 +94,20 @@ public readonly struct GameVersion : IEquatable<GameVersion> {
 	public static bool operator ==(GameVersion lhs, GameVersion rhs) => lhs.Equals(rhs);
 	public static bool operator !=(GameVersion lhs, GameVersion rhs) => !lhs.Equals(rhs);
 
-	public static bool operator >=(GameVersion lhs, GameVersion rhs) {
-		return lhs > rhs || lhs.Equals(rhs);
-	}
-	public static bool operator >(GameVersion lhs, GameVersion rhs) {
-		int testL = lhs.FirstPart.GetValueOrDefault();
-		int testR = rhs.FirstPart.GetValueOrDefault();
-		if (testL != testR) {
-			return testL > testR;
+	private static int CompareParts(GameVersion lhs, GameVersion rhs) {
+		var a = new int[] { lhs.FirstPart.GetValueOrDefault(), lhs.SecondPart.GetValueOrDefault(), lhs.ThirdPart.GetValueOrDefault(), lhs.FourthPart.GetValueOrDefault() };
+		var b = new int[] { rhs.FirstPart.GetValueOrDefault(), rhs.SecondPart.GetValueOrDefault(), rhs.ThirdPart.GetValueOrDefault(), rhs.FourthPart.GetValueOrDefault() };
+		for (int i = 0; i < 4; ++i) {
+			if (a[i] < b[i]) return -1;
+			if (a[i] > b[i]) return 1;
 		}
-
-		testL = lhs.SecondPart.GetValueOrDefault();
-		testR = rhs.SecondPart.GetValueOrDefault();
-		if (testL != testR) {
-			return testL > testR;
-		}
-
-		testL = lhs.ThirdPart.GetValueOrDefault();
-		testR = rhs.ThirdPart.GetValueOrDefault();
-		if (testL != testR) {
-			return testL > testR;
-		}
-
-		testL = lhs.FourthPart.GetValueOrDefault();
-		testR = rhs.FourthPart.GetValueOrDefault();
-		return testL > testR;
+		return 0;
 	}
 
-	public static bool operator <(GameVersion lhs, GameVersion rhs) => !(lhs > rhs) && !lhs.Equals(rhs);
-
-	public static bool operator <=(GameVersion lhs, GameVersion rhs) {
-		return lhs < rhs || lhs.Equals(rhs);
-	}
+	public static bool operator >(GameVersion lhs, GameVersion rhs) => CompareParts(lhs, rhs) > 0;
+	public static bool operator <(GameVersion lhs, GameVersion rhs) => CompareParts(lhs, rhs) < 0;
+	public static bool operator >=(GameVersion lhs, GameVersion rhs) => CompareParts(lhs, rhs) >= 0;
+	public static bool operator <=(GameVersion lhs, GameVersion rhs) => CompareParts(lhs, rhs) <= 0;
 
 	public override string ToString() {
 		var sb = new StringBuilder();
@@ -210,57 +192,15 @@ public readonly struct GameVersion : IEquatable<GameVersion> {
 	// so everything incoming on rhs from 0.0.0.0 to 1.9.x.y will match, (where x and y are >= 0),
 	// thus overshooting the internal "1.9.0.0" setup. This works if ".0.0" are actually undefined.
 	public bool IsLargerishThan(GameVersion rhs) {
-		var testDigit = 0;
-		if (rhs.FirstPart is not null) {
-			testDigit = rhs.FirstPart.Value;
-		}
-
-		if (FirstPart is not null) {
-			if (testDigit > FirstPart.Value) {
-				return false;
-			}
-			if (testDigit < FirstPart.Value) {
-				return true;
+		var mine = new int?[] { FirstPart, SecondPart, ThirdPart, FourthPart };
+		var theirs = new int?[] { rhs.FirstPart, rhs.SecondPart, rhs.ThirdPart, rhs.FourthPart };
+		for (var i = 0; i < 4; ++i) {
+			var testDigit = theirs[i] ?? 0;
+			if (mine[i] is int my) {
+				if (testDigit > my) return false;
+				if (testDigit < my) return true;
 			}
 		}
-
-		testDigit = 0;
-		if (rhs.SecondPart is not null) {
-			testDigit = rhs.SecondPart.Value;
-		}
-
-		if (SecondPart is not null) {
-			if (testDigit > SecondPart.Value) {
-				return false;
-			}
-			if (testDigit < SecondPart.Value) {
-				return true;
-			}
-		}
-
-		testDigit = 0;
-		if (rhs.ThirdPart is not null) {
-			testDigit = rhs.ThirdPart.Value;
-		}
-
-		if (ThirdPart is not null) {
-			if (testDigit > ThirdPart.Value) {
-				return false;
-			}
-			if (testDigit < ThirdPart.Value) {
-				return true;
-			}
-		}
-
-		testDigit = 0;
-		if (rhs.FourthPart is not null) {
-			testDigit = rhs.FourthPart.Value;
-		}
-
-		if (FourthPart is not null && testDigit > FourthPart.Value) {
-			return false;
-		}
-
 		return true;
 	}
 

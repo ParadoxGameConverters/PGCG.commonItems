@@ -15,26 +15,36 @@ public static class PDXSerializer {
 	}
 	public static string Serialize(object obj, string indent, bool withBraces) {
 		var sb = new StringBuilder();
-		if (obj is IPDXSerializable serializableType) {
-			sb.Append(serializableType.Serialize(indent, withBraces));
-		} else if (obj is string str) {
-			sb.Append(str);
-		} else if (obj is IDictionary dict) {
-			SerializeDictionary(dict, withBraces, sb, indent);
-		} else if (obj is IEnumerable<IIdentifiable> idObjEnumerable) {
-			SerializeIdObjEnumerable(idObjEnumerable, sb, indent);
-		} else if (obj is IEnumerable enumerable) {
-			SerializeEnumerable(enumerable, withBraces, sb, indent);
-		} else if (IsKeyValuePair(obj)) {
-			SerializeKeyValuePair(obj, sb, indent);
-		} else if (obj is DictionaryEntry entry) {
-			SerializeDictionaryEntry(entry, sb, indent);
-		} else if (obj is bool boolValue) {
-			sb.Append(boolValue ? "yes" : "no");
-		} else if (obj.GetType().IsValueType && obj is IFormattable formattable) { // for numbers
-			sb.Append(formattable.ToString("0.#####", CultureInfo.InvariantCulture));
-		} else {
-			throw new SerializationException($"Objects of type {obj.GetType()} are not yet supported by PDXSerializer!");
+		switch (obj) {
+			case IPDXSerializable serializableType:
+				sb.Append(serializableType.Serialize(indent, withBraces));
+				break;
+			case string str:
+				sb.Append(str);
+				break;
+			case IDictionary dict:
+				SerializeDictionary(dict, withBraces, sb, indent);
+				break;
+			case IEnumerable<IIdentifiable> idObjEnumerable:
+				SerializeIdObjEnumerable(idObjEnumerable, sb, indent);
+				break;
+			case IEnumerable enumerable:
+				SerializeEnumerable(enumerable, withBraces, sb, indent);
+				break;
+			case var o when IsKeyValuePair(o):
+				SerializeKeyValuePair(o, sb, indent);
+				break;
+			case DictionaryEntry entry:
+				SerializeDictionaryEntry(entry, sb, indent);
+				break;
+			case bool boolValue:
+				sb.Append(boolValue ? "yes" : "no");
+				break;
+			case IFormattable formattable when obj.GetType().IsValueType:
+				sb.Append(formattable.ToString("0.#####", CultureInfo.InvariantCulture));
+				break;
+			default:
+				throw new SerializationException($"Objects of type {obj.GetType()} are not yet supported by PDXSerializer!");
 		}
 
 		return sb.ToString();
