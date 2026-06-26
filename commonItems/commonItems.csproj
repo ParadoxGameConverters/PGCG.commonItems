@@ -40,7 +40,7 @@
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="4.9.0" />
     <PackageReference Include="Hardware.Info.Aot" Version="110.0.0.1" />
     <PackageReference Include="log4net" Version="3.3.1" />
-    <PackageReference Include="NCalcSync" Version="6.3.1" />
+    <PackageReference Include="NCalcSync" Version="6.3.2" />
     <TextTemplate Include="**\*.tt" />
     <Generated Include="**\*.Generated.cs" />
   </ItemGroup>
