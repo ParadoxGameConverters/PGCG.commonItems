@@ -16,34 +16,36 @@ public sealed class StringOfItem : IPDXSerializable {
 		sb.Append(next);
 
 		if (next == "{") {
-			bool inQuotes = false;
-			int braceDepth = 1;
-			while (!reader.EndOfStream) {
-				char inputChar = (char)reader.Read();
-				sb.Append(inputChar);
+			AppendBracedContent(reader, sb);
+		}
+		str = sb.ToString();
+	}
 
-				if (inputChar == '\"') {
-					// Count consecutive backslashes before the quote
-					int backslashCount = 0;
-					for (int i = sb.Length - 2; i >= 0 && sb[i] == '\\'; i--) {
-						backslashCount++;
-					}
-					if (backslashCount % 2 == 0) { // even number of backslashes means quote is not escaped
-						inQuotes = !inQuotes;
-					}
+	private static void AppendBracedContent(BufferedReader reader, StringBuilder sb) {
+		bool inQuotes = false;
+		int braceDepth = 1;
+		while (!reader.EndOfStream) {
+			char inputChar = (char)reader.Read();
+			sb.Append(inputChar);
+
+			if (inputChar == '"') {
+				int backslashCount = 0;
+				for (int i = sb.Length - 2; i >= 0 && sb[i] == '\\'; i--) {
+					backslashCount++;
 				}
-				if (inputChar == '{' && !inQuotes) {
-					++braceDepth;
-				} else if (inputChar == '}' && !inQuotes) {
-					--braceDepth;
-					if (braceDepth == 0) {
-						str = sb.ToString();
-						return;
-					}
+				if (backslashCount % 2 == 0) { // even number of backslashes means quote is not escaped
+					inQuotes = !inQuotes;
+				}
+			}
+			if (inputChar == '{' && !inQuotes) {
+				++braceDepth;
+			} else if (inputChar == '}' && !inQuotes) {
+				--braceDepth;
+				if (braceDepth == 0) {
+					return;
 				}
 			}
 		}
-		str = sb.ToString();
 	}
 
 	public bool IsArrayOrObject() {

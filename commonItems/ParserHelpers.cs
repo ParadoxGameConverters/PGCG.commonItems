@@ -21,89 +21,124 @@ public static class ParserHelpers {
 	private static void SkipBracedItem(BufferedReader reader) {
 		int braceDepth = 1;
 		char previousChar = '\0';
-		bool inQuotes = false;
-		bool inLiteralQuote = false;
-		bool inInterpolatedExpression = false;
 		int tokenLength = 0;
+		var state = State.Normal;
 
 		while (!reader.EndOfStream) {
 			var currentChar = (char)reader.Read();
-
-			if (inQuotes) {
-				if (currentChar == '"' && previousChar != '\\') {
-					inQuotes = false;
-					tokenLength = 1;
-				}
-				previousChar = currentChar;
-				continue;
+			switch (state) {
+				case State.InQuotes:
+					state = HandleInQuotes(currentChar, ref previousChar, ref tokenLength);
+					break;
+				case State.InLiteralQuote:
+					state = HandleInLiteralQuote(currentChar, ref previousChar, ref tokenLength);
+					break;
+				case State.InInterpolatedExpression:
+					state = HandleInInterpolatedExpression(currentChar, ref previousChar, ref tokenLength);
+					break;
+				default:
+					state = HandleDefaultChar(currentChar, reader, ref previousChar, ref tokenLength, ref braceDepth);
+					break;
 			}
-
-			if (inLiteralQuote) {
-				if (currentChar == '"' && previousChar == ')') {
-					inLiteralQuote = false;
-					tokenLength = 1;
-				}
-				previousChar = currentChar;
-				continue;
-			}
-
-			if (inInterpolatedExpression) {
-				if (currentChar == ']') {
-					inInterpolatedExpression = false;
-					tokenLength = 1;
-				}
-				previousChar = currentChar;
-				continue;
-			}
-
-			if (currentChar == '#') {
-				reader.SkipRestOfLine();
-				previousChar = '\n';
-				tokenLength = 0;
-				continue;
-			}
-
-			if (currentChar == '"') {
-				if (tokenLength == 0) {
-					inQuotes = true;
-				} else if (tokenLength == 1 && previousChar == 'R') {
-					inLiteralQuote = true;
-				} else {
-					++tokenLength;
-				}
-				previousChar = currentChar;
-				continue;
-			}
-
-			if (currentChar == '[' && previousChar == '@') {
-				inInterpolatedExpression = true;
-				previousChar = currentChar;
-				continue;
-			}
-
-			if (char.IsWhiteSpace(currentChar)) {
-				tokenLength = 0;
-				previousChar = currentChar;
-				continue;
-			}
-
-			if (currentChar == '{') {
-				++braceDepth;
-				tokenLength = 0;
-			} else if (currentChar == '}') {
-				--braceDepth;
-				if (braceDepth == 0) {
-					return;
-				}
-				tokenLength = 0;
-			} else if (currentChar is '=' or '?') {
-				tokenLength = 0;
-			} else {
-				++tokenLength;
-			}
-
-			previousChar = currentChar;
+			if (state == State.Exited) return;
 		}
+	}
+
+	private static State HandleInQuotes(char currentChar, ref char previousChar, ref int tokenLength) {
+		if (currentChar == '"' && previousChar != '\\') {
+			tokenLength = 1;
+			previousChar = currentChar;
+			return State.Normal;
+		}
+		previousChar = currentChar;
+		return State.InQuotes;
+	}
+
+	private static State HandleInLiteralQuote(char currentChar, ref char previousChar, ref int tokenLength) {
+		if (currentChar == '"' && previousChar == ')') {
+			tokenLength = 1;
+			previousChar = currentChar;
+			return State.Normal;
+		}
+		previousChar = currentChar;
+		return State.InLiteralQuote;
+	}
+
+	private static State HandleInInterpolatedExpression(char currentChar, ref char previousChar, ref int tokenLength) {
+		if (currentChar == ']') {
+			tokenLength = 1;
+			previousChar = currentChar;
+			return State.Normal;
+		}
+		previousChar = currentChar;
+		return State.InInterpolatedExpression;
+	}
+
+	private static State HandleDefaultChar(char currentChar, BufferedReader reader, ref char previousChar, ref int tokenLength, ref int braceDepth) {
+		if (currentChar == '#') {
+			reader.SkipRestOfLine();
+			previousChar = '\n';
+			tokenLength = 0;
+			return State.Normal;
+		}
+
+		if (currentChar == '"') {
+			if (tokenLength == 0) {
+				previousChar = currentChar;
+				return State.InQuotes;
+			}
+			if (tokenLength == 1 && previousChar == 'R') {
+				previousChar = currentChar;
+				return State.InLiteralQuote;
+			}
+			++tokenLength;
+			previousChar = currentChar;
+			return State.Normal;
+		}
+
+		if (currentChar == '[' && previousChar == '@') {
+			previousChar = currentChar;
+			return State.InInterpolatedExpression;
+		}
+
+		if (char.IsWhiteSpace(currentChar)) {
+			tokenLength = 0;
+			previousChar = currentChar;
+			return State.Normal;
+		}
+
+		if (currentChar == '{') {
+			++braceDepth;
+			tokenLength = 0;
+			previousChar = currentChar;
+			return State.Normal;
+		}
+
+		if (currentChar == '}') {
+			--braceDepth;
+			if (braceDepth == 0) return State.Exited;
+			tokenLength = 0;
+			previousChar = currentChar;
+			return State.Normal;
+		}
+
+		if (currentChar is '=' or '?') {
+			tokenLength = 0;
+			previousChar = currentChar;
+			return State.Normal;
+		}
+
+		++tokenLength;
+		previousChar = currentChar;
+		return State.Normal;
+	}
+
+	private enum State {
+		Normal,
+		InQuotes,
+		InLiteralQuote,
+		InInterpolatedExpression,
+		Exited
 	}
 
 	public static void IgnoreAndLogItem(BufferedReader sr, string keyword) {

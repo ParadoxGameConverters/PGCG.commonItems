@@ -170,49 +170,24 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 		ref string? currentLanguage,
 		ref bool languageSpecified
 	) {
-		if (line == null || line.Length < 4) {
-			return new(null, null);
-		}
+		if (line == null || line.Length < 4) return new(null, null);
 
 		ReadOnlySpan<char> span = line.AsSpan();
 		var end = span.Length;
-		while (end > 0 && char.IsWhiteSpace(span[end - 1])) {
-			--end;
-		}
-		if (end == 0) {
-			return new(null, null);
-		}
+		while (end > 0 && char.IsWhiteSpace(span[end - 1])) --end;
+		if (end == 0) return new(null, null);
 		span = span[..end];
 
 		var start = 0;
-		while (start < span.Length && char.IsWhiteSpace(span[start])) {
-			++start;
-		}
-		if (start >= span.Length) {
-			return new(null, null);
-		}
-		if (span[start] == '#') {
-			return new(null, null);
-		}
+		while (start < span.Length && char.IsWhiteSpace(span[start])) ++start;
+		if (start >= span.Length) return new(null, null);
+		if (span[start] == '#') return new(null, null);
 
 		var separatorIndex = span[start..].IndexOf(':');
-		if (separatorIndex == -1) {
-			return new(null, null);
-		}
+		if (separatorIndex == -1) return new(null, null);
 		separatorIndex += start;
 
-		if (start == 0 && span.StartsWith("l_", StringComparison.Ordinal)) {
-			if (span.SequenceEqual(baseLanguageHeader.AsSpan())) {
-				currentLanguage = baseLanguage;
-			}
-			for (var i = 0; i < otherLanguageHeaders.Length; ++i) {
-				if (!span.SequenceEqual(otherLanguageHeaders[i].AsSpan())) {
-					continue;
-				}
-				currentLanguage = otherLanguages[i];
-			}
-			languageSpecified = true;
-
+		if (TryParseLanguageHeader(span, start, ref currentLanguage, ref languageSpecified)) {
 			return new(null, null);
 		}
 
@@ -221,26 +196,41 @@ public class LocDB : IdObjectCollection<string, LocBlock> {
 			return new(null, null);
 		}
 
-		// Fail fast when line is malformed, to avoid allocating the key string.
+		if (!TryParseKeyAndValue(span, separatorIndex, out var keyOut, out var valueOut)) {
+			return new(null, null);
+		}
+
+		return new(keyOut, valueOut);
+	}
+
+	private bool TryParseLanguageHeader(ReadOnlySpan<char> span, int start, ref string? currentLanguage, ref bool languageSpecified) {
+		if (start != 0 || !span.StartsWith("l_", StringComparison.Ordinal)) return false;
+		if (span.SequenceEqual(baseLanguageHeader.AsSpan())) {
+			currentLanguage = baseLanguage;
+		}
+		for (var i = 0; i < otherLanguageHeaders.Length; ++i) {
+			if (!span.SequenceEqual(otherLanguageHeaders[i].AsSpan())) continue;
+			currentLanguage = otherLanguages[i];
+		}
+		languageSpecified = true;
+		return true;
+	}
+
+	private bool TryParseKeyAndValue(ReadOnlySpan<char> span, int separatorIndex, out string? key, out string? value) {
+		key = null;
+		value = null;
 		var valueSpan = span[(separatorIndex + 1)..];
 		var quoteIndex = valueSpan.IndexOf('"');
 		var quote2Index = valueSpan.LastIndexOf('"');
-		if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) {
-			return new(null, null);
-		}
+		if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) return false;
 
 		var keySpan = span[..separatorIndex];
 		var keyStart = 0;
-		while (keyStart < keySpan.Length && char.IsWhiteSpace(keySpan[keyStart])) {
-			++keyStart;
-		}
-		if (keyStart >= keySpan.Length) {
-			return new(null, null);
-		}
-		var key = new string(keySpan[keyStart..]);
-
-		var value = new string(valueSpan[(quoteIndex + 1)..quote2Index]);
-		return new(key, value);
+		while (keyStart < keySpan.Length && char.IsWhiteSpace(keySpan[keyStart])) ++keyStart;
+		if (keyStart >= keySpan.Length) return false;
+		key = new string(keySpan[keyStart..]);
+		value = new string(valueSpan[(quoteIndex + 1)..quote2Index]);
+		return true;
 	}
 	
 	private string? DetermineLanguageFromFileName(string fileName) {
