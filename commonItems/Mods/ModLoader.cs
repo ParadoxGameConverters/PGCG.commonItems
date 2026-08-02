@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace commonItems.Mods; 
 
@@ -139,13 +139,19 @@ public sealed partial class ModLoader {
 		Logger.Debug($"Trying to get Steam Workshop name for mod with ID: {steamId}...");
 
 		try {
-			var httpClient = new HttpClient();
+			// Steam refuses requests that don't look like they come from a browser (missing User-Agent, etc.).
+			const string userAgent =
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
+			using var httpClient = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All });
+			httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+			httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.9");
+			httpClient.Timeout = TimeSpan.FromSeconds(10);
+
 			var modDetailsUrl = $"https://steamcommunity.com/sharedfiles/filedetails/?id={steamId}";
-			var task = Task.Run(() => httpClient.GetAsync(modDetailsUrl)); 
-			task.Wait();
-			var response = task.Result;
-			var responseContent = response.Content.ReadAsStringAsync().Result;
-		
+			var response = httpClient.GetAsync(modDetailsUrl).GetAwaiter().GetResult();
+			response.EnsureSuccessStatusCode();
+			var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
 			var title = GetModTitleRegex().Match(input: responseContent).Groups["Title"].Value;
 			const string workshopPrefix = "Steam Workshop::";
 			if (title.StartsWith(workshopPrefix)) {
