@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace commonItems.UnitTests;
@@ -16,6 +19,23 @@ public sealed class ParserBuilderTests {
 		Assert.Equal("value", value);
 	}
 
+	[Fact]
+	public void ParserBuilderBuildsParserWithTwoArgumentKeywordRegistration() {
+		string? matchedKeyword = null;
+		string? value = null;
+		var parser = new ParserBuilder()
+			.WithKeyword("key", (reader, keyword) => {
+				matchedKeyword = keyword;
+				value = reader.GetString();
+			})
+			.Build();
+
+		parser.ParseStream(new BufferedReader("key = value"));
+
+		Assert.Equal("key", matchedKeyword);
+		Assert.Equal("value", value);
+	}
+
 	[Theory]
 	[InlineData("key ?= value")]
 	[InlineData("key?= value")]
@@ -23,6 +43,53 @@ public sealed class ParserBuilderTests {
 		string? value = null;
 		var parser = new ParserBuilder()
 			.WithRegex("[key]+", (reader, _) => value = reader.GetString())
+			.Build();
+
+		parser.ParseStream(new BufferedReader(input));
+
+		Assert.Equal("value", value);
+	}
+
+	[Theory]
+	[InlineData("key ?= value")]
+	[InlineData("key?= value")]
+	public void ParserBuilderBuildsParserWithStringRegexSimpleRegistration(string input) {
+		string? value = null;
+		var parser = new ParserBuilder()
+			.WithRegex("[key]+", reader => value = reader.GetString())
+			.Build();
+
+		parser.ParseStream(new BufferedReader(input));
+
+		Assert.Equal("value", value);
+	}
+
+	[Theory]
+	[InlineData("key ?= value")]
+	[InlineData("key?= value")]
+	public void ParserBuilderBuildsParserWithRegexObjectRegistration(string input) {
+		string? matchedKeyword = null;
+		string? value = null;
+		var parser = new ParserBuilder()
+			.WithRegex(new Regex("[key]+"), (reader, keyword) => {
+				matchedKeyword = keyword;
+				value = reader.GetString();
+			})
+			.Build();
+
+		parser.ParseStream(new BufferedReader(input));
+
+		Assert.Equal("key", matchedKeyword);
+		Assert.Equal("value", value);
+	}
+
+	[Theory]
+	[InlineData("key ?= value")]
+	[InlineData("key?= value")]
+	public void ParserBuilderBuildsParserWithRegexObjectSimpleRegistration(string input) {
+		string? value = null;
+		var parser = new ParserBuilder()
+			.WithRegex(new Regex("[key]+"), reader => value = reader.GetString())
 			.Build();
 
 		parser.ParseStream(new BufferedReader(input));
@@ -53,6 +120,23 @@ public sealed class ParserBuilderTests {
 		parser.ParseStream(new BufferedReader("first = value second = { nested = value }"));
 
 		Assert.Equal(["first", "second"], ignoredTokens);
+	}
+
+	[Fact]
+	public void ParserBuilderCanIgnoreAndLogUnregisteredItems() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+
+		string? value = null;
+		var parser = new ParserBuilder()
+			.WithKeyword("key", reader => value = reader.GetString())
+			.IgnoreAndLogUnregisteredItems()
+			.Build();
+
+		parser.ParseStream(new BufferedReader("key = value ignored = yes"));
+
+		Assert.Equal("value", value);
+		Assert.Contains("[DEBUG] Ignoring keyword: ignored", output.ToString());
 	}
 
 	[Fact]
