@@ -1,12 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.RegularExpressions;
+using log4net;
+using log4net.Appender;
+using log4net.Core;
+using log4net.Repository.Hierarchy;
 using Xunit;
 
 namespace commonItems.UnitTests;
 
 public sealed class ParserBuilderTests {
+	private sealed class CollectingAppender : AppenderSkeleton {
+		public List<string> Messages { get; } = [];
+
+		protected override void Append(LoggingEvent loggingEvent) {
+			Messages.Add(loggingEvent.RenderedMessage ?? string.Empty);
+		}
+	}
+
 	[Fact]
 	public void ParserBuilderBuildsParserWithKeywordRegistration() {
 		string? value = null;
@@ -124,19 +135,39 @@ public sealed class ParserBuilderTests {
 
 	[Fact]
 	public void ParserBuilderCanIgnoreAndLogUnregisteredItems() {
-		var output = new StringWriter();
-		Console.SetOut(output);
+		var appender = new CollectingAppender {
+			Threshold = Level.All,
+		};
+		var hierarchy = (Hierarchy)LogManager.GetRepository();
+		var logger = (global::log4net.Repository.Hierarchy.Logger)hierarchy.GetLogger("mainLogger");
+		var previousLevel = logger.Level;
+		var previousAdditivity = logger.Additivity;
+		logger.Level = Level.All;
+		logger.Additivity = false;
+		logger.AddAppender(appender);
+		appender.ActivateOptions();
 
-		string? value = null;
-		var parser = new ParserBuilder()
-			.WithKeyword("key", reader => value = reader.GetString())
-			.IgnoreAndLogUnregisteredItems()
-			.Build();
+		try {
+			string? value = null;
+			var parser = new ParserBuilder()
+				.WithKeyword("key", reader => value = reader.GetString())
+				.IgnoreAndLogUnregisteredItems()
+				.Build();
 
-		parser.ParseStream(new BufferedReader("key = value ignored = yes"));
+			parser.ParseStream(new BufferedReader("key = value ignored = yes"));
 
-		Assert.Equal("value", value);
-		Assert.Contains("[DEBUG] Ignoring keyword: ignored", output.ToString());
+			Assert.Equal("value", value);
+			Assert.Contains("Ignoring keyword: ignored", appender.Messages);
+		} finally {
+			try {
+				logger.RemoveAppender(appender);
+			} catch (ArgumentException) {
+				// log4net can throw if the appender was not attached to the logger.
+			}
+			logger.Level = previousLevel;
+			logger.Additivity = previousAdditivity;
+			appender.Close();
+		}
 	}
 
 	[Fact]
