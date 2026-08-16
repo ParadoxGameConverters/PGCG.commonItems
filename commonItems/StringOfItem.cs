@@ -24,18 +24,20 @@ public sealed class StringOfItem : IPDXSerializable {
 	private static void AppendBracedContent(BufferedReader reader, StringBuilder sb) {
 		bool inQuotes = false;
 		int braceDepth = 1;
+		int backslashRun = 0; // consecutive backslashes immediately before the current character
 		while (!reader.EndOfStream) {
 			char inputChar = (char)reader.Read();
 			sb.Append(inputChar);
 
 			if (inputChar == '"') {
-				int backslashCount = 0;
-				for (int i = sb.Length - 2; i >= 0 && sb[i] == '\\'; i--) {
-					backslashCount++;
-				}
-				if (backslashCount % 2 == 0) { // even number of backslashes means quote is not escaped
+				if (backslashRun % 2 == 0) { // even number of backslashes means quote is not escaped
 					inQuotes = !inQuotes;
 				}
+				backslashRun = 0;
+			} else if (inputChar == '\\') {
+				++backslashRun;
+			} else {
+				backslashRun = 0;
 			}
 			if (inputChar == '{' && !inQuotes) {
 				++braceDepth;

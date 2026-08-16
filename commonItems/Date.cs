@@ -29,31 +29,40 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 		var dateSpan = init.RemQuotes().AsSpan();
 		var parsedYear = (int)Year;
 		try {
-			var componentIndex = 0;
-			var segmentStart = 0;
-			for (var i = 0; i <= dateSpan.Length && componentIndex < 3; ++i) {
-				if (i == dateSpan.Length || dateSpan[i] == '.') {
-					var segmentLength = i - segmentStart;
-					if (segmentLength > 0) {
-						var segment = dateSpan.Slice(segmentStart, segmentLength);
-						switch (componentIndex) {
-							case 0:
-								parsedYear = int.Parse(segment);
-								break;
-							case 1:
-								Month = ClampMonth(int.Parse(segment));
-								break;
-							case 2:
-								Day = ClampDay(int.Parse(segment));
-								break;
-						}
-						++componentIndex;
-					}
-					segmentStart = i + 1;
+			if (TryParseDateFast(dateSpan, ref parsedYear, out var month, out var day, out var componentCount)) {
+				if (componentCount >= 2) {
+					Month = ClampMonth(month);
 				}
-			}
-			if (componentIndex == 0) {
-				Logger.Warn("Problem constructing date: at least a year should be provided!");
+				if (componentCount >= 3) {
+					Day = ClampDay(day);
+				}
+			} else {
+				var componentIndex = 0;
+				var segmentStart = 0;
+				for (var i = 0; i <= dateSpan.Length && componentIndex < 3; ++i) {
+					if (i == dateSpan.Length || dateSpan[i] == '.') {
+						var segmentLength = i - segmentStart;
+						if (segmentLength > 0) {
+							var segment = dateSpan.Slice(segmentStart, segmentLength);
+							switch (componentIndex) {
+								case 0:
+									parsedYear = int.Parse(segment);
+									break;
+								case 1:
+									Month = ClampMonth(int.Parse(segment));
+									break;
+								case 2:
+									Day = ClampDay(int.Parse(segment));
+									break;
+							}
+							++componentIndex;
+						}
+						segmentStart = i + 1;
+					}
+				}
+				if (componentIndex == 0) {
+					Logger.Warn("Problem constructing date: at least a year should be provided!");
+				}
 			}
 		} catch (Exception e) {
 			Logger.Warn($"Problem constructing date from string \"{init}\": {e.Message}!");
@@ -62,6 +71,69 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 			parsedYear = ConvertAUCToAD(parsedYear);
 		}
 		Year = ConvertYear(parsedYear);
+	}
+
+	// Fast path for the common "Y.M.D" date shapes: a single forward pass with manual
+	// digit accumulation. Returns false (and falls back to the int.Parse-based slow path)
+	// on any anomaly, preserving the exact original semantics including partial assignments.
+	private static bool TryParseDateFast(ReadOnlySpan<char> dateSpan, ref int parsedYear, out int month, out int day, out int componentCount) {
+		month = 1;
+		day = 1;
+		componentCount = 0;
+		var index = 0;
+		while (index <= dateSpan.Length && componentCount < 3) {
+			var segmentStart = index;
+			while (index < dateSpan.Length && dateSpan[index] != '.') {
+				++index;
+			}
+			var segmentLength = index - segmentStart;
+			if (segmentLength > 0) {
+				if (!TryParseIntSegment(dateSpan.Slice(segmentStart, segmentLength), out var value)) {
+					return false;
+				}
+				switch (componentCount) {
+					case 0:
+						parsedYear = value;
+						break;
+					case 1:
+						month = value;
+						break;
+					default:
+						day = value;
+						break;
+				}
+				++componentCount;
+			}
+			++index; // skip the separator dot
+		}
+		return componentCount > 0;
+	}
+
+	// Mirrors int.Parse(segment) semantics for sign + digit-only segments.
+	private static bool TryParseIntSegment(ReadOnlySpan<char> segment, out int value) {
+		value = 0;
+		var index = 0;
+		var isNegative = false;
+		if (segment[0] is '-' or '+') {
+			isNegative = segment[0] == '-';
+			++index;
+			if (index == segment.Length) {
+				return false; // sign only
+			}
+		}
+		long accumulated = 0;
+		for (; index < segment.Length; ++index) {
+			var c = segment[index];
+			if (c is < '0' or > '9') {
+				return false;
+			}
+			accumulated = accumulated * 10 + (c - '0');
+			if (accumulated > int.MaxValue) {
+				return false; // let the slow path throw OverflowException as before
+			}
+		}
+		value = isNegative ? (int)-accumulated : (int)accumulated;
+		return true;
 	}
 	public Date(DateTimeOffset dateTimeOffset) : this(dateTimeOffset.Year, dateTimeOffset.Month, dateTimeOffset.Day) {
 	}
