@@ -181,6 +181,29 @@ public class Parser {
 	private static readonly string CloseBraceToken = "}";
 	private static readonly string QuestionToken = "?";
 
+	// Characters that can be appended to a lexeme without any special handling.
+	// Everything else (whitespace, quotes, braces, operators, comment markers,
+	// interpolation markers, line endings) goes through the slow path, so the
+	// two paths are behaviorally identical.
+	private static readonly bool[] FastLexemeChars = BuildFastLexemeChars();
+
+	private static bool[] BuildFastLexemeChars() {
+		var fast = new bool[128];
+		for (var c = 'a'; c <= 'z'; ++c) {
+			fast[c] = true;
+		}
+		for (var c = 'A'; c <= 'Z'; ++c) {
+			fast[c] = true;
+		}
+		for (var c = '0'; c <= '9'; ++c) {
+			fast[c] = true;
+		}
+		foreach (var c in "_-.:/\\',;!%&*+<>|~^$") {
+			fast[c] = true;
+		}
+		return fast;
+	}
+
 	public static string GetNextLexeme(BufferedReader reader) {
 		var sb = t_lexemeBuilder;
 		if (sb is null) {
@@ -198,8 +221,20 @@ public class Parser {
 		var inInterpolatedExpression = false;
 		var previousChar = '\0';
 
-		while (!reader.EndOfStream) {
-			var inputChar = (char)reader.Read();
+		while (true) {
+			var rawChar = reader.Read();
+			if (rawChar == -1) {
+				break;
+			}
+			var inputChar = (char)rawChar;
+
+			// Fast path: characters that need no special handling are appended directly.
+			// All delimiters, whitespace, quotes and state transitions go to the slow path.
+			if (inputChar < 128 && FastLexemeChars[inputChar]) {
+				sb.Append(inputChar);
+				previousChar = inputChar;
+				continue;
+			}
 
 			if (inputChar == '\r') {
 				if (inQuotes) {
@@ -256,17 +291,44 @@ public class Parser {
 			return null;
 		}
 		var lexeme = GetNextLexeme(reader);
-		if (CommonRegexes.Variable.IsMatch(lexeme)) {
+		// Manual checks instead of regex matching. Lexer-produced tokens can never contain
+		// whitespace, '=', '{', '}' or '"', so these are exact equivalents of
+		// CommonRegexes.Variable and CommonRegexes.InterpolatedExpression for such tokens.
+		if (IsVariableToken(lexeme)) {
 			var variableValue = reader.ResolveVariable(lexeme);
 			if (variableValue is null) {
 				return null;
 			}
 			return GetValueString(variableValue);
 		}
-		if (CommonRegexes.InterpolatedExpression.IsMatch(lexeme)) {
+		if (IsInterpolatedExpressionToken(lexeme)) {
 			return GetValueString(reader.EvaluateExpression(lexeme));
 		}
 		return lexeme;
+
+		// Equivalent to ^@[^\s={}\[\]\"]+$ for lexer-produced tokens.
+		static bool IsVariableToken(string lexeme) {
+			if (lexeme.Length < 2 || lexeme[0] != '@') {
+				return false;
+			}
+			foreach (var c in lexeme.AsSpan(1)) {
+				if (c is '[' or ']') {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		// Equivalent to ^@([\s\S]+)|(\[[\s\S]*\])$ for lexer-produced tokens.
+		static bool IsInterpolatedExpressionToken(string lexeme) {
+			if (lexeme.Length == 0) {
+				return false;
+			}
+			if (lexeme[0] == '@') {
+				return lexeme.Length > 1;
+			}
+			return lexeme[0] == '[' && lexeme.Length >= 2 && lexeme[^1] == ']';
+		}
 
 		static string? GetValueString(object obj) {
 			if (obj is IFormattable formattable) {
