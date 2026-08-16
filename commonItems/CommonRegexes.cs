@@ -1,30 +1,54 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace commonItems {
-	public static class CommonRegexes {
-		// catchall:
-		//		We grab everything that's NOT =, { or }, OR we grab everything within quotes, except newlines, which we already drop
-		//		in the parser.
-		public static Regex Catchall => new(@"^"".+""|[^={}]+$");
+namespace commonItems; 
 
-		// variables and interpolated expressions
-		public static Regex Variable => new($"^@[^{NonStringCharacters}]+$");
-		public static Regex InterpolatedExpression => new(@"^@([\s\S]+)|(\[[\s\S]*\])$");
+public static partial class CommonRegexes {
+	// catchall:
+	//		We grab everything that's NOT ?, =, { or }, OR we grab everything within quotes, except newlines, which we already drop
+	//		in the parser.
+	public static Regex Catchall => GetCatchallRegex();
 
-		// numbers
-		public static Regex Integer => new(@"^-?\d+$");
-		public static Regex QuotedInteger => new(@"^""-?\d+""$");
-		public static Regex Float => new(@"^-?\d+(.\d+)?$");
-		public static Regex QuotedFloat => new(@"^""-?\d+(.\d+)?""$");
+	// variables and interpolated expressions
+	public static Regex Variable => GetVariableRegex();
+	public static Regex InterpolatedExpression => GetInterpolatedExpressionRegex();
 
-		// strings
-		public static Regex String => new($"^(?!@).+[^{NonStringCharacters}]+$");
-		public static Regex QuotedString => new(@"^""[^\n=\{\}\""]+""$");
+	// numbers
+	public static Regex Integer => GetIntegerRegex();
+	public static Regex QuotedInteger => GetQuotedIntegerRegex();
+	public static Regex Float => GetFloatRegex();
+	public static Regex QuotedFloat => GetQuotedFloatRegex();
 
-		// dates
-		public static Regex Date => new(@"^\d+[.]\d+[.]\d+$");
+	// strings
+	// Characters that can't be part of an unquoted string: \s = \{\} \[ \] \"
+	public static Regex String => GetStringRegex();
+	public static Regex QuotedString => GetQuotedStringRegex();
 
-		// characters that can't be part of an unquoted string
-		private const string NonStringCharacters = @"\s=\{\}\[\]\""";
-	}
+	// dates
+	public static Regex Date => GetDateRegex();
+
+
+	[GeneratedRegex("^\".+\"|[^?={}]+$")]
+	private static partial Regex GetCatchallRegex();
+	[GeneratedRegex("^-?\\d+$")]
+	private static partial Regex GetIntegerRegex();
+	[GeneratedRegex("^\"-?\\d+\"$")]
+	private static partial Regex GetQuotedIntegerRegex();
+	[GeneratedRegex(@"^-?\d+(.\d+)?$")]
+	private static partial Regex GetFloatRegex();
+	[GeneratedRegex("^\"-?\\d+(.\\d+)?\"$")]
+	private static partial Regex GetQuotedFloatRegex();
+	[GeneratedRegex(@"^-?\d+([.]\d+)?([.]\d+)?\.?$")]
+	private static partial Regex GetDateRegex();
+	
+	[GeneratedRegex("^(?!@).*[^\\s=\\{\\}\\[\\]\\\"]+$")]
+	private static partial Regex GetStringRegex();
+	
+	[GeneratedRegex(@"^""[^\n\""]+""$")]
+	private static partial Regex GetQuotedStringRegex();
+	
+	[GeneratedRegex("^@[^\\s=\\{\\}\\[\\]\\\"]+$")]
+	private static partial Regex GetVariableRegex();
+	
+	[GeneratedRegex(@"^@([\s\S]+)|(\[[\s\S]*\])$")]
+	private static partial Regex GetInterpolatedExpressionRegex();
 }

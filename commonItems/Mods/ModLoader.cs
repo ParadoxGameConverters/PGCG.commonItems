@@ -1,0 +1,273 @@
+﻿using commonItems.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+
+namespace commonItems.Mods; 
+
+public sealed partial class ModLoader {
+	private readonly List<Mod> possibleUncompressedMods = []; // name, absolute path to mod directory
+	private readonly List<Mod> possibleCompressedMods = []; // name, absolute path to zip file
+	public List<Mod> UsableMods { get; } = []; // name, absolute path for directories, relative for unpacked
+
+	public void LoadMods(string gameDocumentsPath, List<Mod> incomingMods, GameVersion gameVersion, bool throwForOutOfDateMods) {
+		if (incomingMods.Count == 0) {
+			// We shouldn't even be here if the save didn't have mods! Why were Mods called?
+			Logger.Info("No mods were detected in savegame. Skipping mod processing.");
+			return;
+		}
+
+		// We enter this function with a List of (optional) mod names and (required) mod file locations from the savegame.
+		// We need to read all the mod files, check their paths (and potential archives for ancient mods) unpack what's
+		// necessary, and exit with a vector of updated mod names (savegame can differ from actual mod file) and mod folder
+		// locations.
+
+		// The function below reads all the incoming .mod files and verifies their internal paths/archives are correct and
+		// point to something present on disk. No unpacking yet.
+		LoadModDirectory(gameDocumentsPath, incomingMods);
+
+		// Now we merge all detected .mod files together.
+		Logger.Info("\tDetermining mod usability");
+		var allMods = new List<Mod>();
+		allMods.AddRange(possibleUncompressedMods);
+		allMods.AddRange(possibleCompressedMods);
+
+		// With a list of all detected and matched mods, we unpack the compressed ones (if any) and store the results.
+		foreach (var mod in allMods) {
+			// This invocation will unpack any compressed mods into our converter's folder, and skip already unpacked ones.
+			var possibleModPath = UncompressAndReturnNewPath(mod.Name);
+			if (possibleModPath == null) {
+				Logger.Warn($"\t\tFailure unpacking {mod.Name}, skipping this mod at your risk.");
+				continue;
+			}
+
+			if (mod.SupportedGameVersion.HasValue) {
+				var supported = mod.SupportedGameVersion.Value;
+				var isSlightlyOutOfDate = IsSlightlyOutOfDateModVersion(supported, gameVersion);
+				var isIncompatible = !GameVersion.IsModCompatibleWithGame(supported, gameVersion);
+				if (isIncompatible || isSlightlyOutOfDate) {
+					string problemStr = $"\t\tMod [{mod.Name}] supports game version {supported.ToWildCard()}, " +
+					                    $"but your game version is {gameVersion.ToShortString()}.";
+					if (throwForOutOfDateMods && isIncompatible && !isSlightlyOutOfDate) {
+						throw new UserErrorException($"{problemStr} Cannot continue.");
+					}
+
+					Logger.Warn($"{problemStr} Proceeding anyway, but this can cause issues.");
+				}
+			}
+
+			// All verified mods go into usableMods.
+			Logger.Info($"\t\t->> Found potentially useful [{mod.Name}]: {possibleModPath}/");
+			UsableMods.Add(new Mod(mod.Name, possibleModPath, mod.SupportedGameVersion, mod.Dependencies, mod.ReplacedFolders));
+		}
+	}
+
+	private static bool IsSlightlyOutOfDateModVersion(GameVersion modSupportedVersion, GameVersion installedGameVersion) {
+		return modSupportedVersion.FirstPart is not null
+		       && modSupportedVersion.SecondPart is not null
+		       && modSupportedVersion.ThirdPart is not null
+		       && installedGameVersion.FirstPart is not null
+		       && installedGameVersion.SecondPart is not null
+		       && installedGameVersion.ThirdPart is not null
+		       && modSupportedVersion.FirstPart == installedGameVersion.FirstPart
+		       && modSupportedVersion.SecondPart == installedGameVersion.SecondPart
+		       && installedGameVersion.ThirdPart > modSupportedVersion.ThirdPart;
+	}
+
+	private void LoadModDirectory(string gameDocumentsPath, List<Mod> incomingMods) {
+		var modsPath = Path.Combine(gameDocumentsPath, "mod");
+		if (!Directory.Exists(modsPath)) {
+			throw new DirectoryNotFoundException($"Mods directory path is invalid! Is it at: {modsPath} ?");
+		}
+
+		Logger.Info($"\tMods directory is {modsPath}");
+
+		var diskModNames = SystemUtils.GetAllFilesInFolder(modsPath);
+		foreach (var mod in incomingMods) {
+			var trimmedModFileName = CommonFunctions.TrimPath(mod.Path);
+
+			if (!diskModNames.Contains(trimmedModFileName)) {
+				string missingModDetails;
+				
+				if (string.IsNullOrEmpty(mod.Name)) {
+					var workshopName = GetProbableSteamName(mod);
+					if (workshopName is not null) {
+						missingModDetails = $"mod at {mod.Path} (probable Steam Workshop name: {workshopName})";
+					} else {
+						missingModDetails = $"mod at {mod.Path}";
+					}
+				} else {
+					missingModDetails = $"[{mod.Name}] at {mod.Path}";
+				}
+				Logger.Warn($"\t\tSavegame uses {missingModDetails}, which is not present on disk. " +
+				            $"Skipping at your risk, but this can greatly affect conversion.");
+				continue;
+			}
+
+			if (CommonFunctions.GetExtension(trimmedModFileName) != "mod") {
+				continue; // shouldn't be necessary but just in case
+			}
+
+			// Attempt parsing the .mod file
+			var theMod = new ModParser();
+			var modFilePath = Path.Combine(modsPath, trimmedModFileName);
+			try {
+				theMod.ParseMod(modFilePath);
+			} catch (Exception e) {
+				Logger.Warn(
+					$"\t\tError while reading {modFilePath}! Mod will not be usable for conversions. Exception: {e}");
+				continue;
+			}
+			ProcessLoadedMod(theMod, mod.Name, trimmedModFileName, mod.Path, modsPath, gameDocumentsPath);
+		}
+	}
+
+	private static string? GetProbableSteamName(Mod mod) {
+		// Using regex, check if mod path looks like: mod/ugc_<ID>.mod
+		// Make the ID a capture group so we can use it to retrieve the mod name.
+		var steamModPathRegex = GetSteamModPathRegex();
+		var match = steamModPathRegex.Match(mod.Path);
+		if (!match.Success) {
+			return null;
+		}
+
+		var steamId = match.Groups[1].Value;
+		Logger.Debug($"Trying to get Steam Workshop name for mod with ID: {steamId}...");
+
+		try {
+			// Steam refuses requests that don't look like they come from a browser (missing User-Agent, etc.).
+			const string userAgent =
+				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
+			using var httpClient = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All });
+			httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+			httpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.9");
+			httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+			var modDetailsUrl = $"https://steamcommunity.com/sharedfiles/filedetails/?id={steamId}";
+			var response = httpClient.GetAsync(modDetailsUrl).GetAwaiter().GetResult();
+			response.EnsureSuccessStatusCode();
+			var responseContent = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+			var title = GetModTitleRegex().Match(input: responseContent).Groups["Title"].Value;
+			const string workshopPrefix = "Steam Workshop::";
+			if (title.StartsWith(workshopPrefix)) {
+				title = title[workshopPrefix.Length..];
+			}
+			return title;
+		} catch (Exception e) {
+			Logger.Debug($"Failed to get probable Steam Workshop name for mod {mod.Path}: {e}");
+			return null;
+		}
+	}
+
+	private void ProcessLoadedMod(ModParser theMod, string modName, string modFileName, string modPath, string modsPath, string gameDocumentsPath) {
+		var modFilePath = Path.Combine(modsPath, modFileName);
+		if (!theMod.IsValid()) {
+			Logger.Warn($"\t\tMod at {modFilePath} does not look valid.");
+			return;
+		}
+
+		// Fix potential pathing issues.
+		var modPathAtDocuments = Path.Combine(gameDocumentsPath, theMod.Path);
+		if (!theMod.IsCompressed() && !Directory.Exists(theMod.Path)) {
+			// Maybe we have a relative path
+			if (Directory.Exists(modPathAtDocuments)) {
+				// fix this.
+				theMod.Path = modPathAtDocuments;
+			} else {
+				WarnForInvalidPath(theMod, modName, modPath);
+				return;
+			}
+		} else if (theMod.IsCompressed() && !File.Exists(theMod.Path)) {
+			// Maybe we have a relative path
+			if (File.Exists(modPathAtDocuments)) {
+				// fix this.
+				theMod.Path = modPathAtDocuments;
+			} else {
+				WarnForInvalidPath(theMod, modName, modPath);
+				return;
+			}
+		}
+
+		// file under category.
+		FileUnderCategory(theMod, modFilePath);
+	}
+
+	private static void WarnForInvalidPath(ModParser theMod, string name, string path) {
+		if (string.IsNullOrEmpty(name)) {
+			Logger.Warn(
+				$"\t\tMod at {path} points to {theMod.Path} which does not exist! Skipping at your risk, but this can greatly affect conversion.");
+		} else {
+			Logger.Warn(
+				$"\t\tMod [{name}] at {path} points to {theMod.Path} which does not exist! Skipping at your risk, but this can greatly affect conversion.");
+		}
+	}
+
+	private void FileUnderCategory(ModParser theMod, string path) {
+		if (!theMod.IsCompressed()) {
+			possibleUncompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.SupportedGameVersion, theMod.Dependencies, theMod.ReplacedPaths));
+			Logger.Info(
+				$"\t\tFound a potential mod [{theMod.Name}] with a mod file at {path} and itself at {theMod.Path}");
+		} else {
+			possibleCompressedMods.Add(new Mod(theMod.Name, theMod.Path, theMod.SupportedGameVersion, theMod.Dependencies, theMod.ReplacedPaths));
+			Logger.Info(
+				$"\t\tFound a compressed mod [{theMod.Name}] with a mod file at {path} and itself at {theMod.Path}");
+		}
+	}
+
+	private string? UncompressAndReturnNewPath(string modName) {
+		foreach (var mod in possibleUncompressedMods) {
+			if (mod.Name == modName) {
+				return mod.Path;
+			}
+		}
+
+		foreach (var compressedMod in possibleCompressedMods) {
+			if (compressedMod.Name != modName) {
+				continue;
+			}
+			string uncompressedName = Path.GetFileNameWithoutExtension(compressedMod.Path);
+
+			SystemUtils.TryCreateFolder("mods");
+
+			var uncompressedPath = Path.Combine("mods", uncompressedName);
+			if (!Directory.Exists(uncompressedPath)) {
+				Logger.Info($"\t\tUncompressing: {compressedMod.Path}");
+				if (!ExtractZip(compressedMod.Path, uncompressedPath)) {
+					Logger.Warn("We're having trouble automatically uncompressing your mod.");
+					Logger.Warn($"Please, manually uncompress: {compressedMod.Path}");
+					Logger.Warn($"Into converter's folder, mods/{uncompressedName} subfolder.");
+					Logger.Warn("Then run the converter again. Thank you and good luck.");
+					return null;
+				}
+			}
+
+			if (Directory.Exists(uncompressedPath)) {
+				return uncompressedPath;
+			}
+			return null;
+		}
+
+		return null;
+	}
+
+	private static bool ExtractZip(string archive, string path) {
+		try {
+			ZipFile.ExtractToDirectory(archive, path, overwriteFiles: true);
+		} catch (Exception e) {
+			Logger.Error($"Extracting zip failed: {e}");
+			return false;
+		}
+
+		return true;
+	}
+
+	[GeneratedRegex("mod/ugc_(\\d+).mod")]
+	private static partial Regex GetSteamModPathRegex();
+	[GeneratedRegex(@"<title\b[^>]*>\s*(?<Title>[\s\S]*?)</title>", RegexOptions.IgnoreCase, "pl-PL")]
+	private static partial Regex GetModTitleRegex();
+}

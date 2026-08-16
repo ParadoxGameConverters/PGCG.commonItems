@@ -2,477 +2,293 @@
 using System.IO;
 using System.Text;
 
-namespace commonItems {
-	public class GameVersion {
-		private int? firstPart;
-		private int? secondPart;
-		private int? thirdPart;
-		private int? fourthPart;
+namespace commonItems; 
 
-		public GameVersion() { }
+public readonly struct GameVersion : IEquatable<GameVersion> {
+	public int? FirstPart { get; }
+	public int? SecondPart { get; }
+	public int? ThirdPart { get; }
+	public int? FourthPart { get; }
 
-		public GameVersion(int? theFirstPart,
-			int? theSecondPart,
-			int? theThirdPart,
-			int? theFourthPart) {
-			firstPart = theFirstPart;
-			secondPart = theSecondPart;
-			thirdPart = theThirdPart;
-			fourthPart = theFourthPart;
+	public GameVersion(int? theFirstPart, int? theSecondPart, int? theThirdPart, int? theFourthPart) {
+		FirstPart = theFirstPart;
+		SecondPart = theSecondPart;
+		ThirdPart = theThirdPart;
+		FourthPart = theFourthPart;
+	}
+
+	public GameVersion(string version) {
+		var span = version.AsSpan().Trim();
+		if (span.IsEmpty) {
+			return;
 		}
 
-		public GameVersion(string version) {
-			version = version.Trim();
-			if (string.IsNullOrEmpty(version)) {
-				return;
+		var partIndex = 0;
+		var segmentStart = 0;
+		for (var i = 0; i <= span.Length; ++i) {
+			if (i < span.Length && span[i] != '.') {
+				continue;
 			}
-			var parts = version.Split('.');
 
-			if (parts.Length > 0) {
-				firstPart = int.Parse(parts[0]);
-			} else {
-				return;
+			var segment = span[segmentStart..i];
+			int? parsedPart = segment is ['*'] ? null : int.Parse(segment);
+			switch (partIndex) {
+				case 0:
+					FirstPart = parsedPart;
+					break;
+				case 1:
+					SecondPart = parsedPart;
+					break;
+				case 2:
+					ThirdPart = parsedPart;
+					break;
+				case 3:
+					FourthPart = parsedPart;
+					break;
 			}
-			if (parts.Length > 1) {
-				secondPart = int.Parse(parts[1]);
-			} else {
-				return;
+
+			partIndex++;
+			if (partIndex > 3) {
+				break;
 			}
-			if (parts.Length > 2) {
-				thirdPart = int.Parse(parts[2]);
-			} else {
-				return;
-			}
-			if (parts.Length > 3) {
-				fourthPart = int.Parse(parts[3]);
-			}
+
+			segmentStart = i + 1;
 		}
+	}
 
-		public GameVersion(BufferedReader reader) {
-			var parser = new Parser();
-			parser.RegisterKeyword("first", reader => firstPart = reader.GetInt());
-			parser.RegisterKeyword("second", reader => secondPart = reader.GetInt());
-			parser.RegisterKeyword("third", reader => thirdPart = reader.GetInt());
-			parser.RegisterKeyword("forth", reader => fourthPart = reader.GetInt());
-			parser.RegisterRegex(CommonRegexes.Catchall, ParserHelpers.IgnoreAndLogItem);
-			parser.ParseStream(reader);
-			parser.ClearRegisteredRules();
-		}
+	public GameVersion(BufferedReader gameVersionReader) {
+		int? firstPart = null, secondPart = null, thirdPart = null, fourthPart = null;
+		
+		var parser = new Parser();
+		parser.RegisterKeyword("first", reader => firstPart = reader.GetInt());
+		parser.RegisterKeyword("second", reader => secondPart = reader.GetInt());
+		parser.RegisterKeyword("third", reader => thirdPart = reader.GetInt());
+		parser.RegisterKeyword("forth", reader => fourthPart = reader.GetInt());
+		parser.IgnoreAndLogUnregisteredItems();
+		parser.ParseStream(gameVersionReader);
+		
+		FirstPart = firstPart;
+		SecondPart = secondPart;
+		ThirdPart = thirdPart;
+		FourthPart = fourthPart;
+	}
 
-		public override bool Equals(object? obj) {
-			if (obj is not GameVersion rhs) {
-				return false;
-			}
-			var testL = 0;
-			var testR = 0;
-			if (firstPart is not null) {
-				testL = firstPart.Value;
-			}
+	public bool Equals(GameVersion other) {
+		return FirstPart.GetValueOrDefault() == other.FirstPart.GetValueOrDefault()
+		       && SecondPart.GetValueOrDefault() == other.SecondPart.GetValueOrDefault()
+		       && ThirdPart.GetValueOrDefault() == other.ThirdPart.GetValueOrDefault()
+		       && FourthPart.GetValueOrDefault() == other.FourthPart.GetValueOrDefault();
+	}
 
-			if (rhs.firstPart is not null) {
-				testR = rhs.firstPart.Value;
-			}
-
-			if (testL != testR) {
-				return false;
-			}
-
-			testL = 0;
-			testR = 0;
-			if (secondPart is not null) {
-				testL = secondPart.Value;
-			}
-
-			if (rhs.secondPart is not null) {
-				testR = rhs.secondPart.Value;
-			}
-
-			if (testL != testR) {
-				return false;
-			}
-
-			testL = 0;
-			testR = 0;
-			if (thirdPart is not null) {
-				testL = thirdPart.Value;
-			}
-
-			if (rhs.thirdPart is not null) {
-				testR = rhs.thirdPart.Value;
-			}
-
-			if (testL != testR) {
-				return false;
-			}
-
-			testL = 0;
-			testR = 0;
-			if (fourthPart is not null) {
-				testL = fourthPart.Value;
-			}
-
-			if (rhs.fourthPart is not null) {
-				testR = rhs.fourthPart.Value;
-			}
-
-			return testL == testR;
-		}
-
-		public override int GetHashCode() {
-			return HashCode.Combine(firstPart, secondPart, thirdPart, fourthPart);
-		}
-
-		public static bool operator >=(GameVersion lhs, GameVersion rhs) {
-			return lhs > rhs || lhs.Equals(rhs);
-		}
-		public static bool operator >(GameVersion lhs, GameVersion rhs) {
-			int testL = 0;
-			int testR = 0;
-			if (lhs.firstPart != null) {
-				testL = lhs.firstPart.Value;
-			}
-			if (rhs.firstPart != null) {
-				testR = rhs.firstPart.Value;
-			}
-
-			if (testL > testR) {
-				return true;
-			}
-			if (testL < testR) {
-				return false;
-			}
-
-			testL = 0;
-			testR = 0;
-			if (lhs.secondPart != null) {
-				testL = lhs.secondPart.Value;
-			}
-
-			if (rhs.secondPart != null) {
-				testR = rhs.secondPart.Value;
-			}
-
-			if (testL > testR) {
-				return true;
-			}
-
-			if (testL < testR) {
-				return false;
-			}
-
-			testL = 0;
-			testR = 0;
-			if (lhs.thirdPart != null) {
-				testL = lhs.thirdPart.Value;
-			}
-
-			if (rhs.thirdPart != null) {
-				testR = rhs.thirdPart.Value;
-			}
-
-			if (testL > testR) {
-				return true;
-			}
-
-			if (testL < testR) {
-				return false;
-			}
-
-			testL = 0;
-			testR = 0;
-			if (lhs.fourthPart != null) {
-				testL = lhs.fourthPart.Value;
-			}
-
-			if (rhs.fourthPart != null) {
-				testR = rhs.fourthPart.Value;
-			}
-
-			if (testL > testR) {
-				return true;
-			}
-
+	public override bool Equals(object? obj) {
+		if (obj is not GameVersion other) {
 			return false;
 		}
+		return Equals(other);
+	}
 
-		public static bool operator <(GameVersion lhs, GameVersion rhs) {
-			var testL = 0;
-			var testR = 0;
-			if (lhs.firstPart != null) {
-				testL = lhs.firstPart.Value;
-			}
+	public override int GetHashCode() {
+		return HashCode.Combine(FirstPart, SecondPart, ThirdPart, FourthPart);
+	}
 
-			if (rhs.firstPart != null) {
-				testR = rhs.firstPart.Value;
-			}
+	public static bool operator ==(GameVersion lhs, GameVersion rhs) => lhs.Equals(rhs);
+	public static bool operator !=(GameVersion lhs, GameVersion rhs) => !lhs.Equals(rhs);
 
-			if (testL < testR) {
-				return true;
-			}
+	private static int CompareParts(GameVersion lhs, GameVersion rhs) {
+		var a = new int[] { lhs.FirstPart.GetValueOrDefault(), lhs.SecondPart.GetValueOrDefault(), lhs.ThirdPart.GetValueOrDefault(), lhs.FourthPart.GetValueOrDefault() };
+		var b = new int[] { rhs.FirstPart.GetValueOrDefault(), rhs.SecondPart.GetValueOrDefault(), rhs.ThirdPart.GetValueOrDefault(), rhs.FourthPart.GetValueOrDefault() };
+		for (int i = 0; i < 4; ++i) {
+			if (a[i] < b[i]) return -1;
+			if (a[i] > b[i]) return 1;
+		}
+		return 0;
+	}
 
-			if (testL > testR) {
-				return false;
-			}
+	public static bool operator >(GameVersion lhs, GameVersion rhs) => CompareParts(lhs, rhs) > 0;
+	public static bool operator <(GameVersion lhs, GameVersion rhs) => CompareParts(lhs, rhs) < 0;
+	public static bool operator >=(GameVersion lhs, GameVersion rhs) => CompareParts(lhs, rhs) >= 0;
+	public static bool operator <=(GameVersion lhs, GameVersion rhs) => CompareParts(lhs, rhs) <= 0;
 
-			testL = 0;
-			testR = 0;
-			if (lhs.secondPart != null) {
-				testL = lhs.secondPart.Value;
-			}
+	public override string ToString() {
+		var sb = new StringBuilder();
+		if (FirstPart is not null) {
+			sb.Append(FirstPart.Value);
+			sb.Append('.');
+		} else {
+			sb.Append("0.");
+		}
+		if (SecondPart is not null) {
+			sb.Append(SecondPart.Value);
+			sb.Append('.');
+		} else {
+			sb.Append("0.");
+		}
+		if (ThirdPart is not null) {
+			sb.Append(ThirdPart.Value);
+			sb.Append('.');
+		} else {
+			sb.Append("0.");
+		}
+		if (FourthPart is not null) {
+			sb.Append(FourthPart.Value);
+		} else {
+			sb.Append('0');
+		}
+		return sb.ToString();
+	}
 
-			if (rhs.secondPart != null) {
-				testR = rhs.secondPart.Value;
-			}
+	public string ToShortString() {
+		var sb = new StringBuilder(16);
+		if (FirstPart is not null) {
+			sb.Append(FirstPart.Value);
+		}
+		if (SecondPart is not null) {
+			sb.Append('.');
+			sb.Append(SecondPart.Value);
+		}
+		if (ThirdPart is not null) {
+			sb.Append('.');
+			sb.Append(ThirdPart.Value);
+		}
+		if (FourthPart is not null) {
+			sb.Append('.');
+			sb.Append(FourthPart.Value);
+		}
+		return sb.ToString();
+	}
 
-			if (testL < testR) {
-				return true;
-			}
-
-			if (testL > testR) {
-				return false;
-			}
-
-			testL = 0;
-			testR = 0;
-			if (lhs.thirdPart != null) {
-				testL = lhs.thirdPart.Value;
-			}
-
-			if (rhs.thirdPart != null) {
-				testR = rhs.thirdPart.Value;
-			}
-
-			if (testL < testR) {
-				return true;
-			}
-
-			if (testL > testR) {
-				return false;
-			}
-
-			testL = 0;
-			testR = 0;
-			if (lhs.fourthPart != null) {
-				testL = lhs.fourthPart.Value;
-			}
-
-			if (rhs.fourthPart != null) {
-				testR = rhs.fourthPart.Value;
-			}
-
-			if (testL < testR) {
-				return true;
-			}
-
-			return false;
+	public string ToWildCard() {
+		if (FirstPart is null) {
+			return "*";
 		}
 
-		public static bool operator <=(GameVersion lhs, GameVersion rhs) {
-			return lhs < rhs || lhs.Equals(rhs);
-		}
-
-		public override string ToString() {
-			var sb = new StringBuilder();
-			if (firstPart is not null) {
-				sb.Append(firstPart.Value);
-				sb.Append('.');
-			} else {
-				sb.Append("0.");
-			}
-			if (secondPart is not null) {
-				sb.Append(secondPart.Value);
-				sb.Append('.');
-			} else {
-				sb.Append("0.");
-			}
-			if (thirdPart is not null) {
-				sb.Append(thirdPart.Value);
-				sb.Append('.');
-			} else {
-				sb.Append("0.");
-			}
-			if (fourthPart is not null) {
-				sb.Append(fourthPart.Value);
-			} else {
-				sb.Append('0');
-			}
+		var sb = new StringBuilder(16);
+		sb.Append(FirstPart.Value);
+		if (SecondPart is null) {
+			sb.Append(".*");
 			return sb.ToString();
 		}
 
-		public string ToShortString() {
-			var sb = new StringBuilder();
-			if (fourthPart is not null) {
-				sb.Append('.');
-				sb.Append(fourthPart.Value);
-			}
-			if (thirdPart is not null) {
-				sb.Insert(0, thirdPart.Value);
-				sb.Insert(0, '.');
-			}
-			if (secondPart is not null) {
-				sb.Insert(0, secondPart.Value);
-				sb.Insert(0, '.');
-			}
-			if (firstPart is not null) {
-				sb.Insert(0, firstPart.Value);
-			}
+		sb.Append('.');
+		sb.Append(SecondPart.Value);
+		if (ThirdPart is null) {
+			sb.Append(".*");
 			return sb.ToString();
 		}
 
-		public string ToWildCard() {
-			var sb = new StringBuilder();
-			if (fourthPart != null) {
-				sb.Append('.');
-				sb.Append(fourthPart.Value);
-			} else if (thirdPart != null) {
-				sb.Append(".*");
-			}
-
-			if (thirdPart != null) {
-				sb.Insert(0, thirdPart.Value);
-				sb.Insert(0, '.');
-			} else if (secondPart != null) {
-				sb.Clear();
-				sb.Append(".*");
-			}
-
-			if (secondPart != null) {
-				sb.Insert(0, secondPart.Value);
-				sb.Insert(0, '.');
-			} else if (firstPart != null) {
-				sb.Clear();
-				sb.Append(".*");
-			}
-
-			if (firstPart != null) {
-				sb.Insert(0, firstPart.Value);
-			} else {
-				sb.Clear();
-				sb.Append('*');
-			}
-
+		sb.Append('.');
+		sb.Append(ThirdPart.Value);
+		if (FourthPart is null) {
+			sb.Append(".*");
 			return sb.ToString();
 		}
 
-		// Largerish is intended for fuzzy comparisons like "converter works with up to 1.9",
-		// so everything incoming on rhs from 0.0.0.0 to 1.9.x.y will match, (where x and y are >= 0),
-		// thus overshooting the internal "1.9.0.0" setup. This works if ".0.0" are actually undefined.
-		public bool IsLargerishThan(GameVersion rhs) {
-			var testDigit = 0;
-			if (rhs.firstPart is not null) {
-				testDigit = rhs.firstPart.Value;
-			}
+		sb.Append('.');
+		sb.Append(FourthPart.Value);
+		return sb.ToString();
+	}
 
-			if (firstPart is not null) {
-				if (testDigit > firstPart.Value) {
-					return false;
-				}
-				if (testDigit < firstPart.Value) {
-					return true;
-				}
+	// Largerish is intended for fuzzy comparisons like "converter works with up to 1.9",
+	// so everything incoming on rhs from 0.0.0.0 to 1.9.x.y will match, (where x and y are >= 0),
+	// thus overshooting the internal "1.9.0.0" setup. This works if ".0.0" are actually undefined.
+	public bool IsLargerishThan(GameVersion rhs) {
+		var mine = new int?[] { FirstPart, SecondPart, ThirdPart, FourthPart };
+		var theirs = new int?[] { rhs.FirstPart, rhs.SecondPart, rhs.ThirdPart, rhs.FourthPart };
+		for (var i = 0; i < 4; ++i) {
+			var testDigit = theirs[i] ?? 0;
+			if (mine[i] is int my) {
+				if (testDigit > my) return false;
+				if (testDigit < my) return true;
 			}
+		}
+		return true;
+	}
 
-			testDigit = 0;
-			if (rhs.secondPart is not null) {
-				testDigit = rhs.secondPart.Value;
-			}
-
-			if (secondPart is not null) {
-				if (testDigit > secondPart.Value) {
-					return false;
-				}
-				if (testDigit < secondPart.Value) {
-					return true;
-				}
-			}
-
-			testDigit = 0;
-			if (rhs.thirdPart is not null) {
-				testDigit = rhs.thirdPart.Value;
-			}
-
-			if (thirdPart is not null) {
-				if (testDigit > thirdPart.Value) {
-					return false;
-				}
-				if (testDigit < thirdPart.Value) {
-					return true;
-				}
-			}
-
-			testDigit = 0;
-			if (rhs.fourthPart is not null) {
-				testDigit = rhs.fourthPart.Value;
-			}
-
-			if (fourthPart is not null && testDigit > fourthPart.Value) {
-				return false;
-			}
-
+	public static bool IsModCompatibleWithGame(GameVersion modSupportedVersion, GameVersion installedGameVersion) {
+		// for cases like 1.2.3 vs 1.2.3
+		if (modSupportedVersion.Equals(installedGameVersion)) {
 			return true;
 		}
-
-		public static GameVersion? ExtractVersionFromLauncher(string filePath) {
-			// use this for modern PDX games, point filePath to launcher-settings.json to get installation version.
-
-			if (!File.Exists(filePath)) {
-				Logger.Warn("Failure extracting version: " + filePath + " does not exist.");
-				return null;
-			}
-
-			var result = ExtractVersionByStringFromLauncher("rawVersion", filePath);
-			if (result is null) {
-				// Imperator: Rome?
-				result = ExtractVersionByStringFromLauncher("version", filePath);
-			}
-			if (result is null) {
-				Logger.Warn("Failure extracting version: " + filePath + " does not contain installation version!");
-				return null;
-			}
-			return result;
+		
+		// for cases like 1.2 vs 1.1
+		bool modLargerish = modSupportedVersion.IsLargerishThan(installedGameVersion);
+		bool gameLargerish = installedGameVersion.IsLargerishThan(modSupportedVersion);
+		if (modSupportedVersion > installedGameVersion && modLargerish  && !gameLargerish) {
+			return false;
 		}
+		
+		// for cases like 1.1 vs 1.2
+		if (installedGameVersion > modSupportedVersion && gameLargerish && !modLargerish) {
+			return false;
+		}
+		
+		return true;
+	}
 
-		private static GameVersion? ExtractVersionByStringFromLauncher(string versionString, string filePath) {
-			try {
-				using StreamReader sr = File.OpenText(filePath);
-				while (!sr.EndOfStream) {
-					string? line = sr.ReadLine();
-					if (line is null || !line.Contains(versionString, StringComparison.InvariantCulture)) {
-						continue;
-					}
-					var pos = line.IndexOf(':');
-					if (pos == -1) {
-						sr.Close();
-						return null;
-					}
+	public static GameVersion? ExtractVersionFromLauncher(string filePath) {
+		// use this for modern PDX games, point filePath to launcher-settings.json to get installation version.
 
-					line = line[(pos + 1)..];
-					pos = line.IndexOf('\"');
-					if (pos == -1) {
-						sr.Close();
-						return null;
-					}
-
-					line = line.Substring(pos + 1);
-					pos = line.IndexOf('\"');
-					if (pos == -1) {
-						sr.Close();
-						return null;
-					}
-					line = line.Substring(0, pos);
-
-					try {
-						return new GameVersion(line);
-					} catch (Exception) {
-						sr.Close();
-						return null;
-					}
-				}
-			} catch (Exception) {
-				return null;
-			}
-
+		if (!File.Exists(filePath)) {
+			Logger.Warn("Failure extracting version: " + filePath + " does not exist.");
 			return null;
 		}
+
+		var result = ExtractVersionByStringFromLauncher("rawVersion", filePath);
+		if (result is null) {
+			// Imperator: Rome?
+			result = ExtractVersionByStringFromLauncher("version", filePath);
+		}
+		if (result is null) {
+			Logger.Warn("Failure extracting version: " + filePath + " does not contain installation version!");
+			return null;
+		}
+		return result;
+	}
+
+	private static GameVersion? ExtractVersionByStringFromLauncher(string versionString, string filePath) {
+		try {
+			using StreamReader sr = File.OpenText(filePath);
+			while (!sr.EndOfStream) {
+				string? line = sr.ReadLine();
+				if (line is null || !line.Contains(versionString, StringComparison.InvariantCulture)) {
+					continue;
+				}
+				var pos = line.IndexOf(':');
+				if (pos == -1) {
+					sr.Close();
+					return null;
+				}
+
+				line = line[(pos + 1)..];
+				pos = line.IndexOf('\"');
+				if (pos == -1) {
+					sr.Close();
+					return null;
+				}
+
+				line = line.Substring(pos + 1);
+				pos = line.IndexOf('\"');
+				if (pos == -1) {
+					sr.Close();
+					return null;
+				}
+				line = line[..pos];
+				
+				if (!string.IsNullOrEmpty(line) && line[0] == 'v') {
+					line = line[1..];
+				}
+
+				try {
+					return new GameVersion(line);
+				} catch (Exception) {
+					sr.Close();
+					return null;
+				}
+			}
+		} catch (Exception) {
+			return null;
+		}
+
+		return null;
 	}
 }

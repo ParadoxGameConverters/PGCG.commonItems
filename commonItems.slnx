@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Project Path="commonItems.UnitTests/commonItems.UnitTests.csproj" />
+  <Project Path="commonItems/commonItems.csproj" />
+</Solution>

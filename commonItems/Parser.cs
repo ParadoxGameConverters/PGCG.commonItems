@@ -1,424 +1,499 @@
-﻿using System;
+﻿using commonItems.Mods;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using SU = commonItems.SystemUtils;
+namespace commonItems;
 
-namespace commonItems {
-	public delegate void Del(BufferedReader sr, string keyword);
-	public delegate void SimpleDel(BufferedReader sr);
+public delegate void Del(BufferedReader sr, string keyword);
+public delegate void SimpleDel(BufferedReader sr);
 
-	internal abstract class AbstractDelegate {
-		public abstract void Execute(BufferedReader sr, string token);
+internal abstract class AbstractDelegate {
+	public abstract void Execute(BufferedReader sr, string token);
+}
+
+internal sealed class TwoArgDelegate(Del del) : AbstractDelegate {
+	public override void Execute(BufferedReader sr, string token) {
+		del(sr, token);
 	}
+}
 
-	internal class TwoArgDelegate : AbstractDelegate {
-		private readonly Del del;
-		public TwoArgDelegate(Del del) { this.del = del; }
-		public override void Execute(BufferedReader sr, string token) {
-			del(sr, token);
-		}
+internal sealed class OneArgDelegate(SimpleDel del) : AbstractDelegate {
+	public override void Execute(BufferedReader sr, string token) {
+		del(sr);
 	}
+}
 
-	internal class OneArgDelegate : AbstractDelegate {
-		private readonly SimpleDel del;
-		public OneArgDelegate(SimpleDel del) { this.del = del; }
-		public override void Execute(BufferedReader sr, string token) {
-			del(sr);
-		}
-	}
-
-	public class Parser {
-		private abstract class RegisteredKeywordOrRegex : IEquatable<RegisteredKeywordOrRegex> {
-			public abstract bool Equals(RegisteredKeywordOrRegex? other);
-			public abstract bool Matches(string token);
-			public abstract override int GetHashCode();
-
-			public override bool Equals(object? obj) {
-				return Equals(obj as RegisteredKeywordOrRegex);
-			}
-		}
-		private class RegisteredKeyword : RegisteredKeywordOrRegex {
-			private readonly string keyword;
-			public RegisteredKeyword(string keyword) {
-				this.keyword = keyword;
-			}
-			public override bool Equals(RegisteredKeywordOrRegex? other) {
-				return other is RegisteredKeyword rk && rk.keyword.Equals(keyword);
-			}
-			public override int GetHashCode() {
-				return keyword.GetHashCode();
-			}
-			public override bool Matches(string token) { return keyword == token; }
-		}
-		private class RegisteredRegex : RegisteredKeywordOrRegex {
-			private readonly Regex regex;
-			public RegisteredRegex(string regexString) { regex = new Regex(regexString); }
-			public RegisteredRegex(Regex regex) { this.regex = regex; }
-			public override bool Equals(RegisteredKeywordOrRegex? other) {
-				return other is RegisteredRegex rr && rr.regex.ToString().Equals(regex.ToString());
-			}
-			public override int GetHashCode() {
-				return regex.ToString().GetHashCode();
-			}
-			public override bool Matches(string token) {
-				var match = regex.Match(token);
-				return match.Success && match.Length == token.Length;
-			}
-		}
-
-		public Parser() {
-			registeredRules[new RegisteredRegex(CommonRegexes.Variable)] = new TwoArgDelegate((reader, varStr) => {
+public class Parser {
+	public Parser(bool implicitVariableHandling = false) {
+		if (implicitVariableHandling) {
+			regexRules.Add((CommonRegexes.Variable, new TwoArgDelegate((reader, varStr) => {
 				var value = reader.GetString();
 				var variableName = varStr[1..];
 				if (int.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out int intValue)) {
-					reader.Variables.Add(variableName, intValue);
+					reader.Variables[variableName] = intValue;
 					return;
 				}
 				if (double.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out double doubleValue)) {
-					reader.Variables.Add(variableName, doubleValue);
+					reader.Variables[variableName] = doubleValue;
 					return;
 				}
-				reader.Variables.Add(variableName, value);
-			});
+				reader.Variables[variableName] = value;
+			})));
 		}
+	}
 
-		public static void AbsorbBOM(BufferedReader reader) {
-			var firstChar = reader.Peek();
-			if (firstChar == '\xEF') {
-				reader.Skip(3); // skip 3 bytes
-			}
+	public static void AbsorbBOM(BufferedReader reader) {
+		var firstChar = reader.Peek();
+		if (firstChar == '\xEF') {
+			reader.Skip(3); // skip 3 bytes
 		}
+	}
 
-		public void RegisterKeyword(string keyword, Del del) {
-			registeredRules[new RegisteredKeyword(keyword)] = new TwoArgDelegate(del);
-		}
-		public void RegisterKeyword(string keyword, SimpleDel del) {
-			registeredRules[new RegisteredKeyword(keyword)] = new OneArgDelegate(del);
-		}
-		public void RegisterRegex(string keyword, Del del) {
-			registeredRules[new RegisteredRegex(keyword)] = new TwoArgDelegate(del);
-		}
-		public void RegisterRegex(string keyword, SimpleDel del) {
-			registeredRules[new RegisteredRegex(keyword)] = new OneArgDelegate(del);
-		}
-		public void RegisterRegex(Regex regex, Del del) {
-			registeredRules[new RegisteredRegex(regex)] = new TwoArgDelegate(del);
-		}
-		public void RegisterRegex(Regex regex, SimpleDel del) {
-			registeredRules[new RegisteredRegex(regex)] = new OneArgDelegate(del);
-		}
+	public void RegisterKeyword(string keyword, Del del) {
+		keywordRules[keyword] = new TwoArgDelegate(del);
+	}
+	public void RegisterKeyword(string keyword, SimpleDel del) {
+		keywordRules[keyword] = new OneArgDelegate(del);
+	}
+	public void RegisterRegex(string keyword, Del del) {
+		regexRules.Add((new Regex(keyword), new TwoArgDelegate(del)));
+	}
+	public void RegisterRegex(string keyword, SimpleDel del) {
+		regexRules.Add((new Regex(keyword), new OneArgDelegate(del)));
+	}
+	public void RegisterRegex(Regex regex, Del del) {
+		regexRules.Add((regex, new TwoArgDelegate(del)));
+	}
+	public void RegisterRegex(Regex regex, SimpleDel del) {
+		regexRules.Add((regex, new OneArgDelegate(del)));
+	}
 
-		public void ClearRegisteredRules() {
-			registeredRules.Clear();
+	public void ClearRegisteredRules() {
+		keywordRules.Clear();
+		regexRules.Clear();
+	}
+
+	private bool TryToMatch(string token, BufferedReader reader) {
+		// O(1) keyword lookup.
+		if (keywordRules.TryGetValue(token, out var keywordFun)) {
+			keywordFun.Execute(reader, token);
+			return true;
 		}
-
-		private bool TryToMatch(string token, string strippedToken, bool isTokenQuoted, BufferedReader reader) {
-			foreach (var (rule, fun) in registeredRules) {
-				if (!rule.Matches(token)) {
-					continue;
-				}
-
+		// Linear scan over regex rules (typically 1-5 entries).
+		foreach (var (regex, fun) in regexRules) {
+			var match = regex.Match(token);
+			if (match.Success && match.Length == token.Length) {
 				fun.Execute(reader, token);
 				return true;
 			}
-			if (isTokenQuoted) {
-				foreach (var (rule, fun) in registeredRules) {
-					if (!rule.Matches(strippedToken)) {
-						continue;
-					}
-
+		}
+		// Lazy RemQuotes: only strip and retry if token is quoted.
+		if (token.Length >= 2 && token[0] == '"' && token[^1] == '"') {
+			var strippedToken = token[1..^1];
+			if (keywordRules.TryGetValue(strippedToken, out var strippedFun)) {
+				strippedFun.Execute(reader, token);
+				return true;
+			}
+			foreach (var (regex, fun) in regexRules) {
+				var match = regex.Match(strippedToken);
+				if (match.Success && match.Length == strippedToken.Length) {
 					fun.Execute(reader, token);
 					return true;
 				}
 			}
-
-			return false;
 		}
+		return false;
+	}
 
-		// Returned value indicates whether the lexeme-building loop should be broken
-		private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref char previousChar, ref bool inQuotes, ref bool inLiteralQuote, ref bool inInterpolatedExpression, char inputChar) {
-			if (inputChar == '#') {
-				reader.ReadLine();
-				if (sb.Length != 0) {
-					return true; // break loop
-				}
-			} else if (inputChar == '\"' && sb.Length == 0) {
-				inQuotes = true;
-				sb.Append(inputChar);
-			} else if (inputChar == '\"' && sb.Length == 1 && sb.ToString().Last() == 'R') {
-				inLiteralQuote = true;
-				--sb.Length;
-				sb.Append(inputChar);
-			} else if (!inLiteralQuote && !inInterpolatedExpression && char.IsWhiteSpace(inputChar)) {
-				if (sb.Length != 0) {
-					return true; // break loop
-				}
-			} else if (previousChar == '@' && inputChar == '[') { // beginning of interpolated expression
-				inInterpolatedExpression = true;
-				sb.Append(inputChar);
-			} else if (inInterpolatedExpression && inputChar == ']') { // end of interpolated expression
-				inInterpolatedExpression = false;
-				sb.Append(inputChar);
+	// Returned value indicates whether the lexeme-building loop should be broken
+	private static bool HandleCharOutsideQuotes(BufferedReader reader, StringBuilder sb, ref char previousChar, ref bool inQuotes, ref bool inLiteralQuote, ref bool inInterpolatedExpression, char inputChar) {
+		if (inputChar == '#') {
+			reader.SkipRestOfLine();
+			if (sb.Length != 0) {
 				return true; // break loop
-			} else if (!inLiteralQuote && inputChar == '{') {
-				if (sb.Length == 0) {
-					sb.Append(inputChar);
-				} else {
-					reader.PushBack('{');
-				}
+			}
+		} else if (inputChar == '\"' && sb.Length == 0) {
+			inQuotes = true;
+			sb.Append(inputChar);
+		} else if (inputChar == '\"' && sb is ['R']) {
+			inLiteralQuote = true;
+			--sb.Length;
+			sb.Append(inputChar);
+		} else if (!inLiteralQuote && !inInterpolatedExpression && char.IsWhiteSpace(inputChar)) {
+			if (sb.Length != 0) {
 				return true; // break loop
-			} else if (!inLiteralQuote && inputChar == '}') {
-				if (sb.Length == 0) {
-					sb.Append(inputChar);
-				} else {
-					reader.PushBack('}');
-				}
-				return true; // break loop
-			} else if (!inLiteralQuote && inputChar == '=') {
-				if (sb.Length == 0) {
-					sb.Append(inputChar);
-				} else {
-					reader.PushBack('=');
-				}
+			}
+		} else if (previousChar == '@' && inputChar == '[') { // beginning of interpolated expression
+			inInterpolatedExpression = true;
+			sb.Append(inputChar);
+		} else if (inInterpolatedExpression && inputChar == ']') { // end of interpolated expression
+			inInterpolatedExpression = false;
+			sb.Append(inputChar);
+			return true; // break loop
+		} else if (!inLiteralQuote && inputChar == '{') {
+			if (sb.Length == 0) {
+				sb.Append(inputChar);
+			} else {
+				reader.PushBack('{');
+			}
+			return true; // break loop
+		} else if (!inLiteralQuote && inputChar == '}') {
+			if (sb.Length == 0) {
+				sb.Append(inputChar);
+			} else {
+				reader.PushBack('}');
+			}
+			return true; // break loop
+		} else if (!inLiteralQuote && inputChar == '?') {
+			// We've likely encountered the beginning of an ExistEquals operator.
+			if (sb.Length == 0) {
+				sb.Append(inputChar);
+			} else if (reader.Peek() == '=') {
+				// The '?' is followed by '=', so this is the '?=' operator, not part of the string.
+				reader.PushBack('?');
 				return true; // break loop
 			} else {
+				// The '?' is part of the string (e.g. "var:foo?75").
 				sb.Append(inputChar);
 			}
-
-			return false;
-		}
-
-		public static string GetNextLexeme(BufferedReader reader) {
-			var sb = new StringBuilder();
-
-			var inQuotes = false;
-			var inLiteralQuote = false;
-			var inInterpolatedExpression = false;
-			var previousChar = '\0';
-
-			while (!reader.EndOfStream) {
-				var inputChar = (char)reader.Read();
-
-				if (inputChar == '\r') {
-					if (inQuotes) {
-						// Fix Paradox' mistake and don't break proper names in half.
-						sb.Append(' ');
-					} else if (sb.Length != 0) {
-						break;
-					}
-				} else if (inputChar == '\n') {
-					if (previousChar == '\r') {
-						// We're in the middle of a Windows line ending, already handled by condition for '\r'.
-					} else if (inQuotes) {
-						// Fix Paradox' mistake and don't break proper names in half.
-						sb.Append(' ');
-					} else if (sb.Length != 0) {
-						break;
-					}
-				} else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
-					continue;
-				} else if (inputChar == '\"' && inLiteralQuote && previousChar == ')') {
-					--sb.Length;
-					sb.Append(inputChar);
-					break;
-				} else if (inQuotes) {
-					if (inputChar == '\"' && previousChar != '\\') {
-						sb.Append(inputChar);
-						break;
-					} else {
-						sb.Append(inputChar);
-					}
-				} else { // not in quotes
-					if (HandleCharOutsideQuotes(reader, sb, ref previousChar, ref inQuotes, ref inLiteralQuote, ref inInterpolatedExpression, inputChar)) {
-						break;
-					}
-				}
-
-				previousChar = inputChar;
+		} else if (!inLiteralQuote && inputChar == '=') {
+			if (sb.Length == 0 || sb is ['?']) {
+				sb.Append(inputChar);
+			} else {
+				reader.PushBack('=');
 			}
-			return sb.ToString();
+			return true; // break loop
+		} else {
+			sb.Append(inputChar);
 		}
 
-		// WithoutMatching refers to not matching against registered rules.
-		// Here we are only matching against variable and interpolated expression regexes
-		// to resolve them before returning.
-		public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
+		return false;
+	}
+
+	[ThreadStatic]
+	private static StringBuilder? t_lexemeBuilder;
+	private static readonly string EqToken = "=";
+	private static readonly string OpenBraceToken = "{";
+	private static readonly string CloseBraceToken = "}";
+	private static readonly string QuestionToken = "?";
+
+	// Characters that can be appended to a lexeme without any special handling.
+	// Everything else (whitespace, quotes, braces, operators, comment markers,
+	// interpolation markers, line endings) goes through the slow path, so the
+	// two paths are behaviorally identical.
+	private static readonly bool[] FastLexemeChars = BuildFastLexemeChars();
+
+	private static bool[] BuildFastLexemeChars() {
+		var fast = new bool[128];
+		for (var c = 'a'; c <= 'z'; ++c) {
+			fast[c] = true;
+		}
+		for (var c = 'A'; c <= 'Z'; ++c) {
+			fast[c] = true;
+		}
+		for (var c = '0'; c <= '9'; ++c) {
+			fast[c] = true;
+		}
+		foreach (var c in "_-.:/\\',;!%&*+<>|~^$") {
+			fast[c] = true;
+		}
+		return fast;
+	}
+
+	public static string GetNextLexeme(BufferedReader reader) {
+		var sb = t_lexemeBuilder;
+		if (sb is null) {
+			sb = new StringBuilder(64);
+			t_lexemeBuilder = sb;
+		} else {
+			sb.Clear();
+			if (sb.Capacity > 1024) {
+				sb.Capacity = 64;
+			}
+		}
+
+		var inQuotes = false;
+		var inLiteralQuote = false;
+		var inInterpolatedExpression = false;
+		var previousChar = '\0';
+
+		while (true) {
+			var rawChar = reader.Read();
+			if (rawChar == -1) {
+				break;
+			}
+			var inputChar = (char)rawChar;
+
+			// Fast path: characters that need no special handling are appended directly.
+			// All delimiters, whitespace, quotes and state transitions go to the slow path.
+			if (inputChar < 128 && FastLexemeChars[inputChar]) {
+				sb.Append(inputChar);
+				previousChar = inputChar;
+				continue;
+			}
+
+			if (inputChar == '\r') {
+				if (inQuotes) {
+					// Fix Paradox' mistake and don't break proper names in half.
+					sb.Append(' ');
+				} else if (sb.Length != 0) {
+					break;
+				}
+			} else if (inputChar == '\n') {
+				if (previousChar == '\r') {
+					// We're in the middle of a Windows line ending, already handled by condition for '\r'.
+				} else if (inQuotes) {
+					// Fix Paradox' mistake and don't break proper names in half.
+					sb.Append(' ');
+				} else if (sb.Length != 0) {
+					break;
+				}
+			} else if (inputChar == '(' && inLiteralQuote && sb.Length == 1) {
+				continue;
+			} else if (inputChar == '\"' && inLiteralQuote && previousChar == ')') {
+				--sb.Length;
+				sb.Append(inputChar);
+				break;
+			} else if (inQuotes) {
+				sb.Append(inputChar);
+				if (inputChar == '\"' && previousChar != '\\') {
+					break;
+				}
+			} else { // not in quotes
+				if (HandleCharOutsideQuotes(reader, sb, ref previousChar, ref inQuotes, ref inLiteralQuote, ref inInterpolatedExpression, inputChar)) {
+					break;
+				}
+			}
+
+			previousChar = inputChar;
+		}
+		if (sb.Length == 1) { // Optimization for single-char tokens, which are very common (e.g. =, {, }, etc.)
+			return sb[0] switch {
+				'=' => EqToken,
+				'{' => OpenBraceToken,
+				'}' => CloseBraceToken,
+				'?' => QuestionToken,
+				_ => sb[0].ToString()
+			};
+		}
+		return sb.ToString();
+	}
+
+	// "WithoutMatching" refers to not matching against registered rules.
+	// Here we are only matching against variable and interpolated expression regexes
+	// to resolve them before returning.
+	public static string? GetNextTokenWithoutMatching(BufferedReader reader) {
+		if (reader.EndOfStream) {
+			return null;
+		}
+		var lexeme = GetNextLexeme(reader);
+		// Manual checks instead of regex matching. Lexer-produced tokens can never contain
+		// whitespace, '=', '{', '}' or '"', so these are exact equivalents of
+		// CommonRegexes.Variable and CommonRegexes.InterpolatedExpression for such tokens.
+		if (IsVariableToken(lexeme)) {
+			var variableValue = reader.ResolveVariable(lexeme);
+			if (variableValue is null) {
+				return null;
+			}
+			return GetValueString(variableValue);
+		}
+		if (IsInterpolatedExpressionToken(lexeme)) {
+			return GetValueString(reader.EvaluateExpression(lexeme));
+		}
+		return lexeme;
+
+		// Equivalent to ^@[^\s={}\[\]\"]+$ for lexer-produced tokens.
+		static bool IsVariableToken(string lexeme) {
+			if (lexeme.Length < 2 || lexeme[0] != '@') {
+				return false;
+			}
+			foreach (var c in lexeme.AsSpan(1)) {
+				if (c is '[' or ']') {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		// Equivalent to ^@([\s\S]+)|(\[[\s\S]*\])$ for lexer-produced tokens.
+		static bool IsInterpolatedExpressionToken(string lexeme) {
+			if (lexeme.Length == 0) {
+				return false;
+			}
+			if (lexeme[0] == '@') {
+				return lexeme.Length > 1;
+			}
+			return lexeme[0] == '[' && lexeme.Length >= 2 && lexeme[^1] == ']';
+		}
+
+		static string? GetValueString(object obj) {
+			if (obj is IFormattable formattable) {
+				return formattable.ToString("0.######", CultureInfo.InvariantCulture);
+			}
+			return obj.ToString();
+		}
+	}
+
+	private string? GetNextToken(BufferedReader reader) {
+		string? token = null;
+
+		var gotToken = false;
+		while (!gotToken) {
 			if (reader.EndOfStream) {
 				return null;
 			}
-			var lexeme = GetNextLexeme(reader);
-			if (CommonRegexes.Variable.IsMatch(lexeme)) {
-				return GetValueString(reader.ResolveVariable(lexeme));
-			}
-			if (CommonRegexes.InterpolatedExpression.IsMatch(lexeme)) {
-				return GetValueString(reader.EvaluateExpression(lexeme));
-			}
-			return lexeme;
 
-			static string? GetValueString(object obj) {
-				if (obj is double d) {
-					return d.ToString(CultureInfo.InvariantCulture);
-				}
-				return obj.ToString();
+			token = GetNextLexeme(reader);
+
+			var matched = TryToMatch(token, reader);
+
+			if (!matched) {
+				gotToken = true;
 			}
 		}
 
-		private string? GetNextToken(BufferedReader reader) {
-			string? token = null;
+		return string.IsNullOrEmpty(token) ? null : token;
+	}
 
-			var gotToken = false;
-			while (!gotToken) {
-				if (reader.EndOfStream) {
-					return null;
-				}
+	/// <summary>
+	///  Parses a stream in a buffered reader, does not absorb UTF8-BOM.
+	/// </summary>
+	public void ParseStream(BufferedReader reader) {
+		var braceDepth = 0;
+		var value = false; // tracker to indicate whether we reached the value part of key=value pair
 
-				token = GetNextLexeme(reader);
-
-				var strippedToken = StringUtils.RemQuotes(token);
-				var isTokenQuoted = strippedToken.Length < token.Length;
-
-				var matched = TryToMatch(token, strippedToken, isTokenQuoted, reader);
-
-				if (!matched) {
-					gotToken = true;
-				}
-			}
-
-			return string.IsNullOrEmpty(token) ? null : token;
-		}
-
-		/// <summary>
-		///  Parses a stream in a buffered reader, does not absorb UTF8-BOM.
-		/// </summary>
-		public void ParseStream(BufferedReader reader) {
-			var braceDepth = 0;
-			var value = false; // tracker to indicate whether we reached the value part of key=value pair
-			var tokensSoFar = new StringBuilder();
-
-			while (true) {
-				var token = GetNextToken(reader);
-				if (token is not null) {
-					tokensSoFar.Append(token);
-					if (token == "=") {
-						// swapping to value part.
-						if (!value) {
-							value = true;
-							continue;
-						}
-						// leaving else to be noticeable.
-						else {
-							// value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
-							// manually fast-forward to brace-lvl 0 and die.
-							FastForwardTo0Depth(reader, ref braceDepth, tokensSoFar);
-							Logger.Warn($"Broken token syntax at {tokensSoFar}");
-							return;
-						}
-					} else if (token == "{") {
-						++braceDepth;
-					} else if (token == "}") {
-						--braceDepth;
-						if (braceDepth == 0) {
-							break;
-						}
-					} else {
-						Logger.Warn($"Unknown token while parsing stream: {token}");
+		while (true) {
+			var token = GetNextToken(reader);
+			if (token is not null) {
+				if (token is "=" or "?=") {
+					// swapping to value part.
+					if (!value) {
+						value = true;
+						continue;
+					}
+					// leaving else to be noticeable.
+					else {
+						// value is positive, meaning we were at value, and now we're hitting an equal. This is bad. We need to
+						// manually fast-forward to brace-lvl 0 and die.
+						var tokensSoFar = new StringBuilder(token, 64);
+						FastForwardTo0Depth(reader, ref braceDepth, tokensSoFar);
+						Logger.Warn($"Broken token syntax at {tokensSoFar}");
+						return;
+					}
+				} else if (token == "{") {
+					++braceDepth;
+				} else if (token == "}") {
+					--braceDepth;
+					if (braceDepth == 0) {
+						break;
 					}
 				} else {
-					break;
+					Logger.Warn($"Unknown token while parsing stream: {token}");
 				}
+			} else {
+				break;
 			}
 		}
-
-		private static void FastForwardTo0Depth(BufferedReader reader, ref int braceDepth, StringBuilder tokensSoFar) {
-			while (braceDepth != 0) {
-				var inputChar = (char)reader.Read();
-				switch (inputChar) {
-					case '{':
-						++braceDepth;
-						break;
-					case '}':
-						--braceDepth;
-						break;
-					default:
-						if (!char.IsWhiteSpace(inputChar)) {
-							tokensSoFar.Append(inputChar);
-						}
-						break;
-				}
-			}
-		}
-
-		/// <summary>
-		///  Parses a file, absorbs UTF8-BOM if detected.
-		///  Returns a BufferedReader that was used for parsing the file, otherwise returns null.
-		/// </summary>
-		/// <param name="filename"></param>
-		public BufferedReader? ParseFile(string filename) {
-			if (!File.Exists(filename)) {
-				Logger.Error($"Could not open {filename} for parsing");
-				return null;
-			}
-			var reader = new BufferedReader(File.OpenText(filename));
-			AbsorbBOM(reader);
-			ParseStream(reader);
-
-			return reader;
-		}
-
-		/// <summary>
-		/// Parses a game folder in both vanilla game and mods directory.
-		/// Designed for Jomini-based games.
-		/// For example:
-		///		relativePath may be "common/governments"
-		///		gamePath may be "C:\SteamLibrary\Imperator"
-		///		extensions may be "txt;text" (a list separated by semicolon)
-		/// </summary>
-		public void ParseGameFolder(string relativePath, string gamePath, string extensions, IEnumerable<Mod> mods, bool recursive) {
-			var extensionSet = extensions.Split(';');
-
-			var vanillaPath = Path.Combine(gamePath, "game", relativePath);
-			SortedSet<string> files = recursive ? SU.GetAllFilesInFolderRecursive(vanillaPath) : SU.GetAllFilesInFolder(vanillaPath);
-			files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
-			foreach (string filePath in files.Select(fileName => Path.Combine(vanillaPath, fileName))) {
-				ParseFile(filePath);
-			}
-
-			foreach (var mod in mods) {
-				var modPath = Path.Combine(mod.Path, relativePath);
-				files = recursive ? SU.GetAllFilesInFolderRecursive(modPath) : SU.GetAllFilesInFolder(modPath);
-				files.RemoveWhere(f => !extensionSet.Contains(CommonFunctions.GetExtension(f)));
-				foreach (string filePath in files.Select(fileName => Path.Combine(modPath, fileName))) {
-					ParseFile(filePath);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Parses a game file in both vanilla game and mods directory.
-		/// Designed for Jomini-based games.
-		/// For example:
-		///		relativePath may be "map_data/areas.txt"
-		///		gamePath may be "C:\SteamLibrary\Imperator"
-		/// </summary>
-		public void ParseGameFile(string relativePath, string gamePath, IEnumerable<Mod> mods) {
-			var vanillaFilePath = Path.Combine(gamePath, "game", relativePath);
-			if (File.Exists(vanillaFilePath)) {
-				ParseFile(vanillaFilePath);
-			}
-
-			foreach (var mod in mods) {
-				var modFilePath = Path.Combine(mod.Path, relativePath);
-				if (File.Exists(modFilePath)) {
-					ParseFile(modFilePath);
-				}
-			}
-		}
-
-		private readonly Dictionary<RegisteredKeywordOrRegex, AbstractDelegate> registeredRules = new();
 	}
+
+	private static void FastForwardTo0Depth(BufferedReader reader, ref int braceDepth, StringBuilder tokensSoFar) {
+		while (braceDepth != 0) {
+			var inputChar = (char)reader.Read();
+			switch (inputChar) {
+				case '{':
+					++braceDepth;
+					break;
+				case '}':
+					--braceDepth;
+					break;
+				default:
+					if (!char.IsWhiteSpace(inputChar)) {
+						tokensSoFar.Append(inputChar);
+					}
+					break;
+			}
+		}
+	}
+
+	/// <summary>
+	///  Parses a file, absorbs UTF8-BOM if detected.
+	/// </summary>
+	/// <param name="filename"></param>
+	public void ParseFile(string filename) {
+		if (!File.Exists(filename)) {
+			Logger.Error($"Could not open {filename} for parsing");
+			return;
+		}
+		
+		// Open file without locking it.
+		using var streamReader = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+		var bufferedReader = new BufferedReader(streamReader);
+		AbsorbBOM(bufferedReader);
+		ParseStream(bufferedReader);
+	}
+
+	public void ParseFolder(string path, string extensions, bool recursive, bool logFilePaths = false) {
+		var searchPattern = recursive ? "*" : "*.*";
+		var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+		var extensionSet = new HashSet<string>(extensions.Split(';'), StringComparer.OrdinalIgnoreCase);
+
+		foreach (var file in Directory.EnumerateFiles(path, searchPattern, searchOption)) {
+			if (!extensionSet.Contains(CommonFunctions.GetExtension(file))) {
+				continue;
+			}
+
+			if (logFilePaths) {
+				Logger.Debug($"Parsing file: {file}");
+			}
+			ParseFile(file);
+		}
+	}
+
+	/// <summary>
+	/// Parses a game folder in both vanilla game and mods directory.
+	/// For example:
+	///		relativePath may be "common/governments"
+	///		extensions may be "txt;text" (a list separated by semicolon)
+	/// </summary>
+	public void ParseGameFolder(string relativePath, ModFilesystem modFS, string extensions, bool recursive, bool logFilePaths = false) {
+		var extensionSet = new HashSet<string>(extensions.Split(';'), StringComparer.OrdinalIgnoreCase);
+
+		List<ModFSFileInfo> files;
+		if (recursive) {
+			files = modFS.GetAllFilesInFolderRecursive(relativePath);
+		} else {
+			files = modFS.GetAllFilesInFolder(relativePath);
+		}
+		foreach (var file in files) {
+			if (!extensionSet.Contains(CommonFunctions.GetExtension(file.RelativePath))) {
+				continue;
+			}
+
+			var filePath = file.AbsolutePath;
+			if (logFilePaths) {
+				Logger.Debug($"Parsing file: {filePath}");
+			}
+			ParseFile(filePath);
+		}
+	}
+
+	/// <summary>
+	/// Parses a game file in either vanilla game or mods directory.
+	/// For example:
+	///		relativePath may be "map_data/areas.txt"
+	/// </summary>
+	public void ParseGameFile(string relativePath, ModFilesystem modFS) {
+		var filePath = modFS.GetActualFileLocation(relativePath);
+		
+		if (File.Exists(filePath)) {
+			ParseFile(filePath);
+		}
+	}
+
+	private readonly Dictionary<string, AbstractDelegate> keywordRules = new();
+	private readonly List<(Regex regex, AbstractDelegate fun)> regexRules = [];
 }

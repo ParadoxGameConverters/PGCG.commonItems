@@ -1,12 +1,8 @@
 ﻿using System;
 
-namespace commonItems.Serialization {
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-	public class SerializedName : Attribute {
-		public string Name { get; }
+namespace commonItems.Serialization;
 
-		public SerializedName(string name) {
-			Name = name;
-		}
-	}
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class SerializedName(string name) : Attribute {
+	public string Name { get; } = name;
 }

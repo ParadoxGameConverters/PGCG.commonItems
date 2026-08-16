@@ -1,8 +1,9 @@
 # commonItems.NET
 Common items for the different game converters. Including parsers, OS utilities, and some common classes.
+
 ## Current Status
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/f3e8a38e2925476390f79399a70b4985)](https://www.codacy.com/gh/ParadoxGameConverters/commonItems.NET/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ParadoxGameConverters/commonItems.NET&amp;utm_campaign=Badge_Grade)
-[![CodeFactor](https://www.codefactor.io/repository/github/paradoxgameconverters/commonitems.net/badge)](https://www.codefactor.io/repository/github/paradoxgameconverters/commonitems.net)
+[![CodeFactor](https://www.codefactor.io/repository/github/paradoxgameconverters/pgcg.commonitems/badge)](https://www.codefactor.io/repository/github/paradoxgameconverters/pgcg.commonitems)
 [![Coverage Status](https://coveralls.io/repos/github/ParadoxGameConverters/commonItems.NET/badge.svg?branch=main)](https://coveralls.io/github/ParadoxGameConverters/commonItems.NET?branch=main)
 
 ## Included Items

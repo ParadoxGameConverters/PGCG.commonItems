@@ -3,309 +3,442 @@ using System.Collections.Generic;
 using System.IO;
 using Xunit;
 
-namespace commonItems.UnitTests {
-	[Collection("Sequential")]
-	[CollectionDefinition("Sequential", DisableParallelization = true)]
-	public class DateTests {
-		private const int decimalPlaces = 4;
+namespace commonItems.UnitTests;
 
-		[Fact]
-		public void DefaultDateIsNotSet() {
-			var date = new Date();
-			Assert.False(date.IsSet());
-		}
-		[Fact]
-		public void DateCanBeCopyConstructed() {
-			var baseDate = new Date(500, 1, 1);
-			var copyDate = new Date(baseDate);
-			Assert.Equal("500.1.1", copyDate.ToString());
-		}
-		[Fact]
-		public void DefaultDateEqualsOneJanuaryFirst() {
-			var date = new Date();
-			Assert.Equal("1.1.1", date.ToString());
-		}
-		[Fact]
-		public void DateCanBeInput() {
-			var date = new Date(2020, 4, 25);
-			Assert.Equal("2020.4.25", date.ToString());
-		}
-		[Fact]
-		public void DateCanBeInputFromString() {
-			var date = new Date("2020.4.25");
-			Assert.Equal("2020.4.25", date.ToString());
-		}
+[Collection("Sequential")]
+[CollectionDefinition("Sequential", DisableParallelization = true)]
+public sealed class DateTests {
+	private const int DecimalPlaces = 4;
 
-		[Fact]
-		public void DateLogsBadInitialization() {
-			var output = new StringWriter();
-			Console.SetOut(output);
-			_ = new Date("2020.4");
-			Assert.StartsWith("[WARN] Problem inputting date: System.ArgumentOutOfRangeException", output.ToString());
-		}
+	[Fact]
+	public void DateDefaultsToFirstJanuaryFirst() {
+		var date = new Date();
+		Assert.Equal("1.1.1", date.ToString());
+	}
 
-		[Fact]
-		public void DateIsNotSetOnBadInitialization() {
-			var date = new Date("2020.4");
-			Assert.False(date.IsSet());
-		}
+	[Fact]
+	public void DateCanBeCopyConstructed() {
+		var baseDate = new Date(500, 1, 1);
+		var copyDate = new Date(baseDate);
+		Assert.Equal("500.1.1", copyDate.ToString());
+	}
 
-		[Fact]
-		public void DateIsOneJanuaryFirstOnBadInitialization() {
-			var date = new Date("2020.4");
-			Assert.Equal("1.1.1", date.ToString());
-		}
+	[Fact]
+	public void DefaultDateEqualsOneJanuaryFirst() {
+		var date = new Date();
+		Assert.Equal("1.1.1", date.ToString());
+	}
 
-		[Fact]
-		public void DatesCanBeEqual() {
-			var testDate = new Date(2020, 4, 25);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.Equal(testDate, testDateTwo);
-		}
+	[Fact]
+	public void DateCanBeInput() {
+		var date = new Date(2020, 4, 25);
+		Assert.Equal("2020.4.25", date.ToString());
+	}
 
-		[Fact]
-		public void DatesCanBeUnequalFromDay() {
-			var testDate = new Date(2020, 4, 25);
-			var testDateTwo = new Date(2020, 4, 24);
-			Assert.NotEqual(testDate, testDateTwo);
-		}
+	[Fact]
+	public void DateCanBeInputFromString() {
+		var date = new Date("2020.4.25");
+		Assert.Equal("2020.4.25", date.ToString());
+	}
 
-		[Fact]
-		public void DatesCanBeUnequalFromMonth() {
-			var testDate = new Date(2020, 4, 25);
-			var testDateTwo = new Date(2020, 3, 25);
-			Assert.NotEqual(testDate, testDateTwo);
-		}
+	[Fact]
+	public void DateLogsBadInitializationFromEmptyString() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		_ = new Date("");
+		Assert.Contains("[WARN] Problem constructing date: at least a year should be provided!", output.ToString());
+	}
 
-		[Fact]
-		public void DatesCanBeUnequalFromYear() {
-			var testDate = new Date(2019, 4, 25);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.NotEqual(testDate, testDateTwo);
-		}
+	[Fact]
+	public void DateLogsBadInitializationFromBadString() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		_ = new Date("2020.january.32");
+		Assert.Contains(
+			"[WARN] Problem constructing date from string \"2020.january.32\": The input string 'january' was not in a correct format.",
+			output.ToString());
+	}
 
-		[Fact]
-		public void DatesCanBeLessThanFromDay() {
-			var testDate = new Date(2019, 4, 24);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate < testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeEqual() {
+		var testDate = new Date(2020, 4, 25);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.Equal(testDate, testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeLessThanFromMonth() {
-			var testDate = new Date(2020, 3, 26);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate < testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeUnequalFromDay() {
+		var testDate = new Date(2020, 4, 25);
+		var testDateTwo = new Date(2020, 4, 24);
+		Assert.NotEqual(testDate, testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeLessThanFromYear() {
-			var testDate = new Date(2019, 5, 26);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate < testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeUnequalFromMonth() {
+		var testDate = new Date(2020, 4, 25);
+		var testDateTwo = new Date(2020, 3, 25);
+		Assert.NotEqual(testDate, testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeGreaterThanFromDay() {
-			var testDate = new Date(2020, 4, 26);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate > testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeUnequalFromYear() {
+		var testDate = new Date(2019, 4, 25);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.NotEqual(testDate, testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeGreaterThanFromMonth() {
-			var testDate = new Date(2020, 5, 24);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate > testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeLessThanFromDay() {
+		var testDate = new Date(2019, 4, 24);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate < testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeGreaterThanFromYear() {
-			var testDate = new Date(2021, 3, 26);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate > testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeLessThanFromMonth() {
+		var testDate = new Date(2020, 3, 26);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate < testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeLessThanOrEqualsFromLessThan() {
-			var testDate = new Date(2020, 4, 24);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate <= testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeLessThanFromYear() {
+		var testDate = new Date(2019, 5, 26);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate < testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeLessThanOrEqualsFromEqualsThan() {
-			var testDate = new Date(2020, 4, 25);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate <= testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeGreaterThanFromDay() {
+		var testDate = new Date(2020, 4, 26);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate > testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeGreaterThanOrEqualsFromGreaterThan() {
-			var testDate = new Date(2020, 4, 26);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate >= testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeGreaterThanFromMonth() {
+		var testDate = new Date(2020, 5, 24);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate > testDateTwo);
+	}
 
-		[Fact]
-		public void DatesCanBeGreaterThanOrEqualsFromEquals() {
-			var testDate = new Date(2020, 4, 25);
-			var testDateTwo = new Date(2020, 4, 25);
-			Assert.True(testDate >= testDateTwo);
-		}
+	[Fact]
+	public void DatesCanBeGreaterThanFromYear() {
+		var testDate = new Date(2021, 3, 26);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate > testDateTwo);
+	}
 
-		[Fact]
-		public void DiffInYearsHandlesExactYears() {
-			var date1 = new Date(2020, 4, 25);
-			var date2 = new Date(2019, 4, 25);
-			Assert.Equal(1.0d, date1.DiffInYears(date2));
-		}
+	[Fact]
+	public void DatesCanBeLessThanOrEqualsFromLessThan() {
+		var testDate = new Date(2020, 4, 24);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate <= testDateTwo);
+	}
 
-		[Fact]
-		public void DiffInYearsHandlesPartialYears() {
-			var date1 = new Date(2020, 4, 25);
-			var date2 = new Date(2020, 1, 25);
-			Assert.Equal(0.246575, date1.DiffInYears(date2), decimalPlaces);
-		}
+	[Fact]
+	public void DatesCanBeLessThanOrEqualsFromEqualsThan() {
+		var testDate = new Date(2020, 4, 25);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate <= testDateTwo);
+	}
 
-		[Fact]
-		public void DiffInYearsHandlesWrapAround() {
-			var date1 = new Date(2020, 4, 25);
-			var date2 = new Date(2019, 8, 25);
-			Assert.Equal(0.665753, date1.DiffInYears(date2), decimalPlaces);
-		}
+	[Fact]
+	public void DatesCanBeGreaterThanOrEqualsFromGreaterThan() {
+		var testDate = new Date(2020, 4, 26);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate >= testDateTwo);
+	}
 
-		[Fact]
-		public void DiffInYearsHandlesNegative() {
-			var date1 = new Date(2020, 1, 25);
-			var date2 = new Date(2020, 4, 25);
-			Assert.Equal(-0.246575, date1.DiffInYears(date2), decimalPlaces);
-		}
+	[Fact]
+	public void DatesCanBeGreaterThanOrEqualsFromEquals() {
+		var testDate = new Date(2020, 4, 25);
+		var testDateTwo = new Date(2020, 4, 25);
+		Assert.True(testDate >= testDateTwo);
+	}
 
-		[Fact]
-		public void MonthsCanBeIncreased() {
-			var date = new Date(2020, 4, 25);
-			date.ChangeByMonths(4);
-			Assert.Equal("2020.8.25", date.ToString());
-		}
-		[Fact]
-		public void MonthsCanBeIncreasedAndWrapAround() {
-			var date = new Date(2020, 4, 25);
-			date.ChangeByMonths(9);
-			Assert.Equal("2021.1.25", date.ToString());
-		}
-		[Fact]
-		public void YearsCanBeIncreased() {
-			var date = new Date(2020, 4, 25);
-			date.ChangeByYears(4);
-			Assert.Equal("2024.4.25", date.ToString());
-		}
-		[Fact]
-		public void YearsCanBeDecreased() {
-			var date = new Date(2020, 4, 25);
-			date.ChangeByYears(-4);
-			Assert.Equal("2016.4.25", date.ToString());
-		}
+	[Fact]
+	public void DiffInYearsHandlesExactYears() {
+		var date1 = new Date(2020, 4, 25);
+		var date2 = new Date(2019, 4, 25);
+		Assert.Equal(1.0d, date1.DiffInYears(date2));
+	}
 
-		[Fact]
-		public void DayCanBeIncreasedWithoutChangingMonth() {
-			var date = new Date(500, 1, 5);
-			date.ChangeByDays(6);
-			Assert.Equal("500.1.11", date.ToString());
-		}
-		[Fact]
-		public void DayCanBeIncreasedWithChangingMonth() {
-			var date = new Date(500, 1, 30);
-			date.ChangeByDays(28 + 6);
-			Assert.Equal("500.3.5", date.ToString());
-		}
-		[Fact]
-		public void DayCanBeIncreasedWithChangingYear() {
-			var date = new Date(500, 12, 31);
-			date.ChangeByDays(2);
-			Assert.Equal("501.1.2", date.ToString());
-		}
+	[Fact]
+	public void DiffInYearsHandlesPartialYears() {
+		var date1 = new Date(2020, 4, 25);
+		var date2 = new Date(2020, 1, 25);
+		Assert.Equal(0.246575, date1.DiffInYears(date2), DecimalPlaces);
+	}
 
-		[Fact]
-		public void DayCanBeDecreasedWithoutChangingMonth() {
-			var date = new Date(500, 1, 29);
-			date.ChangeByDays(-9);
-			Assert.Equal("500.1.20", date.ToString());
-		}
-		[Fact]
-		public void DayCanBeDecreasedWithChangingMonth() {
-			var date = new Date(500, 2, 5);
-			date.ChangeByDays(-7);
-			Assert.Equal("500.1.29", date.ToString());
-		}
-		[Fact]
-		public void MonthChangesWhenDateIsDecreasedByOneDayOnTheFirstDayOfAMonth() {
-			var date = new Date(500, 2, 1);
-			date.ChangeByDays(-1);
-			Assert.Equal("500.1.31", date.ToString());
-		}
-		[Fact]
-		public void DayCanBeDecreasedWithChangingYear() {
-			var date = new Date(501, 2, 5);
-			date.ChangeByDays(-31 - 7);
-			Assert.Equal("500.12.29", date.ToString());
-		}
+	[Fact]
+	public void DiffInYearsHandlesWrapAround() {
+		var date1 = new Date(2020, 4, 25);
+		var date2 = new Date(2019, 8, 25);
+		Assert.Equal(0.665753, date1.DiffInYears(date2), DecimalPlaces);
+	}
 
-		[Fact]
-		public void AUCcanBeConvertedToAD() {
-			var testDate = new Date(450, 10, 1, true);
-			var testDate2 = new Date(1306, 3, 1, true);
-			var testDate3 = new Date("450.10.1", true);
-			var testDate4 = new Date("1306.3.1", true);
+	[Fact]
+	public void DiffInYearsHandlesNegative() {
+		var date1 = new Date(2020, 1, 25);
+		var date2 = new Date(2020, 4, 25);
+		Assert.Equal(-0.246575, date1.DiffInYears(date2), DecimalPlaces);
+	}
 
-			Assert.Equal("-304.10.1", testDate.ToString());
-			Assert.Equal("553.3.1", testDate2.ToString());
-			Assert.Equal("-304.10.1", testDate3.ToString());
-			Assert.Equal("553.3.1", testDate4.ToString());
-		}
-		[Fact]
-		public void SeparateComponentsCanBeGotten() {
-			var testDate = new Date("450.10.7");
+	[Fact]
+	public void MonthsCanBeIncreased() {
+		var date = new Date(2020, 4, 25).ChangeByMonths(4);
+		Assert.Equal("2020.8.25", date.ToString());
+	}
 
-			Assert.Equal(450, testDate.Year);
-			Assert.Equal(10, testDate.Month);
-			Assert.Equal(7, testDate.Day);
-		}
-		[Fact]
-		public void NegativeYearComponentsCanBeGotten() {
-			var testDate = new Date("-450.10.7");
+	[Fact]
+	public void MonthsCanBeIncreasedAndWrapAround() {
+		var date = new Date(2020, 4, 25).ChangeByMonths(9);
+		Assert.Equal("2021.1.25", date.ToString());
+	}
 
-			Assert.Equal(-450, testDate.Year);
-			Assert.Equal(10, testDate.Month);
-			Assert.Equal(7, testDate.Day);
-		}
+	[Fact]
+	public void YearsCanBeIncreased() {
+		var date = new Date(2020, 4, 25).ChangeByYears(4);
+		Assert.Equal("2024.4.25", date.ToString());
+	}
 
-		private class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
-			public int Compare(T? x, T? y) {
-				if (y is null) {
-					return -1;
-				}
-				return y.CompareTo(x);
+	[Fact]
+	public void YearsCanBeDecreased() {
+		var date = new Date(2020, 4, 25).ChangeByYears(-4);
+		Assert.Equal("2016.4.25", date.ToString());
+	}
+
+	[Fact]
+	public void DayCanBeIncreasedWithoutChangingMonth() {
+		var date = new Date(500, 1, 5).ChangeByDays(6);
+		Assert.Equal("500.1.11", date.ToString());
+	}
+
+	[Fact]
+	public void DayCanBeIncreasedWithChangingMonth() {
+		var date = new Date(500, 1, 30).ChangeByDays(28 + 6);
+		Assert.Equal("500.3.5", date.ToString());
+	}
+
+	[Fact]
+	public void DayCanBeIncreasedWithChangingYear() {
+		var date = new Date(500, 12, 31).ChangeByDays(2);
+		Assert.Equal("501.1.2", date.ToString());
+	}
+
+	[Fact]
+	public void DayCanBeDecreasedWithoutChangingMonth() {
+		var date = new Date(500, 1, 29).ChangeByDays(-9);
+		Assert.Equal("500.1.20", date.ToString());
+	}
+
+	[Fact]
+	public void DayCanBeDecreasedWithChangingMonth() {
+		var date = new Date(500, 2, 5).ChangeByDays(-7);
+		Assert.Equal("500.1.29", date.ToString());
+	}
+
+	[Fact]
+	public void MonthChangesWhenDateIsDecreasedByOneDayOnTheFirstDayOfAMonth() {
+		var date = new Date(500, 2, 1).ChangeByDays(-1);
+		Assert.Equal("500.1.31", date.ToString());
+	}
+
+	[Fact]
+	public void DayCanBeDecreasedWithChangingYear() {
+		var date = new Date(501, 2, 5).ChangeByDays(-31 - 7);
+		Assert.Equal("500.12.29", date.ToString());
+	}
+
+	[Theory]
+	[InlineData("450.10.1", "-304.10.1")] // Imperator start date
+	[InlineData("954.3.1", "201.3.1")]
+	[InlineData("1306.3.1", "553.3.1")]
+	[InlineData("753.1.1", "-1.1.1")]
+	public void AUCCanBeConvertedToAD(string aucDateString, string expectedADDate) {
+		var date = new Date(aucDateString, AUC: true);
+		Assert.Equal(expectedADDate, date.ToString());
+	}
+
+	[Fact]
+	public void YearAboveShortMaxThrows() {
+		Assert.Throws<ArgumentOutOfRangeException>(() => new Date(short.MaxValue + 1, 1, 1));
+	}
+
+	[Fact]
+	public void YearBelowShortMinThrows() {
+		Assert.Throws<ArgumentOutOfRangeException>(() => new Date(short.MinValue - 1, 1, 1));
+	}
+
+	[Fact]
+	public void OutOfRangeYearFromStringThrows() {
+		Assert.Throws<ArgumentOutOfRangeException>(() => new Date("40000.1.1"));
+	}
+
+	[Fact]
+	public void SeparateComponentsCanBeGotten() {
+		var testDate = new Date("450.10.7");
+
+		Assert.Equal(450, testDate.Year);
+		Assert.Equal(10, testDate.Month);
+		Assert.Equal(7, testDate.Day);
+	}
+
+	[Fact]
+	public void NegativeYearComponentsCanBeGotten() {
+		var testDate = new Date("-450.10.7");
+
+		Assert.Equal(-450, testDate.Year);
+		Assert.Equal(10, testDate.Month);
+		Assert.Equal(7, testDate.Day);
+	}
+
+	private sealed class DescendingComparer<T> : IComparer<T> where T : IComparable<T> {
+		public int Compare(T? x, T? y) {
+			if (y is null) {
+				return -1;
 			}
+
+			return y.CompareTo(x);
 		}
-		[Fact]
-		public void DateCanBeUsedByIComparer() {
-			var dates = new SortedSet<Date>(new DescendingComparer<Date>()) { // should keep dates in descending order
-                new Date(1000, 1, 1),
-				new Date(1000, 2, 3),
-				new Date(1000, 2, 1),
-				new Date(900, 1, 1),
-				new Date(5000, 1, 1),
-				new Date(4, 1, 1)
-			};
-			Assert.Collection(dates,
-				item => Assert.Equal(new Date(5000, 1, 1), item),
-				item => Assert.Equal(new Date(1000, 2, 3), item),
-				item => Assert.Equal(new Date(1000, 2, 1), item),
-				item => Assert.Equal(new Date(1000, 1, 1), item),
-				item => Assert.Equal(new Date(900, 1, 1), item),
-				item => Assert.Equal(new Date(4, 1, 1), item)
-			);
-		}
+	}
+
+	[Fact]
+	public void DateCanBeUsedByIComparer() {
+		var dates = new SortedSet<Date>(new DescendingComparer<Date>()) {
+			// should keep dates in descending order
+			new(1000, 1, 1),
+			new(1000, 2, 3),
+			new(1000, 2, 1),
+			new(900, 1, 1),
+			new(5000, 1, 1),
+			new(4, 1, 1),
+		};
+		Assert.Collection(dates,
+			item => Assert.Equal(new(5000, 1, 1), item),
+			item => Assert.Equal(new(1000, 2, 3), item),
+			item => Assert.Equal(new(1000, 2, 1), item),
+			item => Assert.Equal(new(1000, 1, 1), item),
+			item => Assert.Equal(new(900, 1, 1), item),
+			item => Assert.Equal(new(4, 1, 1), item)
+		);
+	}
+
+	[Fact]
+	public void StringCanBeImplicitlyConvertedToDate() {
+		Date date = "800.4.5";
+		Assert.Equal(800, date.Year);
+		Assert.Equal(4, date.Month);
+		Assert.Equal(5, date.Day);
+	}
+
+	[Theory]
+	[InlineData(1, 1, 1, "1.1.1")]
+	[InlineData(1, 12, 31, "1.12.31")]
+	[InlineData(9999, 1, 1, "9999.1.1")]
+	public void DateCanBeConstructedFromDateTimeOffset(int year, int month, int day, string expectedDateStr) {
+		var dateTime = new DateTime(year, month, day);
+		var dateTimeOffset = new DateTimeOffset(dateTime, offset: TimeSpan.Zero);
+		var constructedPDXDate = new Date(dateTimeOffset);
+
+		Date expectedPDXDate = expectedDateStr;
+		Assert.Equal(expectedPDXDate, constructedPDXDate);
+		Assert.Equal(year, constructedPDXDate.Year);
+		Assert.Equal(month, constructedPDXDate.Month);
+		Assert.Equal(day, constructedPDXDate.Day);
+	}
+
+	[Theory]
+	[InlineData("1.1.1", 1, 1, 1)]
+	[InlineData("1.12.31", 1, 12, 31)]
+	[InlineData("9999.1.1", 9999, 1, 1)]
+	public void DateCanBeConvertedToDateTimeOffset(string dateStr, int expectedYear, int expectedMonth,
+		int expectedDay) {
+		Date pdxDate = dateStr;
+		var dateTimeOffset = pdxDate.ToDateTimeOffset();
+
+		Assert.Equal(expectedYear, dateTimeOffset.Year);
+		Assert.Equal(expectedMonth, dateTimeOffset.Month);
+		Assert.Equal(expectedDay, dateTimeOffset.Day);
+	}
+
+	[Theory]
+	[InlineData("1450.10.", 1450, 10, 1)]
+	[InlineData("1450.10", 1450, 10, 1)]
+	[InlineData("1450.", 1450, 1, 1)]
+	[InlineData("1450", 1450, 1, 1)]
+	public void IncompleteDateElementsDefaultTo1(string dateStr, int expectedYear, int expectedMonth, int expectedDay) {
+		Date pdxDate = dateStr;
+		Assert.Equal(expectedYear, pdxDate.Year);
+		Assert.Equal(expectedMonth, pdxDate.Month);
+		Assert.Equal(expectedDay, pdxDate.Day);
+	}
+
+	[Fact]
+	public void MonthIsClampedIfGreaterThan12() {
+		Date pdxDate = "1450.13.1"; // constructed from string
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(12, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = new Date(1450, 13, 1); // constructed from components
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(12, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+	}
+
+	[Fact]
+	public void MonthIsClampedIfLessThan1() {
+		Date pdxDate = "1450.0.1"; // constructed from string
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(1, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = "1450.-1.1";
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(1, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = new Date(1450, 0, 1); // constructed from components
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(1, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+	}
+
+	[Fact]
+	public void DayIsClampedIfGreaterThan31() {
+		Date pdxDate = "1450.10.32"; // constructed from string
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(31, pdxDate.Day);
+
+		pdxDate = new Date(1450, 10, 32); // constructed from components
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(31, pdxDate.Day);
+	}
+
+	[Fact]
+	public void DayIsClampedIfLessThan1() {
+		Date pdxDate = "1450.10.0"; // constructed from string
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = "1450.10.-1";
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+
+		pdxDate = new Date(1450, 10, 0); // constructed from components
+		Assert.Equal(1450, pdxDate.Year);
+		Assert.Equal(10, pdxDate.Month);
+		Assert.Equal(1, pdxDate.Day);
+	}
+
+	[Fact]
+	public void DateUses4BytesOfMemory() {
+		Assert.Equal(4, System.Runtime.InteropServices.Marshal.SizeOf<Date>());
 	}
 }

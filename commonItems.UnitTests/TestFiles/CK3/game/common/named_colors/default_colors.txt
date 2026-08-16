@@ -1,0 +1,5 @@
+﻿# game colors
+colors = {
+	pitch_black = hsv { 0 0 0.16 }
+    antigonid_yellow = rgb { 246 223 15 }
+}

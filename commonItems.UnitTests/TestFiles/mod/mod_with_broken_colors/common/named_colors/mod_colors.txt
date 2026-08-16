@@ -1,0 +1,5 @@
+﻿# colors with wrong number of components
+colors = {
+	ck2_black = hsv { 0 0.12 }
+	delian_league_gold = rgb { 250 250 }
+}

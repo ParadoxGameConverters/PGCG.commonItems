@@ -1,101 +1,254 @@
-﻿using System;
+﻿using GameFinder.Common;
+using GameFinder.RegistryUtils;
+using GameFinder.StoreHandlers.Steam;
+using GameFinder.StoreHandlers.GOG;
+using GameFinder.StoreHandlers.Steam.Models.ValueTypes;
+using GameFinder.Wine;
+using NexusMods.Paths;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
-namespace commonItems {
-	public static class CommonFunctions {
-		public static string TrimPath(string fileName) {
-			string trimmedFileName = fileName;
-			var lastSlash = trimmedFileName.LastIndexOf('\\');
-			if (lastSlash != -1) {
-				trimmedFileName = trimmedFileName.Substring(lastSlash + 1);
-			}
-			lastSlash = trimmedFileName.LastIndexOf('/');
-			if (lastSlash != -1) {
-				trimmedFileName = trimmedFileName.Substring(lastSlash + 1);
-			}
-			return trimmedFileName;
+namespace commonItems;
+
+public static class CommonFunctions {
+	private static readonly char[] PathSeparators = ['/', '\\'];
+
+	public static string[] SplitPath(string path) {
+		return path.Split(PathSeparators, StringSplitOptions.RemoveEmptyEntries);
+	}
+	
+	public static string TrimPath(string fileName) {
+		ReadOnlySpan<char> span = fileName.AsSpan();
+		int lastSlash = Math.Max(span.LastIndexOf('/'), span.LastIndexOf('\\'));
+		return lastSlash >= 0 ? span[(lastSlash + 1)..].ToString() : fileName;
+	}
+
+	public static string GetPath(string fileName) {
+		ReadOnlySpan<char> span = fileName.AsSpan();
+		int lastSlash = Math.Max(span.LastIndexOf('/'), span.LastIndexOf('\\'));
+		return lastSlash >= 0 ? fileName[..(lastSlash + 1)] : string.Empty;
+	}
+
+	public static string TrimExtension(string fileName) {
+		ReadOnlySpan<char> span = fileName.AsSpan();
+		int lastSlash = Math.Max(span.LastIndexOf('/'), span.LastIndexOf('\\'));
+		int dotPos = span.LastIndexOf('.');
+		if (dotPos == -1 || dotPos < lastSlash) {
+			return fileName;
 		}
 
-		public static string GetPath(string fileName) {
-			var rawFile = TrimPath(fileName);
-			var filePos = fileName.IndexOf(rawFile, StringComparison.Ordinal);
-			return fileName.Substring(0, filePos);
+		return fileName[..dotPos];
+	}
+
+	public static string GetExtension(string fileName) {
+		ReadOnlySpan<char> span = fileName.AsSpan();
+		int lastSlash = Math.Max(span.LastIndexOf('/'), span.LastIndexOf('\\'));
+		int dotPos = span.LastIndexOf('.');
+		if (dotPos == -1 || dotPos < lastSlash || dotPos == span.Length - 1) {
+			return string.Empty;
 		}
 
-		public static string TrimExtension(string fileName) {
-			var rawFile = TrimPath(fileName);
-			var dotPos = rawFile.LastIndexOf('.');
-			if (dotPos == -1) {
-				return fileName;
-			} else {
-				return fileName.Substring(0, fileName.IndexOf(rawFile, StringComparison.Ordinal) + dotPos);
+		return span[(dotPos + 1)..].ToString();
+	}
+	public static string ReplaceCharacter(string fileName, char character) {
+		return fileName.Replace(character, '_');
+	}
+
+	public static string LanguageNameToIetfTag(string languageName) {
+		return languageName switch {
+			"catalan" => "ca",
+			"chinese" => "za",
+			"dutch" => "nl",
+			"english" => "en",
+			"french" => "fr",
+			"italian" => "it",
+			"japanese" => "ja",
+			"portuguese" => "pt",
+			"simp_chinese" => "za",
+			"spanish" => "es",
+			_ => "en"
+		};
+	}
+	
+	// Ordinal suffix lookup table by language
+	private static readonly Dictionary<string, Func<int, string>> OrdinalSuffixRules = new(StringComparer.OrdinalIgnoreCase) {
+		{ "english", GetEnglishOrdinalSuffix },
+		{ "catalan", _ => "n" },
+		{ "chinese", _ => "." },
+		{ "simp_chinese", _ => "." },
+		{ "dutch", _ => "e" },
+		{ "french", GetFrenchOrdinalSuffix },
+		{ "german", _ => "." },
+		{ "italian", _ => "º" },
+		{ "japanese", _ => "番" },
+		{ "portuguese", _ => "º" },
+		{ "russian", _ => "-й" },
+		{ "spanish", GetSpanishOrdinalSuffix },
+	};
+
+	private static string GetEnglishOrdinalSuffix(int number) {
+		var lastDigit = number % 10;
+		var lastTwoDigits = number % 100;
+
+		// Handle teens (11-13) which use "th"
+		if (lastTwoDigits is >= 11 and <= 13) {
+			return "th";
+		}
+
+		return lastDigit switch {
+			1 => "st",
+			2 => "nd",
+			3 => "rd",
+			_ => "th"
+		};
+	}
+
+	private static string GetSpanishOrdinalSuffix(int number) {
+		// Spanish uses "º" for masculine and "ª" for feminine. Default to masculine.
+		return "º";
+	}
+
+	private static string GetFrenchOrdinalSuffix(int number) {
+		// Keep API gender-neutral: use masculine form for 1st (1er), then "e" for 2+
+		return number == 1 ? "er" : "e";
+	}
+
+	public static string ToOrdinalSuffix(this int number) {
+		return number.ToOrdinalSuffix("english");
+	}
+
+	public static string ToOrdinalSuffix(this int number, string languageName) {
+		if (OrdinalSuffixRules.TryGetValue(languageName, out var suffixRule)) {
+			return suffixRule(number);
+		}
+
+		Logger.Warn($"Language '{languageName}' not supported for ordinal suffixes, defaulting to English.");
+		return GetEnglishOrdinalSuffix(number);
+	}
+	
+	[Obsolete($"Use {nameof(ToRomanNumeral)}() extension method instead")]
+	public static string CardinalToRoman(int number) {
+		return number.ToRomanNumeral();
+	}
+	public static string ToRomanNumeral(this int number) {
+		var numbers = new[] { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
+		var symbols = new[] { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
+		int i = 12; // (length of symbols array) - 1
+		var sb = new StringBuilder();
+		while (number > 0) {
+			var div = number / numbers[i];
+			number %= numbers[i];
+			while (div-- > 0) {
+				sb.Append(symbols[i]);
+			}
+			--i;
+		}
+		return sb.ToString();
+	}
+
+	public static string NormalizeStringPath(string stringPath) {
+		var toReturn = NormalizeUTF8Path(stringPath);
+		toReturn = ReplaceCharacter(toReturn, '-');
+		toReturn = ReplaceCharacter(toReturn, ' ');
+		return toReturn;
+	}
+
+	// from C++ commonItems version's OSCommonLayer
+	public static string NormalizeUTF8Path(string utf8Path) {
+		string asciiPath = EncodingConversions.ConvertUTF8ToASCII(utf8Path);
+
+		var normalizedLength = asciiPath.Length;
+		foreach (var c in asciiPath) {
+			if (c == '\t') {
+				normalizedLength--;
 			}
 		}
 
-		public static string GetExtension(string fileName) {
-			var rawFile = TrimPath(fileName);
-			var dotPos = rawFile.LastIndexOf('.');
-			if (dotPos == -1) {
-				return string.Empty;
-			} else {
-				return rawFile.Substring(dotPos + 1);
-			}
-		}
-		public static string ReplaceCharacter(string fileName, char character) {
-			return fileName.Replace(character, '_');
-		}
-		public static string CardinalToOrdinal(int cardinal) {
-			var hundredRemainder = cardinal % 100;
-			var tenRemainder = cardinal % 10;
-			if (hundredRemainder - tenRemainder == 10) {
-				return "th";
-			}
-
-			return tenRemainder switch {
-				1 => "st",
-				2 => "nd",
-				3 => "rd",
-				_ => "th",
-			};
-		}
-		public static string CardinalToRoman(int number) {
-			var num = new[] { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
-			var sym = new[] { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
-			int i = 12;
-			var sb = new StringBuilder();
-			while (number > 0) {
-				var div = number / num[i];
-				number %= num[i];
-				while (div-- > 0) {
-					sb.Append(sym[i]);
+		return string.Create(normalizedLength, asciiPath, static (destination, source) => {
+			var writeIndex = 0;
+			foreach (var c in source) {
+				if (c == '\t') {
+					continue;
 				}
-				--i;
+
+				destination[writeIndex++] = c switch {
+					'/' or '\\' or ':' or '*' or '?' or '"' or '<' or '>' or '|' => '_',
+					_ => c,
+				};
 			}
-			return sb.ToString();
+		});
+	}
+
+	/// <summary>
+	///  Given a Steam AppId, returns the install path for the corresponding game.
+	/// </summary>
+	/// <returns>Install path for the corresponding game, or null</returns>
+	public static string? GetSteamInstallPath(uint steamId) {
+		var handler = new SteamHandler(FileSystem.Shared, OperatingSystem.IsWindows() ? WindowsRegistry.Shared : null);
+
+		try {
+			var game = handler.FindOneGameById(AppId.From(steamId), out ErrorMessage[] errors);
+			if (game is not null) {
+				return game.Path.GetFullPath();
+			}
+
+			foreach (var error in errors) {
+				Logger.Debug($"Error occurred when locating Steam game {steamId}: {error}");
+			}
+		} catch (Exception e) {
+			Logger.Warn($"Exception was raised when locating Steam game {steamId}: {e.Message}");
 		}
 
-		public static string NormalizeStringPath(string stringPath) {
-			var toReturn = NormalizeUTF8Path(stringPath);
-			toReturn = ReplaceCharacter(toReturn, '-');
-			toReturn = ReplaceCharacter(toReturn, ' ');
-			return toReturn;
+		return null;
+	}
+	
+	/// <summary>
+	///  Given a GOG game ID, returns the install path for the corresponding game.
+	///	 Game ID can be found here: https://www.gogdb.org/
+	/// </summary>
+	/// <returns>Install path for the corresponding game, or null</returns>
+	public static string? GetGOGInstallPath(long gogId) {
+		try {
+			GOGHandler? handler = null;
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+				handler = new GOGHandler(WindowsRegistry.Shared, FileSystem.Shared);
+			} else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+				var prefixManager = new DefaultWinePrefixManager(FileSystem.Shared);
+
+				foreach (var result in prefixManager.FindPrefixes()) {
+					result.Switch(prefix => {
+						Logger.Debug($"Found wine prefix at {prefix.ConfigurationDirectory}");
+						
+						var wineFileSystem = prefix.CreateOverlayFileSystem(FileSystem.Shared);
+						var wineRegistry = prefix.CreateRegistry(FileSystem.Shared);
+
+						handler = new GOGHandler(wineRegistry, wineFileSystem);
+					}, error => {
+						Logger.Debug(error.Message);
+					});
+				}
+			}
+			if (handler is null) {
+				Logger.Debug($"Failed to init GOGHandler on system: {RuntimeInformation.OSDescription}");
+				return null;
+			}
+
+			var gameId = GOGGameId.From(gogId);
+			var game = handler.FindOneGameById(gameId, out ErrorMessage[] errors);
+
+			if (game is not null && game.Id == gameId) {
+				return game.Path.GetFullPath();
+			}
+
+			foreach (var error in errors) {
+				Logger.Debug($"Error occurred when locating GOG game {gogId}: {error}");
+			}
+		} catch (Exception e) {
+			Logger.Warn($"Exception was raised when locating GOG game {gogId}: {e.Message}");
 		}
 
-		// from C++ version's OSCommonLayer
-		public static string NormalizeUTF8Path(string utf8Path) {
-			string asciiPath = EncodingConversions.ConvertUTF8ToASCII(utf8Path);
-			asciiPath = asciiPath.Replace('/', '_');
-			asciiPath = asciiPath.Replace('\\', '_');
-			asciiPath = asciiPath.Replace(':', '_');
-			asciiPath = asciiPath.Replace('*', '_');
-			asciiPath = asciiPath.Replace('?', '_');
-			asciiPath = asciiPath.Replace('\"', '_');
-			asciiPath = asciiPath.Replace('<', '_');
-			asciiPath = asciiPath.Replace('>', '_');
-			asciiPath = asciiPath.Replace('|', '_');
-			asciiPath = asciiPath.Replace("\t", string.Empty);
-
-			return asciiPath;
-		}
+		return null;
 	}
 }

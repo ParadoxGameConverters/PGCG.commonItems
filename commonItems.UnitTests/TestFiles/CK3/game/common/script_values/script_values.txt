@@ -1,0 +1,32 @@
+@variable1 = 420
+@variable2 = 69
+
+value_using_value_defined_below = value2 # simple value using another simple value defined below
+
+value1 = 0.4
+value2 = -0.4
+value3 = 1
+value4 = -3
+common_value = 68
+
+
+clan_government_tax_max_possible = { # complex value, to be ignored
+	value = clan_government_tax_default
+	add = {
+		value = clan_government_tax_opinion_scale_positive
+		multiply = 100
+	}
+}
+
+value_using_value = value1 # simple value using another simple value
+value_using_variable = @variable1 # simple value using a variable
+value_using_expression = @[variable2] # simple value using an interpolated expression
+
+bool_value_yes = yes
+bool_value_no = no
+
+@cheap_cost_base = 100
+@cheap_cost_tier_1 = @[cheap_cost_base]
+cheap_building_tier_1_cost = @[cheap_cost_tier_1]
+
+value_using_define = define:NDomicile|TEMPERAMENT_THRESHOLD_LOW

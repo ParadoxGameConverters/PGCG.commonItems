@@ -1,65 +1,152 @@
-﻿using System;
-using System.Collections;
+﻿using commonItems.Collections;
+using commonItems.Mods;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace commonItems.Localization;
 
-public class LocDB : IReadOnlyDictionary<string, LocBlock> {
-	private readonly Dictionary<string, LocBlock> locBlocks = new();
+public class LocDB : IdObjectCollection<string, LocBlock> {
+	private const int EstimatedKeysPerFile = 100;
 	private readonly string baseLanguage;
 	private readonly string[] otherLanguages;
+	private readonly string baseLanguageHeader;
+	private readonly string[] otherLanguageHeaders;
+	private readonly string baseLanguageFileSuffix;
+	private readonly string[] otherLanguageFileSuffixes;
 
 	public LocDB(string baseLanguage, params string[] otherLanguages) {
 		this.baseLanguage = baseLanguage;
 		this.otherLanguages = otherLanguages;
+		baseLanguageHeader = $"l_{baseLanguage}:";
+		otherLanguageHeaders = new string[otherLanguages.Length];
+		for (var i = 0; i < otherLanguages.Length; ++i) {
+			otherLanguageHeaders[i] = $"l_{otherLanguages[i]}:";
+		}
+		baseLanguageFileSuffix = $"l_{baseLanguage}";
+		otherLanguageFileSuffixes = new string[otherLanguages.Length];
+		for (var i = 0; i < otherLanguages.Length; ++i) {
+			otherLanguageFileSuffixes[i] = $"l_{otherLanguages[i]}";
+		}
 	}
 
-	public void ScrapeLocalizations(string sourceGamePath, IEnumerable<Mod> mods) {
+	public void ScrapeLocalizations(ModFilesystem modFS) {
 		Logger.Info("Reading Localization...");
 
-		var scrapingPath = Path.Combine(sourceGamePath, "game", "localization");
-		Logger.Info($"{ScrapePath(scrapingPath)} vanilla localization lines read.");
+		var files = modFS.GetAllFilesInFolderRecursive("localization")
+			.Where(file => "yml".Equals(CommonFunctions.GetExtension(file.RelativePath), StringComparison.Ordinal))
+			.ToList();
 
-		var modLocLinesRead = 0;
-		foreach (var mod in mods) {
-			var modLocPath = Path.Combine(mod.Path, "localization");
-			if (!Directory.Exists(modLocPath)) {
-				continue;
-			}
-
-			Logger.Info($"Found some localization in [{mod.Name}].");
-			modLocLinesRead += ScrapePath(modLocPath);
+		// Pre-allocate dictionary capacity based on estimated keys per file
+		var estimatedTotalKeys = files.Count * EstimatedKeysPerFile;
+		if (dict is Dictionary<string, LocBlock> dictionary && dictionary.Count == 0) {
+			dictionary.EnsureCapacity(estimatedTotalKeys);
 		}
-		Logger.Info($"{modLocLinesRead} mod localization lines read.");
+
+		var locLinesCount = ScrapeFilesParallel(files);
+		
+		Logger.Info($"{locLinesCount} localization lines read.");
 	}
 
-	private int ScrapePath(string path) {
-		if (!Directory.Exists(path)) {
+	private int ScrapeFilesParallel(List<ModFSFileInfo> files) {
+		if (files.Count == 0) {
 			return 0;
 		}
 
-		return SystemUtils.GetAllFilesInFolderRecursive(path)
-			.Sum(fileName => ScrapeFile(Path.Combine(path, fileName)));
+		// Read all files in parallel into temporary dictionaries
+		var fileResults = new ConcurrentDictionary<int, (Dictionary<string, Dictionary<string, string>> keyLangLocs, int lineCount)>();
+		
+		Parallel.For(0, files.Count, i => {
+			var filePath = files[i].AbsolutePath;
+			try {
+				using var stream = File.OpenText(filePath);
+				var reader = new BufferedReader(stream);
+				var currentLanguage = DetermineLanguageFromFileName(filePath);
+				var result = ScrapeStreamToTempDict(reader, currentLanguage);
+				fileResults[i] = result;
+			} catch (Exception e) {
+				Logger.Warn($"Could not parse localization file {filePath}: {e}");
+				fileResults[i] = (new Dictionary<string, Dictionary<string, string>>(), 0);
+			}
+		});
+
+		// Merge results in the correct order (later files override earlier ones)
+		var totalLines = 0;
+		for (int i = 0; i < files.Count; i++) {
+			if (!fileResults.TryGetValue(i, out var result)) {
+				continue;
+			}
+
+			foreach (var (key, langLocs) in result.keyLangLocs) {
+				if (dict.TryGetValue(key, out var locBlock)) {
+					foreach (var (language, loc) in langLocs) {
+						locBlock[language] = loc;
+					}
+				} else {
+					var newBlock = new LocBlock(key, baseLanguage);
+					foreach (var (language, loc) in langLocs) {
+						newBlock[language] = loc;
+					}
+					dict.Add(key, newBlock);
+				}
+			}
+			totalLines += result.lineCount;
+		}
+
+		return totalLines;
 	}
-	private int ScrapeFile(string filePath) {
+
+	private (Dictionary<string, Dictionary<string, string>> keyLangLocs, int lineCount) ScrapeStreamToTempDict(
+		BufferedReader reader,
+		string? currentLanguage = null
+	) {
+		var keyLangLocs = new Dictionary<string, Dictionary<string, string>>(capacity: EstimatedKeysPerFile);
+		var linesRead = 0;
+		bool languageSpecified = currentLanguage != null;
+
+		while (!reader.EndOfStream) {
+			var line = reader.ReadLine();
+			var (key, loc) = DetermineKeyLocalizationPair(line, ref currentLanguage, ref languageSpecified);
+			if (currentLanguage is null || key is null || loc is null) {
+				continue;
+			}
+
+			if (!keyLangLocs.TryGetValue(key, out var langLocs)) {
+				langLocs = [];
+				keyLangLocs[key] = langLocs;
+			}
+			langLocs[currentLanguage] = loc;
+			++linesRead;
+		}
+
+		return (keyLangLocs, linesRead);
+	}
+	
+	/// <summary>
+	/// Scrapes file for localization lines.
+	/// </summary>
+	/// <param name="filePath">Path to the file to be read.</param>
+	/// <returns>Count of read loc lines.</returns>
+	public int ScrapeFile(string filePath) {
 		try {
 			using var stream = File.OpenText(filePath);
 			var reader = new BufferedReader(stream);
-			return ScrapeStream(reader);
+			return ScrapeStream(reader, DetermineLanguageFromFileName(filePath));
 		} catch (Exception e) {
 			Logger.Warn($"Could not parse localization file {filePath}: {e}");
 			return 0;
 		}
 	}
-	public int ScrapeStream(BufferedReader reader) {
+	public int ScrapeStream(BufferedReader reader, string? currentLanguage = null) {
 		var linesRead = 0;
-		string? currentLanguage = null;
+		bool languageSpecified = currentLanguage != null;
 
 		while (!reader.EndOfStream) {
-			var (key, loc) = DetermineKeyLocalizationPair(reader.ReadLine(), ref currentLanguage);
+			var line = reader.ReadLine();
+			var (key, loc) = DetermineKeyLocalizationPair(line, ref currentLanguage, ref languageSpecified);
 			if (currentLanguage is null) {
 				continue;
 			}
@@ -67,83 +154,114 @@ public class LocDB : IReadOnlyDictionary<string, LocBlock> {
 				continue;
 			}
 
-			if (locBlocks.TryGetValue(key, out var locBlock)) {
+			if (dict.TryGetValue(key, out var locBlock)) {
 				locBlock[currentLanguage] = loc;
 			} else {
-				var newBlock = new LocBlock(baseLanguage, otherLanguages) { [currentLanguage] = loc };
-				locBlocks.Add(key, newBlock);
+				var newBlock = new LocBlock(key, baseLanguage) { [currentLanguage] = loc };
+				dict.Add(key, newBlock);
 			}
 			++linesRead;
 		}
 
 		return linesRead;
 	}
-	private KeyValuePair<string?, string?> DetermineKeyLocalizationPair(string? line, ref string? currentLanguage) {
-		if (line == null || line.Length < 4 || line.TrimStart().StartsWith('#')) {
+	private KeyValuePair<string?, string?> DetermineKeyLocalizationPair(
+		string? line,
+		ref string? currentLanguage,
+		ref bool languageSpecified
+	) {
+		if (line == null || line.Length < 4) return new(null, null);
+
+		ReadOnlySpan<char> span = line.AsSpan();
+		var end = span.Length;
+		while (end > 0 && char.IsWhiteSpace(span[end - 1])) --end;
+		if (end == 0) return new(null, null);
+		span = span[..end];
+
+		var start = 0;
+		while (start < span.Length && char.IsWhiteSpace(span[start])) ++start;
+		if (start >= span.Length) return new(null, null);
+		if (span[start] == '#') return new(null, null);
+
+		var separatorIndex = span[start..].IndexOf(':');
+		if (separatorIndex == -1) return new(null, null);
+		separatorIndex += start;
+
+		if (TryParseLanguageHeader(span, start, ref currentLanguage, ref languageSpecified)) {
 			return new(null, null);
 		}
 
-		line = line.TrimEnd();
-
-		var sepLoc = line.IndexOf(':');
-		if (sepLoc == -1) {
-			return new(null, null);
-		}
-
-		if (line.StartsWith("l_")) {
-			if (line == $"l_{baseLanguage}:") {
-				currentLanguage = baseLanguage;
-			}
-			foreach (var language in otherLanguages) {
-				if (line != $"l_{language}:") {
-					continue;
-				}
-				currentLanguage = language;
-			}
-
-			return new(null, null);
-		}
-
-		if (currentLanguage is null) {
+		if (!languageSpecified) {
 			Logger.Warn($"Scraping loc line [{line}] without language specified!");
 			return new(null, null);
 		}
 
-		var key = line.Substring(1, sepLoc - 1);
-		var newLine = line.Substring(sepLoc + 1);
-		var quoteIndex = newLine.IndexOf('\"');
-		var quote2Index = newLine.LastIndexOf('\"');
-		if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) {
-			return new(key, null);
+		if (!TryParseKeyAndValue(span, separatorIndex, out var keyOut, out var valueOut)) {
+			return new(null, null);
 		}
 
-		var value = newLine.Substring(quoteIndex + 1, quote2Index - quoteIndex - 1);
-		return new(key, value);
+		return new(keyOut, valueOut);
 	}
+
+	private bool TryParseLanguageHeader(ReadOnlySpan<char> span, int start, ref string? currentLanguage, ref bool languageSpecified) {
+		if (start != 0 || !span.StartsWith("l_", StringComparison.Ordinal)) return false;
+		if (span.SequenceEqual(baseLanguageHeader.AsSpan())) {
+			currentLanguage = baseLanguage;
+		}
+		for (var i = 0; i < otherLanguageHeaders.Length; ++i) {
+			if (!span.SequenceEqual(otherLanguageHeaders[i].AsSpan())) continue;
+			currentLanguage = otherLanguages[i];
+		}
+		languageSpecified = true;
+		return true;
+	}
+
+	private bool TryParseKeyAndValue(ReadOnlySpan<char> span, int separatorIndex, out string? key, out string? value) {
+		key = null;
+		value = null;
+		var valueSpan = span[(separatorIndex + 1)..];
+		var quoteIndex = valueSpan.IndexOf('"');
+		var quote2Index = valueSpan.LastIndexOf('"');
+		if (quoteIndex == -1 || quote2Index == -1 || quote2Index - quoteIndex == 0) return false;
+
+		var keySpan = span[..separatorIndex];
+		var keyStart = 0;
+		while (keyStart < keySpan.Length && char.IsWhiteSpace(keySpan[keyStart])) ++keyStart;
+		if (keyStart >= keySpan.Length) return false;
+		key = new string(keySpan[keyStart..]);
+		value = new string(valueSpan[(quoteIndex + 1)..quote2Index]);
+		return true;
+	}
+	
+	private string? DetermineLanguageFromFileName(string fileName) {
+		string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+
+		if (fileNameWithoutExtension.EndsWith(baseLanguageFileSuffix, StringComparison.Ordinal)) {
+			return baseLanguage;
+		}
+		for (var i = 0; i < otherLanguageFileSuffixes.Length; ++i) {
+			if (fileNameWithoutExtension.EndsWith(otherLanguageFileSuffixes[i], StringComparison.Ordinal)) {
+				return otherLanguages[i];
+			}
+		}
+		
+		return null;
+	}
+	
 	public LocBlock? GetLocBlockForKey(string key) {
-		if (!locBlocks.TryGetValue(key, out var locBlock)) {
-			return null;
-		}
-
-		if (locBlock.HasMissingSecondaryLanguageLoc()) {
-			locBlock.FillMissingLocWithBaseLanguageLoc();
-			return locBlock;
-		}
-
-		// Either all is well, or we're missing english. Can't do anything about the latter.
-		return locBlock;
+		return dict.TryGetValue(key, out var locBlock) ? locBlock : null;
 	}
 	public LocBlock AddLocBlock(string key) {
-		locBlocks[key] = new(baseLanguage, otherLanguages);
-		return locBlocks[key];
+		dict[key] = new LocBlock(key, baseLanguage);
+		return dict[key];
 	}
-
-	public IEnumerable<string> Keys => locBlocks.Keys;
-	public IEnumerable<LocBlock> Values => locBlocks.Values;
-	public int Count => locBlocks.Count;
-	public LocBlock this[string key] => locBlocks[key];
-	public bool ContainsKey(string key) => locBlocks.ContainsKey(key);
-	public bool TryGetValue(string key, [MaybeNullWhen(false)] out LocBlock value) => locBlocks.TryGetValue(key, out value);
-	public IEnumerator<KeyValuePair<string, LocBlock>> GetEnumerator() => locBlocks.GetEnumerator();
-	IEnumerator IEnumerable.GetEnumerator() => locBlocks.GetEnumerator();
+	
+	public void AddLocForKeyAndLanguage(string key, string language, string loc) {
+		if (dict.TryGetValue(key, out var locBlock)) {
+			locBlock[language] = loc;
+		} else {
+			var newBlock = new LocBlock(key, baseLanguage) { [language] = loc };
+			dict.Add(key, newBlock);
+		}
+	}
 }

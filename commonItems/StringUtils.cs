@@ -1,25 +1,30 @@
-﻿namespace commonItems {
-	public static class StringUtils {
-		public static string RemQuotes(string str) {
-			var length = str.Length;
-			if (length < 2) {
-				return str;
-			}
-			if (!str.StartsWith('"') || !str.EndsWith('"')) {
-				return str;
-			}
-			return str.Substring(1, length - 2);
-		}
+﻿namespace commonItems;
 
-		public static string AddQuotes(string str) {
-			if (str.Length > 2 && str.StartsWith('"') && str.EndsWith('"')) {
-				return str;
-			}
-
-			if (!str.StartsWith('"') && !str.EndsWith('"')) {
-				return "\"" + str + "\"";
-			}
+public static class StringUtils {
+	public static bool IsQuoted(this string str) {
+		if (str.Length < 2) return false;
+		return str[0] == '"' && str[^1] == '"';
+	}
+	
+	public static string RemQuotes(this string str) {
+		if (str.Length < 2) {
 			return str;
 		}
+		if (str[0] != '"' || str[^1] != '"') {
+			return str;
+		}
+		return str[1..^1];
+	}
+
+	public static string AddQuotes(this string str) {
+		if (str.Length > 2 && str[0] == '"' && str[^1] == '"') {
+			return str;
+		}
+
+		if (str.Length > 0 && (str[0] == '"' || str[^1] == '"')) {
+			return str;
+		}
+
+		return string.Concat("\"", str, "\"");
 	}
 }
