@@ -127,7 +127,7 @@ public readonly struct Date : IComparable<Date>, IEquatable<Date>, IPDXSerializa
 			if (c is < '0' or > '9') {
 				return false;
 			}
-			accumulated = accumulated * 10 + (c - '0');
+			accumulated = (accumulated * 10) + (c - '0');
 			if (accumulated > int.MaxValue) {
 				return false; // let the slow path throw OverflowException as before
 			}
