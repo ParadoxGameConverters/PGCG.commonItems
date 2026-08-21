@@ -503,6 +503,21 @@ public sealed class StringExtensionsTests {
 	[Theory]
 	[InlineData("TestFiles/adjectives/cities.csv")] // https://en.wikipedia.org/wiki/Adjectivals_and_demonyms_for_cities
 	[InlineData("TestFiles/adjectives/continents.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names#Continents
+	[InlineData("TestFiles/adjectives/countries.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_for_countries_and_nations
+	[InlineData("TestFiles/adjectives/us_states_and_territories.csv")] // https://en.wikipedia.org/wiki/List_of_demonyms_for_U.S._states_and_territories
+	[InlineData("TestFiles/adjectives/former_nations_and_regions.csv")] // https://en.wikipedia.org/wiki/List_of_adjectivals_and_demonyms_for_former_regions
+	[InlineData("TestFiles/adjectives/subcontinental_regions.csv")] // https://en.wikipedia.org/wiki/List_of_adjectivals_and_demonyms_for_subcontinental_regions
+	[InlineData("TestFiles/adjectives/australian_states_and_territories.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/brazilian_states.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/canadian_provinces_and_territories.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/german_states.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/indian_states_and_territories.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/bangladeshi_divisions.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/malaysian_states_and_territories.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/states_of_mexico.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/regions_of_new_zealand.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/philippine_provinces.csv")] // https://en.wikipedia.org/wiki/List_of_adjectival_and_demonymic_forms_of_place_names
+	[InlineData("TestFiles/adjectives/astronomical_bodies.csv")] // https://en.wikipedia.org/wiki/List_of_adjectivals_and_demonyms_of_astronomical_bodies
 	public void CorrectAdjectivesAreGeneratedForNamesFromCsv(string csvFilePath) {
 		var csv = File.ReadAllText(csvFilePath);
 		foreach (var line in CsvReader.ReadFromText(csv)) {

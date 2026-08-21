@@ -1,112 +1,520 @@
 ﻿// <ENDING, ADJ. SUFFIX>
 		
 // 6+ characters
-{"Lesotho", "Basotho"},
-{"Burkina Faso", "Burkinabe"},
-{"Myos Hormos", "Myos"},
+{"South Georgia and the South Sandwich Islands", "South Georgia Island"},
+{"Dadra and Nagar Haveli and Daman and Diu", "Dadran"},
+{"Free and Hanseatic City of Hamburg", "Hamburgish"},
+{"Heard Island and McDonald Islands", "Heard Island"},
+{"Democratic Republic of the Congo", "Congolese"},
+{"Saint Vincent and the Grenadines", "Saint Vincentian"},
+{"Amazon river and Amazon region", "Amazonian"},
+{"British Indian Ocean Territory", "BIOT"},
+{"Confederate States of America", "Confederate"},
+{"Mecklenburg-Western Pomerania", "Mecklenburgish"},
+{"Australian Capital Territory", "Canberran"},
+{"United States Virgin Islands", "U.S. Virgin Island"},
+{"Andaman and Nicobar Islands", "Andamanese"},
+{"French Southern Territories", "French"},
+{"Upper Peninsula of Michigan", "Yoopers"},
+{"Newfoundland and Labrador", "Newfoundlanders"},
+{"Saint Pierre and Miquelon", "Saint-Pierrais"},
+{"Northern Mariana Islands", "Northern Marianan"},
+{"Turks and Caicos Islands", "Turks and Caicos Island"},
+{"United States of America", "American"},
+{"*Santa Cruz de la Sierra", "*Cruceño"}, // Santa Cruz de la Sierra
+{"Bosnia and Herzegovina", "Bosnian"},
+{"British Virgin Islands", "British Virgin Island"},
+{"North Rhine-Westphalia", "North Rhine - Westphalian"},
+{"Maguindanao del Norte", "North Maguindanaoan"},
+{"Northwest Territories", "Northwest Territorian"},
+{"Republic of the Congo", "Congolese"},
+{"Saint Kitts and Nevis", "Kittitian"},
+{"São Tomé and Príncipe", "São Toméan"},
+{"Sao Tome and Principe", "São Toméan"},
+{"Torres Strait Islands", "Torres Strait Island"},
+{"Coahuila de Zaragoza", "Coahuilan"},
+{"District of Columbia", "Washingtonian"},
+{"Prince Edward Island", "PEI"},
+{"Rhineland-Palatinate", "Rhenish"},
 {"Baetica Cordubensis", "Cordubensian"}, // https://1library.co/article/cultura-y-pensamiento-estudios-medievales-hisp%C3%A1nicos.zlg664or
-{"Baetica Gaditanus", "Gaditanian"}, // https://en.wiktionary.org/wiki/Gaditanian
 {"Baetica Hispalensis", "Hispalensian"}, // https://quod.lib.umich.edu/e/eebo/A67489.0001.001/1:12.11?rgn=div2;view=fulltext
-{"Coele Syria", "Coelesyrian"},
+{"Antigua and Barbuda", "Antiguan"},
+{"Baja California Sur", "South Lower Californian"},
+{"Chittagong Division", "Chittagonian"},
+{"Indian subcontinent", "Subcontinental"},
+{"Maguindanao del Sur", "South Maguindanaoan"},
+{"Mymensingh Division", "Mymensinghiya"},
+{"Rio Grande do Norte", "Potiguar or Norte-riograndense"},
+{"Trinidad and Tobago", "Trinidadian"},
+{"Zamboanga del Norte", "North Zamboangan"},
+{"Chiloé Archipelago", "Chilotan"},
+{"Chiloe Archipelago", "Chilotan"},
+{"Mato Grosso do Sul", "Sul-matogrossense"},
+{"Misamis Occidental", "West Misamis"},
+{"Northern Territory", "Northern Territorians"},
+{"Occidental Mindoro", "West Mindorenian"},
+{"Right-bank Ukraine", "Trans-Dnieper"},
+{"Schleswig-Holstein", "Schleswigish"},
+{"St. Lawrence River", "Laurentian"},
+{"Baetica Gaditanus", "Gaditanian"}, // https://en.wiktionary.org/wiki/Gaditanian
+{"Baden-Württemberg", "Badisch"},
+{"Baden-Wurttemberg", "Badisch"},
+{"Galápagos Islands", "Galapagueño"},
+{"Galapagos Islands", "Galapagueño"},
+{"Iberian Peninsula", "Iberian"},
+{"Jammu and Kashmir", "Jammu"},
+{"Left-bank Ukraine", "Ukrainian"},
+{"Magellanic Clouds", "Magellanic"},
+{"Mountain Province", "Mountaineers"},
+{"Negros Occidental", "West Negros"},
+{"Panama Canal Zone", "Canal Zone"},
+{"Rajshahi Division", "Rajshahiya"},
+{"Rio Grande do Sul", "Sul-rio-grandense"},
+{"Surigao del Norte", "North Surigaoan"},
+{"Van Diemen's Land", "Van Diemonian"},
+{"Wallis and Futuna", "Wallisian"},
+{"Zamboanga del Sur", "South Zamboangan"},
+{"Zamboanga Sibugay", "Sibugay"},
+{"Agusan del Norte", "North Agusanian"},
+{"Andromeda Galaxy", "Andromedan"},
+{"Barisal Division", "Barisali"},
+{"Black Sea region", "Black Sea"},
+{"Christmas Island", "Christmas Islanders"},
+{"Ciudad de México", "Mexiqueño"},
+{"Ciudad de Mexico", "Mexiqueño"},
+{"Davao Occidental", "Western Davao"},
+{"Falkland Islands", "Falkland Island"},
+{"Federal District", "Brasiliense"},
+{"Marshall Islands", "Marshallese"},
+{"Milky Way Galaxy", "Galactic"},
+{"Misamis Oriental", "East Misamis"},
+{"Neutral Moresnet", "Moresnetic"},
+{"Oriental Mindoro", "East Mindorenian"},
+{"Piscis Austrinus", "Piscis Austrinid"},
+{"Pitcairn Islands", "Pitcairn Island"},
+{"Rangpur Division", "Rangpuri"},
+{"Sandwich Islands", "Sandwich Island"},
+{"Tierra del Fuego", "Fuegian"},
+{"*Aix-en-Provence", "*Aixois"}, // Aix-en-Provence
+{"Verahram Qal'eh", "Verahrami"},
+{"*Pacific Islands", "*Pacific Islands"}, // Pacific Islands
+{"Austria-Hungary", "Austro-Hungarian"},
+{"Baja California", "Lower Californian"},
+{"Camarines Norte", "North Camarinean"},
+{"Corona Austrina", "Coronal"},
+{"Davao del Norte", "North Davao"},
+{"Dnieper Ukraine", "Dniprian"},
+{"Eastern Nigeria", "Easterner"},
+{"Gilbert Islands", "Gilbertese"},
+{"Khulna Division", "Khulnaiya"},
+{"Lanao del Norte", "North Lanao"},
+{"Negros Oriental", "East Negros"},
+{"North Macedonia", "Macedonian"},
+{"Northern Cyprus", "Northern Cypriot"},
+{"Northern Mexico", "Norteño"},
+{"San Luis Potosí", "Potosinian"},
+{"San Luis Potosi", "Potosinian"},
+{"Solomon Islands", "Solomon Islander"},
+{"State of Mexico", "Mexican"},
+{"Surigao del Sur", "South Surigaoan"},
+{"Sylhet Division", "Sylheti"},
+{"*Aguascalientes", "*Hidrocálido"}, // Aguascalientes
+{"*Orkney Islands", "*Orcadian"}, // Orkney Islands
+{"Agusan del Sur", "South Agusanian"},
+{"American Samoa", "American Samoan"},
+{"Basque Country", "Basque"},
+{"Bophuthatswana", "Bophuthatswanan"},
+{"Cayman Islands", "Caymanian"},
+{"Coma Berenices", "Comal"},
+{"Davao Oriental", "Eastern Davao"},
+{"Dhaka Division", "Dhakai"},
+{"Ellice Islands", "Ellicean"},
+{"Espírito Santo", "Capixaba or Espiritossantense"},
+{"Espirito Santo", "Capixaba or Espiritossantense"},
+{"Norfolk Island", "Norfolk Islanders"},
+{"Northern Samar", "North Samarian"},
+{"Northumberland", "Northumbrian"},
+{"Saint-Domingue", "Dominiguan"},
+{"Santa Catarina", "Catarinense"},
+{"Sint Eustatius", "Statian"},
+{"Southern Leyte", "Southern Leytenian"},
+{"Stewart Island", "Rakiuran"},
+{"Sultan Kudarat", "Sultan Kudaratenian"},
+{"Transcarpathia", "Transcarpathia"},
+{"Trucial States", "Trucial"},
+{"United Kingdom", "British"},
+{"Virgin Islands", "Virgin Islander"},
+{"Western Sahara", "Sahrawi"},
 {"Alpes Carniae", "Alpine Carnian"},
 {"Alpes Raetiae", "Alpine Raetian"},
 {"Alpes Cottiae", "Cottian"},
-{"Alpes Graiae", "Grajan"},
 {"Maritime Alps", "Maritimois"},
+{"Foz do Iguaçu", "Iguaçuense"}, // Foz do Iguaçu
+{"*tle upon Tyne", "*tlian"}, // Newcastle upon Tyne
+{"Eastern Samar", "Eastern Samarian"},
+{"Baltic region", "Baltic"},
+{"Bouvet Island", "Bouvet Islanders"},
+{"Camarines Sur", "South Camarinean"},
+{"Caprivi Strip", "Caprivian"},
+{"Davao del Sur", "South Davao"},
+{"Easter Island", "Easter Islanders"},
+{"Faroe Islands", "Faroese"},
+{"Guinea-Bissau", "Bissau-Guinean"},
+{"Hutsul region", "Hutsul"},
+{"Lanao del Sur", "South Lanao"},
+{"Massachusetts", "Massachusettsan"},
+{"Mediterranean", "Mediterranean"},
+{"Nelson Region", "Nelsonian"},
+{"New Brunswick", "New Brunswickers"},
+{"New Hampshire", "New Hampshirite"},
+{"Saxony-Anhalt", "Saxon"},
+{"Zambezi River", "Zambezian"},
+{"Burkina Faso", "Burkinabe"},
+{"Alpes Graiae", "Grajan"},
+{"Buenos Aires", "Porteño"}, // Buenos Aires
+{"*dhra Pradesh", "*dhrulu"}, // Andhra Pradesh
+{"*gayan de Oro", "*gayanon"}, // Cagayan de Oro
+{"Indianapolis", "Hoosier"}, // Indianapolis
+{"Bechuanaland", "Bechuana"},
+{"Bougainville", "Bougainvillean"},
+{"Boyko region", "Boyko"},
+{"Danube River", "Danubian"},
+{"Davao de Oro", "Golden Davao"},
+{"Florida Keys", "Chonchs"},
+{"Ilocos Norte", "North Ilocos"},
+{"Kuala Lumpur", "Kuala Lumpurian"},
+{"Lemko region", "Lemkian"},
+{"Minas Gerais", "Mineiro"},
+{"New Hebrides", "New Hebridean"},
+{"North Island", "North Islanders"},
+{"Papal States", "Papal"},
+{"Quintana Roo", "Quintanaroan"},
+{"Saint Martin", "Saint-Martinoise"},
+{"Saskatchewan", "Saskatchewanians"},
+{"Sierra Leone", "Sierra Leonean"},
+{"Sint Maarten", "Sint Maarteners"},
+{"South Island", "Mainland"},
+{"Two Sicilies", "Duosicilian"},
+{"Vatican City", "Vaticanian"},
+{"Zaporizhzhia", "Zaporozhian"},
+{"Myos Hormos", "Myos"},
+{"Coele Syria", "Coelesyrian"},
 {"*Tarim Basin", "*Tarim"}, // Tarim Basin
-{"*Solihull", "*Silhillian"}, // Sendai
-{"*Sendai", "*Sendaikko"}, // Sendai
-{"*Sapporo", "*Sapporokko"}, // Sapporo
+{"*Quebec City", "*Québécois"}, // Quebec City
+{"Balochistan", "Balochi"},
+{"Brandenburg", "Brandenburgish"},
+{"Carpathians", "Carpathian"},
+{"Catanduanes", "Catanduanean"},
+{"Comancheria", "Comanche"},
+{"Connecticut", "Connecticuter"},
+{"Couto Misto", "Couto Mixtan"},
+{"El Salvador", "Salvadoran"},
+{"Isle of Man", "Manx"},
+{"Ivory Coast", "Ivorian"},
+{"Kievan Rus'", "Rus'"},
+{"Lau Islands", "Lauan"},
+{"Long Island", "Long Islanders"},
+{"Mato Grosso", "Matogrossense"},
+{"Netherlands", "Dutch"},
+{"New England", "New Englanders"},
+{"Nunatsiavut", "Nunatsiavut"},
+{"Sudetenland", "Sudetes"},
+{"The Bahamas", "Bahamian"},
+{"Timor-Leste", "Timorese"},
+{"Westmorland", "Westmerian"},
+{"Bolgatanga", "Guruŋa"}, // Bolgatanga
+{"*al Pradesh", "*ali"}, // Arunachal Pradesh
+{"* Horizonte", "*-Horizontino"}, // Belo Horizonte
+{"*Phnom Penh", "*Phnom Penh"}, // Phnom Penh
+{"*Valladolid", "*Vallisoletano"}, // Valladolid
+{"*Valparaíso", "*Porteño"}, // Valparaíso
+{"Al-Andalus", "Andalusi"},
+{"Bangsamoro", "Moro"},
+{"Basutoland", "Basuto"},
+{"Cisplatina", "Ciplatine"},
+{"Cumberland", "Cumbrian"},
+{"Guadeloupe", "Guadeloupians"},
+{"Guanajuato", "Guanajuatean"},
+{"Hadhramaut", "Hadhrami"},
+{"Heligoland", "Heligolandic"},
+{"Ilocos Sur", "South Ilocos"},
+{"Lancashire", "Lancastrian"},
+{"Marinduque", "Marinduquenian"},
+{"Montserrat", "Montserratian"},
+{"New Jersey", "New Jerseyan"},
+{"Nile River", "Nilotic"},
+{"Nuevo León", "New Leonese"},
+{"Nuevo Leon", "New Leonese"},
+{"Palatinate", "Palatine"},
+{"Pangasinan", "Pangasinense"},
+{"Puducherry", "Pondicherrian"},
+{"Queensland", "Queenslanders"},
+{"San Marino", "San Marinese"},
+{"Somaliland", "Somalilander"},
+{"The Gambia", "Gambian"},
+{"Ursa Major", "Ursal"},
+{"Yugoslavia", "Yugoslav"},
 {"*São Paulo", "*Paulistano"}, // São Paulo
+{"*Şanlıurfa", "*Urfanian"}, // Şanlıurfa
+{"*Lake City", "*Lake"}, // Salt Lake City
+{"Ad Pontem", "Pontan"},
+{"* Republic", "*"}, // Dominican Republic
+{"*kshadweep", "*ccadivian"}, // Lakshadweep
+{"*ford Roxo", "*forroxense"}, // Belford Roxo
+{"*caramanga", "*mangués"}, // Bucaramanga
+{"*Épalinges", "*Palinsard"}, // Épalinges
+{"Guangzhou", "Cantonese"}, // Guangzhou
+{"*ton North", "*tonian"}, // Palmerston North
+{"Antipodes", "Antipodean"},
+{"Apacheria", "Apache"},
+{"Capricorn", "Capricornian"},
+{"Casamance", "Casamancais"},
+{"Enceladus", "Enceladean"},
+{"Friesland", "Friesian"},
+{"Greenland", "Greenlandic"},
+{"Kurdistan", "Kurdish"},
+{"Leo Minor", "Leo Minorid"},
+{"Louisiana", "Louisianian"},
+{"Maritimes", "Maritime"},
+{"Memelland", "Memelandish"},
+{"Michoacán", "Michoacanese"},
+{"Michoacan", "Michoacanese"},
+{"Monoceros", "Monocerotid"},
+{"Nyasaland", "Nyasa"},
+{"Occitania", "Occitan"},
+{"Ophiuchus", "Ophiuchid"},
+{"Querétaro", "Queretan"},
+{"Queretaro", "Queretan"},
+{"Rhineland", "Rhenish"},
+{"Rodrigues", "Rodriguan"},
+{"Sarangani", "Sarangan"},
+{"Sonargaon", "Sonargaiya"},
+{"Swaziland", "Swazi"},
+{"Tennessee", "Tennessean"},
+{"Tocantins", "Tocantinense"},
+{"Transvaal", "Transvaaler"},
+{"Yorkshire", "Yorkshiremen"},
+{"*Solihull", "*Silhillian"}, // Sendai
 {"*São Luís", "*Ludovicense"}, // São Luís
 {"*Santiago", "*Santiaguinos"}, // Santiago
-{"*Santa Cruz de la Sierra", "*Cruceño"}, // Santa Cruz de la Sierra
-{"*Şanlıurfa", "*Urfanian"}, // Şanlıurfa
 {"*San Jose", "*San Josean"}, // San Jose
-{"*Lake City", "*Lake"}, // Salt Lake City
-{"*Quebec City", "*Québécois"}, // Quebec City
-{"*r City", "*ri"}, // Rangpur City
-{"*Aix-en-Provence", "*Aixois"}, // Aix-en-Provence
-{"*Aguascalientes", "*Hidrocálido"}, // Aguascalientes
-{"Buenos Aires", "Porteño"}, // Buenos Aires
-{"Bolgatanga", "Guruŋa"}, // Bolgatanga
 {"Eswatini", "Swati"}, // Eswatini
-{"Ad Pontem", "Pontan"},
-{"Verahram Qal'eh", "Verahrami"},
-{"*Pacific Islands", "*Pacific Islands"}, // Pacific Islands
-{"*Orkney Islands", "*Orcadian"}, // Orkney Islands
 {"* Islands", "*"}, // Cook Islands
-{"* Republic", "*"}, // Dominican Republic
-{"* Union", "*"}, // Soviet Union
 {"*Emirates", "*Emirati"}, // United Arab Emirates
 {"*hmedabad", "*mdavadi"}, // Ahmedabad
-{"* Qal'eh", "*"},
 {"*[v]tzerland", "*[v]ss"}, // Switzerland
-{"*Zealand", "*Zealander"}, // New Zealand
 {"*Pakistan", "*Pakistani"}, // Pakistan
+{"*iohaemum", "*ius"}, // Boiohaemum
+{"*Rithymna", "*Rhithymnian"}, // Rithymna
+{"*Campinas", "*Campineiro"}, // Campinas
+{"* de Fora", "*-forano"}, // Juiz de Fora
+{"* Borough", "*ite"}, // Juneau Borough
+{"*a Arenas", "*arenian"}, // Punta Arenas
+{"*Rivières", "*rivieran"}, // Trois-Rivières
+{"Amazonas", "Amazonense"},
+{"Antilles", "Antillean"},
+{"Botswana", "Botswanan"},
+{"Brittany", "Breton"},
+{"Bukidnon", "Bukidnon"},
+{"Callisto", "Callistoan"},
+{"Camiguin", "Camiguinon"},
+{"Campeche", "Campechan"},
+{"Colorado", "Coloradan"},
+{"Cornwall", "Cornish"},
+{"Courland", "Curonian"},
+{"Eridanus", "Eridanid"},
+{"Flanders", "Flemish"},
+{"Galloway", "Gallovidian"},
+{"Guerrero", "Guerreran"},
+{"Guimaras", "Guimarasian"},
+{"Hannover", "Hanoverian"},
+{"Hebrides", "Hebridean"},
+{"Holstein", "Holsteinian"},
+{"Hyperion", "Hyperionian"},
+{"La Union", "La Unionian"},
+{"Lombardy", "Lombard"},
+{"Makemake", "Makemakean"},
+{"Maranhão", "Maranhense"},
+{"Maranhao", "Maranhense"},
+{"Maryland", "Marylander"},
+{"New York", "New Yorker"},
+{"Normandy", "Norman"},
+{"Pictland", "Pictish"},
+{"Piedmont", "Piedmontese"},
+{"Po River", "Padane"},
+{"Provence", "Provençal"},
+{"Puntland", "Puntlanders"},
+{"Pyrenees", "Pyrenean"},
+{"Rondônia", "Rondonian or Rondoniense"},
+{"Rondonia", "Rondonian or Rondoniense"},
+{"Saarland", "Saarlander"},
+{"Selangor", "Selangorean"},
+{"Shetland", "Shetlanders"},
+{"Svalbard", "Svalbardians"},
+{"Tlaxcala", "Tlaxcaltheque"},
+{"Wallonia", "Walloon"},
+{"Zambales", "Zambalean"},
+{"Zanzibar", "Zanzibari"},
+{"Zululand", "Zulu"},
+{"Lesotho", "Basotho"},
+{"*Sapporo", "*Sapporokko"}, // Sapporo
+{"* Qal'eh", "*"},
+{"*Zealand", "*Zealander"}, // New Zealand
+{"*fpaktos", "*upactian"}, // Nafpaktos
+{"* Grande", "*-grandense"}, // Campo Grande
+{"*dalming", "*dhelmian"}, // Godalming
+{"* Helier", "*-Helian"}, // Saint Helier
+{"* Carlos", "*carlense"}, // São Carlos
+{"Antique", "Antiquenian"},
+{"* Region", "*"}, // e.g. "Auckland Region"
+{"* Empire", "*"}, // e.g. "Aztec Empire"
+{"Balkans", "Balkan"},
+{"Batanes", "Batanic"},
+{"Bulacan", "Bulaqueño"},
+{"Cagayan", "Cagayano"},
+{"Castile", "Castilian"},
+{"Dahomey", "Dahomeyan"},
+{"Florida", "Floridian"},
+{"Francia", "Frankish"},
+{"Galilee", "Galilean"},
+{"Gotland", "Gotlanders"},
+{"Grenada", "Grenadian"},
+{"Hidalgo", "Hidalgolese"},
+{"Iapetus", "Iapetian"},
+{"Indiana", "Hoosier"},
+{"Jupiter", "Jovian"},
+{"Jutland", "Jutlanders"},
+{"Kamerun", "Kamerunian"},
+{"Katanga", "Katangese"},
+{"Maghreb", "Maghrebi"},
+{"Masbate", "Masbatenian"},
+{"Montana", "Montanan"},
+{"Morelos", "Morelese"},
+{"Muscovy", "Muscovite"},
+{"Myanmar", "Myanma"},
+{"Nayarit", "Nayarita"},
+{"Nunavik", "Nunavik"},
+{"Nunavut", "Nunavut"},
+{"Okinawa", "Okinawan"},
+{"Ontario", "Ontarians"},
+{"Palawan", "Palaweño"},
+{"Paraíba", "Paraiban"},
+{"Paraiba", "Paraiban"},
+{"Pegasus", "Pegasean"},
+{"Perseus", "Perseid"},
+{"Picardy", "Picard"},
+{"Quirino", "Quirinian"},
+{"Romania", "Romanian"},
+{"Roraima", "Roraimense"},
+{"Réunion", "Réunionese"},
+{"Reunion", "Réunionese"},
+{"Samaria", "Samaritan"},
+{"Sergipe", "Sergipan"},
+{"Sinaloa", "Sinaloan"},
+{"Somalia", "Somali"},
+{"Taurida", "Tauridian"},
+{"Umbriel", "Umbrielian"},
+{"Vermont", "Vermonter"},
+{"Vinland", "Vinlandic"},
+{"Yucatán", "Yucatec"},
+{"Yucatan", "Yucatec"},
+{"Zeeland", "Zeelanders"},
+{"*Sendai", "*Sendaikko"}, // Sendai
+{"*r City", "*ri"}, // Rangpur City
+{"* Union", "*"}, // Soviet Union
 {"*enmark", "*anish"}, // Denmark
 {"*inland", "*innish"}, // Finland
 {"*reland", "*rish"}, // Ireland
 {"*ailand", "*ai"}, // Thailand
 {"*ontium", "*ontinian"}, // Leontium
 {"*Serica", "*Sere"}, // Serica
-{"*iohaemum", "*ius"}, // Boiohaemum
-{"*fpaktos", "*upactian"}, // Nafpaktos
-{"*Rithymna", "*Rhithymnian"}, // Rithymna
 {"*Thuria", "*Thuriat"}, // Thuria
 {"*aionia", "*aeonian"}, // Paionia
-{"*dhra Pradesh", "*dhrulu"}, // Andhra Pradesh
-{"*al Pradesh", "*ali"}, // Arunachal Pradesh
-{"*kshadweep", "*ccadivian"}, // Lakshadweep
 {"*galand", "*galandese"}, // Nagaland
-{"* Nadu", "*"}, // Tamil Nadu
 {"*Angers", "*Anjou"}, // Angers
 {"*ckland", "*ckland"}, // Auckland
-{"*ford Roxo", "*forroxense"}, // Belford Roxo
-{"* Horizonte", "*-Horizontino"}, // Belo Horizonte
 {"*éziers", "*itterois"}, // Béziers
-{"*caramanga", "*mangués"}, // Bucaramanga
-{"*gayan de Oro", "*gayanon"}, // Cagayan de Oro
-{"*Campinas", "*Campineiro"}, // Campinas
-{"* Grande", "*-grandense"}, // Campo Grande
 {"*tenham", "*tonian"}, // Cheltenham
 {"*veland", "*velander"}, // Cleveland
 {"*órdoba", "*ordobense"}, // Córdoba
-{"*Épalinges", "*Palinsard"}, // Épalinges
-{"Foz do Iguaçu", "Iguaçuense"}, // Foz do Iguaçu
 {"*lasgow", "*laswegian"}, // Glasgow
-{"*dalming", "*dhelmian"}, // Godalming
 {"* Coast", "* Coast"}, // Gold Coast
-{"Guangzhou", "Cantonese"}, // Guangzhou
 {"*Iloilo", "*Ilonggo"}, // Iloilo
-{"Indianapolis", "Hoosier"}, // Indianapolis
 {"*qaluit", "*qalummiut"}, // Iqaluit
-{"Iriga", "Irigueño"}, // Iriga
-{"* de Fora", "*-forano"}, // Juiz de Fora
-{"* Borough", "*ite"}, // Juneau Borough
 {"*Khulna", "*Khulna"}, // Khulna
 {"* Mirim", "*miriano"}, // Mogi Mirim
 {"*e City", "*e Citian"}, // Traverse City
 {"*k City", "*ker"}, // New York City
 {"*u City", "*uite"}, // Juneau City
-{"*[c] City", "*[c]ite"}, // Carson City
-{"*[v] City", "*ite"}, // Oklahoma City
-{"*tle upon Tyne", "*tlian"}, // Newcastle upon Tyne
-{"*ton North", "*tonian"}, // Palmerston North
-{"*Phnom Penh", "*Phnom Penh"}, // Phnom Penh
-{"*a Arenas", "*arenian"}, // Punta Arenas
 {"*otland", "*ottish"}, // Scotland
-{"* Helier", "*-Helian"}, // Saint Helier
-{"* Carlos", "*carlense"}, // São Carlos
 {"*sbourg", "*sbourgeois"}, // Strasbourg
 {"*hassee", "*hasseean"}, // Tallahassee
-{"*Rivières", "*rivieran"}, // Trois-Rivières
 {"* Lakes", "* Laker"}, // Twin Lakes
-{"*Valladolid", "*Vallisoletano"}, // Valladolid
-{"*Valparaíso", "*Porteño"}, // Valparaíso
 {"*Warsaw", "*Varsovian"}, // Warsaw
 {"*Xalapa", "*Xalapeño"}, // Xalapa
 {"*gorica", "*gorician"}, // Podgorica
+{"Alsace", "Alsatian"},
+{"Amhara", "Amharas"},
+{"Apayao", "Apayaonian"},
+{"Auriga", "Aurigal"},
+{"Aurora", "Auroran"},
+{"Azawad", "Azawadi"},
+{"Bataan", "Bataanese"},
+{"Biafra", "Biafran"},
+{"Boötes", "Bootid"},
+{"Bootes", "Bootid"},
+{"Canaan", "Canaanite"},
+{"Canada", "Canadian"},
+{"Cancer", "Cancerian"},
+{"Carina", "Carinal"},
+{"Cavite", "Cavitenian"},
+{"Ceylon", "Ceylonese"},
+{"Champa", "Cham"},
+{"Charon", "Charonian"},
+{"Colima", "Colimean"},
+{"Cygnus", "Cygnean"},
+{"Darfur", "Darfuris"},
+{"Dorado", "Doradid"},
+{"Durham", "Dunelmian"},
+{"Fezzan", "Fezzanis"},
+{"Flores", "Floresian"},
+{"Guyana", "Guyanese"},
+{"Harrow", "Harrovian"},
+{"Hawaii", "Islander"},
+{"Ifugao", "Igorot"},
+{"Kosrae", "Kosraean"},
+{"Kumaon", "Kumaoni"},
+{"Labuan", "Labuanese"},
+{"Levant", "Levantine"},
+{"Naoero", "dei-Naoero"},
+{"Negros", "Negrenses"},
+{"Nevada", "Nevadan"},
+{"Norway", "Norwegian"},
+{"Oberon", "Oberonian"},
+{"Oregon", "Oregonian"},
+{"Orkney", "Orcadian"},
+{"Pahang", "Pahangite"},
+{"Pallas", "Palladian"},
+{"Panama", "Panamanian"},
+{"Paraná", "Paranaense"},
+{"Parana", "Paranaense"},
+{"Perlis", "Perlisian"},
+{"Puppis", "Puppid"},
+{"Quebec", "québécoise f."},
+{"Sahara", "Saharan"},
+{"Saturn", "Saturnian"},
+{"Sonora", "Sonoran"},
+{"Taiwan", "Taiwanese"},
+{"Tarlac", "Tarlaquenian"},
+{"Tethys", "Tethyan"},
+{"Tuvalu", "Tuvaluan"},
+{"Uranus", "Uranian"},
+{"Veneto", "Venetian"},
+{"zodiac", "zodiacal"},
+{"* Nadu", "*"}, // Tamil Nadu
+{"Iriga", "Irigueño"}, // Iriga
+{"*[c] City", "*[c]ite"}, // Carson City
+{"*[v] City", "*ite"}, // Oklahoma City
 
 // 5 characters
 {"* Kong", "*kongese"}, // Hong Kong
@@ -174,11 +582,65 @@
 {"*xeter", "*xonian"}, // Exeter
 {"*yotte", "*horan"}, // Mayotte
 {"*zoram", "*zo"}, // Mizoram
+{"Aksum", "Aksumite"},
+{"Amapá", "Amapaense"},
+{"Amapa", "Amapaense"},
+{"Andes", "Andean"},
+{"Ariel", "Arielian"},
+{"Aries", "Arian"},
+{"Bicol", "Bicolano"},
+{"Bohol", "Boholan"},
+{"Capiz", "Capizian"},
+{"Ceara", "Cearense"},
+{"Ceará", "Cearense"},
+{"Ceres", "Cererian"},
+{"Cetus", "Cetid"},
+{"China", "Chinese"},
+{"Chuuk", "Chuukese"},
+{"Cocos", "Cocos Island"},
+{"Dione", "Dionean"},
+{"Draco", "Draconic"},
+{"Earth", "Earthly"},
+{"Goiás", "Goian"},
+{"Goias", "Goian"},
+{"Hydra", "Hydrid"},
+{"Johor", "Johorean"},
+{"Kedah", "Kedahan"},
+{"Kenya", "Kenyan"},
+{"Leyte", "Leytenian"},
+{"Libra", "Libran"},
+{"Luzon", "Luzones"},
+{"Maine", "Mainer"},
+{"Mimas", "Mimantean"},
+{"Niger", "Nigerien"},
+{"Norma", "Normid"},
+{"Orcus", "Orcean"},
+{"Orion", "Orionid"},
+{"Piauí", "Piauiense"},
+{"Piaui", "Piauiense"},
+{"Pluto", "Plutonic"},
+{"Rizal", "Rizalian"},
+{"Sabah", "Sabahan"},
+{"Sahel", "Sahelian"},
+{"Samar", "West Samarian"},
+{"Samoa", "Samoan"},
+{"Savoy", "Savoyard"},
+{"South", "Southern"},
+{"Sumer", "Sumerian"},
+{"Tibet", "Tibetan"},
+{"Titan", "Titanian"},
+{"Tyrol", "Tyrolean"},
+{"Urals", "Uralic"},
+{"Virgo", "Virginal"},
+{"Yukon", "Yukoners"},
+{"Åland", "Åland Island"},
+{"Aland", "Åland Island"},
 {"*[c]ilia", "*[c]iliense"}, // Brasilia
 {"*[c]land", "*[c]lish"}, // England
 {"*[v]land", "*[v]lish"}, // Poland
 
 // 4 characters
+{"*Dhaka", "*Dhakai"}, // Dhaka
 {"* Bay", "*bite"}, // Thunder Bay
 {"* Jaw", "* Jaw"}, // Moose Jaw
 {"* Lat", "*latese"}, // Da Lat
@@ -218,7 +680,6 @@
 {"*dale", "*dalian"}, // Fort Lauderdale
 {"*dana", "*danite"}, // Adana
 {"*deen", "*donian"}, // Aberdeen
-{"*Dhaka", "*Dhakai"}, // Dhaka
 {"*dies", "*dian"}, // West Indies
 {"*dina", "*dinan"}, // Medina
 {"*djan", "*djanais"}, // Abidjan
@@ -345,6 +806,29 @@
 {"*vana", "*vanan"}, // Havana
 {"*vara", "*varese"}, // Novara
 {"*Waco", "*Wacoite"}, // Waco
+{"Abra", "Abrenian"},
+{"Afar", "Afars"},
+{"Alps", "Alpine"},
+{"Bali", "Balinese"},
+{"Crux", "Crucial"},
+{"Elam", "Elamite"},
+{"Eris", "Eridian"},
+{"Fife", "Fifers"},
+{"Gozo", "Gozitan"},
+{"Java", "Javanese"},
+{"Kivu", "Kivutian"},
+{"Kush", "Kushite"},
+{"Lyra", "Lyrid"},
+{"Mars", "Martian"},
+{"Moon", "Lunar"},
+{"Pará", "Paraense"},
+{"Para", "Paraense"},
+{"Pavo", "Pavonid"},
+{"Rus'", "Ruthenian"},
+{"Sulu", "Suluan"},
+{"Togo", "Togolese"},
+{"Utah", "Utahn"},
+{"Vela", "Velar"},
 {"*[v]cis", "*[v]cian"}, // Phocis
 {"*[c]cis", "*[c]cidian"}, // Chalcis
 {"*[c]nai", "*[c]naite"}, // Chennai
@@ -539,6 +1023,10 @@
 {"*zen", "*zenian"}, // Troezen
 {"*zig", "*ziger"}, // Leipzig
 {"*zon", "*zonian"}, // Trabzon
+{"Leo", "Leonic"},
+{"Rif", "Riffian"},
+{"Sun", "Solar"},
+{"Yap", "Yapese"},
 {"*[v]ng", "*[v]nger"}, // Hong Kong
 {"*[v]os", "*[v]o"}, // Laos
 {"*[v]us", "*[v]an"}, // Mauritius
@@ -674,6 +1162,7 @@
 {"*ze", "*zean"}, // Belize
 {"*zh", "*zhian"}, // Novovoronezh (rule made up)
 {"*zo", "*zan"}, // San Lorenzo, https://en.wikipedia.org/wiki/Cat%27s_Cradle
+{"Io", "Ionian"},
 {"*[v]h", "*[v]hite"},
 {"*[v]k", "*[v]kian"},
 {"*[c]s", "*[c]ian"}, // Athens
