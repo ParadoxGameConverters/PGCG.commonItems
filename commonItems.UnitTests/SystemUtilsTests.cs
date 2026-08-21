@@ -171,9 +171,12 @@ public sealed class SystemUtilsTests {
 		var success = SystemUtils.TryRenameFolder(sourcePath, destPath);
 		Assert.False(success);
 		Assert.False(Directory.Exists(destPath));
-		Assert.Contains("[ERROR] Could not rename folder: " +
-		                "System.IO.DirectoryNotFoundException: Could not find a part of the path",
-			output.ToString());
+		var outputString = output.ToString();
+		// The exact exception message for Directory.Move on a missing source is platform-specific.
+		Assert.Contains("[ERROR] Could not rename folder: ", outputString);
+		if (OperatingSystem.IsWindows()) {
+			Assert.Contains("System.IO.DirectoryNotFoundException: Could not find a part of the path", outputString);
+		}
 	}
 
 	[Fact]
@@ -193,9 +196,13 @@ public sealed class SystemUtilsTests {
 		const string path = $"{TestFilesPath}/missingFolder";
 		var success = SystemUtils.TryDeleteFolder(path);
 		Assert.False(success);
+		var outputString = output.ToString();
+		// The exact exception message for Directory.Delete on a missing source is platform-specific.
 		Assert.Contains(
-			$"[ERROR] Could not delete folder: \"{path}\"" +
-			": System.IO.DirectoryNotFoundException: Could not find a part of the path",
-			output.ToString());
+			$"[ERROR] Could not delete folder: \"{path}\": ",
+			outputString);
+		if (OperatingSystem.IsWindows()) {
+			Assert.Contains("System.IO.DirectoryNotFoundException: Could not find a part of the path", outputString);
+		}
 	}
 }
