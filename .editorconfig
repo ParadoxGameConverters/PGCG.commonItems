@@ -4,6 +4,11 @@ root = true
 # C# files
 [*.cs]
 
+#### Diagnostic Severities ####
+
+# MA0009: Add regex evaluation timeout (Meziantou.Analyzer) - intentionally not enforced repo-wide
+dotnet_diagnostic.MA0009.severity = none
+
 #### Core EditorConfig Options ####
 
 # Indentation and spacing
