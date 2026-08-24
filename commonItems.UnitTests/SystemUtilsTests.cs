@@ -150,6 +150,45 @@ public sealed class SystemUtilsTests {
 	}
 
 	[Fact]
+	public void CopyFolderCopiesSubfoldersRecursively() {
+		const string sourcePath = $"{TestFilesPath}/recursiveSource";
+		const string destPath = $"{TestFilesPath}/recursiveDest";
+		try {
+			Assert.False(Directory.Exists(sourcePath));
+			Assert.False(Directory.Exists(destPath));
+
+			// Prebuilt test structure: source with a file and a nested subfolder with a file.
+			var nestedDir = Path.Combine(sourcePath, "nestedSubfolder");
+			Directory.CreateDirectory(nestedDir);
+			var sourceFile = Path.Combine(sourcePath, "sourceFile.txt");
+			var nestedFile = Path.Combine(nestedDir, "nestedFile.txt");
+			File.WriteAllText(sourceFile, "source");
+			File.WriteAllText(nestedFile, "nested");
+
+			var success = SystemUtils.TryCopyFolder(sourcePath, destPath);
+			Assert.True(success);
+			Assert.True(Directory.Exists(destPath));
+			Assert.False(Directory.Exists($"{destPath}/missing"));
+
+			// Files in root of source are copied.
+			Assert.True(File.Exists(Path.Combine(destPath, "sourceFile.txt")));
+			Assert.Equal("source", File.ReadAllText(Path.Combine(destPath, "sourceFile.txt")));
+
+			// Nested subfolder is copied along with its files.
+			Assert.True(Directory.Exists(Path.Combine(destPath, "nestedSubfolder")));
+			Assert.True(File.Exists(Path.Combine(destPath, "nestedSubfolder", "nestedFile.txt")));
+			Assert.Equal("nested", File.ReadAllText(Path.Combine(destPath, "nestedSubfolder", "nestedFile.txt")));
+		} finally {
+			if (Directory.Exists(sourcePath)) {
+				Directory.Delete(sourcePath, recursive: true);
+			}
+			if (Directory.Exists(destPath)) {
+				Directory.Delete(destPath, recursive: true);
+			}
+		}
+	}
+
+	[Fact]
 	public void RenameFolderRenamesFolder() {
 		const string path = $"{TestFilesPath}/subfolder2";
 		const string newPath = $"{TestFilesPath}/subfolderRenamed";

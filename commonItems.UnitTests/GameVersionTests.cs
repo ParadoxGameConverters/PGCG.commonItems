@@ -409,6 +409,68 @@ public sealed class GameVersionTests {
 		Assert.Equal(new GameVersion("2.0.3"), version);
 	}
 
+	[Fact]
+	public void EqualsObjectWrongTypeIsFalse() {
+		var version = new GameVersion(1, 2, 3, 4);
+		Assert.False(version.Equals("1.2.3.4"));
+		Assert.False(version.Equals((object?)null));
+	}
+
+	[Fact]
+	public void EqualsObjectSameTypeIsTrue() {
+		object version = new GameVersion(1, 2, 3, 4);
+		object version2 = new GameVersion(1, 2, 3, 4);
+		Assert.True(version.Equals(version2));
+
+		object version3 = new GameVersion(1, 2, 3, 5);
+		Assert.False(version.Equals(version3));
+	}
+
+	[Fact]
+	public void GetHashCodeReflectsParts() {
+		var version = new GameVersion(1, 2, 3, 4);
+		var version2 = new GameVersion(1, 2, 3, 4);
+		Assert.Equal(version.GetHashCode(), version2.GetHashCode());
+
+		var version3 = new GameVersion(1, 2, 3, 5);
+		Assert.NotEqual(version.GetHashCode(), version3.GetHashCode());
+	}
+
+	[Fact]
+	public void EqualityOperatorsReturnCorrectValues() {
+		var version = new GameVersion(1, 2, 3, 4);
+		Assert.True(version == new GameVersion(1, 2, 3, 4));
+		Assert.False(version == new GameVersion(1, 2, 3, 5));
+		Assert.False(version != new GameVersion(1, 2, 3, 4));
+		Assert.True(version != new GameVersion(1, 2, 3, 5));
+	}
+
+	[Fact]
+	public void ExtractVersionFromLauncherReturnsNullForUnquotedRawVersion() {
+		var version = GameVersion.ExtractVersionFromLauncher(Path.Join(TestFilesPath, "launcher-settings-noquotes.json"));
+		Assert.Null(version);
+	}
+
+	[Fact]
+	public void ExtractVersionFromLauncherReturnsNullForUnterminatedRawVersion() {
+		var version = GameVersion.ExtractVersionFromLauncher(Path.Join(TestFilesPath, "launcher-settings-unterminated.json"));
+		Assert.Null(version);
+	}
+
+	[Fact]
+	public void ExtractVersionFromLauncherReturnsZeroForEmptyRawVersion() {
+		var version = GameVersion.ExtractVersionFromLauncher(Path.Join(TestFilesPath, "launcher-settings-empty.json"));
+		Assert.Equal(new GameVersion(), version);
+	}
+
+	[Fact]
+	public void ExtractVersionFromLauncherCatchesIOErrors() {
+		var method = typeof(GameVersion).GetMethod("ExtractVersionByStringFromLauncher", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+		Assert.NotNull(method);
+		var result = method.Invoke(null, new object[] { "rawVersion", Path.Join(TestFilesPath, "launcher-exception-folder") });
+		Assert.Null(result);
+	}
+
 	[Theory]
 	[InlineData("1.2.3.*", "1.2.3.*", true)]
 	[InlineData("1.2.3.*", "1.2.4", false)]

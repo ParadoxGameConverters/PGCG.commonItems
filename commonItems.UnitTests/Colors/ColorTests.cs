@@ -874,4 +874,385 @@ public sealed class ColorTests {
 		var size = System.Runtime.InteropServices.Marshal.SizeOf(color);
 		Assert.Equal(16, size);
 	}
+
+	[Fact]
+	public void EqualsObject_ReturnsTrueForEqualColor() {
+		var c1 = new Color(10, 20, 30);
+		object obj = new Color(10, 20, 30);
+		Assert.True(c1.Equals(obj));
+	}
+
+	[Fact]
+	public void EqualsObject_ReturnsFalseForDifferentColor() {
+		var c1 = new Color(10, 20, 30);
+		object obj = new Color(10, 20, 31);
+		Assert.False(c1.Equals(obj));
+	}
+
+	[Fact]
+	public void EqualsObject_ReturnsFalseForNullAndDifferentType() {
+		var c1 = new Color(10, 20, 30);
+		Assert.False(c1.Equals(null));
+		Assert.False(c1.Equals("not a color"));
+	}
+
+	[Fact]
+	public void EqualsObject_ConsidersAlpha() {
+		var c1 = new Color(10, 20, 30, 0.5f);
+		var c2 = new Color(10, 20, 30, 0.8f);
+		object obj = c2;
+		Assert.False(c1.Equals(obj));
+		Assert.False(c1.Equals(c2));
+	}
+
+	[Fact]
+	public void GetHashCode_EqualColorsHaveSameHash() {
+		var c1 = new Color(10, 20, 30);
+		var c2 = new Color(10, 20, 30);
+		Assert.Equal(c1.GetHashCode(), c2.GetHashCode());
+	}
+
+	[Fact]
+	public void GetHashCode_DifferentAlphasHaveDifferentHash() {
+		var c1 = new Color(10, 20, 30, 0.5f);
+		var c2 = new Color(10, 20, 30, 1.0f);
+		Assert.NotEqual(c1.GetHashCode(), c2.GetHashCode());
+	}
+
+	[Fact]
+	public void SerializeReturnsOutput() {
+		var c = new Color(64, 128, 128);
+		Assert.Equal(c.Output(), c.Serialize("", true));
+		Assert.Equal(c.Output(), c.Serialize("  ", false));
+	}
+
+	[Fact]
+	public void ToStringReturnsOutputRgb() {
+		var c = new Color(64, 128, 128);
+		Assert.Equal(c.OutputRgb(), c.ToString());
+	}
+
+	[Fact]
+	public void OperatorsEqualAndNotEqual() {
+		var c1 = new Color(10, 20, 30);
+		var c2 = new Color(10, 20, 30);
+		var c3 = new Color(10, 20, 31);
+		Assert.True(c1 == c2);
+		Assert.False(c1 == c3);
+		Assert.False(c1 != c2);
+		Assert.True(c1 != c3);
+	}
+
+	[Fact]
+	public void OperatorInequalityConsidersAlpha() {
+		var c1 = new Color(10, 20, 30, 0.5f);
+		var c2 = new Color(10, 20, 30, 0.6f);
+		Assert.False(c1 == c2);
+		Assert.True(c1 != c2);
+	}
+
+	[Fact]
+	public void DeriveHsv_HNegativeCorrection() {
+		// r is max, g < b => (g-b)/chroma negative => h negative before correction
+		var c = new Color(255, 0, 128);
+		// Hue should be ~0.916 after +1 correction
+		Assert.InRange(c.H, 0.91, 0.92);
+	}
+
+	[Fact]
+	public void DeriveRgb_Sector2() {
+		// h=0.4 => sector 2
+		var c = new Color(0.4, 1, 1);
+		Assert.InRange(c.R, 0, 2);
+		Assert.InRange(c.G, 254, 255);
+		Assert.InRange(c.B, 101, 103);
+	}
+
+	[Fact]
+	public void DeriveRgb_Sector5() {
+		// h=0.9 => sector 5
+		var c = new Color(0.9, 1, 1);
+		Assert.InRange(c.R, 254, 255);
+		Assert.InRange(c.G, 0, 2);
+		Assert.InRange(c.B, 152, 154);
+	}
+
+	[Fact]
+	public void DeriveRgb_NegativeHueThrows() {
+		Assert.Throws<ArgumentOutOfRangeException>(() => new Color(-0.1, 1, 1));
+	}
+
+	[Fact]
+	public void DeriveRgb_HueExactlyOneResetsToZero() {
+		var c1 = new Color(1.0, 1, 1);
+		var c0 = new Color(0.0, 1, 1);
+		Assert.Equal(c0.R, c1.R);
+		Assert.Equal(c0.G, c1.G);
+		Assert.Equal(c0.B, c1.B);
+	}
+
+	[Fact]
+	public void OutputHex_UppercasePath() {
+		var reader = new BufferedReader("= hex { FF00AA }");
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(255, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(170, color.B);
+	}
+
+	[Fact]
+	public void RgbWithZeroComponents() {
+		var factory = new ColorFactory();
+		var reader = new BufferedReader("= rgb { }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = factory.GetColor(reader);
+		Assert.Equal(0, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(0, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for RGB: .", output.ToString());
+	}
+
+	[Fact]
+	public void RgbWithOneComponent() {
+		var factory = new ColorFactory();
+		var reader = new BufferedReader("= rgb { 64 }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = factory.GetColor(reader);
+		Assert.Equal(64, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(0, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for RGB: 64.", output.ToString());
+	}
+
+	[Fact]
+	public void RgbWithMixedFloatCondition() {
+		// Only first component >1 should still take int path
+		var reader = new BufferedReader("= { 2.0 0.5 0.5 }");
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(2, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(0, color.B);
+	}
+
+	[Fact]
+	public void UnprefixedFloat_WithOneComponent_LogsWarning() {
+		var reader = new BufferedReader("= { 0.5 }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(128, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(0, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for unprefixed color:", output.ToString());
+	}
+
+	[Fact]
+	public void UnprefixedFloat_WithTwoComponents_LogsWarning() {
+		var reader = new BufferedReader("= { 0.5 0.6 }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = new ColorFactory().GetColor(reader);
+		// 0.5*255=128, 0.6*255=153
+		Assert.Equal(128, color.R);
+		Assert.Equal(153, color.G);
+		Assert.Equal(0, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for unprefixed color:", output.ToString());
+	}
+
+	[Fact]
+	public void UnprefixedFloat_WithFiveComponents_UsesFirstThree() {
+		var reader = new BufferedReader("= { 0.1 0.2 0.3 0.4 0.5 }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(26, color.R); // 0.1*255=26
+		Assert.Equal(51, color.G); // 0.2*255=51
+		Assert.Equal(76, color.B); // 0.3*255=76.5 -> 76 with banker's rounding
+		Assert.Contains("[WARN] Color has wrong number of components for unprefixed color:", output.ToString());
+	}
+
+	[Fact]
+	public void UnprefixedInt_WithOneComponent_LogsWarning() {
+		var reader = new BufferedReader("= { 64 }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(64, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(0, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for unprefixed color: 64.", output.ToString());
+	}
+
+	[Fact]
+	public void UnprefixedInt_WithFiveComponents_UsesFirstThree() {
+		var reader = new BufferedReader("= { 10 20 30 40 50 }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(10, color.R);
+		Assert.Equal(20, color.G);
+		Assert.Equal(30, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for unprefixed color:", output.ToString());
+	}
+
+	[Fact]
+	public void UnprefixedInt_WithZeroComponents_LogsWarning() {
+		var reader = new BufferedReader("= { }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(0, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(0, color.B);
+		Assert.Contains("[WARN] Color has wrong number of components for unprefixed color:", output.ToString());
+	}
+
+	[Fact]
+	public void GetColorWithoutEquals() {
+		var reader = new BufferedReader("rgb { 64 128 128 }");
+		var color = new ColorFactory().GetColor(reader);
+		Assert.Equal(64, color.R);
+		Assert.Equal(128, color.G);
+		Assert.Equal(128, color.B);
+	}
+
+	[Fact]
+	public void GetColorByName_CachesKnownColor() {
+		var factory = new ColorFactory();
+		var c1 = factory.GetColorByName("white");
+		Assert.True(factory.NamedColors.ContainsKey("white"));
+		var c2 = factory.GetColorByName("white");
+		Assert.Equal(c1, c2);
+	}
+
+	[Fact]
+	public void GetColorByName_UnknownWithoutUnderscoreUsesHash() {
+		var factory = new ColorFactory();
+		var color = factory.GetColorByName("unknowncolor123");
+		var expectedHash = new ColorHash().Rgb("unknowncolor123");
+		Assert.Equal(expectedHash.R, color.R);
+		Assert.Equal(expectedHash.G, color.G);
+		Assert.Equal(expectedHash.B, color.B);
+		// fallback should NOT be cached
+		Assert.False(factory.NamedColors.ContainsKey("unknowncolor123"));
+	}
+
+	[Fact]
+	public void GetColorByName_FallbackNotCachedOnSecondCall() {
+		var factory = new ColorFactory();
+		var c1 = factory.GetColorByName("random_bullshit_xyz");
+		var c2 = factory.GetColorByName("random_bullshit_xyz");
+		Assert.Equal(c1, c2);
+		Assert.False(factory.NamedColors.ContainsKey("random_bullshit_xyz"));
+	}
+
+	[Fact]
+	public void GetColorByName_SplitWordFirstUnknownSecondKnown() {
+		var factory = new ColorFactory();
+		var color = factory.GetColorByName("blah_green");
+		var expected = System.Drawing.Color.FromName("green");
+		Assert.Equal(expected.R, color.R);
+		Assert.Equal(expected.G, color.G);
+		Assert.Equal(expected.B, color.B);
+		Assert.True(factory.NamedColors.ContainsKey("blah_green"));
+	}
+
+	[Fact]
+	public void GetColorByName_GreyInSplitWord() {
+		var factory = new ColorFactory();
+		var color = factory.GetColorByName("blah_grey");
+		var expected = System.Drawing.Color.FromName("gray");
+		Assert.Equal(expected.R, color.R);
+		Assert.Equal(expected.G, color.G);
+		Assert.Equal(expected.B, color.B);
+	}
+
+	[Fact]
+	public void GetColorByName_GreyAsFirstSplitWord() {
+		var factory = new ColorFactory();
+		var color = factory.GetColorByName("grey_blah");
+		var expected = System.Drawing.Color.FromName("gray");
+		Assert.Equal(expected.R, color.R);
+		Assert.Equal(expected.G, color.G);
+		Assert.Equal(expected.B, color.B);
+	}
+
+	[Fact]
+	public void GetColorByName_AllSplitWordsUnknownUsesHash() {
+		var factory = new ColorFactory();
+		var color = factory.GetColorByName("blah_foo_bar");
+		var expectedHash = new ColorHash().Rgb("blah_foo_bar");
+		Assert.Equal(expectedHash.R, color.R);
+		Assert.Equal(expectedHash.G, color.G);
+		Assert.Equal(expectedHash.B, color.B);
+	}
+
+	[Fact]
+	public void GetColorByName_CatchallViaGetColor() {
+		var factory = new ColorFactory();
+		var reader = new BufferedReader("= blah_green");
+		var color = factory.GetColor(reader);
+		var expected = System.Drawing.Color.FromName("green");
+		Assert.Equal(expected.R, color.R);
+	}
+
+	[Fact]
+	public void GetSystemDrawingColorByName_CatchReturnsNull() {
+		var method = typeof(ColorFactory).GetMethod("GetSystemDrawingColorByName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+		Assert.NotNull(method);
+		var result = method.Invoke(null, new object?[] { null });
+		Assert.Null(result);
+	}
+
+	[Fact]
+	public void GetSystemDrawingColorByName_EmptyColorReturnsNull() {
+		var method = typeof(ColorFactory).GetMethod("GetSystemDrawingColorByName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+		Assert.NotNull(method);
+		// Empty string should return Empty color -> null
+		var result = method.Invoke(null, new object[] { "" });
+		Assert.Null(result);
+	}
+
+	[Fact]
+	public void GetSystemDrawingColorByName_UnknownReturnsNull() {
+		var method = typeof(ColorFactory).GetMethod("GetSystemDrawingColorByName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+		Assert.NotNull(method);
+		var result = method.Invoke(null, new object[] { "not_a_known_color_xyz" });
+		Assert.Null(result);
+	}
+
+	[Fact]
+	public void GetSystemDrawingColorByName_KnownReturnsColor() {
+		var method = typeof(ColorFactory).GetMethod("GetSystemDrawingColorByName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+		Assert.NotNull(method);
+		var result = method.Invoke(null, new object[] { "Red" });
+		Assert.NotNull(result);
+		var color = (System.Drawing.Color)result;
+		Assert.Equal(255, color.R);
+	}
+
+	[Fact]
+	public void OutputHsv_TrimsZeros() {
+		var c = new Color(0, 0, 0); // H=0 S=0 V=0
+		Assert.Equal("hsv { 0 0 0 }", c.OutputHsv());
+		// Test with alpha trimming
+		var c2 = new Color(0.5, 0.5, 0.5, 0.5f);
+		// Already tested but ensure trimming works for alpha .50 -> "0.5"
+		Assert.Contains("0.5", c2.OutputHsv());
+	}
+
+	[Fact]
+	public void GetRgbColorFromAnyNumber_WithZeroComponents() {
+		// Trigger via unprefixed float with empty braces already tested, but also directly test int empty
+		var factory = new ColorFactory();
+		var reader = new BufferedReader("= { }");
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var color = factory.GetColor(reader);
+		Assert.Equal(0, color.R);
+		Assert.Equal(0, color.G);
+		Assert.Equal(0, color.B);
+	}
 }
