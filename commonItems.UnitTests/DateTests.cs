@@ -441,4 +441,131 @@ public sealed class DateTests {
 	public void DateUses4BytesOfMemory() {
 		Assert.Equal(4, System.Runtime.InteropServices.Marshal.SizeOf<Date>());
 	}
+
+	[Fact]
+	public void EqualsObjectReturnsTrueForEqualDate() {
+		object date = new Date(2020, 4, 25);
+		object other = new Date(2020, 4, 25);
+		Assert.True(date.Equals(other));
+	}
+
+	[Fact]
+	public void EqualsObjectReturnsFalseForDifferentDate() {
+		object date = new Date(2020, 4, 25);
+		object other = new Date(2020, 4, 24);
+		Assert.False(date.Equals(other));
+	}
+
+	[Fact]
+	public void EqualsObjectReturnsFalseForNullAndWrongType() {
+		var date = new Date(2020, 4, 25);
+		Assert.False(date.Equals((object?)null));
+		Assert.False(date.Equals((object)"2020.4.25"));
+	}
+
+	[Fact]
+	public void GetHashCodeReflectsComponents() {
+		var date = new Date(2020, 4, 25);
+		var other = new Date(2020, 4, 25);
+		Assert.Equal(date.GetHashCode(), other.GetHashCode());
+
+		var different = new Date(2020, 4, 26);
+		Assert.NotEqual(date.GetHashCode(), different.GetHashCode());
+	}
+
+	[Fact]
+	public void EqualityOperatorsReturnCorrectValues() {
+		var date = new Date(2020, 4, 25);
+		Assert.True(date == new Date(2020, 4, 25));
+		Assert.False(date == new Date(2020, 4, 26));
+		Assert.False(date != new Date(2020, 4, 25));
+		Assert.True(date != new Date(2020, 4, 26));
+	}
+
+	[Fact]
+	public void LessThanFromSameYearSameMonthDifferentDay() {
+		var date = new Date(2020, 4, 24);
+		var date2 = new Date(2020, 4, 25);
+		Assert.True(date < date2);
+		Assert.True(date2 > date);
+	}
+
+	[Fact]
+	public void LessThanFalseForEqualDates() {
+		var date = new Date(2020, 4, 25);
+		var other = new Date(2020, 4, 25);
+		Assert.False(date < other);
+		Assert.False(date > other);
+		Assert.False(other < date);
+		Assert.False(other > date);
+	}
+
+	[Fact]
+	public void LessThanFalseForLaterSameMonthDifferentDay() {
+		var earlier = new Date(2020, 4, 25);
+		var later = new Date(2020, 4, 26);
+		Assert.False(later < earlier);
+		Assert.False(earlier > later);
+	}
+
+	[Fact]
+	public void LessThanFalseWhenLhsYearIsGreater() {
+		var lateYear = new Date(2021, 5, 1);
+		var earlyYear = new Date(2020, 4, 25);
+		Assert.False(lateYear < earlyYear);
+		Assert.False(earlyYear > lateYear);
+	}
+
+	[Fact]
+	public void DiffInYearsHandlesDefaultDateWithInvalidMonth() {
+		// default(Date) has Month = 0, so CalculateDayInYear falls back to returning Day.
+		Date date = default;
+		double diff = date.DiffInYears(new Date());
+		Assert.True(double.IsFinite(diff));
+		Assert.Equal(0, date.Month);
+	}
+
+	[Fact]
+	public void ChangeByDaysZeroDoesNotChangeDate() {
+		var date = new Date(500, 4, 25).ChangeByDays(0);
+		Assert.Equal("500.4.25", date.ToString());
+	}
+
+	[Fact]
+	public void AUCBoolConstructorConvertsToAD() {
+		// 753 AUC is year -1 AD.
+		var date = new Date(753, 1, 1, AUC: true);
+		Assert.Equal("-1.1.1", date.ToString());
+	}
+
+	[Fact]
+	public void DateWithWhitespaceSegmentsUsesSlowPath() {
+		// Fast path rejects segments with spaces; slow path int.Parse accepts surrounding whitespace.
+		var date = new Date("1450. 10. 2");
+		Assert.Equal(1450, date.Year);
+		Assert.Equal(10, date.Month);
+		Assert.Equal(2, date.Day);
+	}
+
+	[Fact]
+	public void DateWithSignOnlySegmentLogsWarning() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		// Fast path fails on the "-" segment; slow path parses year 2020, then
+		// int.Parse("-") throws, so the date keeps the year that was already assigned.
+		var date = new Date("2020.-.1");
+		Assert.Equal(2020, date.Year);
+		Assert.Equal(1, date.Month);
+		Assert.Equal(1, date.Day);
+		Assert.Contains("[WARN] Problem constructing date from string", output.ToString());
+	}
+
+	[Fact]
+	public void DateWithOverflowingYearSegmentLogsWarning() {
+		var output = new StringWriter();
+		Console.SetOut(output);
+		var date = new Date("99999999999999.1.1");
+		Assert.Equal(1, date.Year); // slow path throws OverflowException, defaults to year 1
+		Assert.Contains("[WARN] Problem constructing date from string", output.ToString());
+	}
 }

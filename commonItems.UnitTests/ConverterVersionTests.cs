@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Xunit;
 
 namespace commonItems.UnitTests;
@@ -107,5 +108,48 @@ public sealed class ConverterVersionTests {
 		expected = expectedOutput.ReadLine();
 		actual = actualOutput.ReadLine();
 		Assert.Equal(expected, actual); // footer line
+	}
+
+	[Fact]
+	public void ConverterVersionOutputFooterWrapsLongSourceAndTarget() {
+		var reader = new BufferedReader("source = \"EUROPA UNIVERSALIS IV (A VERY LONG SOURCE NAME INDEED, MUCH LONGER)\"\n"
+		                                + "target = \"VICTORIA III A VERY LONG TARGET NAME THAT SURELY OVERFLOWS THE FOOTER, OK?\"\n"
+		                                + "minSource = \"1.31\"\n"
+		                                + "maxSource = \"1.31\"\n"
+		                                + "minTarget = \"1.0\"\n"
+		                                + "maxTarget = \"1.0\"\n");
+
+		var converterVersion = new ConverterVersion();
+		converterVersion.LoadVersion(reader);
+
+		var actualOutput = converterVersion.ToString();
+		// Footer longer than 68 chars wraps with a leading and trailing '*'.
+		var footerLine = actualOutput.Split('\n')[^2];
+		Assert.StartsWith("*", footerLine);
+		Assert.EndsWith("*", footerLine);
+	}
+
+	[Fact]
+	public void ConverterVersionCanBeImportedFromBufferedReader() {
+		var reader = new BufferedReader("name = \"Adams-prerelease\"\n"
+		                                + "version = \"0.1A\"\n"
+		                                + "source = \"EU4\"\n"
+		                                + "target = \"Vic3\"\n"
+		                                + "minSource = \"1.31\"\n"
+		                                + "maxSource = \"1.31.7\"\n"
+		                                + "minTarget = \"1.0\"\n"
+		                                + "maxTarget = \"1.1\"\n");
+
+		var converterVersion = new ConverterVersion();
+		converterVersion.LoadVersion(reader);
+
+		Assert.Equal("Adams-prerelease", converterVersion.Name);
+		Assert.Equal("0.1A", converterVersion.Version);
+		Assert.Equal("EU4", converterVersion.Source);
+		Assert.Equal("Vic3", converterVersion.Target);
+		Assert.Equal(new GameVersion("1.31"), converterVersion.MinSource);
+		Assert.Equal(new GameVersion("1.31.7"), converterVersion.MaxSource);
+		Assert.Equal(new GameVersion("1.0"), converterVersion.MinTarget);
+		Assert.Equal(new GameVersion("1.1"), converterVersion.MaxTarget);
 	}
 }
