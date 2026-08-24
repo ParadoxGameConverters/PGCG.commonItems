@@ -107,7 +107,6 @@ public readonly struct Color : IPDXSerializable, IEquatable<Color> {
 	public byte R { get; } = 0;
 	public byte G { get; } = 0;
 	public byte B { get; } = 0;
-	
 
 	private readonly byte a = 255;
 	public float A => (float)a / 255;

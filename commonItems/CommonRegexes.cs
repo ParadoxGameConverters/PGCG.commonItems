@@ -26,7 +26,6 @@ public static partial class CommonRegexes {
 	// dates
 	public static Regex Date => GetDateRegex();
 
-
 	[GeneratedRegex("^\".+\"|[^?={}]+$")]
 	private static partial Regex GetCatchallRegex();
 	[GeneratedRegex("^-?\\d+$")]
