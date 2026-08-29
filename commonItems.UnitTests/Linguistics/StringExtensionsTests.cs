@@ -9,6 +9,8 @@ using Xunit;
 
 namespace commonItems.UnitTests.Linguistics;
 
+[Collection("Sequential")]
+[CollectionDefinition("Sequential", DisableParallelization = true)]
 public sealed class StringExtensionsTests {
 	[Theory]
 	// ReSharper disable StringLiteralTypo

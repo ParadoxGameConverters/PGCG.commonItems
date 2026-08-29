@@ -9,12 +9,16 @@ using Xunit;
 
 namespace commonItems.UnitTests;
 
+[Collection("Sequential")]
+[CollectionDefinition("Sequential", DisableParallelization = true)]
 public sealed class ParserBuilderTests {
 	private sealed class CollectingAppender : AppenderSkeleton {
 		public List<string> Messages { get; } = [];
 
 		protected override void Append(LoggingEvent loggingEvent) {
-			Messages.Add(loggingEvent.RenderedMessage ?? string.Empty);
+			lock (Messages) {
+				Messages.Add(loggingEvent.RenderedMessage ?? string.Empty);
+			}
 		}
 	}
 
@@ -157,7 +161,11 @@ public sealed class ParserBuilderTests {
 			parser.ParseStream(new BufferedReader("key = value ignored = yes"));
 
 			Assert.Equal("value", value);
-			Assert.Contains("Ignoring keyword: ignored", appender.Messages);
+			string[] snapshot;
+			lock (appender.Messages) {
+				snapshot = appender.Messages.ToArray();
+			}
+			Assert.Contains("Ignoring keyword: ignored", snapshot);
 		} finally {
 			try {
 				logger.RemoveAppender(appender);
