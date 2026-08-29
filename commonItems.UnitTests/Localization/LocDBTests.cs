@@ -7,6 +7,8 @@ using Xunit;
 
 namespace commonItems.UnitTests.Localization;
 
+[Collection("Sequential")]
+[CollectionDefinition("Sequential", DisableParallelization = true)]
 public sealed class LocDBTests {
 	[Fact]
 	public void LocalizationCanBeLoadedAndMatched() {
