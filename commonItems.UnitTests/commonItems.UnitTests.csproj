@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
-    <PackageReference Include="Meziantou.Analyzer" Version="3.0.190">
+    <PackageReference Include="Meziantou.Analyzer" Version="3.0.195">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
