@@ -134,4 +134,68 @@ public sealed class BufferedReaderTests {
 		Assert.Contains("[WARN] Variable not found: @a", output.ToString());
 		Assert.Null(value);
 	}
+
+	[Fact]
+	public void EndOfStreamIsFalseWhileBufferHoldsCharacters() {
+		var reader = new BufferedReader("abc");
+
+		Assert.Equal('a', reader.Peek()); // pulls the characters into the internal buffer
+		Assert.False(reader.EndOfStream);
+		Assert.Equal("abc", reader.ReadToEnd());
+		Assert.True(reader.EndOfStream);
+	}
+
+	[Fact]
+	public void ReadToEndCombinesBufferedAndPushedBackCharacters() {
+		var reader = new BufferedReader("12345");
+		Assert.Equal('1', (char)reader.Read());
+		reader.PushBack('1');
+
+		Assert.Equal("12345", reader.ReadToEnd());
+	}
+
+	[Fact]
+	public void PeekAndSkipWorkAcrossBufferBoundary() {
+		var reader = new BufferedReader(new string('a', 1500) + "XYZ");
+
+		reader.Skip(1500);
+
+		Assert.Equal('X', reader.Peek());
+		Assert.Equal('X', (char)reader.Read());
+		Assert.Equal("YZ", reader.ReadToEnd());
+	}
+
+	[Fact]
+	public void ReadSpansBufferBoundary() {
+		const int textLength = 2000;
+		var reader = new BufferedReader(new string('x', textLength));
+		Assert.Equal('x', (char)reader.Read()); // pulls a chunk into the internal buffer
+
+		var rest = reader.Read(textLength - 1);
+
+		Assert.Equal(new string('x', textLength - 1), rest);
+		Assert.True(reader.EndOfStream);
+	}
+
+	[Fact]
+	public void ReadLineIsRebuiltFromBufferedCharacters() {
+		var longLine = new string('a', 1500);
+		var reader = new BufferedReader($"{longLine}\nsecond line\r\nthird line\rfourth line");
+		Assert.Equal('a', (char)reader.Read()); // pulls a chunk into the internal buffer
+
+		Assert.Equal(longLine[1..], reader.ReadLine());
+		Assert.Equal("second line", reader.ReadLine());
+		Assert.Equal("third line", reader.ReadLine());
+		Assert.Equal("fourth line", reader.ReadLine());
+		Assert.Null(reader.ReadLine());
+	}
+
+	[Fact]
+	public void SkipRestOfLineWorksAcrossBufferBoundary() {
+		var longToken = new string('t', 1500);
+		var reader = new BufferedReader($"{longToken}# comment long enough to cross the buffer boundary\nnext_token");
+
+		Assert.Equal(longToken, Parser.GetNextLexeme(reader));
+		Assert.Equal("next_token", Parser.GetNextLexeme(reader));
+	}
 }
