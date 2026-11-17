@@ -17,6 +17,8 @@ namespace commonItems;
 /// but later updated
 /// </summary>
 public sealed class BufferedReader {
+	private const int CharBufferSize = 1024;
+
 	private readonly StreamReader streamReader;
 
 	public BufferedReader() : this(string.Empty) { }
@@ -30,12 +32,30 @@ public sealed class BufferedReader {
 
 	private readonly Stack<int> characterStack = new();
 
+	// Characters are pulled from the stream in chunks, which keeps per-character reads
+	// to a field check instead of a virtual StreamReader call.
+	private char[]? charBuffer;
+	private int charBufferPos;
+	private int charBufferLength;
+
+	private bool FillCharBuffer() {
+		charBuffer ??= new char[CharBufferSize];
+		charBufferPos = 0;
+		charBufferLength = streamReader.Read(charBuffer, 0, charBuffer.Length);
+		return charBufferLength > 0;
+	}
+
 	public int Read() {
 		if (characterStack.TryPop(out int character)) {
 			return character;
-		} else {
-			return streamReader.Read();  // could be -1 
 		}
+		if (charBufferPos < charBufferLength) {
+			return charBuffer![charBufferPos++];
+		}
+		if (!FillCharBuffer()) {
+			return -1;
+		}
+		return charBuffer![charBufferPos++];
 	}
 
 	public string Read(uint numberOfChars) {
@@ -45,10 +65,18 @@ public sealed class BufferedReader {
 
 		if (characterStack.Count == 0 && numberOfChars <= int.MaxValue) {
 			var maxCharsToRead = (int)numberOfChars;
+			var charsFromBuffer = Math.Min(charBufferLength - charBufferPos, maxCharsToRead);
 			var buffer = ArrayPool<char>.Shared.Rent(maxCharsToRead);
 			try {
-				var read = streamReader.Read(buffer, 0, maxCharsToRead);
-				return new string(buffer, 0, read);
+				if (charsFromBuffer > 0) {
+					charBuffer!.AsSpan(charBufferPos, charsFromBuffer).CopyTo(buffer);
+					charBufferPos += charsFromBuffer;
+				}
+				var read = 0;
+				if (charsFromBuffer < maxCharsToRead) {
+					read = streamReader.Read(buffer, charsFromBuffer, maxCharsToRead - charsFromBuffer);
+				}
+				return new string(buffer, 0, charsFromBuffer + read);
 			} finally {
 				ArrayPool<char>.Shared.Return(buffer);
 			}
@@ -67,47 +95,112 @@ public sealed class BufferedReader {
 	}
 
 	public string? ReadLine() {
-		return streamReader.ReadLine();
+		if (charBufferPos >= charBufferLength) {
+			// Nothing is buffered, so the stream is exactly where the caller expects it to be.
+			return streamReader.ReadLine();
+		}
+
+		// Part of the line is already in our buffer, so it has to be rebuilt from the buffer
+		// and the rest of the stream. Line terminators follow StreamReader.ReadLine:
+		// '\n', '\r' and "\r\n".
+		var sb = new StringBuilder();
+		while (true) {
+			if (charBufferPos >= charBufferLength && !FillCharBuffer()) {
+				return sb.Length == 0 ? null : sb.ToString();
+			}
+			var ch = charBuffer![charBufferPos++];
+			if (ch == '\n') {
+				return sb.ToString();
+			}
+			if (ch == '\r') {
+				if (charBufferPos >= charBufferLength && !FillCharBuffer()) {
+					return sb.ToString();
+				}
+				if (charBuffer[charBufferPos] == '\n') {
+					++charBufferPos;
+				}
+				return sb.ToString();
+			}
+			sb.Append(ch);
+		}
 	}
 
 	public void SkipRestOfLine() {
-		while (!EndOfStream) {
-			var character = Read();
-			if (character is '\n' or -1) {
+		while (true) {
+			if (characterStack.TryPop(out int pushed)) {
+				if (pushed is '\n' or -1) {
+					return;
+				}
+				continue;
+			}
+			if (charBufferPos >= charBufferLength && !FillCharBuffer()) {
 				return;
 			}
+			var newLineIndex = charBuffer!.AsSpan(charBufferPos, charBufferLength - charBufferPos).IndexOf('\n');
+			if (newLineIndex >= 0) {
+				charBufferPos += newLineIndex + 1;
+				return;
+			}
+			charBufferPos = charBufferLength;
 		}
 	}
 
 	public string ReadToEnd() {
-		if (characterStack.Count == 0) {
+		if (characterStack.Count == 0 && charBufferPos >= charBufferLength) {
 			return streamReader.ReadToEnd();
 		}
 
-		var sb = new StringBuilder(characterStack.Count + 32);
+		var sb = new StringBuilder(characterStack.Count + (charBufferLength - charBufferPos) + 32);
 		while (characterStack.TryPop(out int character)) {
 			sb.Append((char)character);
+		}
+		if (charBufferPos < charBufferLength) {
+			sb.Append(charBuffer!, charBufferPos, charBufferLength - charBufferPos);
+			charBufferPos = charBufferLength;
 		}
 		sb.Append(streamReader.ReadToEnd());
 		return sb.ToString();
 	}
 
 	public int Peek() {
-		return characterStack.TryPeek(out int character) ? character : streamReader.Peek();
+		if (characterStack.TryPeek(out int character)) {
+			return character;
+		}
+		if (charBufferPos >= charBufferLength && !FillCharBuffer()) {
+			return -1;
+		}
+		return charBuffer![charBufferPos];
 	}
 
 	public bool EndOfStream {
 		get {
-			if (characterStack.Count == 0) {
-				return streamReader.EndOfStream;
+			if (characterStack.Count != 0) {
+				return false;
 			}
-			return false;
+			if (charBufferPos < charBufferLength) {
+				return false;
+			}
+			return streamReader.EndOfStream;
 		}
 	}
 
 	public void Skip(uint numberOfBytes) { // not present in StreamReader
-		for (uint i = 0; i < numberOfBytes; ++i) {
-			Read();
+		var remaining = numberOfBytes;
+		while (remaining > 0) {
+			if (characterStack.TryPop(out _)) {
+				--remaining;
+				continue;
+			}
+			var bufferedCount = charBufferLength - charBufferPos;
+			if (bufferedCount > 0) {
+				var toSkip = (int)Math.Min(remaining, (uint)bufferedCount);
+				charBufferPos += toSkip;
+				remaining -= (uint)toSkip;
+				continue;
+			}
+			if (!FillCharBuffer()) {
+				return;
+			}
 		}
 	}
 
