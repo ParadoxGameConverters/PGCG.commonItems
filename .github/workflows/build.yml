@@ -58,4 +58,4 @@ jobs:
     - name: "Build project"
       run: |
        dotnet tool restore
-       dotnet build commonItems/commonItems.csproj /m /p:Configuration=Debug
+       dotnet build commonItems/commonItems.csproj ${{ runner.environment == 'self-hosted' && '-m:16' || '/m' }} /p:Configuration=Debug
