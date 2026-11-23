@@ -59,11 +59,17 @@ jobs:
     - name: "Restore projects"
       run: dotnet restore
 
+    - name: "Build tests"
+      working-directory: commonItems.UnitTests
+      shell: pwsh
+      run: |
+        dotnet build ${{ runner.environment == 'self-hosted' && '-m:16' || '' }}
+
     - name: "Run tests"
       working-directory: commonItems.UnitTests
       shell: pwsh
       run: |
-       dotnet test --no-restore --coverlet --coverlet-output-format lcov --coverlet-exclude "[commonItems.UnitTests]*"
+       dotnet test --no-build --coverlet --coverlet-output-format lcov --coverlet-exclude "[commonItems.UnitTests]*" -- --max-threads ${{ runner.environment == 'self-hosted' && '16' || 'default' }}
 
     - name: "Locate coverage report"
       id: coverage_report
@@ -137,6 +143,12 @@ jobs:
     - name: "Restore tools"
       run: dotnet tool restore
 
+    - name: "Build tests"
+      working-directory: commonItems.UnitTests
+      run: |
+        dotnet build ${{ runner.environment == 'self-hosted' && '-m:16' || '' }}
+
     - name: "Run tests"
       working-directory: commonItems.UnitTests
-      run: dotnet test
+      run: |
+        dotnet test --no-build -- --max-threads ${{ runner.environment == 'self-hosted' && '16' || 'default' }}
